@@ -7,7 +7,7 @@ ICAT API to interface with the Data Gateway
 + [Project structure](#project-structure)
     + [Main](#main)
     + [Endpoints](#endpoints)
-    + [Mapped Classes](#mapped classes)
+    + [Mapped Classes](#mapped-classes)
 
 
 
