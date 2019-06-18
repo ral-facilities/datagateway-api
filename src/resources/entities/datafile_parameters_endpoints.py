@@ -11,7 +11,7 @@ class DatafileParameters(Resource):
     @requires_session_id
     @queries_records
     def get(self):
-        return get_rows_by_filter(DATAFILEPARAMETER, request.json), 200
+        return get_rows_by_filter(DATAFILEPARAMETER, get_filters_from_query_string()), 200
 
     @requires_session_id
     @queries_records
