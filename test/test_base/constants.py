@@ -1,2 +1,2 @@
-GOOD_CREDENTIALS_HEADER = {"Authorization": "TestSession"}
-BAD_CREDENTIALS_HEADER = {"Authorization": "Santa Claus"}
+GOOD_CREDENTIALS_HEADER = {"Authorization": "Bearer TestSession"}
+BAD_CREDENTIALS_HEADER = {"Authorization": "Bearer SantaClaus"}
