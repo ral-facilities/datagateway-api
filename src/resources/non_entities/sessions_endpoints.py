@@ -15,9 +15,9 @@ class Sessions(Resource):
         Generates a sessionID if the user has correct credentials
         :return: String - SessionID
         """
-        if request.data == b"":  # request.data returns a byte object, it can only be checked for empty like this
-            return "Unauthorized", 401
-        if request.json == {"username": "user", "password": "password"}:
+        if not (request.data and "username" in request.json and "password" in request.json):
+            return "Bad request", 400
+        if request.json["username"] == "user" and request.json["password"] == "password":
             session_id = str(uuid.uuid1())
             insert_row_into_table(SESSION(ID=session_id))
             return {"sessionID": session_id}, 201
