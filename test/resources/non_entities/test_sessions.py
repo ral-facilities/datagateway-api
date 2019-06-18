@@ -18,18 +18,23 @@ def is_session_id_uuid(response):
 class TestSessions(RestTestCase):
 
     def test_post_generate_session_id_with_good_credentials(self):
-        response = requests.post(sessions_url, headers={"Authorization": "user:password"})
+        response = requests.post(sessions_url, json={"username":"user","password":"password"})
         self.assertTrue(is_session_id_uuid(response), "sessionID returned is not a uuid")
         self.expect_status_code(201, response)
         self.expect_json_response(response)
 
+
     def test_post_generate_session_id_with_bad_credentials(self):
-        response = requests.post(sessions_url, headers=BAD_CREDENTIALS_HEADER)
+        response = requests.post(sessions_url, json={"username":"test", "password":"test"})
         self.expect_status_code(403, response)
+
+    def test_post_generate_session_id_with_bad_json(self):
+        response = requests.post(sessions_url, json={"test":"test", "test":"test"})
+        self.expect_status_code(400, response)
 
     def test_post_generate_session_id_with_no_credentials(self):
         response = requests.post(sessions_url)
-        self.expect_status_code(401, response)
+        self.expect_status_code(400, response)
 
     def test_delete_remove_session_id_with_real_session_id(self):
         response = requests.delete(sessions_url, headers=GOOD_CREDENTIALS_HEADER)
