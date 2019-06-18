@@ -11,8 +11,7 @@ class Datafiles(Resource):
     @requires_session_id
     @queries_records
     def get(self):
-        filters = get_filters_from_query_string()
-        return get_rows_by_filter(DATAFILE, filters), 200
+        return get_rows_by_filter(DATAFILE, get_filters_from_query_string()), 200
 
     @requires_session_id
     @queries_records
