@@ -8,3 +8,7 @@ class MissingRecordError(ApiError):
 
 class BadFilterError(ApiError):
     pass
+
+
+class AuthenticationError(ApiError):
+    pass
