@@ -29,7 +29,7 @@ class Constants:
 
 
 To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
-set the API can be run with `flask run`. The `flask run` command gets installed with flask.   
+set the API can be run with `flask run` while inside the root directory of the project. The `flask run` command gets installed with flask.   
 
 Examples shown:  
 Unix
