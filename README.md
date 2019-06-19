@@ -27,7 +27,29 @@ class Constants:
     DATABASE_URL = "mysql+pymysql://root:rootpw@localhost:13306/icatdb"
 ```
 
-The API can then be started by running `src/main.py`
+
+To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
+set the API can be run with `flask run`. The `flask run` command gets installed with flask.   
+
+Examples shown:  
+Unix
+```bash
+$ export FLASK_APP=src/main.py
+$ flask run
+```
+CMD  
+```CMD
+> set FLASK_APP=src/main.py
+> flask run
+```
+PowerShell
+```powershell
+> $env:FLASK_APP = "src/main.py"
+> flask run
+```
+  
+More information can be found [here](http://flask.pocoo.org/docs/1.0/cli/)
+
 
 By default the api will run on `http://localhost:5000` and all requests are made here
 
