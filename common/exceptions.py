@@ -12,3 +12,7 @@ class BadFilterError(ApiError):
 
 class AuthenticationError(ApiError):
     pass
+
+
+class BadRequestError(ApiError):
+    pass
