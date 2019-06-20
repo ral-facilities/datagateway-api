@@ -6,7 +6,7 @@ from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
 from common.database_helpers import get_icat_db_session
-from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError
+from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError
 from common.models.db_models import SESSION
 
 
@@ -52,9 +52,11 @@ def queries_records(method):
             return "Bad request", 400
         except TypeError:
             return "Bad request", 400
-        except IntegrityError as e:
+        except IntegrityError:
             return "Bad request", 400
-
+        except BadRequestError:
+            return "Bad request", 400
+            
     return wrapper_gets_records
 
 
