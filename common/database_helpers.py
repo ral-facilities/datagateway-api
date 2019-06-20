@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 
 from common.constants import Constants
@@ -127,8 +127,15 @@ def update_row_from_id(table, id, new_values):
 
 
 def get_rows_by_filter(table, filters):
+    """
+    Given a list of filters supplied in json format, returns entities that match the filters from the given table
+    :param table: The table to checked
+    :param filters: The filters to be applied
+    :return: A list of the rows returned in dictionary form
+    """
     session = get_icat_db_session()
     base_query = session.query(table)
+    print(filters)
     for filter in filters:
         if list(filter)[0].lower() == "where":
             for key in filter:
@@ -136,9 +143,15 @@ def get_rows_by_filter(table, filters):
                 for k in where_part:
                     column = getattr(table, k.upper())
                     base_query = base_query.filter(column.in_([where_part[k]]))
-
         elif list(filter)[0].lower() == "order":
-            base_query.order()  # do something probably not .order
+            field = filter["order"].split(" ")[0]
+            direction = filter["order"].split(" ")[1]
+            if direction.upper() == "ASC":
+                base_query = base_query.order_by(asc(getattr(table ,field)))
+            elif direction.upper() == "DESC":
+                base_query = base_query.order_by(desc(getattr(table ,field)))
+            else:
+                raise BadFilterError()
         elif list(filter)[0].lower() == "skip":
             for key in filter:
                 skip = filter[key]
