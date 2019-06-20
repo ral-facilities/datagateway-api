@@ -1,5 +1,6 @@
 import uuid
 
+from flask import request
 from flask_restful import Resource, reqparse
 
 from common.database_helpers import insert_row_into_table, delete_row_by_id, get_row_by_id
@@ -14,12 +15,9 @@ class Sessions(Resource):
         Generates a sessionID if the user has correct credentials
         :return: String - SessionID
         """
-        parser = reqparse.RequestParser()
-        parser.add_argument("Authorization", location="headers")
-        args = parser.parse_args()
-        if args["Authorization"] is None:
-            return "Unauthorized", 401
-        if args["Authorization"] == "user:password":
+        if not (request.data and "username" in request.json and "password" in request.json):
+            return "Bad request", 400
+        if request.json["username"] == "user" and request.json["password"] == "password":
             session_id = str(uuid.uuid1())
             insert_row_into_table(SESSION(ID=session_id))
             return {"sessionID": session_id}, 201
