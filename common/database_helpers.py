@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from common.constants import Constants
-from common.exceptions import MissingRecordError, BadFilterError
+from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
 
 
 def get_record_by_id(table, id):
@@ -173,3 +173,30 @@ def get_first_filtered_row(table, filters):
     :return: the first row matching the filter
     """
     return get_rows_by_filter(table, filters)[0]
+
+
+def patch_entities(table, json_list):
+    """
+    Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
+    :param table: The table of the entities
+    :param json_list: the list of updated values or a dictionary
+    :return: The list of updated rows.
+    """
+    results = []
+    if type(json_list) is dict:
+        for key in json_list:
+            if key.upper() == "ID":
+                update_row_from_id(table, json_list[key], json_list)
+                result = get_row_by_id(table, json_list[key])
+                results.append(result)
+    else:
+        for entity in json_list:
+            for key in entity:
+                if key.upper() == "ID":
+                    update_row_from_id(table, entity[key], entity)
+                    result = get_row_by_id(table, entity[key])
+                    results.append(result)
+    if len(results) == 0:
+        raise BadRequestError()
+
+    return results
