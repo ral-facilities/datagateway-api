@@ -173,3 +173,21 @@ def get_first_filtered_row(table, filters):
     :return: the first row matching the filter
     """
     return get_rows_by_filter(table, filters)[0]
+
+
+def patch_entities(table, json_list):
+    """
+    Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
+    :param table: The table of the entities
+    :param json_list: the list of updated values
+    :return: The list of updated rows.
+    """
+    results = []
+    for entity in json_list:
+        for key in entity:
+            if key.upper() == "ID":
+                update_row_from_id(table, entity[key], entity)
+                result = get_row_by_id(table, entity[key])
+                results.append(result)
+
+    return results
