@@ -13,7 +13,7 @@ class EntityHelper(object):
     def to_dict(self):
         """
         Turns the columns and values of an entity into a dictionary
-        :return: dict: dictionay containing the fields and values of an entity
+        :return: dict: dictionary containing the fields and values of an entity
         """
         dictionary = {}
         for column in self.__table__.columns:
