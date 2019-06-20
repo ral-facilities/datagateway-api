@@ -183,11 +183,11 @@ def patch_entities(table, json_list):
     :return: The list of updated rows.
     """
     results = []
-    if type(json_list) == dict:
+    if type(json_list) is dict:
         for key in json_list:
             if key.upper() == "ID":
                 update_row_from_id(table, json_list[key], json_list)
-                result = get_row_by_id(json_list[key])
+                result = get_row_by_id(table, json_list[key])
                 results.append(result)
     else:
         for entity in json_list:
