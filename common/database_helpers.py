@@ -7,31 +7,6 @@ from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
 
 
-def get_record_by_id(table, id):
-    """
-    Gets a row from the dummy data credential database
-    :param table: the table class mapping
-    :param id: the id to find
-    :return: the row from the table
-    """
-    session = get_db_session()
-    result = session.query(table).filter(table.ID == id).first()
-    if result is not None:
-        session.close()
-        return result
-    session.close()
-    raise MissingRecordError()
-
-
-def get_db_session():
-    """
-    Gets a session in the dummy data database, currently used for credentials until Authentication is understood
-    :return: the dummy data DB session
-    """
-    engine = create_engine("mysql+pymysql://root:root@localhost:3306/icatdummy")
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
 
 
 def get_icat_db_session():
