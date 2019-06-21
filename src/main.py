@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
+from common.logger_setup import setup_logger
 from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.applications_endpoints import *
 from src.resources.entities.datacollection_datafiles_endpoints import *
@@ -44,6 +45,8 @@ from src.resources.entities.users_endpoints import *
 app = Flask(__name__)
 api = Api(app)
 
+
+setup_logger()
 
 api.add_resource(Applications, "/applications")
 api.add_resource(ApplicationsWithID, "/applications/<string:id>")

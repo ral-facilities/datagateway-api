@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 
 from common.database_helpers import get_row_by_id, delete_row_by_id, update_row_from_id, get_rows_by_filter, \
-    get_filtered_row_count, get_first_filtered_row, create_row_from_json
+    get_filtered_row_count, get_first_filtered_row, create_row_from_json, patch_entities
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import FACILITY
 
@@ -22,7 +22,7 @@ class Facilities(Resource):
     @requires_session_id
     @queries_records
     def patch(self):
-        pass
+        return list(map(lambda x: x.to_dict(), patch_entities(FACILITY, request.json))), 200
 
 
 class FacilitiesWithID(Resource):

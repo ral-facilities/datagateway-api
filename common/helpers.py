@@ -1,4 +1,5 @@
 import json
+import logging
 from functools import wraps
 
 from flask import request
@@ -6,9 +7,11 @@ from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
 from common.database_helpers import get_icat_db_session
-from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError
+from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError
 from common.models.db_models import SESSION
 
+
+log = logging.getLogger()
 
 def requires_session_id(method):
     """
@@ -16,20 +19,25 @@ def requires_session_id(method):
     :param method: The method for the endpoint
     :returns a 403, "Forbidden" if a valid session_id is not provided with the request
     """
-
+    log.info("")
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
+        log.info(" Authenticating consumer")
         try:
             session = get_icat_db_session()
             query = session.query(SESSION).filter(
                 SESSION.ID == get_session_id_from_auth_header()).first()
             if query is not None:
+                log.info(" Closing DB session")
+                session.close()
+                log.info(" Consumer authenticated")
                 return method(*args, **kwargs)
             else:
+                log.info(" Closing DB session")
+                session.close()
                 return "Forbidden", 403
         except AuthenticationError:
             return "Forbidden", 403
-
     return wrapper_requires_session
 
 
@@ -44,15 +52,23 @@ def queries_records(method):
     def wrapper_gets_records(*args, **kwargs):
         try:
             return method(*args, **kwargs)
-        except MissingRecordError:
+        except MissingRecordError as e:
+            log.error(e)
             return "No such record in table", 404
-        except BadFilterError:
+        except BadFilterError as e:
+            log.error(e)
             return "Invalid filter requested", 400
-        except ValueError:
+        except ValueError as e:
+            log.error(e)
             return "Bad request", 400
-        except TypeError:
+        except TypeError as e:
+            log.error(e)
             return "Bad request", 400
         except IntegrityError as e:
+            log.error(e)
+            return "Bad request", 400
+        except BadRequestError as e:
+            log.error(e)
             return "Bad request", 400
 
     return wrapper_gets_records
@@ -63,6 +79,7 @@ def get_session_id_from_auth_header():
     Gets the sessionID from the Authorization header of a request
     :return: String: SessionID
     """
+    log.info(" Getting session Id from auth header")
     parser = reqparse.RequestParser()
     parser.add_argument("Authorization", location="headers")
     args = parser.parse_args()
@@ -88,5 +105,6 @@ def is_valid_json(string):
 
 
 def get_filters_from_query_string():
+    log.info( "Getting filters from query string")
     filters = request.args.getlist("filter")
     return list(map(lambda x: json.loads(x), filters))
