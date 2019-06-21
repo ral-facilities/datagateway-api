@@ -87,7 +87,7 @@ def get_session_id_from_auth_header():
     if auth_header == "":
         return ""
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
-        raise AuthenticationError()
+        raise AuthenticationError(f" Could not authenticate consumer with auth header {auth_header}")
     return auth_header[1]
 
 

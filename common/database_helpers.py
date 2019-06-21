@@ -71,7 +71,7 @@ def get_row_by_id(table, id):
         session.close()
         return result
     session.close()
-    raise MissingRecordError()
+    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
 
 
 def delete_row_by_id(table, id):
@@ -90,7 +90,7 @@ def delete_row_by_id(table, id):
         session.close()
         return
     session.close()
-    raise MissingRecordError()
+    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
 
 
 def update_row_from_id(table, id, new_values):
@@ -110,7 +110,7 @@ def update_row_from_id(table, id, new_values):
         session.close()
         return
     session.close()
-    raise MissingRecordError()
+    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
 
 
 def get_rows_by_filter(table, filters):
@@ -140,14 +140,14 @@ def get_rows_by_filter(table, filters):
                 elif direction.upper() == "DESC":
                     base_query = base_query.from_self().order_by(desc(getattr(table, field)))
                 else:
-                    raise BadFilterError()
+                    raise BadFilterError(f" Bad filter given, filter: {filter}")
             else:
                 if direction.upper() == "ASC":
                     base_query = base_query.order_by(asc(getattr(table, field)))
                 elif direction.upper() == "DESC":
                     base_query = base_query.order_by(desc(getattr(table, field)))
                 else:
-                    raise BadFilterError()
+                    raise BadFilterError(f" Bad filter given, filter: {filter}")
         elif list(filter)[0].lower() == "skip":
             for key in filter:
                 skip = filter[key]
@@ -160,7 +160,7 @@ def get_rows_by_filter(table, filters):
                 limit = filter[key]
             base_query = base_query.limit(limit)
         else:
-            raise BadFilterError()
+            raise BadFilterError(f"Invalid filters provided recieved {filters}")
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), base_query.all()))
@@ -211,6 +211,6 @@ def patch_entities(table, json_list):
                     result = get_row_by_id(table, entity[key])
                     results.append(result)
     if len(results) == 0:
-        raise BadRequestError()
+        raise BadRequestError(f" Bad request made, request: {json_list}")
 
     return results
