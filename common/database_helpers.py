@@ -120,9 +120,9 @@ def get_rows_by_filter(table, filters):
     :param filters: The filters to be applied
     :return: A list of the rows returned in dictionary form
     """
+    is_limited = False
     session = get_icat_db_session()
     base_query = session.query(table)
-    print(filters)
     for filter in filters:
         if list(filter)[0].lower() == "where":
             for key in filter:
@@ -133,12 +133,21 @@ def get_rows_by_filter(table, filters):
         elif list(filter)[0].lower() == "order":
             field = filter["order"].split(" ")[0]
             direction = filter["order"].split(" ")[1]
-            if direction.upper() == "ASC":
-                base_query = base_query.order_by(asc(getattr(table ,field)))
-            elif direction.upper() == "DESC":
-                base_query = base_query.order_by(desc(getattr(table ,field)))
+
+            if is_limited:
+                if direction.upper() == "ASC":
+                    base_query = base_query.from_self().order_by(asc(getattr(table, field)))
+                elif direction.upper() == "DESC":
+                    base_query = base_query.from_self().order_by(desc(getattr(table, field)))
+                else:
+                    raise BadFilterError()
             else:
-                raise BadFilterError()
+                if direction.upper() == "ASC":
+                    base_query = base_query.order_by(asc(getattr(table, field)))
+                elif direction.upper() == "DESC":
+                    base_query = base_query.order_by(desc(getattr(table, field)))
+                else:
+                    raise BadFilterError()
         elif list(filter)[0].lower() == "skip":
             for key in filter:
                 skip = filter[key]
@@ -146,6 +155,7 @@ def get_rows_by_filter(table, filters):
         elif list(filter)[0].lower() == "include":
             base_query.include()  # do something probably not .include
         elif list(filter)[0].lower() == "limit":
+            is_limited = True
             for key in filter:
                 limit = filter[key]
             base_query = base_query.limit(limit)
