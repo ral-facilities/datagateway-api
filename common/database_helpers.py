@@ -129,11 +129,13 @@ def get_rows_by_filter(table, filters):
                 where_part = filter[key]
                 for k in where_part:
                     column = getattr(table, k.upper())
-                    base_query = base_query.filter(column.in_([where_part[k]]))
-        elif list(filter)[0].lower() == "order":
-            field = filter["order"].split(" ")[0]
-            direction = filter["order"].split(" ")[1]
+                    base_query = base_query.filter(column.in_([where_part[k]]), column.in_([where_part[k]]))
 
+        elif list(filter)[0].lower() == "order":
+            for key in filter:
+                field = filter[key].split(" ")[0]
+                direction = filter[key].split(" ")[1]
+                # Limit then order, or order then limit
             if is_limited:
                 if direction.upper() == "ASC":
                     base_query = base_query.from_self().order_by(asc(getattr(table, field)))
@@ -148,19 +150,21 @@ def get_rows_by_filter(table, filters):
                     base_query = base_query.order_by(desc(getattr(table, field)))
                 else:
                     raise BadFilterError(f" Bad filter given, filter: {filter}")
+
         elif list(filter)[0].lower() == "skip":
             for key in filter:
                 skip = filter[key]
             base_query = base_query.offset(skip)
-        elif list(filter)[0].lower() == "include":
-            base_query.include()  # do something probably not .include
+
         elif list(filter)[0].lower() == "limit":
             is_limited = True
             for key in filter:
                 limit = filter[key]
             base_query = base_query.limit(limit)
+
         else:
             raise BadFilterError(f"Invalid filters provided recieved {filters}")
+
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), base_query.all()))

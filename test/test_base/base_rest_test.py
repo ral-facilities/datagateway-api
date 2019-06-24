@@ -28,7 +28,7 @@ class RestTestCase(TestCase):
 
     def expect_status_code(self, expected_status_code, response):
         """
-        Asserts whethere the returned status code is equal to the expected
+        Asserts whether the returned status code is equal to the expected
         :param expected_status_code: int: The status code that is expected
         :param response: The response to be checked
         """

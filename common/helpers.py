@@ -33,7 +33,7 @@ def requires_session_id(method):
                 log.info(" Consumer authenticated")
                 return method(*args, **kwargs)
             else:
-                log.info(" Closing DB session")
+                log.info(" Could not authenticate consumer, closing DB session")
                 session.close()
                 return "Forbidden", 403
         except AuthenticationError:
