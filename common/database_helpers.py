@@ -116,7 +116,11 @@ def update_row_from_id(table, id, new_values):
 def get_rows_by_filter(table, filters):
     session = get_icat_db_session()
     base_query = session.query(table)
+
+
     for filter in filters:
+        if len(filter) == 0:
+            raise BadFilterError()
         if list(filter)[0].lower() == "where":
             for key in filter:
                 where_part = filter[key]
