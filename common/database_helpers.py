@@ -117,7 +117,9 @@ def get_rows_by_filter(table, filters):
     session = get_icat_db_session()
     base_query = session.query(table)
     for filter in filters:
-        if list(filter)[0].lower() == "where":
+        if len(filter) == 0:
+            pass
+        elif list(filter)[0].lower() == "where":
             for key in filter:
                 where_part = filter[key]
                 for k in where_part:
