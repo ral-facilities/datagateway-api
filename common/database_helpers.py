@@ -118,8 +118,8 @@ def get_rows_by_filter(table, filters):
     base_query = session.query(table)
     for filter in filters:
         if len(filter) == 0:
-            raise BadFilterError()
-        if list(filter)[0].lower() == "where":
+            pass
+        elif list(filter)[0].lower() == "where":
             for key in filter:
                 where_part = filter[key]
                 for k in where_part:
