@@ -170,21 +170,36 @@ def get_rows_by_filter(table, filters):
             raise BadFilterError(f"Invalid filters provided received {filters}")
 
     results = base_query.all()
+    # check if include was provided, then add included results
     if includes_relation:
-        included_relationships = []
-        included_included_relationships = []
         for filter in filters:
             if list(filter)[0] == "include":
-                if type(filter["include"]) == str:
-                included_relationships.append(filter["include"])
-                elif type(filter["include"]) == list:
-                    included_relationships.extend(filter["include"])
-                elif type(filter["include"]) == dict:
-                    for key in filter["include"]:
+                results = get_related_entities(filter["include"], results)
+    log.info(" Closing DB session")
+    session.close()
+    return list(map(lambda x: x.to_dict(), results))
+
+
+def get_related_entities(include_filters, results):
+    """
+    Given a set of results from a query and an include filter of the form str, dict or list append to the results
+    related entities
+    :param include_filters: the include filter: str, dict or list
+    :param results: list of rows from a query
+    :return: updated list of rows with related entities
+    """
+        included_relationships = []
+        included_included_relationships = []
+    if type(include_filters) == str:
+        included_relationships.append(include_filters)
+    elif type(include_filters) == list:
+        included_relationships.extend(include_filters)
+    elif type(include_filters) == dict:
+        for key in include_filters:
                         included_relationships.append(key)
-                        included_included_relationships.append(filter["include"][key])
+            included_included_relationships.append(include_filters[key])
                 else:
-                    raise BadFilterError(f" Invalid format of included relationships")
+        raise BadFilterError(" Invalid format of included relationships")
 
         included_results = []
         included_included_results = []
@@ -206,9 +221,7 @@ def get_rows_by_filter(table, filters):
                     included_included_results.append(getattr(row, relation.upper()))
         results.extend(included_results)
         results.extend(included_included_results)
-    log.info(" Closing DB session")
-    session.close()
-    return list(map(lambda x: x.to_dict(), results))
+        return results
 
 
 def get_filtered_row_count(table, filters):
