@@ -167,18 +167,27 @@ def get_rows_by_filter(table, filters):
             includes_relation = True
 
         else:
-            raise BadFilterError(f"Invalid filters provided recieved {filters}")
+            raise BadFilterError(f"Invalid filters provided received {filters}")
 
     results = base_query.all()
     if includes_relation:
         included_relationships = []
+        included_included_relationships = []
         for filter in filters:
             if list(filter)[0] == "include":
                 if type(filter["include"]) == str:
                 included_relationships.append(filter["include"])
-                if type(filter["include"]) == list:
+                elif type(filter["include"]) == list:
                     included_relationships.extend(filter["include"])
+                elif type(filter["include"]) == dict:
+                    for key in filter["include"]:
+                        included_relationships.append(key)
+                        included_included_relationships.append(filter["include"][key])
+                else:
+                    raise BadFilterError(f" Invalid format of included relationships")
+
         included_results = []
+        included_included_results = []
         for row in results:
             for relation in included_relationships:
                 # Here we check if the included result returns a list of children and if so iterate through them and
@@ -188,9 +197,15 @@ def get_rows_by_filter(table, filters):
                         included_results.append(i)
                 else:
                     included_results.append(getattr(row, relation.upper()))
+        for row in included_results:
+            for relation in included_included_relationships:
+                if isinstance(getattr(row, relation.upper()), InstrumentedList):
+                    for i in getattr(row, relation.upper()):
+                        included_included_results.append(i)
+                else:
+                    included_included_results.append(getattr(row, relation.upper()))
         results.extend(included_results)
-
-
+        results.extend(included_included_results)
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), results))
