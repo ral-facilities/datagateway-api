@@ -212,13 +212,13 @@ def get_related_entities(include_filters, results):
                         included_results.append(i)
                 else:
                     included_results.append(getattr(row, relation.upper()))
-        for row in included_results:
+        for included_row in included_results:
             for relation in included_included_relationships:
-                if isinstance(getattr(row, relation.upper()), InstrumentedList):
-                    for i in getattr(row, relation.upper()):
+                if isinstance(getattr(included_row, relation.upper()), InstrumentedList):
+                    for i in getattr(included_row, relation.upper()):
                         included_included_results.append(i)
                 else:
-                    included_included_results.append(getattr(row, relation.upper()))
+                    included_included_results.append(getattr(included_row, relation.upper()))
         results.extend(included_results)
         results.extend(included_included_results)
         return results
