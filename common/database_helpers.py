@@ -174,13 +174,16 @@ def get_rows_by_filter(table, filters):
         included_relationships = []
         for filter in filters:
             if list(filter)[0] == "include":
+                if type(filter["include"]) == str:
                 included_relationships.append(filter["include"])
+                if type(filter["include"]) == list:
+                    included_relationships.extend(filter["include"])
         included_results = []
         for row in results:
             for relation in included_relationships:
                 # Here we check if the included result returns a list of children and if so iterate through them and
                 # add them to the results.
-                if isinstance(getattr(row, relation.upper()),InstrumentedList):
+                if isinstance(getattr(row, relation.upper()), InstrumentedList):
                     for i in getattr(row, relation.upper()):
                         included_results.append(i)
                 else:
