@@ -125,18 +125,18 @@ def get_rows_by_filter(table, filters):
     session = get_icat_db_session()
     base_query = session.query(table)
     includes_relation = False
-    for filter in filters:
-        if list(filter)[0].lower() == "where":
-            for key in filter:
-                where_part = filter[key]
+    for query_filter in filters:
+        if list(query_filter)[0].lower() == "where":
+            for key in query_filter:
+                where_part = query_filter[key]
                 for k in where_part:
                     column = getattr(table, k.upper())
                     base_query = base_query.filter(column.in_([where_part[k]]), column.in_([where_part[k]]))
 
-        elif list(filter)[0].lower() == "order":
-            for key in filter:
-                field = filter[key].split(" ")[0]
-                direction = filter[key].split(" ")[1]
+        elif list(query_filter)[0].lower() == "order":
+            for key in query_filter:
+                field = query_filter[key].split(" ")[0]
+                direction = query_filter[key].split(" ")[1]
                 # Limit then order, or order then limit
             if is_limited:
                 if direction.upper() == "ASC":
@@ -144,26 +144,26 @@ def get_rows_by_filter(table, filters):
                 elif direction.upper() == "DESC":
                     base_query = base_query.from_self().order_by(desc(getattr(table, field)))
                 else:
-                    raise BadFilterError(f" Bad filter given, filter: {filter}")
+                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
             else:
                 if direction.upper() == "ASC":
                     base_query = base_query.order_by(asc(getattr(table, field)))
                 elif direction.upper() == "DESC":
                     base_query = base_query.order_by(desc(getattr(table, field)))
                 else:
-                    raise BadFilterError(f" Bad filter given, filter: {filter}")
+                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
 
-        elif list(filter)[0].lower() == "skip":
-            for key in filter:
-                skip = filter[key]
+        elif list(query_filter)[0].lower() == "skip":
+            for key in query_filter:
+                skip = query_filter[key]
             base_query = base_query.offset(skip)
 
-        elif list(filter)[0].lower() == "limit":
+        elif list(query_filter)[0].lower() == "limit":
             is_limited = True
-            for key in filter:
-                limit = filter[key]
-            base_query = base_query.limit(limit)
-        elif list(filter)[0].lower() == "include":
+            for key in query_filter:
+                query_limit = query_filter[key]
+            base_query = base_query.limit(query_limit)
+        elif list(query_filter)[0].lower() == "include":
             includes_relation = True
 
         else:
@@ -172,9 +172,9 @@ def get_rows_by_filter(table, filters):
     results = base_query.all()
     # check if include was provided, then add included results
     if includes_relation:
-        for filter in filters:
-            if list(filter)[0] == "include":
-                results = get_related_entities(filter["include"], results)
+        for query_filter in filters:
+            if list(query_filter)[0] == "include":
+                results = get_related_entities(query_filter["include"], results)
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), results))
@@ -188,40 +188,40 @@ def get_related_entities(include_filters, results):
     :param results: list of rows from a query
     :return: updated list of rows with related entities
     """
-        included_relationships = []
-        included_included_relationships = []
+    included_relationships = []
+    included_included_relationships = []
     if type(include_filters) == str:
         included_relationships.append(include_filters)
     elif type(include_filters) == list:
         included_relationships.extend(include_filters)
     elif type(include_filters) == dict:
         for key in include_filters:
-                        included_relationships.append(key)
+            included_relationships.append(key)
             included_included_relationships.append(include_filters[key])
-                else:
+    else:
         raise BadFilterError(" Invalid format of included relationships")
 
-        included_results = []
-        included_included_results = []
-        for row in results:
-            for relation in included_relationships:
-                # Here we check if the included result returns a list of children and if so iterate through them and
-                # add them to the results.
-                if isinstance(getattr(row, relation.upper()), InstrumentedList):
-                    for i in getattr(row, relation.upper()):
-                        included_results.append(i)
-                else:
-                    included_results.append(getattr(row, relation.upper()))
-        for included_row in included_results:
-            for relation in included_included_relationships:
-                if isinstance(getattr(included_row, relation.upper()), InstrumentedList):
-                    for i in getattr(included_row, relation.upper()):
-                        included_included_results.append(i)
-                else:
-                    included_included_results.append(getattr(included_row, relation.upper()))
-        results.extend(included_results)
-        results.extend(included_included_results)
-        return results
+    included_results = []
+    included_included_results = []
+    for row in results:
+        for relation in included_relationships:
+            # Here we check if the included result returns a list of children and if so iterate through them and
+            # add them to the results.
+            if isinstance(getattr(row, relation.upper()), InstrumentedList):
+                for i in getattr(row, relation.upper()):
+                    included_results.append(i)
+            else:
+                included_results.append(getattr(row, relation.upper()))
+    for included_row in included_results:
+        for relation in included_included_relationships:
+            if isinstance(getattr(included_row, relation.upper()), InstrumentedList):
+                for i in getattr(included_row, relation.upper()):
+                    included_included_results.append(i)
+            else:
+                included_included_results.append(getattr(included_row, relation.upper()))
+    results.extend(included_results)
+    results.extend(included_included_results)
+    return results
 
 
 def get_filtered_row_count(table, filters):
