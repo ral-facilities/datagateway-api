@@ -22,6 +22,13 @@ class EntityHelper(object):
         return dictionary
 
     def to_nested_dict(self, included_relations):
+        """
+        Given related models return a nested dictionary with the child or parent rows nested.
+
+
+        :param included_relations: string/list/dict - The related models to include.
+        :return: A nested dictionary with the included models
+        """
         dictionary = {}
         for column in self.__table__.columns:
             dictionary[column.name] = str(getattr(self, column.name))
@@ -30,7 +37,7 @@ class EntityHelper(object):
                 if attr in included_relations:
                     relation = getattr(self, attr)
                     if isinstance(relation, EntityHelper):
-                        dictionary[attr + "_ID"] = relation.to_dict()  # if this was .to_nested_dict() it will make dictionaries all the way down
+                        dictionary[attr + "_ID"] = relation.to_dict()
                     elif isinstance(relation, InstrumentedList):  # Instrumented list is when the inclusion is a child
                         dictionary[attr + "_ID"] = []
                         for entity in getattr(self, attr):
