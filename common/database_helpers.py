@@ -172,9 +172,12 @@ def get_rows_by_filter(table, filters):
     results = base_query.all()
     # check if include was provided, then add included results
     if includes_relation:
+        log.info(" Closing DB session")
         for query_filter in filters:
             if list(query_filter)[0] == "include":
-                results = get_related_entities(query_filter["include"], results)
+                return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+
+
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), results))
