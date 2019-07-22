@@ -1,6 +1,7 @@
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.collections import InstrumentedList
 
 Base = declarative_base()
 
@@ -18,6 +19,31 @@ class EntityHelper(object):
         dictionary = {}
         for column in self.__table__.columns:
             dictionary[column.name] = str(getattr(self, column.name))
+        return dictionary
+
+    def to_nested_dict(self, included_relations):
+        dictionary = {}
+        for column in self.__table__.columns:
+            dictionary[column.name] = str(getattr(self, column.name))
+        if type(included_relations) is not dict:
+            for attr in dir(self):
+                if attr in included_relations:
+                    relation = getattr(self, attr)
+                    if isinstance(relation, EntityHelper):
+                        dictionary[attr + "_ID"] = relation.to_dict()  # if this was .to_nested_dict() it will make dictionaries all the way down
+                    elif isinstance(relation, InstrumentedList):  # Instrumented list is when the inclusion is a child
+                        dictionary[attr + "_ID"] = []
+                        for entity in getattr(self, attr):
+                            dictionary[attr + "_ID"].append(entity.to_dict())
+        else:
+            for attr in dir(self):
+                print(included_relations.keys())
+                print(included_relations.values())
+                if attr == list(included_relations.keys())[0]:
+                    dictionary[attr + "_ID"] = getattr(self, attr).to_nested_dict(list(included_relations.values()))
+
+        dictionary = {k: v for k, v in dictionary.items() if
+                          "ID" in k or k != "MOD_ID" or k != "CREATE_ID" or k != "ID"}
         return dictionary
 
     def update_from_dict(self, dictionary):
