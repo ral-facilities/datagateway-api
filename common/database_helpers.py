@@ -42,17 +42,31 @@ def get_icat_db_session():
         log.info(f" Closing DB session")
         self.session.close()
 
-def insert_row_into_table(row):
+class CreateQuery(Query):
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
     """
-    Insert the given row into its table
-    :param row: The row to be inserted
+        Determines if the row is in dictionary form or a row object and then commits it to the table
+
     """
-    log.info(f" Inserting row into table {row.__tablename__}")
-    session = get_icat_db_session()
-    session.add(row)
-    session.commit()
-    log.info(" Closing DB session")
-    session.close()
+        log.info(f" Inserting row into {self.table.__tablename__}")
+        if type(self.row) is not dict:
+            record = self.row
+        else:
+            print("here")
+            record = self.table()
+            record.update_from_dict(self.row)
+            record.CREATE_TIME = datetime.datetime.now()
+            record.MOD_TIME = datetime.datetime.now()
+            record.CREATE_ID = "user"  # These will need changing
+            record.MOD_ID = "user"
+        self.session.add(record)
+        self.commit_changes()
+
+
 
 
 def create_row_from_json(table, json):
