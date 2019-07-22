@@ -133,7 +133,7 @@ def get_rows_by_filter(table, filters):
                 where_part = query_filter[key]
                 for k in where_part:
                     column = getattr(table, k.upper())
-                    base_query = base_query.filter(column.in_([where_part[k]]), column.in_([where_part[k]]))
+                    base_query = base_query.filter(column.in_([where_part[k]]))
         elif list(query_filter)[0].lower() == "order":
             for key in query_filter:
                 field = query_filter[key].split(" ")[0]
