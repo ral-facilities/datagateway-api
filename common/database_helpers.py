@@ -1,5 +1,6 @@
 import datetime
 import logging
+from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
@@ -11,6 +12,17 @@ from common.exceptions import MissingRecordError, BadFilterError, BadRequestErro
 log = logging.getLogger()
 
 
+class Query(ABC):
+    @abstractmethod
+    def __init__(self, table):
+        self.session = self.get_icat_db_session()
+        self.table = table
+
+    @abstractmethod
+    def execute_query(self):
+        pass
+
+    @staticmethod
 def get_icat_db_session():
     """
     Gets a session and connects with the ICAT database
@@ -19,9 +31,16 @@ def get_icat_db_session():
     log.info(" Getting ICAT DB session")
     engine = create_engine(Constants.DATABASE_URL)
     Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
+        return Session()
 
+    def commit_changes(self):
+        """
+        Commits all changes made to the database and closes the active session
+        """
+        log.info(f" Committing changes to {self.table}")
+        self.session.commit()
+        log.info(f" Closing DB session")
+        self.session.close()
 
 def insert_row_into_table(row):
     """
