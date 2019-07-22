@@ -1,10 +1,10 @@
 import requests
 
-from common.database_helpers import insert_row_into_table, delete_row_by_id
+from common.database_helpers import delete_row_by_id, EntityManager
 from common.exceptions import MissingRecordError
 from common.models.db_models import DATAFILE
-from test.test_base.constants import GOOD_CREDENTIALS_HEADER, BAD_CREDENTIALS_HEADER
 from test.test_base.base_rest_test import RestTestCase
+from test.test_base.constants import GOOD_CREDENTIALS_HEADER, BAD_CREDENTIALS_HEADER
 
 url_with_file_existing = "http://localhost:5000/datafiles/-50"
 url_without_file_existing = "http://localhost:5000/datafiles/0"
@@ -16,9 +16,10 @@ class TestDatafiles(RestTestCase):
 
     def setUp(self):
         super().setUp()
-        insert_row_into_table(DATAFILE(ID=-50, MOD_ID="modID", CREATE_ID="create_id", NAME="test_name",
-                                            MOD_TIME="2019-05-05 11:11:11", CREATE_TIME="2019-04-06 12:12:12",
-                                            DATASET_ID=1))
+        EntityManager.insert_row_into_table(DATAFILE, DATAFILE(ID=-50, MOD_ID="modID", CREATE_ID="create_id",
+                                                        NAME="test_name", MOD_TIME="2019-05-05 11:11:11",
+                                                        CREATE_TIME="2019-04-06 12:12:12",DATASET_ID=1))
+
 
     def tearDown(self):
         super().tearDown()

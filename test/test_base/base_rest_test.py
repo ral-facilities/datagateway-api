@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from common.database_helpers import insert_row_into_table, delete_row_by_id
+from common.database_helpers import delete_row_by_id, EntityManager
 from common.exceptions import MissingRecordError
 from common.helpers import is_valid_json
 from common.models.db_models import SESSION
@@ -15,7 +15,7 @@ class RestTestCase(TestCase):
         """
         Inserts a session for testing into the user_sessions table
         """
-        insert_row_into_table(SESSION(ID="TestSession"))
+        EntityManager.insert_row_into_table(SESSION, SESSION(ID="TestSession"))
 
     def tearDown(self):
         """
