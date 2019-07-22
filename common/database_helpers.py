@@ -69,12 +69,31 @@ class CreateQuery(Query):
 
 
 
+class EntityManager(object):
+    @staticmethod
 def create_row_from_json(table, json):
     """
-    Given a json dictionary create a row in the table from it
-    :param table: the table for the row to be inserted into
-    :param json: the dictionary containing the values
-    :return: nothing atm
+        Given a row in the form a dictionary, construct a CreateQuery and execute it
+
+        :param table: - the table for the query to be run against
+        :param json: - the row in dictionary form to be used in the query
+        :return:
+        """
+        create_query = CreateQuery(table, json)
+        create_query.execute_query()
+
+    @staticmethod
+    def insert_row_into_table(table, row):
+        """
+        Given a row and a table, construct a CreateQuery and execute it
+
+        :param table: - the table for the query to be run against
+        :param row:  - the row for the query to use
+        """
+        create_query = CreateQuery(table, row)
+        create_query.execute_query()
+
+
     """
     log.info(f" Creating row from json into table {table.__tablename__}")
     session = get_icat_db_session()
