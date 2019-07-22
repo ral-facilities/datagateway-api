@@ -180,50 +180,6 @@ def get_rows_by_filter(table, filters):
     return list(map(lambda x: x.to_dict(), results))
 
 
-def get_related_entities(include_filters, results):
-    """
-    Given a set of results from a query and an include filter of the form str, dict or list append to the results
-    related entities
-    :param include_filters: the include filter: str, dict or list
-    :param results: list of rows from a query
-    :return: updated list of rows with related entities
-    """
-    included_relationships = []
-    included_included_relationships = []
-    if type(include_filters) == str:
-        included_relationships.append(include_filters)
-    elif type(include_filters) == list:
-        included_relationships.extend(include_filters)
-    elif type(include_filters) == dict:
-        for key in include_filters:
-            included_relationships.append(key)
-            included_included_relationships.append(include_filters[key])
-    else:
-        raise BadFilterError(" Invalid format of included relationships")
-
-    included_results = []
-    included_included_results = []
-    for row in results:
-        for relation in included_relationships:
-            # Here we check if the included result returns a list of children and if so iterate through them and
-            # add them to the results.
-            if isinstance(getattr(row, relation.upper()), InstrumentedList):
-                for i in getattr(row, relation.upper()):
-                    included_results.append(i)
-            else:
-                included_results.append(getattr(row, relation.upper()))
-    for included_row in included_results:
-        for relation in included_included_relationships:
-            if isinstance(getattr(included_row, relation.upper()), InstrumentedList):
-                for i in getattr(included_row, relation.upper()):
-                    included_included_results.append(i)
-            else:
-                included_included_results.append(getattr(included_row, relation.upper()))
-    results.extend(included_results)
-    results.extend(included_included_results)
-    return results
-
-
 def get_filtered_row_count(table, filters):
     """
     returns the count of the rows that match a given filter in a given table
