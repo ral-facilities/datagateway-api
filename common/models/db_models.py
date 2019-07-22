@@ -37,8 +37,6 @@ class EntityHelper(object):
                             dictionary[attr + "_ID"].append(entity.to_dict())
         else:
             for attr in dir(self):
-                print(included_relations.keys())
-                print(included_relations.values())
                 if attr == list(included_relations.keys())[0]:
                     dictionary[attr + "_ID"] = getattr(self, attr).to_nested_dict(list(included_relations.values()))
 
