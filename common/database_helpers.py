@@ -9,13 +9,13 @@ from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
 
 log = logging.getLogger()
-
+# The session used throughout the database logic
 _session = None
 
 
 def get_icat_db_session():
     """
-    Gets a session and connects with the ICAT database
+    Checks if there is a current session active and returns the session
     :return: the session object
     """
     global _session
@@ -52,6 +52,11 @@ class QueryFilter(ABC):
 
 class WhereFilter(QueryFilter):
     def __init__(self, field, value):
+        """
+
+        :param field: Str - The field name to filter
+        :param value: The value to match
+        """
         self.field = field
         self.value = value
 
@@ -61,8 +66,8 @@ class WhereFilter(QueryFilter):
 
         :param query: Query Object - The query to apply the filter to.
         """
-        query.base_query = query.base_query.filter(getattr(query.table, self.field.upper()) == self.value)
-        return
+        query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
+
 
 
 class OrderFilter(QueryFilter):
@@ -153,7 +158,6 @@ class CreateQuery(Query):
         if type(self.row) is not dict:
             record = self.row
         else:
-            print("here")
             record = self.table()
             record.update_from_dict(self.row)
             record.CREATE_TIME = datetime.datetime.now()
@@ -221,6 +225,7 @@ def create_row_from_json(table, json):
 
     @staticmethod
 def delete_row_by_id(table, id):
+        log.info(f" delete_row_by_id")
         row = EntityManager.get_row_by_id(table, id)
         delete_query = DeleteQuery(table, row)
         delete_query.execute_query()
@@ -254,7 +259,7 @@ def get_filtered_row_count(table, filters):
     :return: int: the count of the rows
     """
     log.info(f" Getting filtered row count for {table.__tablename__}")
-    return len(get_rows_by_filter(table, filters))
+    return len(EntityManager.get_rows_by_filter(table, filters))
 
 
 def get_first_filtered_row(table, filters):
@@ -265,7 +270,7 @@ def get_first_filtered_row(table, filters):
     :return: the first row matching the filter
     """
     log.info(f" Getting first filtered row for {table.__tablename__}")
-    return get_rows_by_filter(table, filters)[0]
+    return EntityManager.get_rows_by_filter(table, filters)[0]
 
 
 def patch_entities(table, json_list):
