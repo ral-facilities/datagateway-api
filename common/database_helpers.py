@@ -62,6 +62,17 @@ class OrderFilter(QueryFilter):
             query.base_query = query.base_query.order_by(desc(getattr(query.table, self.field.upper())))
         else:
             raise BadFilterError(f" Bad filter given: {self.direction}")
+
+
+class LimitFilter(QueryFilter):
+    def __init__(self, limit_value):
+        self.limit_value = limit_value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.limit(self.limit_value)
+        query.is_limited = True
+
+
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
