@@ -171,56 +171,14 @@ def create_row_from_json(table, json):
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
 
-    """
-    log.info(f" Creating row from json into table {table.__tablename__}")
-    session = get_icat_db_session()
-    record = table()
-    record.update_from_dict(json)
-    record.CREATE_TIME = datetime.datetime.now()  # These should probably change
-    record.CREATE_ID = "user"
-    record.MOD_TIME = datetime.datetime.now()
-    record.MOD_ID = "user"
-    session.add(record)
-    session.commit()
-    log.info(" Closing db session")
-    session.close()
-
-
-def get_row_by_id(table, id):
-    """
-    Gets the row matching the given ID from the given table, raises MissingRecordError if it can not be found
-    :param table: the table to be searched
-    :param id: the id of the record to find
-    :return: the record retrieved
-    """
-    log.info(f" Querying {table.__tablename__} for record with ID: {id}")
-    session = get_icat_db_session()
-    result = session.query(table).filter(table.ID == id).first()
-    if result is not None:
-        log.info(" Record found, closing DB session")
-        session.close()
-        return result
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
-
-
+    @staticmethod
 def delete_row_by_id(table, id):
-    """
-    Deletes the row matching the given ID from the given table, raises MissingRecordError if it can not be found
-    :param table: the table to be searched
-    :param id: the id of the record to delete
-    """
-    log.info(f" Deleting row from {table.__tablename__} with ID: {id}")
-    session = get_icat_db_session()
-    result = get_row_by_id(table, id)
-    if result is not None:
-        session.delete(result)
-        log.info(" record deleted, closing DB session")
-        session.commit()
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+        read_query = ReadQuery(table)
+        where_filter = WhereFilter("ID", id)
+        where_filter.apply_filter(read_query)
+        row = read_query.get_single_result()
+        delete_query = DeleteQuery(table, row)
+        delete_query.execute_query()
 
 
 def update_row_from_id(table, id, new_values):
