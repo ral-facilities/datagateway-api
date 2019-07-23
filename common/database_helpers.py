@@ -135,6 +135,13 @@ def create_row_from_json(table, json):
         create_query = CreateQuery(table, row)
         create_query.execute_query()
 
+    @staticmethod
+    def get_row_by_id(table, id):
+        log.info(f" Querying {table.__tablename__} for record with ID: {id}")
+        read_query = ReadQuery(table)
+        where_filter = WhereFilter("ID", id)
+        where_filter.apply_filter(read_query)
+        return read_query.get_single_result()
 
     """
     log.info(f" Creating row from json into table {table.__tablename__}")
