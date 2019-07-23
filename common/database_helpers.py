@@ -183,32 +183,15 @@ def create_row_from_json(table, json):
 
     @staticmethod
 def delete_row_by_id(table, id):
-        read_query = ReadQuery(table)
-        where_filter = WhereFilter("ID", id)
-        where_filter.apply_filter(read_query)
-        row = read_query.get_single_result()
+        row = EntityManager.get_row_by_id(table, id)
         delete_query = DeleteQuery(table, row)
         delete_query.execute_query()
 
-
+    @staticmethod
 def update_row_from_id(table, id, new_values):
-    """
-    Updates a record in a table
-    :param table: The table the record is in
-    :param id: The id of the record
-    :param new_values: A JSON string containing what columns are to be updated
-    """
-    log.info(f" Updating row with ID: {id} in {table.__tablename__}")
-    session = get_icat_db_session()
-    record = session.query(table).filter(table.ID == id).first()
-    if record is not None:
-        record.update_from_dict(new_values)
-        session.commit()
-        log.info(" Record updated, closing DB session")
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+        row = EntityManager.get_row_by_id(table, id)
+        update_query = UpdateQuery(table, row, new_values)
+        update_query.execute_query()
 
 
 def get_rows_by_filter(table, filters):
