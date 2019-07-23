@@ -108,6 +108,15 @@ class SkipFilter(QueryFilter):
     def apply_filter(self, query):
         query.base_query = query.base_query.offset(self.skip_value)
 
+
+class IncludeFilter(QueryFilter):
+    def __init__(self, included_filters):
+        self.included_filters = included_filters
+
+    def apply_filter(self, query):
+        query.include_related_entities = True
+
+
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
