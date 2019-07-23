@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from common.database_helpers import delete_row_by_id, EntityManager
+from common.database_helpers import EntityManager
 from common.exceptions import MissingRecordError
 from common.helpers import is_valid_json
 from common.models.db_models import SESSION
@@ -22,7 +22,7 @@ class RestTestCase(TestCase):
         Removes the inserted session from the user_sessions table
         """
         try:
-            delete_row_by_id(SESSION, "TestSession")
+            EntityManager.delete_row_by_id(SESSION, "TestSession")
         except MissingRecordError:
             pass
 

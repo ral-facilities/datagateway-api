@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import delete_row_by_id, update_row_from_id, get_rows_by_filter, \
+from common.database_helpers import update_row_from_id, get_rows_by_filter, \
     get_filtered_row_count, get_first_filtered_row, EntityManager, patch_entities
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import DATAFILE
@@ -35,7 +35,7 @@ class DatafilesWithID(Resource):
     @requires_session_id
     @queries_records
     def delete(self, id):
-        delete_row_by_id(DATAFILE, id)
+        EntityManager.delete_row_by_id(DATAFILE, id)
         return "", 204
 
     @requires_session_id

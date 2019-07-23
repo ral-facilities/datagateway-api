@@ -3,7 +3,7 @@ import uuid
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import delete_row_by_id, EntityManager
+from common.database_helpers import EntityManager
 from common.helpers import get_session_id_from_auth_header, requires_session_id, queries_records
 from common.models.db_models import SESSION
 
@@ -30,7 +30,7 @@ class Sessions(Resource):
         Deletes a users sessionID when they logout
         :return: Blank response, 200
         """
-        delete_row_by_id(SESSION, get_session_id_from_auth_header())
+        EntityManager.delete_row_by_id(SESSION, get_session_id_from_auth_header())
         return "", 200
 
     @requires_session_id

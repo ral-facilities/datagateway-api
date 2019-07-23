@@ -1,6 +1,6 @@
 import requests
 
-from common.database_helpers import delete_row_by_id, EntityManager
+from common.database_helpers import EntityManager
 from common.exceptions import MissingRecordError
 from common.models.db_models import DATAFILE
 from test.test_base.base_rest_test import RestTestCase
@@ -23,7 +23,7 @@ class TestDatafiles(RestTestCase):
     def tearDown(self):
         super().tearDown()
         try:  # This catches the exception when we attempt to delete the file, that was deleted in the test
-            delete_row_by_id(DATAFILE, -50)
+            EntityManager.delete_row_by_id(DATAFILE, -50)
         except MissingRecordError:
             pass
 
