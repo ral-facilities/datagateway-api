@@ -73,6 +73,13 @@ class LimitFilter(QueryFilter):
         query.is_limited = True
 
 
+class SkipFilter(QueryFilter):
+    def __init__(self, skip_value):
+        self.skip_value = skip_value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.offset(self.skip_value)
+
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
