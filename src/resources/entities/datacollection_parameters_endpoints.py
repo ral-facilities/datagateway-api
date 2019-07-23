@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import update_row_from_id, get_rows_by_filter, \
+from common.database_helpers import get_rows_by_filter, \
     get_filtered_row_count, get_first_filtered_row, patch_entities, EntityManager
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import DATACOLLECTIONPARAMETER
@@ -40,7 +40,7 @@ class DataCollectionParametersWithID(Resource):
     @requires_session_id
     @queries_records
     def patch(self, id):
-        update_row_from_id(DATACOLLECTIONPARAMETER, id, str(request.json))
+        EntityManager.update_row_from_id(DATACOLLECTIONPARAMETER, id, str(request.json))
         return EntityManager.get_row_by_id(DATACOLLECTIONPARAMETER, id).to_dict(), 200
 
 
