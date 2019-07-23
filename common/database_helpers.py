@@ -280,12 +280,10 @@ def get_rows_by_filter(table, filters):
         :return: The returned rows
         """
         query = ReadQuery(table)
-        qff = QueryFilterFactory()
-    includes_relation = False
         for filter in filters:
-            qff.get_query_filter(filter).apply_filter(query)
+            QueryFilterFactory.get_query_filter(filter).apply_filter(query)
         results = query.get_all_results()
-        if includes_relation:
+        if query.include_related_entities:
             for query_filter in filters:
                 if list(query_filter)[0] == "include":
                     return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
