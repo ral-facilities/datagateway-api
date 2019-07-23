@@ -28,7 +28,8 @@ def get_icat_db_session():
 
 
 class QueryFilterFactory(object):
-    def get_query_filter(self, filter):
+    @staticmethod
+    def get_query_filter(filter):
         """
         Given a filter return a matching QueryFilter object
 
@@ -45,7 +46,7 @@ class QueryFilterFactory(object):
         elif filter_name == "limit":
             return LimitFilter(filter["limit"])
         elif filter_name == "include":
-            pass
+            return IncludeFilter(filter)
         else:
             raise BadFilterError(f" Bad filter: {filter}")
 
