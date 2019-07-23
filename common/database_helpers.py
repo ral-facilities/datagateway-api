@@ -115,7 +115,10 @@ class ReadQuery(Query):
         raise MissingRecordError(" Could not find result")
 
     def get_all_results(self):
+        self.execute_query()
+        if self.base_query.all() is not None:
         return self.base_query.all()
+        raise MissingRecordError(" No results found")
 
 
 class CreateQuery(Query):
