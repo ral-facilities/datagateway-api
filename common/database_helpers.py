@@ -64,6 +64,26 @@ def get_icat_db_session():
         log.info(f" Closing DB session")
         self.session.close()
 
+class FilteredQuery(Query):
+    pass
+
+
+class ReadQuery(Query):
+    def __init__(self, table):
+        super().__init__(table)
+
+    def execute_query(self):
+        self.commit_changes()
+
+    def get_single_result(self):
+        self.execute_query()
+        if self.base_query.first() is not None:
+            return self.base_query.first()
+        raise MissingRecordError(" Could not find result")
+
+    def get_all_results(self):
+        return self.base_query.all()
+
 class CreateQuery(Query):
     def __init__(self, table, row):
         super().__init__(table)
