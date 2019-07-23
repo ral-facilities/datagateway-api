@@ -26,8 +26,15 @@ def get_icat_db_session():
         _session = Session()
     return _session
 
+
 class QueryFilterFactory(object):
     def get_query_filter(self, filter):
+        """
+        Given a filter return a matching QueryFilter object
+
+        :param filter: dict - The filter to create the QueryFilter for
+        :return: The QueryFilter object
+        """
         filter_name = list(filter)[0]
         if filter_name == "where":
             return WhereFilter(list(filter["where"])[0], filter["where"][list(filter["where"])[0]])
@@ -41,7 +48,6 @@ class QueryFilterFactory(object):
             pass
         else:
             raise BadFilterError(f" Bad filter: {filter}")
-
 
 
 class QueryFilter(ABC):
@@ -67,7 +73,6 @@ class WhereFilter(QueryFilter):
         :param query: Query Object - The query to apply the filter to.
         """
         query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
-
 
 
 class OrderFilter(QueryFilter):
@@ -217,6 +222,13 @@ def create_row_from_json(table, json):
 
     @staticmethod
     def get_row_by_id(table, id):
+        """
+        Given a table and id find the matching row
+
+        :param table: The table to be searched
+        :param id: The ID to find
+        :return: The row
+        """
         log.info(f" Querying {table.__tablename__} for record with ID: {id}")
         read_query = ReadQuery(table)
         where_filter = WhereFilter("ID", id)
@@ -225,6 +237,12 @@ def create_row_from_json(table, json):
 
     @staticmethod
 def delete_row_by_id(table, id):
+        """
+        Given a table and ID, delete the matching row
+
+        :param table: The table to be searched
+        :param id: The ID to find
+        """
         log.info(f" delete_row_by_id")
         row = EntityManager.get_row_by_id(table, id)
         delete_query = DeleteQuery(table, row)
@@ -232,12 +250,24 @@ def delete_row_by_id(table, id):
 
     @staticmethod
 def update_row_from_id(table, id, new_values):
+        """
+        Updates a record in a table
+        :param table: The table the record is in
+        :param id: The id of the record
+        :param new_values: A JSON string containing what columns are to be updated
+        """
         row = EntityManager.get_row_by_id(table, id)
         update_query = UpdateQuery(table, row, new_values)
         update_query.execute_query()
 
     @staticmethod
 def get_rows_by_filter(table, filters):
+        """
+        Given a list of filters and a table, apply the filters to a query and return the results
+        :param table: The table to be searched
+        :param filters: list of dict - The filters to be applied
+        :return: The returned rows
+        """
         query = ReadQuery(table)
         qff = QueryFilterFactory()
     includes_relation = False
