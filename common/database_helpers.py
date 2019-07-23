@@ -12,6 +12,12 @@ from common.exceptions import MissingRecordError, BadFilterError, BadRequestErro
 log = logging.getLogger()
 
 
+class QueryFilter(ABC):
+    @abstractmethod
+    def apply_filter(self, query):
+        pass
+
+
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
