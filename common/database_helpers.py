@@ -128,6 +128,17 @@ class CreateQuery(Query):
 
 
 
+class DeleteQuery(FilteredQuery):
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
+        log.info(f" Deleting row {self.row}")
+        self.session.delete(self.row)
+        self.commit_changes()
+
+
 class EntityManager(object):
     @staticmethod
 def create_row_from_json(table, json):
