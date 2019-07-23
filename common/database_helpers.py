@@ -126,6 +126,16 @@ class CreateQuery(Query):
         self.commit_changes()
 
 
+class UpdateQuery(FilteredQuery):
+    def __init__(self, table, row, new_values):
+        super().__init__(table)
+        self.row = row
+        self.new_values = new_values
+
+    def execute_query(self):
+        log.info(f" Updating row in {self.table}")
+        self.row.update_from_dict(self.new_values)
+        self.commit_changes()
 
 
 class DeleteQuery(FilteredQuery):
