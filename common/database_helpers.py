@@ -280,7 +280,7 @@ def get_rows_by_filter(table, filters):
                     return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
         return list(map(lambda x: x.to_dict(), results))
 
-
+    @staticmethod
 def get_filtered_row_count(table, filters):
     """
     returns the count of the rows that match a given filter in a given table
