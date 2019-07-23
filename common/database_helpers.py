@@ -18,6 +18,22 @@ class QueryFilter(ABC):
         pass
 
 
+class WhereFilter(QueryFilter):
+    def __init__(self, field, value):
+        self.field = field
+        self.value = value
+        print(self.value)
+
+    def apply_filter(self, query):
+        """
+        Given a Query object, apply a where filter to it
+
+        :param query: Query Object - The query to apply the filter to.
+        """
+        query.base_query = query.base_query.filter(getattr(query.table, self.field.upper()) == self.value)
+        return
+
+
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
