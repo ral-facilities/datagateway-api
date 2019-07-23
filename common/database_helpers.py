@@ -26,6 +26,23 @@ def get_icat_db_session():
         _session = Session()
     return _session
 
+class QueryFilterFactory(object):
+    def get_query_filter(self, filter):
+        filter_name = list(filter)[0]
+        if filter_name == "where":
+            return WhereFilter(list(filter["where"])[0], filter["where"][list(filter["where"])[0]])
+        elif filter_name == "order":
+            return OrderFilter(filter["order"].split(" ")[0], filter["order"].split(" ")[1])
+        elif filter_name == "skip":
+            return SkipFilter(filter["skip"])
+        elif filter_name == "limit":
+            return LimitFilter(filter["limit"])
+        elif filter_name == "include":
+            pass
+        else:
+            raise BadFilterError(f" Bad filter: {filter}")
+
+
 
 class QueryFilter(ABC):
     @abstractmethod
