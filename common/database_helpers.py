@@ -253,18 +253,6 @@ def get_rows_by_filter(table, filters):
                     return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
         return list(map(lambda x: x.to_dict(), results))
 
-    results = base_query.all()
-    # check if include was provided, then add included results
-    if includes_relation:
-        log.info(" Closing DB session")
-        for query_filter in filters:
-            if list(query_filter)[0] == "include":
-                return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-
-    log.info(" Closing DB session")
-    session.close()
-    return list(map(lambda x: x.to_dict(), results))
-
 
 def get_filtered_row_count(table, filters):
     """
