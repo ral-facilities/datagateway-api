@@ -1,8 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import \
-    get_filtered_row_count, get_first_filtered_row, EntityManager, patch_entities
+from common.database_helpers import EntityManager, patch_entities
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import DATAFILE
 
@@ -51,7 +50,7 @@ class DatafilesCount(Resource):
     @queries_records
     def get(self):
         filters = get_filters_from_query_string()
-        return get_filtered_row_count(DATAFILE, filters), 200
+        return EntityManager.get_filtered_row_count(DATAFILE, filters), 200
 
 
 class DatafilesFindOne(Resource):
@@ -60,4 +59,4 @@ class DatafilesFindOne(Resource):
     @queries_records
     def get(self):
         filters = get_filters_from_query_string()
-        return get_first_filtered_row(DATAFILE, filters), 200
+        return EntityManager.get_first_filtered_row(DATAFILE, filters), 200

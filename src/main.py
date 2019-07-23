@@ -2,7 +2,6 @@ from flask import Flask
 from flask_restful import Api
 
 from common.logger_setup import setup_logger
-from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.applications_endpoints import *
 from src.resources.entities.datacollection_datafiles_endpoints import *
 from src.resources.entities.datacollection_datasets_endpoints import *
@@ -11,6 +10,7 @@ from src.resources.entities.datacollections_endpoints import *
 from src.resources.entities.datafile_formats_endpoints import *
 from src.resources.entities.datafile_parameters_endpoints import *
 from src.resources.entities.datafiles_endpoints import *
+from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.datasets_endpoints import *
 from src.resources.entities.facilities_endpoints import *
 from src.resources.entities.facility_cycles_endpoints import *
@@ -34,13 +34,12 @@ from src.resources.entities.rules_endpoints import *
 from src.resources.entities.sample_parameters_endpoints import *
 from src.resources.entities.sample_types_endpoints import *
 from src.resources.entities.samples_endpoints import *
-from src.resources.non_entities.sessions_endpoints import *
 from src.resources.entities.shifts_endpoints import *
 from src.resources.entities.studies_endpoints import *
 from src.resources.entities.study_investigations_endpoints import *
 from src.resources.entities.user_groups_endpoints import *
 from src.resources.entities.users_endpoints import *
-
+from src.resources.non_entities.sessions_endpoints import *
 
 app = Flask(__name__)
 api = Api(app)
