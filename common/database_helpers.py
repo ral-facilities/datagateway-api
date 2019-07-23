@@ -232,37 +232,11 @@ def update_row_from_id(table, id, new_values):
 
     @staticmethod
 def get_rows_by_filter(table, filters):
-        print(filters)
         query = ReadQuery(table)
+        qff = QueryFilterFactory()
     includes_relation = False
-    for query_filter in filters:
-        if len(query_filter) == 0:
-            pass
-        elif list(query_filter)[0].lower() == "where":
-            for key in query_filter:
-                where_part = query_filter[key]
-                for k in where_part:
-                        field = getattr(table, k.upper())
-                        where_filter = WhereFilter(field, where_part[k])
-                        where_filter.apply_filter(query)
-        elif list(query_filter)[0].lower() == "order":
-            for key in query_filter:
-                field = query_filter[key].split(" ")[0]
-                direction = query_filter[key].split(" ")[1]
-                    order_filter = OrderFilter(field, direction)
-                    order_filter.apply_filter(query)
-        elif list(query_filter)[0].lower() == "skip":
-            for key in query_filter:
-                    skip_filter = SkipFilter(query_filter[key])
-                    skip_filter.apply_filter(query)
-        elif list(query_filter)[0].lower() == "limit":
-            for key in query_filter:
-                    limit_filter = LimitFilter(query_filter[key])
-                    limit_filter.apply_filter(query)
-        elif list(query_filter)[0].lower() == "include":
-            includes_relation = True
-        else:
-                raise BadFilterError(f" Invalid filters provided {filters}")
+        for filter in filters:
+            qff.get_query_filter(filter).apply_filter(query)
         results = query.get_all_results()
         if includes_relation:
             for query_filter in filters:
