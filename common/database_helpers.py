@@ -142,6 +142,7 @@ class Query(ABC):
 class ReadQuery(Query):
     def __init__(self, table):
         super().__init__(table)
+        self.include_related_entities = False
 
     def execute_query(self):
         self.commit_changes()
