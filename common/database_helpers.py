@@ -11,6 +11,22 @@ from common.exceptions import MissingRecordError, BadFilterError, BadRequestErro
 
 log = logging.getLogger()
 
+_session = None
+
+
+def get_icat_db_session():
+    """
+    Gets a session and connects with the ICAT database
+    :return: the session object
+    """
+    global _session
+    if _session is None:
+        log.info(" Getting ICAT DB session")
+        engine = create_engine(Constants.DATABASE_URL)
+        Session = sessionmaker(bind=engine)
+        _session = Session()
+    return _session
+
 
 class QueryFilter(ABC):
     @abstractmethod
@@ -37,8 +53,9 @@ class WhereFilter(QueryFilter):
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
-        self.session = self.get_icat_db_session()
+        self.session = get_icat_db_session()
         self.table = table
+        self.base_query = self.session.query(table)
 
     @abstractmethod
     def execute_query(self):
