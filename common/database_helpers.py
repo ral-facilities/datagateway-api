@@ -302,7 +302,7 @@ def get_first_filtered_row(table, filters):
     log.info(f" Getting first filtered row for {table.__tablename__}")
     return EntityManager.get_rows_by_filter(table, filters)[0]
 
-
+    @staticmethod
 def patch_entities(table, json_list):
     """
     Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID

@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import patch_entities, EntityManager
+from common.database_helpers import EntityManager
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import DATACOLLECTIONPARAMETER
 
@@ -21,7 +21,7 @@ class DataCollectionParameters(Resource):
     @requires_session_id
     @queries_records
     def patch(self):
-        return list(map(lambda x: x.to_dict(), patch_entities(DATACOLLECTIONPARAMETER, request.json))), 200
+        return list(map(lambda x: x.to_dict(), EntityManager.patch_entities(DATACOLLECTIONPARAMETER, request.json))), 200
 
 
 class DataCollectionParametersWithID(Resource):
