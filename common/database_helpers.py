@@ -69,10 +69,6 @@ class Query(ABC):
         self.session.close()
 
 
-class FilteredQuery(Query):
-    pass
-
-
 class ReadQuery(Query):
     def __init__(self, table):
         super().__init__(table)
@@ -115,7 +111,7 @@ class CreateQuery(Query):
         self.commit_changes()
 
 
-class UpdateQuery(FilteredQuery):
+class UpdateQuery(Query):
     def __init__(self, table, row, new_values):
         super().__init__(table)
         self.row = row
@@ -127,7 +123,7 @@ class UpdateQuery(FilteredQuery):
         self.commit_changes()
 
 
-class DeleteQuery(FilteredQuery):
+class DeleteQuery(Query):
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
