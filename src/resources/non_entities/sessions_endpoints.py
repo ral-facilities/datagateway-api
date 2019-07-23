@@ -3,7 +3,7 @@ import uuid
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import delete_row_by_id, get_row_by_id, EntityManager
+from common.database_helpers import delete_row_by_id, EntityManager
 from common.helpers import get_session_id_from_auth_header, requires_session_id, queries_records
 from common.models.db_models import SESSION
 
@@ -39,7 +39,7 @@ class Sessions(Resource):
         Gives details of a users session
         :return: String: Details of the session, 200
         """
-        return get_row_by_id(SESSION, get_session_id_from_auth_header()).to_dict(), 200
+        return EntityManager.get_row_by_id(SESSION, get_session_id_from_auth_header()).to_dict(), 200
 
     @requires_session_id
     def put(self):

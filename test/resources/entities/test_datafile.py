@@ -8,7 +8,7 @@ from test.test_base.constants import GOOD_CREDENTIALS_HEADER, BAD_CREDENTIALS_HE
 
 url_with_file_existing = "http://localhost:5000/datafiles/-50"
 url_without_file_existing = "http://localhost:5000/datafiles/0"
-good_data = {"NAME":"test"}
+good_data = {"NAME": "test"}
 bad_data = '{"NAMEFf" : "test"}'
 
 
@@ -17,9 +17,8 @@ class TestDatafiles(RestTestCase):
     def setUp(self):
         super().setUp()
         EntityManager.insert_row_into_table(DATAFILE, DATAFILE(ID=-50, MOD_ID="modID", CREATE_ID="create_id",
-                                                        NAME="test_name", MOD_TIME="2019-05-05 11:11:11",
-                                                        CREATE_TIME="2019-04-06 12:12:12",DATASET_ID=1))
-
+                                                               NAME="test_name", MOD_TIME="2019-05-05 11:11:11",
+                                                               CREATE_TIME="2019-04-06 12:12:12", DATASET_ID=1))
 
     def tearDown(self):
         super().tearDown()
@@ -104,7 +103,7 @@ class TestDatafiles(RestTestCase):
         self.expect_status_code(404, response)
 
     def test_patch_with_bad_credentials_and_file_exists_with_valid_data(self):
-        response = requests.patch(url_with_file_existing, headers=BAD_CREDENTIALS_HEADER, json=good_data )
+        response = requests.patch(url_with_file_existing, headers=BAD_CREDENTIALS_HEADER, json=good_data)
         self.expect_status_code(403, response)
 
     def test_patch_with_no_credentials_and_file_exists_without_valid_data(self):
