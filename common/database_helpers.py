@@ -48,6 +48,20 @@ class WhereFilter(QueryFilter):
         return
 
 
+class OrderFilter(QueryFilter):
+    def __init__(self, field, direction):
+        self.field = field
+        self.direction = direction
+
+    def apply_filter(self, query):
+        if query.is_limited:
+            query.base_query = query.base_query.from_self()
+        if self.direction.upper() == "ASC":
+            query.base_query = query.base_query.order_by(asc(getattr(query.table, self.field.upper())))
+        elif self.direction.upper() == "DESC":
+            query.base_query = query.base_query.order_by(desc(getattr(query.table, self.field.upper())))
+        else:
+            raise BadFilterError(f" Bad filter given: {self.direction}")
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
