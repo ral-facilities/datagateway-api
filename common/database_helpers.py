@@ -213,17 +213,10 @@ def update_row_from_id(table, id, new_values):
         update_query = UpdateQuery(table, row, new_values)
         update_query.execute_query()
 
-
+    @staticmethod
 def get_rows_by_filter(table, filters):
-    """
-    Given a list of filters supplied in json format, returns entities that match the filters from the given table
-    :param table: The table to checked
-    :param filters: The list of filters to be applied
-    :return: A list of the rows returned in dictionary form
-    """
-    is_limited = False
-    session = get_icat_db_session()
-    base_query = session.query(table)
+        print(filters)
+        query = ReadQuery(table)
     includes_relation = False
     for query_filter in filters:
         if len(query_filter) == 0:
@@ -232,43 +225,33 @@ def get_rows_by_filter(table, filters):
             for key in query_filter:
                 where_part = query_filter[key]
                 for k in where_part:
-                    column = getattr(table, k.upper())
-                    base_query = base_query.filter(column.in_([where_part[k]]), column.in_([where_part[k]]))
+                        field = getattr(table, k.upper())
+                        where_filter = WhereFilter(field, where_part[k])
+                        where_filter.apply_filter(query)
         elif list(query_filter)[0].lower() == "order":
             for key in query_filter:
                 field = query_filter[key].split(" ")[0]
                 direction = query_filter[key].split(" ")[1]
-                # Limit then order, or order then limit
-            if is_limited:
-                if direction.upper() == "ASC":
-                    base_query = base_query.from_self().order_by(asc(getattr(table, field)))
-                elif direction.upper() == "DESC":
-                    base_query = base_query.from_self().order_by(desc(getattr(table, field)))
-                else:
-                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
-            else:
-                if direction.upper() == "ASC":
-                    base_query = base_query.order_by(asc(getattr(table, field)))
-                elif direction.upper() == "DESC":
-                    base_query = base_query.order_by(desc(getattr(table, field)))
-                else:
-                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
-
+                    order_filter = OrderFilter(field, direction)
+                    order_filter.apply_filter(query)
         elif list(query_filter)[0].lower() == "skip":
             for key in query_filter:
-                skip = query_filter[key]
-            base_query = base_query.offset(skip)
-
+                    skip_filter = SkipFilter(query_filter[key])
+                    skip_filter.apply_filter(query)
         elif list(query_filter)[0].lower() == "limit":
-            is_limited = True
             for key in query_filter:
-                query_limit = query_filter[key]
-            base_query = base_query.limit(query_limit)
+                    limit_filter = LimitFilter(query_filter[key])
+                    limit_filter.apply_filter(query)
         elif list(query_filter)[0].lower() == "include":
             includes_relation = True
-
         else:
-            raise BadFilterError(f"Invalid filters provided received {filters}")
+                raise BadFilterError(f" Invalid filters provided {filters}")
+        results = query.get_all_results()
+        if includes_relation:
+            for query_filter in filters:
+                if list(query_filter)[0] == "include":
+                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+        return list(map(lambda x: x.to_dict(), results))
 
     results = base_query.all()
     # check if include was provided, then add included results
