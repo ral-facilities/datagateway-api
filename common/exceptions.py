@@ -4,26 +4,20 @@ log = logging.getLogger()
 
 
 class ApiError(Exception):
-    def __init__(self):
-        log.info(" ApiError(): An error has been raised.")
+    pass
 
 
 class MissingRecordError(ApiError):
-    def __init__(self):
-        log.info(" MissingRecordError(): Record not found, DB session Closed")
-
+    pass
 
 
 class BadFilterError(ApiError):
-    def __init__(self):
-        log.info(" BadFilterError(): Bad filter supplied")
+    pass
 
 
 class AuthenticationError(ApiError):
-    def __init__(self):
-        log.info(" AuthenticationError(): Error authenticating consumer")
+    pass
 
 
 class BadRequestError(ApiError):
-    def __init__(self):
-        log.info(" BadRequestError(): Bad request by Consumer")
+    pass
