@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import get_rows_by_filter, \
+from common.database_helpers import \
     get_filtered_row_count, get_first_filtered_row, EntityManager, patch_entities
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import DATACOLLECTIONDATAFILE
@@ -11,7 +11,7 @@ class DataCollectionDatafiles(Resource):
     @requires_session_id
     @queries_records
     def get(self):
-        return get_rows_by_filter(DATACOLLECTIONDATAFILE, get_filters_from_query_string()), 200
+        return EntityManager.get_rows_by_filter(DATACOLLECTIONDATAFILE, get_filters_from_query_string()), 200
 
     @requires_session_id
     @queries_records
