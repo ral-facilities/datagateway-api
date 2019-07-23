@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.collections import InstrumentedList
 
 from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
@@ -38,7 +37,6 @@ class WhereFilter(QueryFilter):
     def __init__(self, field, value):
         self.field = field
         self.value = value
-        print(self.value)
 
     def apply_filter(self, query):
         """
@@ -61,17 +59,6 @@ class Query(ABC):
     def execute_query(self):
         pass
 
-    @staticmethod
-def get_icat_db_session():
-    """
-    Gets a session and connects with the ICAT database
-    :return: the session object
-    """
-    log.info(" Getting ICAT DB session")
-    engine = create_engine(Constants.DATABASE_URL)
-    Session = sessionmaker(bind=engine)
-        return Session()
-
     def commit_changes(self):
         """
         Commits all changes made to the database and closes the active session
@@ -80,6 +67,7 @@ def get_icat_db_session():
         self.session.commit()
         log.info(f" Closing DB session")
         self.session.close()
+
 
 class FilteredQuery(Query):
     pass
@@ -100,6 +88,7 @@ class ReadQuery(Query):
 
     def get_all_results(self):
         return self.base_query.all()
+
 
 class CreateQuery(Query):
     def __init__(self, table, row):
@@ -258,7 +247,6 @@ def get_rows_by_filter(table, filters):
             if list(query_filter)[0] == "include":
                 return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
 
-
     log.info(" Closing DB session")
     session.close()
     return list(map(lambda x: x.to_dict(), results))
@@ -298,15 +286,15 @@ def patch_entities(table, json_list):
     if type(json_list) is dict:
         for key in json_list:
             if key.upper() == "ID":
-                update_row_from_id(table, json_list[key], json_list)
-                result = get_row_by_id(table, json_list[key])
+                EntityManager.update_row_from_id(table, json_list[key], json_list)
+                result = EntityManager.get_row_by_id(table, json_list[key])
                 results.append(result)
     else:
         for entity in json_list:
             for key in entity:
                 if key.upper() == "ID":
-                    update_row_from_id(table, entity[key], entity)
-                    result = get_row_by_id(table, entity[key])
+                    EntityManager.update_row_from_id(table, entity[key], entity)
+                    result = EntityManager.get_row_by_id(table, entity[key])
                     results.append(result)
     if len(results) == 0:
         raise BadRequestError(f" Bad request made, request: {json_list}")
