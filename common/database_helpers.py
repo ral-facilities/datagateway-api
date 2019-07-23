@@ -103,6 +103,7 @@ class Query(ABC):
         self.session = get_icat_db_session()
         self.table = table
         self.base_query = self.session.query(table)
+        self.is_limited = False
 
     @abstractmethod
     def execute_query(self):
