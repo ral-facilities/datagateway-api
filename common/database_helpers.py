@@ -291,7 +291,7 @@ def get_filtered_row_count(table, filters):
     log.info(f" Getting filtered row count for {table.__tablename__}")
     return len(EntityManager.get_rows_by_filter(table, filters))
 
-
+    @staticmethod
 def get_first_filtered_row(table, filters):
     """
     returns the first row that matches a given filter, in a given table
