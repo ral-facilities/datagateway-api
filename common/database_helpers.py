@@ -156,7 +156,7 @@ class ReadQuery(Query):
     def get_all_results(self):
         self.execute_query()
         if self.base_query.all() is not None:
-        return self.base_query.all()
+            return self.base_query.all()
         raise MissingRecordError(" No results found")
 
 
@@ -166,10 +166,10 @@ class CreateQuery(Query):
         self.row = row
 
     def execute_query(self):
-    """
+        """
         Determines if the row is in dictionary form or a row object and then commits it to the table
 
-    """
+        """
         log.info(f" Inserting row into {self.table.__tablename__}")
         if type(self.row) is not dict:
             record = self.row
@@ -209,8 +209,8 @@ class DeleteQuery(Query):
 
 class EntityManager(object):
     @staticmethod
-def create_row_from_json(table, json):
-    """
+    def create_row_from_json(table, json):
+        """
         Given a row in the form a dictionary, construct a CreateQuery and execute it
 
         :param table: - the table for the query to be run against
@@ -247,7 +247,7 @@ def create_row_from_json(table, json):
         return read_query.get_single_result()
 
     @staticmethod
-def delete_row_by_id(table, id):
+    def delete_row_by_id(table, id):
         """
         Given a table and ID, delete the matching row
 
@@ -260,7 +260,7 @@ def delete_row_by_id(table, id):
         delete_query.execute_query()
 
     @staticmethod
-def update_row_from_id(table, id, new_values):
+    def update_row_from_id(table, id, new_values):
         """
         Updates a record in a table
         :param table: The table the record is in
@@ -272,7 +272,7 @@ def update_row_from_id(table, id, new_values):
         update_query.execute_query()
 
     @staticmethod
-def get_rows_by_filter(table, filters):
+    def get_rows_by_filter(table, filters):
         """
         Given a list of filters and a table, apply the filters to a query and return the results
         :param table: The table to be searched
@@ -290,51 +290,51 @@ def get_rows_by_filter(table, filters):
         return list(map(lambda x: x.to_dict(), results))
 
     @staticmethod
-def get_filtered_row_count(table, filters):
-    """
-    returns the count of the rows that match a given filter in a given table
-    :param table: the table to be checked
-    :param filters: the filters to be applied to the query
-    :return: int: the count of the rows
-    """
-    log.info(f" Getting filtered row count for {table.__tablename__}")
-    return len(EntityManager.get_rows_by_filter(table, filters))
+    def get_filtered_row_count(table, filters):
+        """
+        returns the count of the rows that match a given filter in a given table
+        :param table: the table to be checked
+        :param filters: the filters to be applied to the query
+        :return: int: the count of the rows
+        """
+        log.info(f" Getting filtered row count for {table.__tablename__}")
+        return len(EntityManager.get_rows_by_filter(table, filters))
 
     @staticmethod
-def get_first_filtered_row(table, filters):
-    """
-    returns the first row that matches a given filter, in a given table
-    :param table: the table to be checked
-    :param filters: the filter to be applied to the query
-    :return: the first row matching the filter
-    """
-    log.info(f" Getting first filtered row for {table.__tablename__}")
-    return EntityManager.get_rows_by_filter(table, filters)[0]
+    def get_first_filtered_row(table, filters):
+        """
+        returns the first row that matches a given filter, in a given table
+        :param table: the table to be checked
+        :param filters: the filter to be applied to the query
+        :return: the first row matching the filter
+        """
+        log.info(f" Getting first filtered row for {table.__tablename__}")
+        return EntityManager.get_rows_by_filter(table, filters)[0]
 
     @staticmethod
-def patch_entities(table, json_list):
-    """
-    Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
-    :param table: The table of the entities
-    :param json_list: the list of updated values or a dictionary
-    :return: The list of updated rows.
-    """
-    log.info(f" Patching entities in {table.__tablename__}")
-    results = []
-    if type(json_list) is dict:
-        for key in json_list:
-            if key.upper() == "ID":
-                EntityManager.update_row_from_id(table, json_list[key], json_list)
-                result = EntityManager.get_row_by_id(table, json_list[key])
-                results.append(result)
-    else:
-        for entity in json_list:
-            for key in entity:
+    def patch_entities(table, json_list):
+        """
+        Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
+        :param table: The table of the entities
+        :param json_list: the list of updated values or a dictionary
+        :return: The list of updated rows.
+        """
+        log.info(f" Patching entities in {table.__tablename__}")
+        results = []
+        if type(json_list) is dict:
+            for key in json_list:
                 if key.upper() == "ID":
-                    EntityManager.update_row_from_id(table, entity[key], entity)
-                    result = EntityManager.get_row_by_id(table, entity[key])
+                    EntityManager.update_row_from_id(table, json_list[key], json_list)
+                    result = EntityManager.get_row_by_id(table, json_list[key])
                     results.append(result)
-    if len(results) == 0:
-        raise BadRequestError(f" Bad request made, request: {json_list}")
+        else:
+            for entity in json_list:
+                for key in entity:
+                    if key.upper() == "ID":
+                        EntityManager.update_row_from_id(table, entity[key], entity)
+                        result = EntityManager.get_row_by_id(table, entity[key])
+                        results.append(result)
+        if len(results) == 0:
+            raise BadRequestError(f" Bad request made, request: {json_list}")
 
-    return results
+        return results
