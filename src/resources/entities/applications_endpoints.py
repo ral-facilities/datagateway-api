@@ -5,8 +5,10 @@ from flask_restful import Resource
 from common.database_helpers import get_row_by_id, delete_row_by_id, update_row_from_id, get_rows_by_filter, \
     get_filtered_row_count, get_first_filtered_row, create_row_from_json, patch_entities
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
+from src.swagger.swagger_generator import swagger_gen
 
 
+@swagger_gen.resource_wrapper()
 class Applications(Resource):
     @requires_session_id
     @queries_records
