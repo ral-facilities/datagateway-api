@@ -40,7 +40,9 @@ from src.resources.entities.studies_endpoints import *
 from src.resources.entities.study_investigations_endpoints import *
 from src.resources.entities.user_groups_endpoints import *
 from src.resources.entities.users_endpoints import *
+from src.swagger.swagger_generator import swagger_gen
 
+swagger_gen.write_swagger_spec()
 
 app = Flask(__name__)
 api = Api(app)
@@ -199,5 +201,7 @@ api.add_resource(UserGroupsCount, "/usergroups/count")
 api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
 
 
+
 if __name__ == "__main__":
+
     app.run(debug=True)
