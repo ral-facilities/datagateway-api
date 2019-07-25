@@ -1,4 +1,6 @@
+import os
 class SwaggerGenerator(object):
+    FILE_PATH = os.getcwd() + "\\swagger\\openapi.yaml"
 
     def __init__(self):
         self.endpoints = []
