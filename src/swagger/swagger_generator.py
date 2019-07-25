@@ -30,6 +30,15 @@ class SwaggerGenerator(object):
 
         return decorate
 
+    def write_swagger_spec(self):
+        """
+        Writes the openapi.yaml file
+
+        """
+        with open(SwaggerGenerator.FILE_PATH, "w+") as target:
+            target.write(self.get_yaml_top())
+            target.write(self.get_yaml_paths())
+        target.close()
 
     @staticmethod
     def get_yaml_top():
