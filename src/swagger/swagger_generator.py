@@ -1,0 +1,2 @@
+class SwaggerGenerator(object):
+   pass
