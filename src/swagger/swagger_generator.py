@@ -29,3 +29,21 @@ class SwaggerGenerator(object):
             return cls
 
         return decorate
+
+
+    @staticmethod
+    def get_yaml_top():
+        """
+        Gets the top part of the openapi spec without the paths
+
+        :return: String containing the top part of the openapi spec
+        """
+        return (f'''openapi: "3.0.0"
+info:
+  title: DataGateway API
+  description: ICAT API to interface with the Data Gateway
+  version: "0"
+servers:
+  - url: http://localhost:5000
+
+paths:''')
