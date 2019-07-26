@@ -1,2 +1,5 @@
+from common.config import config
+
+
 class Constants:
-    DATABASE_URL = "mysql+pymysql://root:rootpw@localhost:13306/icatdb"
+    DATABASE_URL = config.get_db_url()
