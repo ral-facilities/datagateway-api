@@ -101,6 +101,18 @@ class UpdateQuery(Query):
         self.commit_changes()
 
 
+class DeleteQuery(Query):
+
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
+        log.info(f" Deleting row {self.row} from {self.table.__tablename__}")
+        self.session.delete(self.row)
+        self.commit_changes()
+
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
