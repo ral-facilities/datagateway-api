@@ -83,7 +83,7 @@ class CreateQuery(Query):
             record.CREATE_TIME = datetime.datetime.now()
             record.MOD_TIME = datetime.datetime.now()
             record.CREATE_ID = "user"
-            record.MOD_ID = "user" # These will need changing
+            record.MOD_ID = "user"  # These will need changing
         self.session.add(record)
         self.commit_changes()
 
@@ -117,6 +117,16 @@ class QueryFilter(ABC):
     @abstractmethod
     def apply_filter(self, query):
         pass
+
+
+class WhereFilter(QueryFilter):
+    def __init__(self, field, value):
+        self.field = field
+        self.value = value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
+
 
 def insert_row_into_table(row):
     """
