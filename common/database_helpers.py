@@ -144,6 +144,15 @@ class OrderFilter(QueryFilter):
             raise BadFilterError(f" Bad filter: {self.direction}")
 
 
+class LimitFilter(QueryFilter):
+    def __init__(self, limit_value):
+        self.limit_value = limit_value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.limit(self.limit_value)
+        query.is_limited = True
+
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
