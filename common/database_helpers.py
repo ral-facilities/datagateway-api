@@ -144,6 +144,14 @@ class OrderFilter(QueryFilter):
             raise BadFilterError(f" Bad filter: {self.direction}")
 
 
+class SkipFilter(QueryFilter):
+    def __init__(self, skip_value):
+        self.skip_value = skip_value
+    
+    def apply_filter(self, query):
+        query.base_query = query.base_query.offset(self.skip_value)
+
+
 class LimitFilter(QueryFilter):
     def __init__(self, limit_value):
         self.limit_value = limit_value
