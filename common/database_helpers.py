@@ -113,6 +113,11 @@ class DeleteQuery(Query):
         self.commit_changes()
 
 
+class QueryFilter(ABC):
+    @abstractmethod
+    def apply_filter(self, query):
+        pass
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
