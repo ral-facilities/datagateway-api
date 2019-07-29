@@ -244,18 +244,10 @@ def update_row_from_id(table, id, new_values):
     :param id: The id of the record
     :param new_values: A JSON string containing what columns are to be updated
     """
-    log.info(f" Updating row with ID: {id} in {table.__tablename__}")
-    session = get_icat_db_session()
-    record = session.query(table).filter(table.ID == id).first()
-    if record is not None:
-        record.update_from_dict(new_values)
-        session.commit()
-        log.info(" Record updated, closing DB session")
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
-
+    row = get_row_by_id(table, id)
+    update_query = UpdateQuery(table, row, new_values)
+    update_query.execute_query()
+    
 
 def get_rows_by_filter(table, filters):
     """
