@@ -1,5 +1,6 @@
 import datetime
 import logging
+from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
@@ -22,6 +23,28 @@ def get_icat_db_session():
     session = Session()
     return session
 
+
+class Query(ABC):
+    @abstractmethod
+    def __init__(self, table):
+        self.session = get_icat_db_session()
+        self.table = table
+        self.base_query = self.session.query(table)
+        self.is_limited = False
+
+    @abstractmethod
+    def execute_query(self):
+        pass
+
+    def commit_changes(self):
+        """
+        Commits all changes to the database and closes the session
+        """
+        log.info(f" Commiting changes to {self.table}")
+        self.session.commit()
+        log.info(f" Closing DB session")
+        self.session.close()
+        
 
 def insert_row_into_table(row):
     """
