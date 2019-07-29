@@ -5,6 +5,7 @@ from pathlib import Path
 
 class SwaggerGenerator(object):
     FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
+    is_generating = False
 
     def __init__(self):
         self.endpoints = []
@@ -24,22 +25,23 @@ class SwaggerGenerator(object):
         """
         Wrapper for Resource classes that appends the class name to the endpoints list
         """
+        if SwaggerGenerator.is_generating:
+            def decorate(cls):
+                self.endpoints.append(cls.__name__)
+                return cls
 
-        def decorate(cls):
-            self.endpoints.append(cls.__name__)
-            return cls
-
-        return decorate
+            return decorate
 
     def write_swagger_spec(self):
         """
         Writes the openapi.yaml file
 
         """
-        with open(SwaggerGenerator.FILE_PATH, "w+") as target:
-            target.write(self.get_yaml_top())
-            target.write(self.get_yaml_paths())
-        target.close()
+        if SwaggerGenerator.is_generating:
+            with open(SwaggerGenerator.FILE_PATH, "w+") as target:
+                target.write(self.get_yaml_top())
+                target.write(self.get_yaml_paths())
+            target.close()
 
     @staticmethod
     def get_yaml_top():
