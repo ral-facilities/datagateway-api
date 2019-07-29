@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.collections import InstrumentedList
 
 from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
@@ -44,7 +43,29 @@ class Query(ABC):
         self.session.commit()
         log.info(f" Closing DB session")
         self.session.close()
-        
+
+
+class ReadQuery(Query):
+
+    def __init__(self, table):
+        super.__init__(table)
+        self.include_related_entities = False
+
+    def execute_query(self):
+        self.commit_changes()
+
+    def get_single_result(self):
+        self.execute_query()
+        if self.base_query.first() is not None:
+            return self.base_query.first()
+        raise MissingRecordError(" No result found")
+
+    def get_all_results(self):
+        self.execute_query()
+        if self.base_query.all() is not None:
+            return self.base_query.all()
+        raise MissingRecordError(" No results found")
+
 
 def insert_row_into_table(row):
     """
@@ -200,7 +221,6 @@ def get_rows_by_filter(table, filters):
         for query_filter in filters:
             if list(query_filter)[0] == "include":
                 return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-
 
     log.info(" Closing DB session")
     session.close()
