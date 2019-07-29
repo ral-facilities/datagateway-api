@@ -169,6 +169,28 @@ class IncludeFilter(QueryFilter):
         query.include_related_entities = True
 
 
+class QueryFilterFactory(object):
+    @staticmethod
+    def get_query_filter(filter):
+        """
+        Given a filter return a matching Query filter object
+        :param filter: dict - The filter to create the QueryFilter for
+        :return: The QueryFilter object created
+        """
+        filter_name = list(filter)[0].lower()
+        if filter_name == "where":
+            return WhereFilter(list(filter["where"])[0], filter["where"][list(filter["where"])[0]])
+        elif filter_name == "order":
+            return OrderFilter(filter["order"].split(" ")[0], filter["order"].split(" ")[1])
+        elif filter_name == "skip":
+            return SkipFilter(filter["skip"])
+        elif filter_name == "limit":
+            return LimitFilter(filter["limit"])
+        elif filter_name == "include":
+            return IncludeFilter(filter)
+        else:
+            raise BadFilterError(f" Bad filter: {filter}")
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
