@@ -1,9 +1,10 @@
 import os
 import re
+from pathlib import Path
 
 
 class SwaggerGenerator(object):
-    FILE_PATH = os.getcwd() + "\\swagger\\openapi.yaml"
+    FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
 
     def __init__(self):
         self.endpoints = []
