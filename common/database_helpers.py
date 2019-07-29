@@ -232,16 +232,9 @@ def delete_row_by_id(table, id):
     :param id: the id of the record to delete
     """
     log.info(f" Deleting row from {table.__tablename__} with ID: {id}")
-    session = get_icat_db_session()
-    result = get_row_by_id(table, id)
-    if result is not None:
-        session.delete(result)
-        log.info(" record deleted, closing DB session")
-        session.commit()
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+    row = get_row_by_id(table, id)
+    delete_query = DeleteQuery(table, row)
+    delete_query.execute_query()
 
 
 def update_row_from_id(table, id, new_values):
