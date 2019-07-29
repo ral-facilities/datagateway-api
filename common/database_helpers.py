@@ -219,14 +219,10 @@ def get_row_by_id(table, id):
     :return: the record retrieved
     """
     log.info(f" Querying {table.__tablename__} for record with ID: {id}")
-    session = get_icat_db_session()
-    result = session.query(table).filter(table.ID == id).first()
-    if result is not None:
-        log.info(" Record found, closing DB session")
-        session.close()
-        return result
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+    read_query = ReadQuery(table)
+    where_filter = WhereFilter("ID", id)
+    where_filter.apply_filter(read_query)
+    return read_query.get_single_result()
 
 
 def delete_row_by_id(table, id):
