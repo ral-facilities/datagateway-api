@@ -128,6 +128,22 @@ class WhereFilter(QueryFilter):
         query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
 
 
+class OrderFilter(QueryFilter):
+    def __init__(self, field, direction):
+        self.field = field
+        self.direction = direction
+
+    def apply_filter(self, query):
+        if query.is_limited:
+            query.base_query = query.base_query.from_self()
+        if self.direction.upper() == "ASC":
+            query.base_query = query.base_query.order_by(asc(query.table, self.field.upper()))
+        elif self.direction.upper() == "DESC":
+            query.base_query = query.base_query.order_by(desc(query.table, self.field.upper()))
+        else:
+            raise BadFilterError(f" Bad filter: {self.direction}")
+
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
