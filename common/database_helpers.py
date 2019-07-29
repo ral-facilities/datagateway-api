@@ -211,18 +211,8 @@ def create_row_from_json(table, json):
     :param json: the dictionary containing the values
     :return: nothing atm
     """
-    log.info(f" Creating row from json into table {table.__tablename__}")
-    session = get_icat_db_session()
-    record = table()
-    record.update_from_dict(json)
-    record.CREATE_TIME = datetime.datetime.now()  # These should probably change
-    record.CREATE_ID = "user"
-    record.MOD_TIME = datetime.datetime.now()
-    record.MOD_ID = "user"
-    session.add(record)
-    session.commit()
-    log.info(" Closing db session")
-    session.close()
+    create_query = CreateQuery(table, json)
+    create_query.execute_query()
 
 
 def get_row_by_id(table, id):
