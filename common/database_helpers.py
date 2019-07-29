@@ -11,16 +11,21 @@ from common.exceptions import MissingRecordError, BadFilterError, BadRequestErro
 log = logging.getLogger()
 
 
+class SessionManager(object):
+    _session = None
+
+    @staticmethod
 def get_icat_db_session():
     """
-    Gets a session and connects with the ICAT database
-    :return: the session object
+        Checks if a session exists, if it does it returns the session if not a new one is created
+        :return: ICAT DB session
     """
     log.info(" Getting ICAT DB session")
+        if SessionManager._session is None:
     engine = create_engine(Constants.DATABASE_URL)
     Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
+            SessionManager._session = Session()
+        return SessionManager._session
 
 
 class Query(ABC):
