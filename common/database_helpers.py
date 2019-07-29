@@ -15,15 +15,15 @@ class SessionManager(object):
     _session = None
 
     @staticmethod
-def get_icat_db_session():
-    """
+    def get_icat_db_session():
+        """
         Checks if a session exists, if it does it returns the session if not a new one is created
         :return: ICAT DB session
-    """
-    log.info(" Getting ICAT DB session")
+        """
+        log.info(" Getting ICAT DB session")
         if SessionManager._session is None:
-    engine = create_engine(Constants.DATABASE_URL)
-    Session = sessionmaker(bind=engine)
+            engine = create_engine(Constants.DATABASE_URL)
+            Session = sessionmaker(bind=engine)
             SessionManager._session = Session()
         return SessionManager._session
 
@@ -31,7 +31,7 @@ def get_icat_db_session():
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
-        self.session = get_icat_db_session()
+        self.session = SessionManager.get_icat_db_session()
         self.table = table
         self.base_query = self.session.query(table)
         self.is_limited = False
@@ -53,7 +53,7 @@ class Query(ABC):
 class ReadQuery(Query):
 
     def __init__(self, table):
-        super.__init__(table)
+        super().__init__(table)
         self.include_related_entities = False
 
     def execute_query(self):
@@ -152,7 +152,7 @@ class OrderFilter(QueryFilter):
 class SkipFilter(QueryFilter):
     def __init__(self, skip_value):
         self.skip_value = skip_value
-    
+
     def apply_filter(self, query):
         query.base_query = query.base_query.offset(self.skip_value)
 
@@ -195,6 +195,7 @@ class QueryFilterFactory(object):
             return IncludeFilter(filter)
         else:
             raise BadFilterError(f" Bad filter: {filter}")
+
 
 def insert_row_into_table(table, row):
     """
@@ -273,7 +274,6 @@ def get_rows_by_filter(table, filters):
             if list(query_filter)[0].lower() == "include":
                 return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
     return list(map(lambda x: x.to_dict(), results))
-
 
 
 def get_filtered_row_count(table, filters):

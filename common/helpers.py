@@ -6,7 +6,7 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from common.database_helpers import get_icat_db_session
+from common.database_helpers import SessionManager
 from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError
 from common.models.db_models import SESSION
 
@@ -24,7 +24,7 @@ def requires_session_id(method):
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
         try:
-            session = get_icat_db_session()
+            session = SessionManager.get_icat_db_session()
             query = session.query(SESSION).filter(
                 SESSION.ID == get_session_id_from_auth_header()).first()
             if query is not None:
