@@ -67,6 +67,27 @@ class ReadQuery(Query):
         raise MissingRecordError(" No results found")
 
 
+class CreateQuery(Query):
+
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
+        """Determines if the row is a row object or dictionary then commits it to the table"""
+        if type(self.row) is not dict:
+            record = self.row
+        else:
+            record = self.table()
+            record.update_from_dict(self.row)
+            record.CREATE_TIME = datetime.datetime.now()
+            record.MOD_TIME = datetime.datetime.now()
+            record.CREATE_ID = "user"
+            record.MOD_ID = "user" # These will need changing
+        self.session.add(record)
+        self.commit_changes()
+        
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
