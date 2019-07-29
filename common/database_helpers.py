@@ -191,17 +191,13 @@ class QueryFilterFactory(object):
         else:
             raise BadFilterError(f" Bad filter: {filter}")
 
-def insert_row_into_table(row):
+def insert_row_into_table(table, row):
     """
     Insert the given row into its table
     :param row: The row to be inserted
     """
-    log.info(f" Inserting row into table {row.__tablename__}")
-    session = get_icat_db_session()
-    session.add(row)
-    session.commit()
-    log.info(" Closing DB session")
-    session.close()
+    create_query = CreateQuery(table, row)
+    create_query.execute_query()
 
 
 def create_row_from_json(table, json):

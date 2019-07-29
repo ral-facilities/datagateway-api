@@ -16,7 +16,7 @@ class TestDatafiles(RestTestCase):
 
     def setUp(self):
         super().setUp()
-        insert_row_into_table(DATAFILE(ID=-50, MOD_ID="modID", CREATE_ID="create_id", NAME="test_name",
+        insert_row_into_table(DATAFILE, DATAFILE(ID=-50, MOD_ID="modID", CREATE_ID="create_id", NAME="test_name",
                                             MOD_TIME="2019-05-05 11:11:11", CREATE_TIME="2019-04-06 12:12:12",
                                             DATASET_ID=1))
 
