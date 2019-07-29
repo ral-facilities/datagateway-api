@@ -153,6 +153,14 @@ class LimitFilter(QueryFilter):
         query.is_limited = True
 
 
+class IncludeFilter(QueryFilter):
+    def __init__(self, included_filters):
+        self.included_filters = included_filters
+
+    def apply_filter(self, query):
+        query.include_related_entities = True
+
+
 def insert_row_into_table(row):
     """
     Insert the given row into its table
