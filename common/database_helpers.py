@@ -142,9 +142,9 @@ class OrderFilter(QueryFilter):
         if query.is_limited:
             query.base_query = query.base_query.from_self()
         if self.direction.upper() == "ASC":
-            query.base_query = query.base_query.order_by(asc(query.table, self.field.upper()))
+            query.base_query = query.base_query.order_by(asc(self.field.upper()))
         elif self.direction.upper() == "DESC":
-            query.base_query = query.base_query.order_by(desc(query.table, self.field.upper()))
+            query.base_query = query.base_query.order_by(desc(self.field.upper()))
         else:
             raise BadFilterError(f" Bad filter: {self.direction}")
 
