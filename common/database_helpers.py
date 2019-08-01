@@ -2,36 +2,18 @@ import datetime
 import logging
 from abc import ABC, abstractmethod
 
-from sqlalchemy import create_engine, asc, desc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import asc, desc
 
-from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
+from common.session_manager import session_manager
 
 log = logging.getLogger()
-
-
-class SessionManager(object):
-    _session = None
-
-    @staticmethod
-    def get_icat_db_session():
-        """
-        Checks if a session exists, if it does it returns the session if not a new one is created
-        :return: ICAT DB session
-        """
-        log.info(" Getting ICAT DB session")
-        if SessionManager._session is None:
-            engine = create_engine(Constants.DATABASE_URL)
-            Session = sessionmaker(bind=engine)
-            SessionManager._session = Session()
-        return SessionManager._session
 
 
 class Query(ABC):
     @abstractmethod
     def __init__(self, table):
-        self.session = SessionManager.get_icat_db_session()
+        self.session = session_manager.get_icat_db_session()
         self.table = table
         self.base_query = self.session.query(table)
         self.is_limited = False

@@ -6,12 +6,12 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from common.database_helpers import SessionManager
 from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError
 from common.models.db_models import SESSION
-
+from common.session_manager import session_manager
 
 log = logging.getLogger()
+
 
 def requires_session_id(method):
     """
@@ -20,15 +20,17 @@ def requires_session_id(method):
     :returns a 403, "Forbidden" if a valid session_id is not provided with the request
     """
     log.info("")
+
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
         try:
-            session = SessionManager.get_icat_db_session()
+            session = session_manager.get_icat_db_session()
             query = session.query(SESSION).filter(
                 SESSION.ID == get_session_id_from_auth_header()).first()
             if query is not None:
                 log.info(" Closing DB session")
+                session.close()
                 session.close()
                 log.info(" Consumer authenticated")
                 return method(*args, **kwargs)
@@ -38,6 +40,7 @@ def requires_session_id(method):
                 return "Forbidden", 403
         except AuthenticationError:
             return "Forbidden", 403
+
     return wrapper_requires_session
 
 
