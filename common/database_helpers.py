@@ -32,6 +32,20 @@ class Query(ABC):
         self.session.close()
 
 
+
+class CountQuery(Query):
+
+    def __init__(self, table):
+        super().__init__(table)
+        self.include_related_entities = False
+
+    def execute_query(self):
+        self.commit_changes()
+
+    def get_count(self):
+        self.execute_query()
+        return self.base_query.count()
+
 class ReadQuery(Query):
 
     def __init__(self, table):
