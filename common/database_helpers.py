@@ -46,6 +46,7 @@ class CountQuery(Query):
         self.execute_query()
         return self.base_query.count()
 
+
 class ReadQuery(Query):
 
     def __init__(self, table):
@@ -57,14 +58,16 @@ class ReadQuery(Query):
 
     def get_single_result(self):
         self.execute_query()
-        if self.base_query.first() is not None:
-            return self.base_query.first()
+        result = self.base_query.first()
+        if result is not None:
+            return result
         raise MissingRecordError(" No result found")
 
     def get_all_results(self):
         self.execute_query()
-        if self.base_query.all() is not None:
-            return self.base_query.all()
+        results = self.base_query.all()
+        if results is not None:
+            return results
         raise MissingRecordError(" No results found")
 
 
