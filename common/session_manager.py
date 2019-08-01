@@ -6,7 +6,7 @@ from common.constants import Constants
 
 class SessionManager(object):
     def __init__(self):
-        self.engine = create_engine(Constants.DATABASE_URL)
+        self.engine = create_engine(Constants.DATABASE_URL, pool_size=1000)
         self.session_factory = sessionmaker(bind=self.engine)
         self.Session = scoped_session(self.session_factory)
 
