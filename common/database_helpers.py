@@ -275,15 +275,6 @@ def get_rows_by_filter(table, filters):
     return list(map(lambda x: x.to_dict(), results))
 
 
-def get_filtered_row_count(table, filters):
-    """
-    returns the count of the rows that match a given filter in a given table
-    :param table: the table to be checked
-    :param filters: the filters to be applied to the query
-    :return: int: the count of the rows
-    """
-    log.info(f" Getting filtered row count for {table.__tablename__}")
-    return len(get_rows_by_filter(table, filters))
 
 
 def get_first_filtered_row(table, filters):
@@ -295,6 +286,23 @@ def get_first_filtered_row(table, filters):
     """
     log.info(f" Getting first filtered row for {table.__tablename__}")
     return get_rows_by_filter(table, filters)[0]
+
+
+def get_filtered_row_count(table, filters):
+    """
+    returns the count of the rows that match a given filter in a given table
+    :param table: the table to be checked
+    :param filters: the filters to be applied to the query
+    :return: int: the count of the rows
+    """
+    log.info(f" getting count for {table.__tablename__}")
+    count_query = CountQuery(table)
+    for filter in filters:
+        if len(filter) == 0:
+            pass
+        else:
+            QueryFilterFactory.get_query_filter(filter).apply_filter(count_query)
+    return count_query.get_count()
 
 
 def patch_entities(table, json_list):
