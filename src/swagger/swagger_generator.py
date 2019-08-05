@@ -151,12 +151,6 @@ paths:''')
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of {SwaggerGenerator.pascal_to_normal(endpoint).lower()} returned
-          required: false
-          schema:
-            type: object
         - name: skip
           in: query
           description: Skip the number of {SwaggerGenerator.pascal_to_normal(endpoint).lower()} returned
