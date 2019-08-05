@@ -2,10 +2,11 @@ import os
 import re
 from pathlib import Path
 
+from common.config import config
+
 
 class SwaggerGenerator(object):
     FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
-    is_generating = False
 
     def __init__(self):
         self.endpoints = []
@@ -26,7 +27,7 @@ class SwaggerGenerator(object):
         Wrapper for Resource classes that appends the class name to the endpoints list
         """
         def decorate(cls):
-            if SwaggerGenerator.is_generating:
+            if config.is_generate_swagger():
                 self.endpoints.append(cls.__name__)
             return cls
         return decorate
@@ -36,7 +37,7 @@ class SwaggerGenerator(object):
         Writes the openapi.yaml file
 
         """
-        if SwaggerGenerator.is_generating:
+        if config.is_generate_swagger():
             with open(SwaggerGenerator.FILE_PATH, "w+") as target:
                 target.write(self.get_yaml_top())
                 target.write(self.get_yaml_paths())
