@@ -43,7 +43,7 @@ class CountQuery(Query):
 
     def get_count(self):
         try:
-        return self.base_query.count()
+            return self.base_query.count()
         finally:
             self.execute_query()
 
@@ -59,19 +59,19 @@ class ReadQuery(Query):
 
     def get_single_result(self):
         try:
-        result = self.base_query.first()
-        if result is not None:
-            return result
-        raise MissingRecordError(" No result found")
+            result = self.base_query.first()
+            if result is not None:
+                return result
+            raise MissingRecordError(" No result found")
         finally:
             self.session.close()
 
     def get_all_results(self):
         try:
-        results = self.base_query.all()
-        if results is not None:
-            return results
-        raise MissingRecordError(" No results found")
+            results = self.base_query.all()
+            if results is not None:
+                return results
+            raise MissingRecordError(" No results found")
         finally:
             self.session.close()
 
