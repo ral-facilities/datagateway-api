@@ -25,12 +25,11 @@ class SwaggerGenerator(object):
         """
         Wrapper for Resource classes that appends the class name to the endpoints list
         """
-        if SwaggerGenerator.is_generating:
-            def decorate(cls):
+        def decorate(cls):
+            if SwaggerGenerator.is_generating:
                 self.endpoints.append(cls.__name__)
-                return cls
-
-            return decorate
+            return cls
+        return decorate
 
     def write_swagger_spec(self):
         """
