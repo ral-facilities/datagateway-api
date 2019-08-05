@@ -5,7 +5,7 @@ info:
   version: "0"
 servers:
   - url: http://localhost:5000
-  
+
 paths:
   /datasettypes:
     get:
@@ -74,30 +74,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of dataset types returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of dataset types returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the dataset types by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of dataset types
@@ -110,12 +86,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the dataset types
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of dataset types returned
           required: false
           schema:
             type: object
@@ -256,30 +226,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of applications returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of applications returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the applications by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of applications
@@ -292,12 +238,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the applications
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of applications returned
           required: false
           schema:
             type: object
@@ -438,30 +378,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of data collection datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the data collection datafiles by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of data collection datafiles
@@ -474,12 +390,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the data collection datafiles
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection datafiles returned
           required: false
           schema:
             type: object
@@ -620,30 +530,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection datasets returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of data collection datasets returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the data collection datasets by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of data collection datasets
@@ -656,12 +542,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the data collection datasets
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection datasets returned
           required: false
           schema:
             type: object
@@ -802,30 +682,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection parameters returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of data collection parameters returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the data collection parameters by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of data collection parameters
@@ -838,12 +694,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the data collection parameters
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collection parameters returned
           required: false
           schema:
             type: object
@@ -984,30 +834,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collections returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of data collections returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the data collections by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of data collections
@@ -1020,12 +846,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the data collections
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of data collections returned
           required: false
           schema:
             type: object
@@ -1166,30 +986,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafile formats returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of datafile formats returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the datafile formats by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of datafile formats
@@ -1202,12 +998,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the datafile formats
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafile formats returned
           required: false
           schema:
             type: object
@@ -1348,30 +1138,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafile parameters returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of datafile parameters returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the datafile parameters by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of datafile parameters
@@ -1384,12 +1150,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the datafile parameters
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafile parameters returned
           required: false
           schema:
             type: object
@@ -1530,30 +1290,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the datafiles by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of datafiles
@@ -1566,12 +1302,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the datafiles
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of datafiles returned
           required: false
           schema:
             type: object
@@ -1712,30 +1442,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of datasets returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of datasets returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the datasets by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of datasets
@@ -1748,12 +1454,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the datasets
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of datasets returned
           required: false
           schema:
             type: object
@@ -1894,30 +1594,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of facilities returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of facilities returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the facilities by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of facilities
@@ -1930,12 +1606,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the facilities
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of facilities returned
           required: false
           schema:
             type: object
@@ -2076,30 +1746,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of facility cycles returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of facility cycles returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the facility cycles by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of facility cycles
@@ -2112,12 +1758,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the facility cycles
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of facility cycles returned
           required: false
           schema:
             type: object
@@ -2258,30 +1898,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of groupings returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of groupings returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the groupings by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of groupings
@@ -2294,12 +1910,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the groupings
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of groupings returned
           required: false
           schema:
             type: object
@@ -2440,30 +2050,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of instrument scientists returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of instrument scientists returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the instrument scientists by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of instrument scientists
@@ -2476,12 +2062,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the instrument scientists
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of instrument scientists returned
           required: false
           schema:
             type: object
@@ -2622,30 +2202,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of instruments returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of instruments returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the instruments by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of instruments
@@ -2658,12 +2214,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the instruments
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of instruments returned
           required: false
           schema:
             type: object
@@ -2804,30 +2354,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation groups returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigation groups returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigation groups by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigation groups
@@ -2840,12 +2366,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigation groups
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation groups returned
           required: false
           schema:
             type: object
@@ -2986,30 +2506,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation instruments returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigation instruments returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigation instruments by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigation instruments
@@ -3022,12 +2518,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigation instruments
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation instruments returned
           required: false
           schema:
             type: object
@@ -3168,30 +2658,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation parameters returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigation parameters returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigation parameters by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigation parameters
@@ -3204,12 +2670,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigation parameters
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation parameters returned
           required: false
           schema:
             type: object
@@ -3350,30 +2810,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation types returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigation types returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigation types by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigation types
@@ -3386,12 +2822,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigation types
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation types returned
           required: false
           schema:
             type: object
@@ -3532,30 +2962,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation users returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigation users returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigation users by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigation users
@@ -3568,12 +2974,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigation users
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigation users returned
           required: false
           schema:
             type: object
@@ -3714,30 +3114,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigations returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of investigations returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the investigations by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of investigations
@@ -3750,12 +3126,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the investigations
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of investigations returned
           required: false
           schema:
             type: object
@@ -3896,30 +3266,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of jobs returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of jobs returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the jobs by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of jobs
@@ -3932,12 +3278,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the jobs
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of jobs returned
           required: false
           schema:
             type: object
@@ -4078,30 +3418,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of keywords returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of keywords returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the keywords by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of keywords
@@ -4114,12 +3430,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the keywords
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of keywords returned
           required: false
           schema:
             type: object
@@ -4260,30 +3570,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of parameter types returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of parameter types returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the parameter types by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of parameter types
@@ -4296,12 +3582,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the parameter types
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of parameter types returned
           required: false
           schema:
             type: object
@@ -4442,30 +3722,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of permissible string values returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of permissible string values returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the permissible string values by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of permissible string values
@@ -4478,12 +3734,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the permissible string values
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of permissible string values returned
           required: false
           schema:
             type: object
@@ -4624,30 +3874,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of public steps returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of public steps returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the public steps by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of public steps
@@ -4660,12 +3886,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the public steps
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of public steps returned
           required: false
           schema:
             type: object
@@ -4806,30 +4026,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of publications returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of publications returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the publications by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of publications
@@ -4842,12 +4038,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the publications
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of publications returned
           required: false
           schema:
             type: object
@@ -4988,30 +4178,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of related datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of related datafiles returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the related datafiles by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of related datafiles
@@ -5024,12 +4190,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the related datafiles
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of related datafiles returned
           required: false
           schema:
             type: object
@@ -5170,30 +4330,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of rules returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of rules returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the rules by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of rules
@@ -5206,12 +4342,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the rules
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of rules returned
           required: false
           schema:
             type: object
@@ -5352,30 +4482,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of sample parameters returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of sample parameters returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the sample parameters by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of sample parameters
@@ -5388,12 +4494,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the sample parameters
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of sample parameters returned
           required: false
           schema:
             type: object
@@ -5534,30 +4634,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of sample types returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of sample types returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the sample types by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of sample types
@@ -5570,12 +4646,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the sample types
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of sample types returned
           required: false
           schema:
             type: object
@@ -5716,30 +4786,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of samples returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of samples returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the samples by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of samples
@@ -5752,12 +4798,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the samples
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of samples returned
           required: false
           schema:
             type: object
@@ -5898,30 +4938,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of shifts returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of shifts returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the shifts by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of shifts
@@ -5934,12 +4950,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the shifts
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of shifts returned
           required: false
           schema:
             type: object
@@ -6080,30 +5090,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of studies returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of studies returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the studies by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of studies
@@ -6116,12 +5102,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the studies
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of studies returned
           required: false
           schema:
             type: object
@@ -6262,30 +5242,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of study investigations returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of study investigations returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the study investigations by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of study investigations
@@ -6298,12 +5254,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the study investigations
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of study investigations returned
           required: false
           schema:
             type: object
@@ -6444,30 +5394,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of user groups returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of user groups returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the user groups by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of user groups
@@ -6480,12 +5406,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the user groups
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of user groups returned
           required: false
           schema:
             type: object
@@ -6626,30 +5546,6 @@ paths:
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of users returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of users returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the users by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of users
@@ -6662,12 +5558,6 @@ paths:
         - name: where
           in: query
           description: Apply a where filter to the users
-          required: false
-          schema:
-            type: object
-        - name: limit
-          in: query
-          description: Limit the number of users returned
           required: false
           schema:
             type: object
