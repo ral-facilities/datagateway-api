@@ -20,12 +20,7 @@ The required python libraries:
    - [requests](https://2.python-requests.org/en/master/)
 
 ## Setup and running the API   
-The database connection needs to be set up first, currently it is set in `common/constants.py`  
-
-```python 
-class Constants:
-    DATABASE_URL = "mysql+pymysql://root:rootpw@localhost:13306/icatdb"
-```
+The database connection needs to be set up first. This is set in config.json
 
 
 To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
@@ -83,15 +78,17 @@ This is illustrated below.
     │   ├── swagger
     │   │   └── openapi.yaml
     │   └── main.py  
-    └── test
-        ├── resources
-        │   ├── entities
-        │   │   └──test_<entity>.py
-        │   └── non_entities
-        │       └── test_<non_entity>.py
-        └── test_base
-            ├── constants.py
-            └── rest_test.py
+    ├── test
+    │   ├── resources
+    │   │   ├── entities
+    │   │   │   └──test_<entity>.py
+    │   │   └── non_entities
+    │   │       └── test_<non_entity>.py
+    │   └── test_base
+    │       ├── constants.py
+    │       └── rest_test.py
+    ├── logs.log
+    └── config.json
  `````
 #### Main:
 The main entry point is in `/src/main.py`. This is where each endpoint route is defined and its 

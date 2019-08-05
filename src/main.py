@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 
+from common.config import config
 from common.logger_setup import setup_logger
 from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.applications_endpoints import *
@@ -200,4 +201,4 @@ api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=config.is_debug_mode())

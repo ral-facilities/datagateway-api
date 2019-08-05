@@ -1,5 +1,5 @@
 import logging.config
-
+from common.config import  config
 
 log_level = "DEBUG"
 LOG_FILE_NAME = "../logs.log"
@@ -9,7 +9,7 @@ logger_config = {
         "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d} %(levelname)s -%(message)s  ",
     }},
     "handlers": {"default": {
-        "level": "DEBUG",
+        "level": config.get_log_level(),
         "formatter": "default",
         "class": "logging.handlers.RotatingFileHandler",
         "filename": LOG_FILE_NAME,
@@ -17,7 +17,7 @@ logger_config = {
         "backupCount": 10
     }},
     "root": {
-        "level": log_level,
+        "level": config.get_log_level(),
         "handlers": ["default"]
     }
 }
