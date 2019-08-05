@@ -136,30 +136,6 @@ paths:''')
           required: false
           schema:
             type: object
-        - name: limit
-          in: query
-          description: Limit the number of {SwaggerGenerator.pascal_to_normal(endpoint).lower()} returned
-          required: false
-          schema:
-            type: object
-        - name: skip
-          in: query
-          description: Skip the number of {SwaggerGenerator.pascal_to_normal(endpoint).lower()} returned
-          required: false
-          schema:
-            type: object
-        - name: order
-          in: query
-          description: order the {SwaggerGenerator.pascal_to_normal(endpoint).lower()} by the given field
-          required: false
-          schema:
-            type: object
-        - name: include
-          in: query
-          description: include the related entities given
-          required: false
-          schema:
-            type: object
       responses:
         200:
           description: The count of {SwaggerGenerator.pascal_to_normal(endpoint).lower()}
