@@ -299,8 +299,8 @@ def get_filtered_row_count(table, filters):
     :return: int: the count of the rows
     """
     try:
-    log.info(f" getting count for {table.__tablename__}")
-    count_query = CountQuery(table)
+        log.info(f" getting count for {table.__tablename__}")
+        count_query = CountQuery(table)
     for filter in filters:
         if len(filter) == 0:
             pass
