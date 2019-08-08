@@ -1,0 +1,5633 @@
+openapi: "3.0.0"
+info:
+  title: DataGateway API
+  description: ICAT API to interface with the Data Gateway
+  version: "0"
+servers:
+  - url: http://localhost:5000
+
+paths:
+  /datasettypes:
+    get:
+      summary: Get dataset types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the dataset types
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of dataset types returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of dataset types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the dataset types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The dataset types found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more dataset types
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created dataset types
+    patch:
+      summary: Update one or multiple dataset types
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated dataset types
+  /datasettypes/count:
+    get:
+      summary: Return the count of the dataset types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the dataset types
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of dataset types
+  /datasettypes/findOne:
+    get:
+      summary: Return the first dataset types matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the dataset types
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of dataset types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the dataset types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first dataset types matching
+  /datasettypes/{id}:
+    get:
+      summary: Find the dataset types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the dataset types
+      responses:
+        '200': 
+          description: The matching dataset types
+        '404':
+          description: When no dataset types matches the given ID
+    delete:
+      summary: Delete the dataset types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the dataset types
+      responses:
+        '203':
+          description: Blank responses, when the dataset types is deleted
+        '404':
+          description: When the dataset types can't be found
+    patch:
+      summary: Update the dataset types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the dataset types
+      responses:
+        '200':
+          description: The updated dataset types
+        '404':
+          description: When the dataset types can't be found
+  /applications:
+    get:
+      summary: Get applications
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the applications
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of applications returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of applications returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the applications by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The applications found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more applications
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created applications
+    patch:
+      summary: Update one or multiple applications
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated applications
+  /applications/count:
+    get:
+      summary: Return the count of the applications
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the applications
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of applications
+  /applications/findOne:
+    get:
+      summary: Return the first applications matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the applications
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of applications returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the applications by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first applications matching
+  /applications/{id}:
+    get:
+      summary: Find the applications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the applications
+      responses:
+        '200': 
+          description: The matching applications
+        '404':
+          description: When no applications matches the given ID
+    delete:
+      summary: Delete the applications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the applications
+      responses:
+        '203':
+          description: Blank responses, when the applications is deleted
+        '404':
+          description: When the applications can't be found
+    patch:
+      summary: Update the applications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the applications
+      responses:
+        '200':
+          description: The updated applications
+        '404':
+          description: When the applications can't be found
+  /datacollectiondatafiles:
+    get:
+      summary: Get data collection datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datafiles
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of data collection datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The data collection datafiles found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more data collection datafiles
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created data collection datafiles
+    patch:
+      summary: Update one or multiple data collection datafiles
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated data collection datafiles
+  /datacollectiondatafiles/count:
+    get:
+      summary: Return the count of the data collection datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datafiles
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of data collection datafiles
+  /datacollectiondatafiles/findOne:
+    get:
+      summary: Return the first data collection datafiles matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datafiles
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first data collection datafiles matching
+  /datacollectiondatafiles/{id}:
+    get:
+      summary: Find the data collection datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datafiles
+      responses:
+        '200': 
+          description: The matching data collection datafiles
+        '404':
+          description: When no data collection datafiles matches the given ID
+    delete:
+      summary: Delete the data collection datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datafiles
+      responses:
+        '203':
+          description: Blank responses, when the data collection datafiles is deleted
+        '404':
+          description: When the data collection datafiles can't be found
+    patch:
+      summary: Update the data collection datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datafiles
+      responses:
+        '200':
+          description: The updated data collection datafiles
+        '404':
+          description: When the data collection datafiles can't be found
+  /datacollectiondatasets:
+    get:
+      summary: Get data collection datasets
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datasets
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of data collection datasets returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection datasets returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection datasets by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The data collection datasets found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more data collection datasets
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created data collection datasets
+    patch:
+      summary: Update one or multiple data collection datasets
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated data collection datasets
+  /datacollectiondatasets/count:
+    get:
+      summary: Return the count of the data collection datasets
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datasets
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of data collection datasets
+  /datacollectiondatasets/findOne:
+    get:
+      summary: Return the first data collection datasets matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection datasets
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection datasets returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection datasets by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first data collection datasets matching
+  /datacollectiondatasets/{id}:
+    get:
+      summary: Find the data collection datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datasets
+      responses:
+        '200': 
+          description: The matching data collection datasets
+        '404':
+          description: When no data collection datasets matches the given ID
+    delete:
+      summary: Delete the data collection datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datasets
+      responses:
+        '203':
+          description: Blank responses, when the data collection datasets is deleted
+        '404':
+          description: When the data collection datasets can't be found
+    patch:
+      summary: Update the data collection datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection datasets
+      responses:
+        '200':
+          description: The updated data collection datasets
+        '404':
+          description: When the data collection datasets can't be found
+  /datacollectionparameters:
+    get:
+      summary: Get data collection parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection parameters
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of data collection parameters returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The data collection parameters found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more data collection parameters
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created data collection parameters
+    patch:
+      summary: Update one or multiple data collection parameters
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated data collection parameters
+  /datacollectionparameters/count:
+    get:
+      summary: Return the count of the data collection parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection parameters
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of data collection parameters
+  /datacollectionparameters/findOne:
+    get:
+      summary: Return the first data collection parameters matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collection parameters
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collection parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collection parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first data collection parameters matching
+  /datacollectionparameters/{id}:
+    get:
+      summary: Find the data collection parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection parameters
+      responses:
+        '200': 
+          description: The matching data collection parameters
+        '404':
+          description: When no data collection parameters matches the given ID
+    delete:
+      summary: Delete the data collection parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection parameters
+      responses:
+        '203':
+          description: Blank responses, when the data collection parameters is deleted
+        '404':
+          description: When the data collection parameters can't be found
+    patch:
+      summary: Update the data collection parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collection parameters
+      responses:
+        '200':
+          description: The updated data collection parameters
+        '404':
+          description: When the data collection parameters can't be found
+  /datacollections:
+    get:
+      summary: Get data collections
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collections
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of data collections returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collections returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collections by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The data collections found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more data collections
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created data collections
+    patch:
+      summary: Update one or multiple data collections
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated data collections
+  /datacollections/count:
+    get:
+      summary: Return the count of the data collections
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collections
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of data collections
+  /datacollections/findOne:
+    get:
+      summary: Return the first data collections matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the data collections
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of data collections returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the data collections by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first data collections matching
+  /datacollections/{id}:
+    get:
+      summary: Find the data collections matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collections
+      responses:
+        '200': 
+          description: The matching data collections
+        '404':
+          description: When no data collections matches the given ID
+    delete:
+      summary: Delete the data collections matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collections
+      responses:
+        '203':
+          description: Blank responses, when the data collections is deleted
+        '404':
+          description: When the data collections can't be found
+    patch:
+      summary: Update the data collections matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the data collections
+      responses:
+        '200':
+          description: The updated data collections
+        '404':
+          description: When the data collections can't be found
+  /datafileformats:
+    get:
+      summary: Get datafile formats
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile formats
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of datafile formats returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafile formats returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafile formats by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The datafile formats found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more datafile formats
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created datafile formats
+    patch:
+      summary: Update one or multiple datafile formats
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated datafile formats
+  /datafileformats/count:
+    get:
+      summary: Return the count of the datafile formats
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile formats
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of datafile formats
+  /datafileformats/findOne:
+    get:
+      summary: Return the first datafile formats matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile formats
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafile formats returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafile formats by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first datafile formats matching
+  /datafileformats/{id}:
+    get:
+      summary: Find the datafile formats matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile formats
+      responses:
+        '200': 
+          description: The matching datafile formats
+        '404':
+          description: When no datafile formats matches the given ID
+    delete:
+      summary: Delete the datafile formats matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile formats
+      responses:
+        '203':
+          description: Blank responses, when the datafile formats is deleted
+        '404':
+          description: When the datafile formats can't be found
+    patch:
+      summary: Update the datafile formats matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile formats
+      responses:
+        '200':
+          description: The updated datafile formats
+        '404':
+          description: When the datafile formats can't be found
+  /datafileparameters:
+    get:
+      summary: Get datafile parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile parameters
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of datafile parameters returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafile parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafile parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The datafile parameters found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more datafile parameters
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created datafile parameters
+    patch:
+      summary: Update one or multiple datafile parameters
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated datafile parameters
+  /datafileparameters/count:
+    get:
+      summary: Return the count of the datafile parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile parameters
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of datafile parameters
+  /datafileparameters/findOne:
+    get:
+      summary: Return the first datafile parameters matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafile parameters
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafile parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafile parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first datafile parameters matching
+  /datafileparameters/{id}:
+    get:
+      summary: Find the datafile parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile parameters
+      responses:
+        '200': 
+          description: The matching datafile parameters
+        '404':
+          description: When no datafile parameters matches the given ID
+    delete:
+      summary: Delete the datafile parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile parameters
+      responses:
+        '203':
+          description: Blank responses, when the datafile parameters is deleted
+        '404':
+          description: When the datafile parameters can't be found
+    patch:
+      summary: Update the datafile parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafile parameters
+      responses:
+        '200':
+          description: The updated datafile parameters
+        '404':
+          description: When the datafile parameters can't be found
+  /datafiles:
+    get:
+      summary: Get datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafiles
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The datafiles found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more datafiles
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created datafiles
+    patch:
+      summary: Update one or multiple datafiles
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated datafiles
+  /datafiles/count:
+    get:
+      summary: Return the count of the datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafiles
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of datafiles
+  /datafiles/findOne:
+    get:
+      summary: Return the first datafiles matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datafiles
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first datafiles matching
+  /datafiles/{id}:
+    get:
+      summary: Find the datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafiles
+      responses:
+        '200': 
+          description: The matching datafiles
+        '404':
+          description: When no datafiles matches the given ID
+    delete:
+      summary: Delete the datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafiles
+      responses:
+        '203':
+          description: Blank responses, when the datafiles is deleted
+        '404':
+          description: When the datafiles can't be found
+    patch:
+      summary: Update the datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datafiles
+      responses:
+        '200':
+          description: The updated datafiles
+        '404':
+          description: When the datafiles can't be found
+  /datasets:
+    get:
+      summary: Get datasets
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datasets
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of datasets returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datasets returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datasets by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The datasets found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more datasets
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created datasets
+    patch:
+      summary: Update one or multiple datasets
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated datasets
+  /datasets/count:
+    get:
+      summary: Return the count of the datasets
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datasets
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of datasets
+  /datasets/findOne:
+    get:
+      summary: Return the first datasets matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the datasets
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of datasets returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the datasets by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first datasets matching
+  /datasets/{id}:
+    get:
+      summary: Find the datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datasets
+      responses:
+        '200': 
+          description: The matching datasets
+        '404':
+          description: When no datasets matches the given ID
+    delete:
+      summary: Delete the datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datasets
+      responses:
+        '203':
+          description: Blank responses, when the datasets is deleted
+        '404':
+          description: When the datasets can't be found
+    patch:
+      summary: Update the datasets matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the datasets
+      responses:
+        '200':
+          description: The updated datasets
+        '404':
+          description: When the datasets can't be found
+  /facilities:
+    get:
+      summary: Get facilities
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facilities
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of facilities returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of facilities returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the facilities by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The facilities found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more facilities
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created facilities
+    patch:
+      summary: Update one or multiple facilities
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated facilities
+  /facilities/count:
+    get:
+      summary: Return the count of the facilities
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facilities
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of facilities
+  /facilities/findOne:
+    get:
+      summary: Return the first facilities matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facilities
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of facilities returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the facilities by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first facilities matching
+  /facilities/{id}:
+    get:
+      summary: Find the facilities matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facilities
+      responses:
+        '200': 
+          description: The matching facilities
+        '404':
+          description: When no facilities matches the given ID
+    delete:
+      summary: Delete the facilities matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facilities
+      responses:
+        '203':
+          description: Blank responses, when the facilities is deleted
+        '404':
+          description: When the facilities can't be found
+    patch:
+      summary: Update the facilities matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facilities
+      responses:
+        '200':
+          description: The updated facilities
+        '404':
+          description: When the facilities can't be found
+  /facilitycycles:
+    get:
+      summary: Get facility cycles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facility cycles
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of facility cycles returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of facility cycles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the facility cycles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The facility cycles found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more facility cycles
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created facility cycles
+    patch:
+      summary: Update one or multiple facility cycles
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated facility cycles
+  /facilitycycles/count:
+    get:
+      summary: Return the count of the facility cycles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facility cycles
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of facility cycles
+  /facilitycycles/findOne:
+    get:
+      summary: Return the first facility cycles matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the facility cycles
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of facility cycles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the facility cycles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first facility cycles matching
+  /facilitycycles/{id}:
+    get:
+      summary: Find the facility cycles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facility cycles
+      responses:
+        '200': 
+          description: The matching facility cycles
+        '404':
+          description: When no facility cycles matches the given ID
+    delete:
+      summary: Delete the facility cycles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facility cycles
+      responses:
+        '203':
+          description: Blank responses, when the facility cycles is deleted
+        '404':
+          description: When the facility cycles can't be found
+    patch:
+      summary: Update the facility cycles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the facility cycles
+      responses:
+        '200':
+          description: The updated facility cycles
+        '404':
+          description: When the facility cycles can't be found
+  /groupings:
+    get:
+      summary: Get groupings
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the groupings
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of groupings returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of groupings returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the groupings by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The groupings found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more groupings
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created groupings
+    patch:
+      summary: Update one or multiple groupings
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated groupings
+  /groupings/count:
+    get:
+      summary: Return the count of the groupings
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the groupings
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of groupings
+  /groupings/findOne:
+    get:
+      summary: Return the first groupings matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the groupings
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of groupings returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the groupings by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first groupings matching
+  /groupings/{id}:
+    get:
+      summary: Find the groupings matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the groupings
+      responses:
+        '200': 
+          description: The matching groupings
+        '404':
+          description: When no groupings matches the given ID
+    delete:
+      summary: Delete the groupings matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the groupings
+      responses:
+        '203':
+          description: Blank responses, when the groupings is deleted
+        '404':
+          description: When the groupings can't be found
+    patch:
+      summary: Update the groupings matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the groupings
+      responses:
+        '200':
+          description: The updated groupings
+        '404':
+          description: When the groupings can't be found
+  /instrumentscientists:
+    get:
+      summary: Get instrument scientists
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instrument scientists
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of instrument scientists returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of instrument scientists returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the instrument scientists by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The instrument scientists found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more instrument scientists
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created instrument scientists
+    patch:
+      summary: Update one or multiple instrument scientists
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated instrument scientists
+  /instrumentscientists/count:
+    get:
+      summary: Return the count of the instrument scientists
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instrument scientists
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of instrument scientists
+  /instrumentscientists/findOne:
+    get:
+      summary: Return the first instrument scientists matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instrument scientists
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of instrument scientists returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the instrument scientists by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first instrument scientists matching
+  /instrumentscientists/{id}:
+    get:
+      summary: Find the instrument scientists matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instrument scientists
+      responses:
+        '200': 
+          description: The matching instrument scientists
+        '404':
+          description: When no instrument scientists matches the given ID
+    delete:
+      summary: Delete the instrument scientists matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instrument scientists
+      responses:
+        '203':
+          description: Blank responses, when the instrument scientists is deleted
+        '404':
+          description: When the instrument scientists can't be found
+    patch:
+      summary: Update the instrument scientists matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instrument scientists
+      responses:
+        '200':
+          description: The updated instrument scientists
+        '404':
+          description: When the instrument scientists can't be found
+  /instruments:
+    get:
+      summary: Get instruments
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instruments
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of instruments returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of instruments returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the instruments by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The instruments found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more instruments
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created instruments
+    patch:
+      summary: Update one or multiple instruments
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated instruments
+  /instruments/count:
+    get:
+      summary: Return the count of the instruments
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instruments
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of instruments
+  /instruments/findOne:
+    get:
+      summary: Return the first instruments matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the instruments
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of instruments returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the instruments by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first instruments matching
+  /instruments/{id}:
+    get:
+      summary: Find the instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instruments
+      responses:
+        '200': 
+          description: The matching instruments
+        '404':
+          description: When no instruments matches the given ID
+    delete:
+      summary: Delete the instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instruments
+      responses:
+        '203':
+          description: Blank responses, when the instruments is deleted
+        '404':
+          description: When the instruments can't be found
+    patch:
+      summary: Update the instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the instruments
+      responses:
+        '200':
+          description: The updated instruments
+        '404':
+          description: When the instruments can't be found
+  /investigationgroups:
+    get:
+      summary: Get investigation groups
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation groups
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigation groups returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation groups returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation groups by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigation groups found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigation groups
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigation groups
+    patch:
+      summary: Update one or multiple investigation groups
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigation groups
+  /investigationgroups/count:
+    get:
+      summary: Return the count of the investigation groups
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation groups
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigation groups
+  /investigationgroups/findOne:
+    get:
+      summary: Return the first investigation groups matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation groups
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation groups returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation groups by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigation groups matching
+  /investigationgroups/{id}:
+    get:
+      summary: Find the investigation groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation groups
+      responses:
+        '200': 
+          description: The matching investigation groups
+        '404':
+          description: When no investigation groups matches the given ID
+    delete:
+      summary: Delete the investigation groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation groups
+      responses:
+        '203':
+          description: Blank responses, when the investigation groups is deleted
+        '404':
+          description: When the investigation groups can't be found
+    patch:
+      summary: Update the investigation groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation groups
+      responses:
+        '200':
+          description: The updated investigation groups
+        '404':
+          description: When the investigation groups can't be found
+  /investigationinstruments:
+    get:
+      summary: Get investigation instruments
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation instruments
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigation instruments returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation instruments returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation instruments by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigation instruments found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigation instruments
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigation instruments
+    patch:
+      summary: Update one or multiple investigation instruments
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigation instruments
+  /investigationinstruments/count:
+    get:
+      summary: Return the count of the investigation instruments
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation instruments
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigation instruments
+  /investigationinstruments/findOne:
+    get:
+      summary: Return the first investigation instruments matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation instruments
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation instruments returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation instruments by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigation instruments matching
+  /investigationinstruments/{id}:
+    get:
+      summary: Find the investigation instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation instruments
+      responses:
+        '200': 
+          description: The matching investigation instruments
+        '404':
+          description: When no investigation instruments matches the given ID
+    delete:
+      summary: Delete the investigation instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation instruments
+      responses:
+        '203':
+          description: Blank responses, when the investigation instruments is deleted
+        '404':
+          description: When the investigation instruments can't be found
+    patch:
+      summary: Update the investigation instruments matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation instruments
+      responses:
+        '200':
+          description: The updated investigation instruments
+        '404':
+          description: When the investigation instruments can't be found
+  /investigationparameters:
+    get:
+      summary: Get investigation parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation parameters
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigation parameters returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigation parameters found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigation parameters
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigation parameters
+    patch:
+      summary: Update one or multiple investigation parameters
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigation parameters
+  /investigationparameters/count:
+    get:
+      summary: Return the count of the investigation parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation parameters
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigation parameters
+  /investigationparameters/findOne:
+    get:
+      summary: Return the first investigation parameters matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation parameters
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigation parameters matching
+  /investigationparameters/{id}:
+    get:
+      summary: Find the investigation parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation parameters
+      responses:
+        '200': 
+          description: The matching investigation parameters
+        '404':
+          description: When no investigation parameters matches the given ID
+    delete:
+      summary: Delete the investigation parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation parameters
+      responses:
+        '203':
+          description: Blank responses, when the investigation parameters is deleted
+        '404':
+          description: When the investigation parameters can't be found
+    patch:
+      summary: Update the investigation parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation parameters
+      responses:
+        '200':
+          description: The updated investigation parameters
+        '404':
+          description: When the investigation parameters can't be found
+  /investigationtypes:
+    get:
+      summary: Get investigation types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation types
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigation types returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigation types found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigation types
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigation types
+    patch:
+      summary: Update one or multiple investigation types
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigation types
+  /investigationtypes/count:
+    get:
+      summary: Return the count of the investigation types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation types
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigation types
+  /investigationtypes/findOne:
+    get:
+      summary: Return the first investigation types matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation types
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigation types matching
+  /investigationtypes/{id}:
+    get:
+      summary: Find the investigation types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation types
+      responses:
+        '200': 
+          description: The matching investigation types
+        '404':
+          description: When no investigation types matches the given ID
+    delete:
+      summary: Delete the investigation types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation types
+      responses:
+        '203':
+          description: Blank responses, when the investigation types is deleted
+        '404':
+          description: When the investigation types can't be found
+    patch:
+      summary: Update the investigation types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation types
+      responses:
+        '200':
+          description: The updated investigation types
+        '404':
+          description: When the investigation types can't be found
+  /investigationusers:
+    get:
+      summary: Get investigation users
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation users
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigation users returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation users returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation users by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigation users found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigation users
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigation users
+    patch:
+      summary: Update one or multiple investigation users
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigation users
+  /investigationusers/count:
+    get:
+      summary: Return the count of the investigation users
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation users
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigation users
+  /investigationusers/findOne:
+    get:
+      summary: Return the first investigation users matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigation users
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigation users returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigation users by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigation users matching
+  /investigationusers/{id}:
+    get:
+      summary: Find the investigation users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation users
+      responses:
+        '200': 
+          description: The matching investigation users
+        '404':
+          description: When no investigation users matches the given ID
+    delete:
+      summary: Delete the investigation users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation users
+      responses:
+        '203':
+          description: Blank responses, when the investigation users is deleted
+        '404':
+          description: When the investigation users can't be found
+    patch:
+      summary: Update the investigation users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigation users
+      responses:
+        '200':
+          description: The updated investigation users
+        '404':
+          description: When the investigation users can't be found
+  /investigations:
+    get:
+      summary: Get investigations
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigations
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of investigations returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigations returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigations by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The investigations found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more investigations
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created investigations
+    patch:
+      summary: Update one or multiple investigations
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated investigations
+  /investigations/count:
+    get:
+      summary: Return the count of the investigations
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigations
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of investigations
+  /investigations/findOne:
+    get:
+      summary: Return the first investigations matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the investigations
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of investigations returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the investigations by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first investigations matching
+  /investigations/{id}:
+    get:
+      summary: Find the investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigations
+      responses:
+        '200': 
+          description: The matching investigations
+        '404':
+          description: When no investigations matches the given ID
+    delete:
+      summary: Delete the investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigations
+      responses:
+        '203':
+          description: Blank responses, when the investigations is deleted
+        '404':
+          description: When the investigations can't be found
+    patch:
+      summary: Update the investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the investigations
+      responses:
+        '200':
+          description: The updated investigations
+        '404':
+          description: When the investigations can't be found
+  /jobs:
+    get:
+      summary: Get jobs
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the jobs
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of jobs returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of jobs returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the jobs by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The jobs found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more jobs
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created jobs
+    patch:
+      summary: Update one or multiple jobs
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated jobs
+  /jobs/count:
+    get:
+      summary: Return the count of the jobs
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the jobs
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of jobs
+  /jobs/findOne:
+    get:
+      summary: Return the first jobs matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the jobs
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of jobs returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the jobs by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first jobs matching
+  /jobs/{id}:
+    get:
+      summary: Find the jobs matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the jobs
+      responses:
+        '200': 
+          description: The matching jobs
+        '404':
+          description: When no jobs matches the given ID
+    delete:
+      summary: Delete the jobs matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the jobs
+      responses:
+        '203':
+          description: Blank responses, when the jobs is deleted
+        '404':
+          description: When the jobs can't be found
+    patch:
+      summary: Update the jobs matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the jobs
+      responses:
+        '200':
+          description: The updated jobs
+        '404':
+          description: When the jobs can't be found
+  /keywords:
+    get:
+      summary: Get keywords
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the keywords
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of keywords returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of keywords returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the keywords by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The keywords found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more keywords
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created keywords
+    patch:
+      summary: Update one or multiple keywords
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated keywords
+  /keywords/count:
+    get:
+      summary: Return the count of the keywords
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the keywords
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of keywords
+  /keywords/findOne:
+    get:
+      summary: Return the first keywords matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the keywords
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of keywords returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the keywords by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first keywords matching
+  /keywords/{id}:
+    get:
+      summary: Find the keywords matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the keywords
+      responses:
+        '200': 
+          description: The matching keywords
+        '404':
+          description: When no keywords matches the given ID
+    delete:
+      summary: Delete the keywords matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the keywords
+      responses:
+        '203':
+          description: Blank responses, when the keywords is deleted
+        '404':
+          description: When the keywords can't be found
+    patch:
+      summary: Update the keywords matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the keywords
+      responses:
+        '200':
+          description: The updated keywords
+        '404':
+          description: When the keywords can't be found
+  /parametertypes:
+    get:
+      summary: Get parameter types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the parameter types
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of parameter types returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of parameter types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the parameter types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The parameter types found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more parameter types
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created parameter types
+    patch:
+      summary: Update one or multiple parameter types
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated parameter types
+  /parametertypes/count:
+    get:
+      summary: Return the count of the parameter types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the parameter types
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of parameter types
+  /parametertypes/findOne:
+    get:
+      summary: Return the first parameter types matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the parameter types
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of parameter types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the parameter types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first parameter types matching
+  /parametertypes/{id}:
+    get:
+      summary: Find the parameter types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the parameter types
+      responses:
+        '200': 
+          description: The matching parameter types
+        '404':
+          description: When no parameter types matches the given ID
+    delete:
+      summary: Delete the parameter types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the parameter types
+      responses:
+        '203':
+          description: Blank responses, when the parameter types is deleted
+        '404':
+          description: When the parameter types can't be found
+    patch:
+      summary: Update the parameter types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the parameter types
+      responses:
+        '200':
+          description: The updated parameter types
+        '404':
+          description: When the parameter types can't be found
+  /permissiblestringvalues:
+    get:
+      summary: Get permissible string values
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the permissible string values
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of permissible string values returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of permissible string values returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the permissible string values by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The permissible string values found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more permissible string values
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created permissible string values
+    patch:
+      summary: Update one or multiple permissible string values
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated permissible string values
+  /permissiblestringvalues/count:
+    get:
+      summary: Return the count of the permissible string values
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the permissible string values
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of permissible string values
+  /permissiblestringvalues/findOne:
+    get:
+      summary: Return the first permissible string values matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the permissible string values
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of permissible string values returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the permissible string values by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first permissible string values matching
+  /permissiblestringvalues/{id}:
+    get:
+      summary: Find the permissible string values matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the permissible string values
+      responses:
+        '200': 
+          description: The matching permissible string values
+        '404':
+          description: When no permissible string values matches the given ID
+    delete:
+      summary: Delete the permissible string values matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the permissible string values
+      responses:
+        '203':
+          description: Blank responses, when the permissible string values is deleted
+        '404':
+          description: When the permissible string values can't be found
+    patch:
+      summary: Update the permissible string values matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the permissible string values
+      responses:
+        '200':
+          description: The updated permissible string values
+        '404':
+          description: When the permissible string values can't be found
+  /publicsteps:
+    get:
+      summary: Get public steps
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the public steps
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of public steps returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of public steps returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the public steps by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The public steps found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more public steps
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created public steps
+    patch:
+      summary: Update one or multiple public steps
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated public steps
+  /publicsteps/count:
+    get:
+      summary: Return the count of the public steps
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the public steps
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of public steps
+  /publicsteps/findOne:
+    get:
+      summary: Return the first public steps matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the public steps
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of public steps returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the public steps by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first public steps matching
+  /publicsteps/{id}:
+    get:
+      summary: Find the public steps matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the public steps
+      responses:
+        '200': 
+          description: The matching public steps
+        '404':
+          description: When no public steps matches the given ID
+    delete:
+      summary: Delete the public steps matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the public steps
+      responses:
+        '203':
+          description: Blank responses, when the public steps is deleted
+        '404':
+          description: When the public steps can't be found
+    patch:
+      summary: Update the public steps matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the public steps
+      responses:
+        '200':
+          description: The updated public steps
+        '404':
+          description: When the public steps can't be found
+  /publications:
+    get:
+      summary: Get publications
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the publications
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of publications returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of publications returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the publications by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The publications found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more publications
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created publications
+    patch:
+      summary: Update one or multiple publications
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated publications
+  /publications/count:
+    get:
+      summary: Return the count of the publications
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the publications
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of publications
+  /publications/findOne:
+    get:
+      summary: Return the first publications matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the publications
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of publications returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the publications by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first publications matching
+  /publications/{id}:
+    get:
+      summary: Find the publications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the publications
+      responses:
+        '200': 
+          description: The matching publications
+        '404':
+          description: When no publications matches the given ID
+    delete:
+      summary: Delete the publications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the publications
+      responses:
+        '203':
+          description: Blank responses, when the publications is deleted
+        '404':
+          description: When the publications can't be found
+    patch:
+      summary: Update the publications matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the publications
+      responses:
+        '200':
+          description: The updated publications
+        '404':
+          description: When the publications can't be found
+  /relateddatafiles:
+    get:
+      summary: Get related datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the related datafiles
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of related datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of related datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the related datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The related datafiles found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more related datafiles
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created related datafiles
+    patch:
+      summary: Update one or multiple related datafiles
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated related datafiles
+  /relateddatafiles/count:
+    get:
+      summary: Return the count of the related datafiles
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the related datafiles
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of related datafiles
+  /relateddatafiles/findOne:
+    get:
+      summary: Return the first related datafiles matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the related datafiles
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of related datafiles returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the related datafiles by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first related datafiles matching
+  /relateddatafiles/{id}:
+    get:
+      summary: Find the related datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the related datafiles
+      responses:
+        '200': 
+          description: The matching related datafiles
+        '404':
+          description: When no related datafiles matches the given ID
+    delete:
+      summary: Delete the related datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the related datafiles
+      responses:
+        '203':
+          description: Blank responses, when the related datafiles is deleted
+        '404':
+          description: When the related datafiles can't be found
+    patch:
+      summary: Update the related datafiles matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the related datafiles
+      responses:
+        '200':
+          description: The updated related datafiles
+        '404':
+          description: When the related datafiles can't be found
+  /rules:
+    get:
+      summary: Get rules
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the rules
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of rules returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of rules returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the rules by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The rules found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more rules
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created rules
+    patch:
+      summary: Update one or multiple rules
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated rules
+  /rules/count:
+    get:
+      summary: Return the count of the rules
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the rules
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of rules
+  /rules/findOne:
+    get:
+      summary: Return the first rules matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the rules
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of rules returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the rules by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first rules matching
+  /rules/{id}:
+    get:
+      summary: Find the rules matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the rules
+      responses:
+        '200': 
+          description: The matching rules
+        '404':
+          description: When no rules matches the given ID
+    delete:
+      summary: Delete the rules matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the rules
+      responses:
+        '203':
+          description: Blank responses, when the rules is deleted
+        '404':
+          description: When the rules can't be found
+    patch:
+      summary: Update the rules matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the rules
+      responses:
+        '200':
+          description: The updated rules
+        '404':
+          description: When the rules can't be found
+  /sampleparameters:
+    get:
+      summary: Get sample parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample parameters
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of sample parameters returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of sample parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the sample parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The sample parameters found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more sample parameters
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created sample parameters
+    patch:
+      summary: Update one or multiple sample parameters
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated sample parameters
+  /sampleparameters/count:
+    get:
+      summary: Return the count of the sample parameters
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample parameters
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of sample parameters
+  /sampleparameters/findOne:
+    get:
+      summary: Return the first sample parameters matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample parameters
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of sample parameters returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the sample parameters by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first sample parameters matching
+  /sampleparameters/{id}:
+    get:
+      summary: Find the sample parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample parameters
+      responses:
+        '200': 
+          description: The matching sample parameters
+        '404':
+          description: When no sample parameters matches the given ID
+    delete:
+      summary: Delete the sample parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample parameters
+      responses:
+        '203':
+          description: Blank responses, when the sample parameters is deleted
+        '404':
+          description: When the sample parameters can't be found
+    patch:
+      summary: Update the sample parameters matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample parameters
+      responses:
+        '200':
+          description: The updated sample parameters
+        '404':
+          description: When the sample parameters can't be found
+  /sampletypes:
+    get:
+      summary: Get sample types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample types
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of sample types returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of sample types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the sample types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The sample types found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more sample types
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created sample types
+    patch:
+      summary: Update one or multiple sample types
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated sample types
+  /sampletypes/count:
+    get:
+      summary: Return the count of the sample types
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample types
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of sample types
+  /sampletypes/findOne:
+    get:
+      summary: Return the first sample types matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the sample types
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of sample types returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the sample types by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first sample types matching
+  /sampletypes/{id}:
+    get:
+      summary: Find the sample types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample types
+      responses:
+        '200': 
+          description: The matching sample types
+        '404':
+          description: When no sample types matches the given ID
+    delete:
+      summary: Delete the sample types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample types
+      responses:
+        '203':
+          description: Blank responses, when the sample types is deleted
+        '404':
+          description: When the sample types can't be found
+    patch:
+      summary: Update the sample types matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the sample types
+      responses:
+        '200':
+          description: The updated sample types
+        '404':
+          description: When the sample types can't be found
+  /samples:
+    get:
+      summary: Get samples
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the samples
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of samples returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of samples returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the samples by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The samples found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more samples
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created samples
+    patch:
+      summary: Update one or multiple samples
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated samples
+  /samples/count:
+    get:
+      summary: Return the count of the samples
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the samples
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of samples
+  /samples/findOne:
+    get:
+      summary: Return the first samples matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the samples
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of samples returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the samples by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first samples matching
+  /samples/{id}:
+    get:
+      summary: Find the samples matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the samples
+      responses:
+        '200': 
+          description: The matching samples
+        '404':
+          description: When no samples matches the given ID
+    delete:
+      summary: Delete the samples matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the samples
+      responses:
+        '203':
+          description: Blank responses, when the samples is deleted
+        '404':
+          description: When the samples can't be found
+    patch:
+      summary: Update the samples matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the samples
+      responses:
+        '200':
+          description: The updated samples
+        '404':
+          description: When the samples can't be found
+  /shifts:
+    get:
+      summary: Get shifts
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the shifts
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of shifts returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of shifts returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the shifts by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The shifts found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more shifts
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created shifts
+    patch:
+      summary: Update one or multiple shifts
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated shifts
+  /shifts/count:
+    get:
+      summary: Return the count of the shifts
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the shifts
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of shifts
+  /shifts/findOne:
+    get:
+      summary: Return the first shifts matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the shifts
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of shifts returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the shifts by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first shifts matching
+  /shifts/{id}:
+    get:
+      summary: Find the shifts matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the shifts
+      responses:
+        '200': 
+          description: The matching shifts
+        '404':
+          description: When no shifts matches the given ID
+    delete:
+      summary: Delete the shifts matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the shifts
+      responses:
+        '203':
+          description: Blank responses, when the shifts is deleted
+        '404':
+          description: When the shifts can't be found
+    patch:
+      summary: Update the shifts matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the shifts
+      responses:
+        '200':
+          description: The updated shifts
+        '404':
+          description: When the shifts can't be found
+  /studies:
+    get:
+      summary: Get studies
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the studies
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of studies returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of studies returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the studies by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The studies found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more studies
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created studies
+    patch:
+      summary: Update one or multiple studies
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated studies
+  /studies/count:
+    get:
+      summary: Return the count of the studies
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the studies
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of studies
+  /studies/findOne:
+    get:
+      summary: Return the first studies matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the studies
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of studies returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the studies by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first studies matching
+  /studies/{id}:
+    get:
+      summary: Find the studies matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the studies
+      responses:
+        '200': 
+          description: The matching studies
+        '404':
+          description: When no studies matches the given ID
+    delete:
+      summary: Delete the studies matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the studies
+      responses:
+        '203':
+          description: Blank responses, when the studies is deleted
+        '404':
+          description: When the studies can't be found
+    patch:
+      summary: Update the studies matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the studies
+      responses:
+        '200':
+          description: The updated studies
+        '404':
+          description: When the studies can't be found
+  /studyinvestigations:
+    get:
+      summary: Get study investigations
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the study investigations
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of study investigations returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of study investigations returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the study investigations by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The study investigations found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more study investigations
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created study investigations
+    patch:
+      summary: Update one or multiple study investigations
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated study investigations
+  /studyinvestigations/count:
+    get:
+      summary: Return the count of the study investigations
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the study investigations
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of study investigations
+  /studyinvestigations/findOne:
+    get:
+      summary: Return the first study investigations matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the study investigations
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of study investigations returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the study investigations by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first study investigations matching
+  /studyinvestigations/{id}:
+    get:
+      summary: Find the study investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the study investigations
+      responses:
+        '200': 
+          description: The matching study investigations
+        '404':
+          description: When no study investigations matches the given ID
+    delete:
+      summary: Delete the study investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the study investigations
+      responses:
+        '203':
+          description: Blank responses, when the study investigations is deleted
+        '404':
+          description: When the study investigations can't be found
+    patch:
+      summary: Update the study investigations matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the study investigations
+      responses:
+        '200':
+          description: The updated study investigations
+        '404':
+          description: When the study investigations can't be found
+  /usergroups:
+    get:
+      summary: Get user groups
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the user groups
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of user groups returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of user groups returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the user groups by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The user groups found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more user groups
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created user groups
+    patch:
+      summary: Update one or multiple user groups
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated user groups
+  /usergroups/count:
+    get:
+      summary: Return the count of the user groups
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the user groups
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of user groups
+  /usergroups/findOne:
+    get:
+      summary: Return the first user groups matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the user groups
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of user groups returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the user groups by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first user groups matching
+  /usergroups/{id}:
+    get:
+      summary: Find the user groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the user groups
+      responses:
+        '200': 
+          description: The matching user groups
+        '404':
+          description: When no user groups matches the given ID
+    delete:
+      summary: Delete the user groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the user groups
+      responses:
+        '203':
+          description: Blank responses, when the user groups is deleted
+        '404':
+          description: When the user groups can't be found
+    patch:
+      summary: Update the user groups matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the user groups
+      responses:
+        '200':
+          description: The updated user groups
+        '404':
+          description: When the user groups can't be found
+  /users:
+    get:
+      summary: Get users
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the users
+          required: false
+          schema:
+            type: object
+        - name: limit
+          in: query
+          description: Limit the number of users returned
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of users returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the users by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        '200':
+           description: The users found.
+        '404':
+          description: When no result is found
+    post:
+      summary: Create one of more users
+      tags:
+        - Entities
+      responses:
+        '200': 
+          description: The created users
+    patch:
+      summary: Update one or multiple users
+      tags:
+        - Entities
+      responses:
+        200:
+          description: The updated users
+  /users/count:
+    get:
+      summary: Return the count of the users
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the users
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The count of users
+  /users/findOne:
+    get:
+      summary: Return the first users matching a given filter
+      tags:
+        - Entities
+      parameters:
+        - name: where
+          in: query
+          description: Apply a where filter to the users
+          required: false
+          schema:
+            type: object
+        - name: skip
+          in: query
+          description: Skip the number of users returned
+          required: false
+          schema:
+            type: object
+        - name: order
+          in: query
+          description: order the users by the given field
+          required: false
+          schema:
+            type: object
+        - name: include
+          in: query
+          description: include the related entities given
+          required: false
+          schema:
+            type: object
+      responses:
+        200:
+          description: The first users matching
+  /users/{id}:
+    get:
+      summary: Find the users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the users
+      responses:
+        '200': 
+          description: The matching users
+        '404':
+          description: When no users matches the given ID
+    delete:
+      summary: Delete the users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the users
+      responses:
+        '203':
+          description: Blank responses, when the users is deleted
+        '404':
+          description: When the users can't be found
+    patch:
+      summary: Update the users matching the given ID
+      tags:
+        - Entities
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The id matching the users
+      responses:
+        '200':
+          description: The updated users
+        '404':
+          description: When the users can't be found
