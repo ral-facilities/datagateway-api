@@ -222,11 +222,14 @@ def get_row_by_id(table, id):
     :param id: the id of the record to find
     :return: the record retrieved
     """
-    log.info(f" Querying {table.__tablename__} for record with ID: {id}")
     read_query = ReadQuery(table)
-    where_filter = WhereFilter("ID", id)
-    where_filter.apply_filter(read_query)
-    return read_query.get_single_result()
+    try:
+        log.info(f" Querying {table.__tablename__} for record with ID: {id}")
+        where_filter = WhereFilter("ID", id)
+        where_filter.apply_filter(read_query)
+        return read_query.get_single_result()
+    finally:
+        read_query.session.close()
 
 
 def delete_row_by_id(table, id):
@@ -295,6 +298,7 @@ def get_filtered_row_count(table, filters):
     :param filters: the filters to be applied to the query
     :return: int: the count of the rows
     """
+    try:
     log.info(f" getting count for {table.__tablename__}")
     count_query = CountQuery(table)
     for filter in filters:
