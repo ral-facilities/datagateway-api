@@ -58,22 +58,16 @@ class ReadQuery(Query):
         self.commit_changes()
 
     def get_single_result(self):
-        try:
-            result = self.base_query.first()
-            if result is not None:
-                return result
-            raise MissingRecordError(" No result found")
-        finally:
-            self.session.close()
+        result = self.base_query.first()
+        if result is not None:
+            return result
+        raise MissingRecordError(" No result found")
 
     def get_all_results(self):
-        try:
-            results = self.base_query.all()
-            if results is not None:
-                return results
-            raise MissingRecordError(" No results found")
-        finally:
-            self.session.close()
+        results = self.base_query.all()
+        if results is not None:
+            return results
+        raise MissingRecordError(" No results found")
 
 
 class CreateQuery(Query):
@@ -267,17 +261,20 @@ def get_rows_by_filter(table, filters):
     :return: A list of the rows returned in dictionary form
     """
     query = ReadQuery(table)
-    for query_filter in filters:
-        if len(query_filter) == 0:
-            pass
-        else:
-            QueryFilterFactory.get_query_filter(query_filter).apply_filter(query)
-    results = query.get_all_results()
-    if query.include_related_entities:
+    try:
         for query_filter in filters:
-            if list(query_filter)[0].lower() == "include":
-                return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-    return list(map(lambda x: x.to_dict(), results))
+            if len(query_filter) == 0:
+                pass
+            else:
+                QueryFilterFactory.get_query_filter(query_filter).apply_filter(query)
+        results = query.get_all_results()
+        if query.include_related_entities:
+            for query_filter in filters:
+                if list(query_filter)[0].lower() == "include":
+                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+        return list(map(lambda x: x.to_dict(), results))
+    finally:
+        query.session.close()
 
 
 def get_first_filtered_row(table, filters):
