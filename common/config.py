@@ -27,5 +27,10 @@ class Config(object):
         except:
             sys.exit("Missing config value, debug_mode")
 
+    def is_generate_swagger(self):
+        try:
+            return self.config["generate_swagger"]
+        except:
+            sys.exit("Missing config value, generate_swagger")
 
 config = Config()

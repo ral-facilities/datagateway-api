@@ -3,7 +3,6 @@ from flask_restful import Api
 
 from common.config import config
 from common.logger_setup import setup_logger
-from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.applications_endpoints import *
 from src.resources.entities.datacollection_datafiles_endpoints import *
 from src.resources.entities.datacollection_datasets_endpoints import *
@@ -12,6 +11,7 @@ from src.resources.entities.datacollections_endpoints import *
 from src.resources.entities.datafile_formats_endpoints import *
 from src.resources.entities.datafile_parameters_endpoints import *
 from src.resources.entities.datafiles_endpoints import *
+from src.resources.entities.dataset_type_endpoints import *
 from src.resources.entities.datasets_endpoints import *
 from src.resources.entities.facilities_endpoints import *
 from src.resources.entities.facility_cycles_endpoints import *
@@ -35,17 +35,18 @@ from src.resources.entities.rules_endpoints import *
 from src.resources.entities.sample_parameters_endpoints import *
 from src.resources.entities.sample_types_endpoints import *
 from src.resources.entities.samples_endpoints import *
-from src.resources.non_entities.sessions_endpoints import *
 from src.resources.entities.shifts_endpoints import *
 from src.resources.entities.studies_endpoints import *
 from src.resources.entities.study_investigations_endpoints import *
 from src.resources.entities.user_groups_endpoints import *
 from src.resources.entities.users_endpoints import *
+from src.resources.non_entities.sessions_endpoints import *
+from src.swagger.swagger_generator import swagger_gen
 
+swagger_gen.write_swagger_spec()
 
 app = Flask(__name__)
 api = Api(app)
-
 
 setup_logger()
 
@@ -69,7 +70,7 @@ api.add_resource(DataCollectionParameters, "/datacollectionparameters")
 api.add_resource(DataCollectionParametersWithID, "/datacollectionparameters/<string:id>")
 api.add_resource(DataCollectionParametersCount, "/datacollectionparameters/count")
 api.add_resource(DataCollectionParametersFindOne, "/datacollectionparameters/findOne")
-api.add_resource(Datafiles,"/datafiles")
+api.add_resource(Datafiles, "/datafiles")
 api.add_resource(DatafilesWithID, "/datafiles/<string:id>")
 api.add_resource(DatafilesFindOne, "/datafiles/findOne")
 api.add_resource(DatafilesCount, "/datafiles/count")
@@ -198,7 +199,6 @@ api.add_resource(UserGroups, "/usergroups")
 api.add_resource(UserGroupsWithID, "/usergroups/<string:id>")
 api.add_resource(UserGroupsCount, "/usergroups/count")
 api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
-
 
 if __name__ == "__main__":
     app.run(debug=config.is_debug_mode())
