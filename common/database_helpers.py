@@ -123,6 +123,8 @@ class QueryFilter(ABC):
 
 
 class WhereFilter(QueryFilter):
+    precedence = 0
+
     def __init__(self, field, value):
         self.field = field
         self.value = value
@@ -132,6 +134,8 @@ class WhereFilter(QueryFilter):
 
 
 class OrderFilter(QueryFilter):
+    precedence = 1
+
     def __init__(self, field, direction):
         self.field = field
         self.direction = direction
@@ -148,6 +152,8 @@ class OrderFilter(QueryFilter):
 
 
 class SkipFilter(QueryFilter):
+    precedence = 2
+
     def __init__(self, skip_value):
         self.skip_value = skip_value
 
@@ -156,6 +162,8 @@ class SkipFilter(QueryFilter):
 
 
 class LimitFilter(QueryFilter):
+    precedence = 3
+
     def __init__(self, limit_value):
         self.limit_value = limit_value
 
@@ -165,6 +173,8 @@ class LimitFilter(QueryFilter):
 
 
 class IncludeFilter(QueryFilter):
+    precedence = 4
+
     def __init__(self, included_filters):
         self.included_filters = included_filters
 
