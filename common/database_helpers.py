@@ -300,12 +300,14 @@ def get_rows_by_filter(table, filters):
     :return: A list of the rows returned in dictionary form
     """
     query = ReadQuery(table)
+    filter_handler = FilterOrderHandler()
     try:
         for query_filter in filters:
             if len(query_filter) == 0:
                 pass
             else:
-                QueryFilterFactory.get_query_filter(query_filter).apply_filter(query)
+                filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+        filter_handler.apply_filters(query)
         results = query.get_all_results()
         if query.include_related_entities:
             for query_filter in filters:
@@ -337,11 +339,13 @@ def get_filtered_row_count(table, filters):
 
     log.info(f" getting count for {table.__tablename__}")
     count_query = CountQuery(table)
-    for filter in filters:
-        if len(filter) == 0:
+    filter_handler = FilterOrderHandler()
+    for query_filter in filters:
+        if len(query_filter) == 0:
             pass
         else:
-            QueryFilterFactory.get_query_filter(filter).apply_filter(count_query)
+            filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+    filter_handler.apply_filters(count_query)
     return count_query.get_count()
 
 
