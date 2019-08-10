@@ -16,7 +16,6 @@ class Query(ABC):
         self.session = session_manager.get_icat_db_session()
         self.table = table
         self.base_query = self.session.query(table)
-        self.is_limited = False
 
     @abstractmethod
     def execute_query(self):
@@ -141,8 +140,6 @@ class OrderFilter(QueryFilter):
         self.direction = direction
 
     def apply_filter(self, query):
-        if query.is_limited:
-            query.base_query = query.base_query.from_self()
         if self.direction.upper() == "ASC":
             query.base_query = query.base_query.order_by(asc(self.field.upper()))
         elif self.direction.upper() == "DESC":
@@ -169,7 +166,6 @@ class LimitFilter(QueryFilter):
 
     def apply_filter(self, query):
         query.base_query = query.base_query.limit(self.limit_value)
-        query.is_limited = True
 
 
 class IncludeFilter(QueryFilter):
