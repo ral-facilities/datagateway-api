@@ -1,39 +1,207 @@
 import datetime
 import logging
+from abc import ABC, abstractmethod
 
-from sqlalchemy import create_engine, asc, desc
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.collections import InstrumentedList
+from sqlalchemy import asc, desc
 
-from common.constants import Constants
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
+from common.session_manager import session_manager
 
 log = logging.getLogger()
 
 
-def get_icat_db_session():
-    """
-    Gets a session and connects with the ICAT database
-    :return: the session object
-    """
-    log.info(" Getting ICAT DB session")
-    engine = create_engine(Constants.DATABASE_URL)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    return session
+class Query(ABC):
+    @abstractmethod
+    def __init__(self, table):
+        self.session = session_manager.get_icat_db_session()
+        self.table = table
+        self.base_query = self.session.query(table)
+        self.is_limited = False
+
+    @abstractmethod
+    def execute_query(self):
+        pass
+
+    def commit_changes(self):
+        """
+        Commits all changes to the database and closes the session
+        """
+        log.info(f" Commiting changes to {self.table}")
+        self.session.commit()
+        log.info(f" Closing DB session")
+        self.session.close()
 
 
-def insert_row_into_table(row):
+class CountQuery(Query):
+
+    def __init__(self, table):
+        super().__init__(table)
+        self.include_related_entities = False
+
+    def execute_query(self):
+        self.commit_changes()
+
+    def get_count(self):
+        try:
+            return self.base_query.count()
+        finally:
+            self.execute_query()
+
+
+class ReadQuery(Query):
+
+    def __init__(self, table):
+        super().__init__(table)
+        self.include_related_entities = False
+
+    def execute_query(self):
+        self.commit_changes()
+
+    def get_single_result(self):
+        result = self.base_query.first()
+        if result is not None:
+            return result
+        raise MissingRecordError(" No result found")
+
+    def get_all_results(self):
+        results = self.base_query.all()
+        if results is not None:
+            return results
+        raise MissingRecordError(" No results found")
+
+
+class CreateQuery(Query):
+
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
+        """Determines if the row is a row object or dictionary then commits it to the table"""
+        if type(self.row) is not dict:
+            record = self.row
+        else:
+            record = self.table()
+            record.update_from_dict(self.row)
+            record.CREATE_TIME = datetime.datetime.now()
+            record.MOD_TIME = datetime.datetime.now()
+            record.CREATE_ID = "user"
+            record.MOD_ID = "user"  # These will need changing
+        self.session.add(record)
+        self.commit_changes()
+
+
+class UpdateQuery(Query):
+
+    def __init__(self, table, row, new_values):
+        super().__init__(table)
+        self.row = row
+        self.new_values = new_values
+
+    def execute_query(self):
+        log.info(f" Updating row in {self.table}")
+        self.row.update_from_dict(self.new_values)
+        self.commit_changes()
+
+
+class DeleteQuery(Query):
+
+    def __init__(self, table, row):
+        super().__init__(table)
+        self.row = row
+
+    def execute_query(self):
+        log.info(f" Deleting row {self.row} from {self.table.__tablename__}")
+        self.session.delete(self.row)
+        self.commit_changes()
+
+
+class QueryFilter(ABC):
+    @abstractmethod
+    def apply_filter(self, query):
+        pass
+
+
+class WhereFilter(QueryFilter):
+    def __init__(self, field, value):
+        self.field = field
+        self.value = value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
+
+
+class OrderFilter(QueryFilter):
+    def __init__(self, field, direction):
+        self.field = field
+        self.direction = direction
+
+    def apply_filter(self, query):
+        if query.is_limited:
+            query.base_query = query.base_query.from_self()
+        if self.direction.upper() == "ASC":
+            query.base_query = query.base_query.order_by(asc(self.field.upper()))
+        elif self.direction.upper() == "DESC":
+            query.base_query = query.base_query.order_by(desc(self.field.upper()))
+        else:
+            raise BadFilterError(f" Bad filter: {self.direction}")
+
+
+class SkipFilter(QueryFilter):
+    def __init__(self, skip_value):
+        self.skip_value = skip_value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.offset(self.skip_value)
+
+
+class LimitFilter(QueryFilter):
+    def __init__(self, limit_value):
+        self.limit_value = limit_value
+
+    def apply_filter(self, query):
+        query.base_query = query.base_query.limit(self.limit_value)
+        query.is_limited = True
+
+
+class IncludeFilter(QueryFilter):
+    def __init__(self, included_filters):
+        self.included_filters = included_filters
+
+    def apply_filter(self, query):
+        query.include_related_entities = True
+
+
+class QueryFilterFactory(object):
+    @staticmethod
+    def get_query_filter(filter):
+        """
+        Given a filter return a matching Query filter object
+        :param filter: dict - The filter to create the QueryFilter for
+        :return: The QueryFilter object created
+        """
+        filter_name = list(filter)[0].lower()
+        if filter_name == "where":
+            return WhereFilter(list(filter["where"])[0], filter["where"][list(filter["where"])[0]])
+        elif filter_name == "order":
+            return OrderFilter(filter["order"].split(" ")[0], filter["order"].split(" ")[1])
+        elif filter_name == "skip":
+            return SkipFilter(filter["skip"])
+        elif filter_name == "limit":
+            return LimitFilter(filter["limit"])
+        elif filter_name == "include":
+            return IncludeFilter(filter)
+        else:
+            raise BadFilterError(f" Bad filter: {filter}")
+
+
+def insert_row_into_table(table, row):
     """
     Insert the given row into its table
     :param row: The row to be inserted
     """
-    log.info(f" Inserting row into table {row.__tablename__}")
-    session = get_icat_db_session()
-    session.add(row)
-    session.commit()
-    log.info(" Closing DB session")
-    session.close()
+    create_query = CreateQuery(table, row)
+    create_query.execute_query()
 
 
 def create_row_from_json(table, json):
@@ -43,18 +211,8 @@ def create_row_from_json(table, json):
     :param json: the dictionary containing the values
     :return: nothing atm
     """
-    log.info(f" Creating row from json into table {table.__tablename__}")
-    session = get_icat_db_session()
-    record = table()
-    record.update_from_dict(json)
-    record.CREATE_TIME = datetime.datetime.now()  # These should probably change
-    record.CREATE_ID = "user"
-    record.MOD_TIME = datetime.datetime.now()
-    record.MOD_ID = "user"
-    session.add(record)
-    session.commit()
-    log.info(" Closing db session")
-    session.close()
+    create_query = CreateQuery(table, json)
+    create_query.execute_query()
 
 
 def get_row_by_id(table, id):
@@ -64,15 +222,14 @@ def get_row_by_id(table, id):
     :param id: the id of the record to find
     :return: the record retrieved
     """
-    log.info(f" Querying {table.__tablename__} for record with ID: {id}")
-    session = get_icat_db_session()
-    result = session.query(table).filter(table.ID == id).first()
-    if result is not None:
-        log.info(" Record found, closing DB session")
-        session.close()
-        return result
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+    read_query = ReadQuery(table)
+    try:
+        log.info(f" Querying {table.__tablename__} for record with ID: {id}")
+        where_filter = WhereFilter("ID", id)
+        where_filter.apply_filter(read_query)
+        return read_query.get_single_result()
+    finally:
+        read_query.session.close()
 
 
 def delete_row_by_id(table, id):
@@ -82,16 +239,9 @@ def delete_row_by_id(table, id):
     :param id: the id of the record to delete
     """
     log.info(f" Deleting row from {table.__tablename__} with ID: {id}")
-    session = get_icat_db_session()
-    result = get_row_by_id(table, id)
-    if result is not None:
-        session.delete(result)
-        log.info(" record deleted, closing DB session")
-        session.commit()
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+    row = get_row_by_id(table, id)
+    delete_query = DeleteQuery(table, row)
+    delete_query.execute_query()
 
 
 def update_row_from_id(table, id, new_values):
@@ -101,17 +251,9 @@ def update_row_from_id(table, id, new_values):
     :param id: The id of the record
     :param new_values: A JSON string containing what columns are to be updated
     """
-    log.info(f" Updating row with ID: {id} in {table.__tablename__}")
-    session = get_icat_db_session()
-    record = session.query(table).filter(table.ID == id).first()
-    if record is not None:
-        record.update_from_dict(new_values)
-        session.commit()
-        log.info(" Record updated, closing DB session")
-        session.close()
-        return
-    session.close()
-    raise MissingRecordError(f" Could not find record in {table.__tablename__} with ID: {id}")
+    row = get_row_by_id(table, id)
+    update_query = UpdateQuery(table, row, new_values)
+    update_query.execute_query()
 
 
 def get_rows_by_filter(table, filters):
@@ -121,78 +263,21 @@ def get_rows_by_filter(table, filters):
     :param filters: The list of filters to be applied
     :return: A list of the rows returned in dictionary form
     """
-    is_limited = False
-    session = get_icat_db_session()
-    base_query = session.query(table)
-    includes_relation = False
-    for query_filter in filters:
-        if len(query_filter) == 0:
-            pass
-        elif list(query_filter)[0].lower() == "where":
-            for key in query_filter:
-                where_part = query_filter[key]
-                for k in where_part:
-                    column = getattr(table, k.upper())
-                    base_query = base_query.filter(column.in_([where_part[k]]))
-        elif list(query_filter)[0].lower() == "order":
-            for key in query_filter:
-                field = query_filter[key].split(" ")[0]
-                direction = query_filter[key].split(" ")[1]
-                # Limit then order, or order then limit
-            if is_limited:
-                if direction.upper() == "ASC":
-                    base_query = base_query.from_self().order_by(asc(getattr(table, field)))
-                elif direction.upper() == "DESC":
-                    base_query = base_query.from_self().order_by(desc(getattr(table, field)))
-                else:
-                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
-            else:
-                if direction.upper() == "ASC":
-                    base_query = base_query.order_by(asc(getattr(table, field)))
-                elif direction.upper() == "DESC":
-                    base_query = base_query.order_by(desc(getattr(table, field)))
-                else:
-                    raise BadFilterError(f" Bad filter given, filter: {query_filter}")
-
-        elif list(query_filter)[0].lower() == "skip":
-            for key in query_filter:
-                skip = query_filter[key]
-            base_query = base_query.offset(skip)
-
-        elif list(query_filter)[0].lower() == "limit":
-            is_limited = True
-            for key in query_filter:
-                query_limit = query_filter[key]
-            base_query = base_query.limit(query_limit)
-        elif list(query_filter)[0].lower() == "include":
-            includes_relation = True
-
-        else:
-            raise BadFilterError(f"Invalid filters provided received {filters}")
-
-    results = base_query.all()
-    # check if include was provided, then add included results
-    if includes_relation:
-        log.info(" Closing DB session")
+    query = ReadQuery(table)
+    try:
         for query_filter in filters:
-            if list(query_filter)[0] == "include":
-                return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-
-
-    log.info(" Closing DB session")
-    session.close()
-    return list(map(lambda x: x.to_dict(), results))
-
-
-def get_filtered_row_count(table, filters):
-    """
-    returns the count of the rows that match a given filter in a given table
-    :param table: the table to be checked
-    :param filters: the filters to be applied to the query
-    :return: int: the count of the rows
-    """
-    log.info(f" Getting filtered row count for {table.__tablename__}")
-    return len(get_rows_by_filter(table, filters))
+            if len(query_filter) == 0:
+                pass
+            else:
+                QueryFilterFactory.get_query_filter(query_filter).apply_filter(query)
+        results = query.get_all_results()
+        if query.include_related_entities:
+            for query_filter in filters:
+                if list(query_filter)[0].lower() == "include":
+                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+        return list(map(lambda x: x.to_dict(), results))
+    finally:
+        query.session.close()
 
 
 def get_first_filtered_row(table, filters):
@@ -204,6 +289,24 @@ def get_first_filtered_row(table, filters):
     """
     log.info(f" Getting first filtered row for {table.__tablename__}")
     return get_rows_by_filter(table, filters)[0]
+
+
+def get_filtered_row_count(table, filters):
+    """
+    returns the count of the rows that match a given filter in a given table
+    :param table: the table to be checked
+    :param filters: the filters to be applied to the query
+    :return: int: the count of the rows
+    """
+
+    log.info(f" getting count for {table.__tablename__}")
+    count_query = CountQuery(table)
+    for filter in filters:
+        if len(filter) == 0:
+            pass
+        else:
+            QueryFilterFactory.get_query_filter(filter).apply_filter(count_query)
+    return count_query.get_count()
 
 
 def patch_entities(table, json_list):

@@ -19,7 +19,7 @@ class Sessions(Resource):
             return "Bad request", 400
         if request.json["username"] == "user" and request.json["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION(ID=session_id))
+            insert_row_into_table(SESSION, SESSION(ID=session_id))
             return {"sessionID": session_id}, 201
         return "Forbidden", 403
 

@@ -15,7 +15,7 @@ class RestTestCase(TestCase):
         """
         Inserts a session for testing into the user_sessions table
         """
-        insert_row_into_table(SESSION(ID="TestSession"))
+        insert_row_into_table(SESSION, SESSION(ID="TestSession"))
 
     def tearDown(self):
         """
