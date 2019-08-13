@@ -108,6 +108,14 @@ def is_valid_json(string):
 
 
 def get_filters_from_query_string():
-    log.info( "Getting filters from query string")
-    filters = request.args.getlist("filter")
-    return list(map(lambda x: json.loads(x), filters))
+    """
+    Gets a list of filters from the query_strings arg,value pairs.
+    :example: /datafiles?limit=10&where={"DATASET_ID":2} -> [{"limit":10}, {"where":{"DATASET_ID":10}}]
+    :return: The list of filters
+    """
+    log.info(" Getting filters from query string")
+    filters = []
+    for arg in request.args:
+        for value in request.args.getlist(arg):
+            filters.append({arg: json.loads(value)})
+    return filters
