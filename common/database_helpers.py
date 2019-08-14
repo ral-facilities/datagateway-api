@@ -135,6 +135,10 @@ class WhereFilter(QueryFilter):
             query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
         elif self.operation == "like":
             query.base_query = query.base_query.filter(getattr(query.table, self.field).like(f"%{self.value}%"))
+        elif self.operation == "lt":
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) <= self.value)
+        elif self.operation == "gt":
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) >= self.value)
         else:
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
