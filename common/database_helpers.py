@@ -194,9 +194,14 @@ class QueryFilterFactory(object):
         """
         filter_name = list(filter)[0].lower()
         if filter_name == "where":
-            return WhereFilter(list(filter["where"])[0], filter["where"][list(filter["where"])[0]])
+            field = list(filter[filter_name].keys())[0]
+            operation = list(filter[filter_name][field].keys())[0]
+            value = filter[filter_name][field][operation]
+            return WhereFilter(field, value, operation)
         elif filter_name == "order":
-            return OrderFilter(filter["order"].split(" ")[0], filter["order"].split(" ")[1])
+            field = filter_name["order"].split(" ")[0]
+            direction = filter["order"].split(" ")[1]
+            return OrderFilter(field, direction)
         elif filter_name == "skip":
             return SkipFilter(filter["skip"])
         elif filter_name == "limit":
