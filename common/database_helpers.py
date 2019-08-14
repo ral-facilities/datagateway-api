@@ -124,12 +124,18 @@ class QueryFilter(ABC):
 class WhereFilter(QueryFilter):
     precedence = 0
 
-    def __init__(self, field, value):
+    def __init__(self, field, value, operation):
         self.field = field
         self.value = value
+        self.operation = operation
 
     def apply_filter(self, query):
+        if self.operation == "eq":
         query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
+        elif self.operation == "like":
+            query.base_query = query.base_query.filter(getattr(query.table, self.field).like(f"%{self.value}%"))
+        else:
+            raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
 
 class OrderFilter(QueryFilter):
