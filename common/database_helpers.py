@@ -131,7 +131,7 @@ class WhereFilter(QueryFilter):
 
     def apply_filter(self, query):
         if self.operation == "eq":
-        query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
         elif self.operation == "like":
             query.base_query = query.base_query.filter(getattr(query.table, self.field).like(f"%{self.value}%"))
         else:
@@ -241,6 +241,7 @@ class FilterOrderHandler(object):
 def insert_row_into_table(table, row):
     """
     Insert the given row into its table
+    :param table: The table to be inserted to
     :param row: The row to be inserted
     """
     create_query = CreateQuery(table, row)
@@ -268,7 +269,7 @@ def get_row_by_id(table, id):
     read_query = ReadQuery(table)
     try:
         log.info(f" Querying {table.__tablename__} for record with ID: {id}")
-        where_filter = WhereFilter("ID", id)
+        where_filter = WhereFilter("ID", id, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
     finally:
