@@ -100,6 +100,7 @@ class UpdateQuery(Query):
     def execute_query(self):
         log.info(f" Updating row in {self.table}")
         self.row.update_from_dict(self.new_values)
+        self.session.add(self.row)
         self.commit_changes()
 
 
