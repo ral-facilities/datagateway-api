@@ -1,7 +1,8 @@
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm.collections import InstrumentedList
+
+from common.exceptions import BadFilterError
 
 Base = declarative_base()
 
@@ -47,9 +48,16 @@ class EntityHelper(object):
                 if attr == list(included_relations.keys())[0]:
                     dictionary[attr + "_ID"] = getattr(self, attr).to_nested_dict(list(included_relations.values()))
 
-        dictionary = {k: v for k, v in dictionary.items() if
-                          "ID" in k or k != "MOD_ID" or k != "CREATE_ID" or k != "ID"}
-        return dictionary
+    def get_related_entity(self, entity):
+        """
+        Given a string for the related entity name, return the related entity
+        :param entity: String - The name of the entity
+        :return: The entity
+        """
+        try:
+            return getattr(self, entity)
+        except AttributeError:
+            raise BadFilterError(f" No related entity: {entity}")
 
     def update_from_dict(self, dictionary):
         """
