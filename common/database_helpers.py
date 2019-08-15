@@ -204,7 +204,7 @@ class QueryFilterFactory(object):
             value = filter[filter_name][field][operation]
             return WhereFilter(field, value, operation)
         elif filter_name == "order":
-            field = filter_name["order"].split(" ")[0]
+            field = filter["order"].split(" ")[0]
             direction = filter["order"].split(" ")[1]
             return OrderFilter(field, direction)
         elif filter_name == "skip":
