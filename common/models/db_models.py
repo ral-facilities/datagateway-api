@@ -30,8 +30,7 @@ class EntityHelper(object):
         """
         dictionary = self.to_dict()
         try:
-            if type(includes) is not list:
-                includes = [includes]
+            includes = includes if type(includes) is list else [includes]
             for include in includes:
                 if type(include) is str:
                     related_entity = self.get_related_entity(include)
