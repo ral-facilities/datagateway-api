@@ -22,31 +22,26 @@ class EntityHelper(object):
             dictionary[column.name] = str(getattr(self, column.name))
         return dictionary
 
-    def to_nested_dict(self, included_relations):
+    def to_nested_dict(self, includes):
         """
         Given related models return a nested dictionary with the child or parent rows nested.
-
-
         :param included_relations: string/list/dict - The related models to include.
         :return: A nested dictionary with the included models
         """
-        dictionary = {}
-        for column in self.__table__.columns:
-            dictionary[column.name] = str(getattr(self, column.name))
-        if type(included_relations) is not dict:
-            for attr in dir(self):
-                if attr in included_relations:
-                    relation = getattr(self, attr)
-                    if isinstance(relation, EntityHelper):
-                        dictionary[attr + "_ID"] = relation.to_dict()
-                    elif isinstance(relation, InstrumentedList):  # Instrumented list is when the inclusion is a child
-                        dictionary[attr + "_ID"] = []
-                        for entity in getattr(self, attr):
-                            dictionary[attr + "_ID"].append(entity.to_dict())
-        else:
-            for attr in dir(self):
-                if attr == list(included_relations.keys())[0]:
-                    dictionary[attr + "_ID"] = getattr(self, attr).to_nested_dict(list(included_relations.values()))
+        dictionary = self.to_dict()
+        try:
+            if type(includes) is not list:
+                includes = [includes]
+            for include in includes:
+                if type(include) is str:
+                    related_entity = self.get_related_entity(include)
+                    dictionary[related_entity.__tablename__] = related_entity.to_dict()
+                elif type(include) is dict:
+                    related_entity = self.get_related_entity(list(include)[0])
+                    dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
+        except TypeError:
+            raise BadFilterError(f" Bad include relations provided: {includes}")
+        return dictionary
 
     def get_related_entity(self, entity):
         """
