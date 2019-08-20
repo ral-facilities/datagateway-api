@@ -56,22 +56,22 @@ def queries_records(method):
         try:
             return method(*args, **kwargs)
         except MissingRecordError as e:
-            log.error(e)
+            log.exception(e)
             return "No such record in table", 404
         except BadFilterError as e:
-            log.error(e)
+            log.exception(e)
             return "Invalid filter requested", 400
         except ValueError as e:
-            log.error(e)
+            log.exception(e)
             return "Bad request", 400
         except TypeError as e:
-            log.error(e)
+            log.exception(e)
             return "Bad request", 400
         except IntegrityError as e:
-            log.error(e)
+            log.exception(e)
             return "Bad request", 400
         except BadRequestError as e:
-            log.error(e)
+            log.exception(e)
             return "Bad request", 400
 
     return wrapper_gets_records
