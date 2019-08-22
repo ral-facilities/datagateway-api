@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
+from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION
 from common.session_manager import session_manager
 
 log = logging.getLogger()
@@ -371,3 +372,20 @@ def patch_entities(table, json_list):
         raise BadRequestError(f" Bad request made, request: {json_list}")
 
     return results
+
+
+class ISISInvestigationsQuery(ReadQuery):
+    """
+    The query class used for the /users/<:id>/investigations endpoint
+    """
+
+    def __init__(self, user_id):
+        super().__init__(INVESTIGATIONUSER)
+        self.base_query = self.base_query.join(INVESTIGATION).filter(INVESTIGATIONUSER.USER_ID == user_id)
+
+    def get_all_results(self):
+        return list(map(lambda x: x.INVESTIGATION, super().get_all_results()))
+
+    def get_single_result(self):
+        return list(map(lambda x: x.INVESTIGATION, super().get_single_result()))
+
