@@ -495,4 +495,16 @@ def get_facility_cycles_for_instrument(instrument_id):
     end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
     end_date_filter.apply_filter(cycle_query)
     start_date_filter.apply_filter(cycle_query)
-    return cycle_query.get_all_results()
+    cycles = cycle_query.get_all_results()
+    cycle_query.execute_query()
+    return cycles
+
+
+def get_facility_cycles_for_instrument_count(instrument_id):
+    """
+    Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
+    that cycle
+    :param instrument_id: The id of the instrument
+    :return: A list of facility cycle entities
+    """
+    return len(get_facility_cycles_for_instrument(instrument_id))
