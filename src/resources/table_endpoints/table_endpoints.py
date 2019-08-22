@@ -1,6 +1,7 @@
 from flask_restful import Resource
 
-from common.database_helpers import get_investigations_for_user, get_investigations_for_user_count
+from common.database_helpers import get_investigations_for_user, get_investigations_for_user_count, \
+    get_facility_cycles_for_instrument
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 
 
@@ -19,7 +20,10 @@ class UsersInvestigationsCount(Resource):
 
 
 class InstrumentsFacilityCycles(Resource):
-    pass
+    @requires_session_id
+    @queries_records
+    def get(self, id):
+        return list(map(lambda x: x.to_dict(), get_facility_cycles_for_instrument(id))), 200
 
 
 class InstrumentsFacilityCyclesCount(Resource):
