@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
-from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION
+from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE
 from common.session_manager import session_manager
 
 log = logging.getLogger()
@@ -453,6 +453,12 @@ class ISISInvestigationsCountQuery(CountQuery):
 
 
 def get_investigations_for_user_count(user_id, filters):
+    """
+    Given a user id and a list of filters, return the count of all investigations that belong to that user
+    :param user_id: The id of the user
+    :param filters: The list of filters
+    :return: The count
+    """
     count_query = ISISInvestigationsCountQuery(user_id)
     filter_handler = FilterOrderHandler()
     for query_filter in filters:
@@ -462,3 +468,31 @@ def get_investigations_for_user_count(user_id, filters):
             filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
     filter_handler.apply_filters(count_query)
     return count_query.get_count()
+
+
+def get_facility_cycles_for_instrument(instrument_id):
+    """
+    Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+    :param instrument_id: The id of the instrument
+    :return: A list of facility cycle entities
+    """
+    instrument = get_row_by_id(INSTRUMENT, instrument_id)
+    session = session_manager.get_icat_db_session()
+    try:
+        session.add(instrument)  # Need to attach to a session to get the related investigations
+        investigations = [i.INVESTIGATION for i in instrument.INVESTIGATIONINSTRUMENT]
+    finally:
+        session.close()
+    start_date = datetime.datetime(3000, 1, 1)
+    end_date = datetime.datetime(1, 1, 1)
+    for investigation in investigations:
+        if investigation.STARTDATE < start_date:
+            start_date = investigation.STARTDATE
+        if investigation.ENDDATE > end_date:
+            end_date = investigation.ENDDATE
+    cycle_query = ReadQuery(FACILITYCYCLE)
+    start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
+    end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
+    end_date_filter.apply_filter(cycle_query)
+    start_date_filter.apply_filter(cycle_query)
+    return cycle_query.get_all_results()
