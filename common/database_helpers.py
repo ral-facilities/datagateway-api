@@ -145,7 +145,7 @@ class WhereFilter(QueryFilter):
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
     def _get_table_to_filter(self, query):
-        if type(query) is ISISInvestigationsQuery:
+        if type(query) is ISISInvestigationsQuery or type(query) is ISISInvestigationsCountQuery:
             return INVESTIGATION
         else:
             return query.table
