@@ -204,14 +204,14 @@ api.add_resource(UserGroupsCount, "/usergroups/count")
 api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
 
 # Table specific endpoints
-api.add_resource(UsersInvestigations, "/users/<string:id>/investigations")
-api.add_resource(UsersInvestigationsCount, "/users/<string:id>/investigations/count")
-api.add_resource(InstrumentsFacilityCycles, "/instruments/<string:id>/facilityCycles")
-api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<string:id>/facilityCycles/count")
+api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
+api.add_resource(UsersInvestigationsCount, "/users/<int:id>/investigations/count")
+api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilityCycles")
+api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilityCycles/count")
 api.add_resource(InstrumentsFacilityCyclesInvestigations,
-                 "/instruments/<string:id>/facilityCycles<string:id>/investigations")
+                 "/instruments/<string:instrument_id>/facilityCycles<int:cycle_id>/investigations")
 api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
-                 "/instruments/<string:id>/facilityCycles<string:id>/investigations/count")
+                 "/instruments/<string:instrument_id>/facilityCycles<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
     app.run(debug=config.is_debug_mode())
