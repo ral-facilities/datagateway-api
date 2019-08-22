@@ -440,3 +440,12 @@ def get_investigations_for_user(user_id, filters):
 
     finally:
         query.session.close()
+
+class ISISInvestigationsCountQuery(CountQuery):
+    """
+    The query class used for /users/<:id>/investigations/count
+    """
+
+    def __init__(self, user_id):
+        super().__init__(INVESTIGATIONUSER)
+        self.base_query = self.base_query.join(INVESTIGATION).filter(INVESTIGATIONUSER.USER_ID == user_id)
