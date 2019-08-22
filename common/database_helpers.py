@@ -416,7 +416,13 @@ class ISISInvestigationsQuery(ReadQuery):
 
 
 def get_investigations_for_user(user_id, filters):
-    query = ISISInvestigationsQuery(user_id) 
+    """
+    Given a user id and a list of filters, return a filtered list of all investigations that belong to that user
+    :param user_id: The id of the user
+    :param filters: The list of filters
+    :return: A list of dictionary representations of the investigation entities
+    """
+    query = ISISInvestigationsQuery(user_id)
     filter_handler = FilterOrderHandler()
     try:
         for query_filter in filters:
