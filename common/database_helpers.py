@@ -133,6 +133,12 @@ class WhereFilter(QueryFilter):
         query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
 
 
+    def _get_table_to_filter(self, query):
+        if type(query) is ISISInvestigationsQuery:
+            return INVESTIGATION
+        else:
+            return query.table
+
 class OrderFilter(QueryFilter):
     precedence = 1
 
