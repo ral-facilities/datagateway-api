@@ -93,7 +93,7 @@ This is illustrated below.
 #### Main:
 The main entry point is in `/src/main.py`. This is where each endpoint route is defined and its 
 related class imported e.g.  
- `api.add_resource(DatafilesWithID, "/datafiles/<string:id>")`  
+ `api.add_resource(DatafilesWithID, "/datafiles/<int:id>")`  
 Debugging may also be turned on or off with, `app.run(debug=True)` and `app.run()` respectively.
 When debugging is enabled the api will restart every time code changes are detected.
 
