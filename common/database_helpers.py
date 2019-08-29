@@ -523,14 +523,15 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
     return get_filtered_read_query_results(filter_handler, filters, query)
 
 
-def get_facility_cycles_for_instrument_count(instrument_id):
+def get_facility_cycles_for_instrument_count(instrument_id, filters):
     """
     Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
     that cycle
+    :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: The count of the facility cycles
     """
-    return len(get_facility_cycles_for_instrument(instrument_id))
+    return len(get_facility_cycles_for_instrument(instrument_id, filters))
 
 
 class InstrumentInCycleInvestigationsQuery(ReadQuery):
