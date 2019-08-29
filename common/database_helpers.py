@@ -149,7 +149,7 @@ class WhereFilter(QueryFilter):
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
     def _get_table_to_filter(self, query):
-        if type(query) is ISISInvestigationsQuery or type(query) is ISISInvestigationsCountQuery:
+        if type(query) is UserInvestigationsQuery or type(query) is UserInvestigationsCountQuery:
             return INVESTIGATION
         else:
             return query.table
@@ -403,7 +403,7 @@ def patch_entities(table, json_list):
     return results
 
 
-class ISISInvestigationsQuery(ReadQuery):
+class UserInvestigationsQuery(ReadQuery):
     """
     The query class used for the /users/<:id>/investigations endpoint
     """
@@ -426,7 +426,7 @@ def get_investigations_for_user(user_id, filters):
     :param filters: The list of filters
     :return: A list of dictionary representations of the investigation entities
     """
-    query = ISISInvestigationsQuery(user_id)
+    query = UserInvestigationsQuery(user_id)
     filter_handler = FilterOrderHandler()
     try:
         for query_filter in filters:
@@ -446,7 +446,7 @@ def get_investigations_for_user(user_id, filters):
         query.session.close()
 
 
-class ISISInvestigationsCountQuery(CountQuery):
+class UserInvestigationsCountQuery(CountQuery):
     """
     The query class used for /users/<:id>/investigations/count
     """
@@ -463,7 +463,7 @@ def get_investigations_for_user_count(user_id, filters):
     :param filters: The list of filters
     :return: The count
     """
-    count_query = ISISInvestigationsCountQuery(user_id)
+    count_query = UserInvestigationsCountQuery(user_id)
     filter_handler = FilterOrderHandler()
     for query_filter in filters:
         if len(query_filter) == 0:
