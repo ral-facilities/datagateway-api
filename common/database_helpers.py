@@ -324,7 +324,7 @@ def get_filtered_read_query_results(filter_handler, filters, query):
     :param filter_handler: The filter handler to apply the filters
     :param filters: The filters to be applied
     :param query: The query for the filters to be applied to
-    :return: The results of the query
+    :return: The results of the query as a list of dictionaries
     """
     try:
         for query_filter in filters:
@@ -477,19 +477,19 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         self._get_start_and_end_date_filters(instrument_id)
 
     def _get_start_and_end_date_filters(self, instrument_id):
-    """
+        """
         Given an instrument ID, get the start_date and end_date filters that will be applied to the query
         :param instrument_id: the id of the instrument
         :return:
-    """
+        """
         investigations = self._get_investigations_for_instrument(instrument_id)
-    start_date = datetime.datetime(3000, 1, 1)
-    end_date = datetime.datetime(1, 1, 1)
-    for investigation in investigations:
-        if investigation.STARTDATE < start_date:
-            start_date = investigation.STARTDATE
-        if investigation.ENDDATE > end_date:
-            end_date = investigation.ENDDATE
+        start_date = datetime.datetime(3000, 1, 1)
+        end_date = datetime.datetime(1, 1, 1)
+        for investigation in investigations:
+            if investigation.STARTDATE < start_date:
+                start_date = investigation.STARTDATE
+            if investigation.ENDDATE > end_date:
+                end_date = investigation.ENDDATE
         self.start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
         self.end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
 
