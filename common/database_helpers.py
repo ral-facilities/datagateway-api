@@ -318,15 +318,14 @@ def update_row_from_id(table, id, new_values):
     update_query.execute_query()
 
 
-def get_rows_by_filter(table, filters):
+def get_filtered_read_query_results(filter_handler, filters, query):
     """
-    Given a list of filters supplied in json format, returns entities that match the filters from the given table
-    :param table: The table to checked
-    :param filters: The list of filters to be applied
-    :return: A list of the rows returned in dictionary form
+    Given a filter handler, list of filters and a query. Apply the filters and execute the query
+    :param filter_handler: The filter handler to apply the filters
+    :param filters: The filters to be applied
+    :param query: The query for the filters to be applied to
+    :return: The results of the query
     """
-    query = ReadQuery(table)
-    filter_handler = FilterOrderHandler()
     try:
         for query_filter in filters:
             if len(query_filter) == 0:
@@ -340,8 +339,21 @@ def get_rows_by_filter(table, filters):
                 if list(query_filter)[0].lower() == "include":
                     return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
         return list(map(lambda x: x.to_dict(), results))
+
     finally:
         query.session.close()
+
+
+def get_rows_by_filter(table, filters):
+    """
+    Given a list of filters supplied in json format, returns entities that match the filters from the given table
+    :param table: The table to checked
+    :param filters: The list of filters to be applied
+    :return: A list of the rows returned in dictionary form
+    """
+    query = ReadQuery(table)
+    filter_handler = FilterOrderHandler()
+    return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_first_filtered_row(table, filters):
