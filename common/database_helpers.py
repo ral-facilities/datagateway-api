@@ -509,6 +509,33 @@ def get_facility_cycles_for_instrument_count(instrument_id):
     Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
     that cycle
     :param instrument_id: The id of the instrument
-    :return: A list of facility cycle entities
+    :return: The count of the facility cycles
     """
     return len(get_facility_cycles_for_instrument(instrument_id))
+
+
+def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id):
+    """
+    Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+    :param instrument_id: The id of the instrument
+    :param facility_cycle_id:  the ID of the facility cycle
+    :return: The investigations
+    """
+    session = session_manager.get_icat_db_session()
+
+    try:
+        facility_cycles = get_facility_cycles_for_instrument(instrument_id)
+        for i in facility_cycles:
+            session.add(i)
+        try:
+            facility_cycle = [x for x in facility_cycles if x.ID == facility_cycle_id][0]
+        except IndexError:
+            raise MissingRecordError()
+        investigations = session.query(INVESTIGATION).filter(INVESTIGATION.STARTDATE >= facility_cycle.STARTDATE,
+                                                             INVESTIGATION.ENDDATE <= facility_cycle.ENDDATE).all()
+        if len(investigations) == 0:
+            raise MissingRecordError()
+        return investigations
+
+    finally:
+        session.close()
