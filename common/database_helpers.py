@@ -471,19 +471,18 @@ def get_investigations_for_user_count(user_id, filters):
     return count_query.get_count()
 
 
-def get_facility_cycles_for_instrument(instrument_id):
+class InstrumentFacilityCyclesQuery(ReadQuery):
+    def __init__(self, instrument_id):
+        super().__init__(FACILITYCYCLE)
+        self._get_start_and_end_date_filters(instrument_id)
+
+    def _get_start_and_end_date_filters(self, instrument_id):
     """
-    Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
-    :param instrument_id: The id of the instrument
-    :return: A list of facility cycle entities
+        Given an instrument ID, get the start_date and end_date filters that will be applied to the query
+        :param instrument_id: the id of the instrument
+        :return:
     """
-    instrument = get_row_by_id(INSTRUMENT, instrument_id)
-    session = session_manager.get_icat_db_session()
-    try:
-        session.add(instrument)  # Need to attach to a session to get the related investigations
-        investigations = [i.INVESTIGATION for i in instrument.INVESTIGATIONINSTRUMENT]
-    finally:
-        session.close()
+        investigations = self._get_investigations_for_instrument(instrument_id)
     start_date = datetime.datetime(3000, 1, 1)
     end_date = datetime.datetime(1, 1, 1)
     for investigation in investigations:
@@ -491,14 +490,26 @@ def get_facility_cycles_for_instrument(instrument_id):
             start_date = investigation.STARTDATE
         if investigation.ENDDATE > end_date:
             end_date = investigation.ENDDATE
-    cycle_query = ReadQuery(FACILITYCYCLE)
-    start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
-    end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
-    end_date_filter.apply_filter(cycle_query)
-    start_date_filter.apply_filter(cycle_query)
-    cycles = cycle_query.get_all_results()
-    cycle_query.execute_query()
-    return cycles
+        self.start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
+        self.end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
+
+    @staticmethod
+    def _get_investigations_for_instrument(instrument_id):
+        """
+        Given an instrument id get a list of investigation entities that use the given instrument
+        :param instrument_id: - The Id of the instrument
+        :return: The list of investigation entities
+        """
+        instrument = get_row_by_id(INSTRUMENT, instrument_id)
+        session = session_manager.get_icat_db_session()
+        try:
+            session.add(instrument)
+            investigations = [i.INVESTIGATION for i in instrument.INVESTIGATIONINSTRUMENT]
+        finally:
+            session.close()
+        return investigations
+
+
 
 
 def get_facility_cycles_for_instrument_count(instrument_id):
