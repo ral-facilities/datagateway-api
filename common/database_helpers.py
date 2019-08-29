@@ -54,6 +54,10 @@ class ReadQuery(Query):
         super().__init__(table)
         self.include_related_entities = False
 
+    def commit_changes(self):
+        log.info("Closing DB session")
+        self.session.close()
+
     def execute_query(self):
         self.commit_changes()
 
