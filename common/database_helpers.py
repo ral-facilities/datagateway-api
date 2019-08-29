@@ -561,8 +561,19 @@ class InstrumentInCycleInvestigationsQuery(ReadQuery):
             raise MissingRecordError()
 
 
-    finally:
-        session.close()
+def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters):
+    """
+    Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+    :param filters: The filters to be applied to the query
+    :param instrument_id: The id of the instrument
+    :param facility_cycle_id:  the ID of the facility cycle
+    :return: The investigations
+    """
+    filter_handler = FilterOrderHandler()
+    query = InstrumentInCycleInvestigationsQuery(instrument_id, facility_cycle_id)
+    filter_handler.add_filter(query.end_date_filter)
+    filter_handler.add_filter(query.start_date_filter)
+    return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id):
