@@ -513,6 +513,7 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
 def get_facility_cycles_for_instrument(instrument_id, filters):
     """
     Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+    :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
     """
@@ -542,9 +543,9 @@ class InstrumentInCycleInvestigationsQuery(ReadQuery):
         self._get_date_filters()
 
     def _get_date_filters(self):
-    """
+        """
         Sets the date filters to be applied to the query
-    """
+        """
         self.start_date_filter = WhereFilter("STARTDATE", self._get_facility_cycle()["STARTDATE"], "gte")
         self.end_date_filter = WhereFilter("ENDDATE", self._get_facility_cycle()["ENDDATE"], "lte")
 
@@ -555,7 +556,7 @@ class InstrumentInCycleInvestigationsQuery(ReadQuery):
         :return: The facility cycle
         """
         facility_cycles = get_facility_cycles_for_instrument(self.instrument_id, filters=[])
-    try:
+        try:
             #  The ID value gets previously converted to str
             return [cycle for cycle in facility_cycles if cycle["ID"] == str(self.facility_cycle_id)][0]
         except IndexError:
