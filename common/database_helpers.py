@@ -576,12 +576,13 @@ def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_
     return get_filtered_read_query_results(filter_handler, filters, query)
 
 
-def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id):
+def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id, filters):
     """
     Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
     the given cycle
+    :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :param facility_cycle_id:  the ID of the facility cycle
     :return: The investigations count
     """
-    return len(get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id))
+    return len(get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters))
