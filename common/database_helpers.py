@@ -440,22 +440,7 @@ def get_investigations_for_user(user_id, filters):
     """
     query = UserInvestigationsQuery(user_id)
     filter_handler = FilterOrderHandler()
-    try:
-        for query_filter in filters:
-            if len(query_filter) == 0:
-                pass
-            else:
-                filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
-        filter_handler.apply_filters(query)
-        results = query.get_all_results()
-        if query.include_related_entities:
-            for query_filter in filters:
-                if list(query_filter)[0].lower() == "include":
-                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-        return list(map(lambda x: x.to_dict(), results))
-
-    finally:
-        query.session.close()
+    return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 class UserInvestigationsCountQuery(CountQuery):
