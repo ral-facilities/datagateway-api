@@ -206,12 +206,12 @@ api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
 # Table specific endpoints
 api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
 api.add_resource(UsersInvestigationsCount, "/users/<int:id>/investigations/count")
-api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilityCycles")
-api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilityCycles/count")
+api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilitycycles")
+api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilitycycles/count")
 api.add_resource(InstrumentsFacilityCyclesInvestigations,
-                 "/instruments/<int:instrument_id>/facilityCycles/<int:cycle_id>/investigations")
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations")
 api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
-                 "/instruments/<int:instrument_id>/facilityCycles/<int:cycle_id>/investigations/count")
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
     app.run(debug=config.is_debug_mode())
