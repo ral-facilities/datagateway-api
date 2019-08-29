@@ -38,7 +38,8 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
     @requires_session_id
     @queries_records
     def get(self, instrument_id, cycle_id):
-        return list(map(lambda x: x.to_dict(), get_investigations_for_instrument_in_facility_cycle(instrument_id, cycle_id))), 200
+        return get_investigations_for_instrument_in_facility_cycle(instrument_id, cycle_id,
+                                                                   get_filters_from_query_string()), 200
 
 
 class InstrumentsFacilityCyclesInvestigationsCount(Resource):
@@ -46,4 +47,3 @@ class InstrumentsFacilityCyclesInvestigationsCount(Resource):
     @queries_records
     def get(self, instrument_id, cycle_id):
         return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, cycle_id), 200
-
