@@ -24,8 +24,7 @@ class InstrumentsFacilityCycles(Resource):
     @requires_session_id
     @queries_records
     def get(self, id):
-        return list(
-            map(lambda x: x.to_dict(), get_facility_cycles_for_instrument(id, get_filters_from_query_string()))), 200
+        return get_facility_cycles_for_instrument(id, get_filters_from_query_string()), 200
 
 
 class InstrumentsFacilityCyclesCount(Resource):
