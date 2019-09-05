@@ -122,14 +122,13 @@ class QueryFilter(ABC):
     def precedence(self):
         pass
 
-
     @abstractmethod
     def apply_filter(self, query):
         pass
 
 
 class WhereFilter(QueryFilter):
-    precedence = 0
+    precedence = 1
 
     def __init__(self, field, value, operation):
         self.field = field
@@ -149,8 +148,15 @@ class WhereFilter(QueryFilter):
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
 
+class DistinctFieldFilter(QueryFilter):
+    precedence = 0
+
+    def apply_filter(self, query):
+        pass
+
+
 class OrderFilter(QueryFilter):
-    precedence = 1
+    precedence = 2
 
     def __init__(self, field, direction):
         self.field = field
@@ -166,7 +172,7 @@ class OrderFilter(QueryFilter):
 
 
 class SkipFilter(QueryFilter):
-    precedence = 2
+    precedence = 3
 
     def __init__(self, skip_value):
         self.skip_value = skip_value
@@ -176,7 +182,7 @@ class SkipFilter(QueryFilter):
 
 
 class LimitFilter(QueryFilter):
-    precedence = 3
+    precedence = 4
 
     def __init__(self, limit_value):
         self.limit_value = limit_value
@@ -186,7 +192,7 @@ class LimitFilter(QueryFilter):
 
 
 class IncludeFilter(QueryFilter):
-    precedence = 4
+    precedence = 5
 
     def __init__(self, included_filters):
         self.included_filters = included_filters
@@ -227,6 +233,7 @@ class FilterOrderHandler(object):
     """
     The FilterOrderHandler takes in filters, sorts them according to the order of operations, then applies them.
     """
+
     def __init__(self):
         self.filters = []
 
