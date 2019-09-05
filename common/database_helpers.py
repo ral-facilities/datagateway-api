@@ -117,6 +117,12 @@ class DeleteQuery(Query):
 
 
 class QueryFilter(ABC):
+    @property
+    @abstractmethod
+    def precedence(self):
+        pass
+
+
     @abstractmethod
     def apply_filter(self, query):
         pass
