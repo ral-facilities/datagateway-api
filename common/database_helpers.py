@@ -491,7 +491,7 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
             if investigation.ENDDATE > end_date:
                 end_date = investigation.ENDDATE
         self.start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
-        self.end_date_filter = WhereFilter("ENDDATE", end_date, "lte")
+        self.end_date_filter = WhereFilter("STARTDATE", end_date, "lte")
 
     @staticmethod
     def _get_investigations_for_instrument(instrument_id):
@@ -547,7 +547,7 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
         Sets the date filters to be applied to the query
         """
         self.start_date_filter = WhereFilter("STARTDATE", self._get_facility_cycle()["STARTDATE"], "gte")
-        self.end_date_filter = WhereFilter("ENDDATE", self._get_facility_cycle()["ENDDATE"], "lte")
+        self.end_date_filter = WhereFilter("STARTDATE", self._get_facility_cycle()["ENDDATE"], "lte")
 
     def _get_facility_cycle(self):
         """
