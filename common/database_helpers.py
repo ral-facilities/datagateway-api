@@ -572,7 +572,7 @@ def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_
     :return: The investigations
     """
     filter_handler = FilterOrderHandler()
-    query = InstrumentInCycleInvestigationsQuery(instrument_id, facility_cycle_id)
+    query = InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id)
     filter_handler.add_filter(query.end_date_filter)
     filter_handler.add_filter(query.start_date_filter)
     return get_filtered_read_query_results(filter_handler, filters, query)
