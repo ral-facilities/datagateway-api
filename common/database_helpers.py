@@ -535,7 +535,7 @@ def get_facility_cycles_for_instrument_count(instrument_id, filters):
     return len(get_facility_cycles_for_instrument(instrument_id, filters))
 
 
-class InstrumentInCycleInvestigationsQuery(ReadQuery):
+class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         self.instrument_id = instrument_id
