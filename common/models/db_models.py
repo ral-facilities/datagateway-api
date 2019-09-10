@@ -53,7 +53,10 @@ class EntityHelper(object):
             dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
         else:
             for entity in related_entity:
-                dictionary[f"{entity.__tablename__} {entity.ID}"] = entity.to_nested_dict(include[list(include)[0]])
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_nested_dict(include[list(include)[0]]))
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_nested_dict(include[list(include)[0]])]
 
     def _nest_string_include(self, dictionary, include):
         """
@@ -67,7 +70,10 @@ class EntityHelper(object):
             dictionary[related_entity.__tablename__] = related_entity.to_dict()
         else:
             for entity in related_entity:
-                dictionary[f"{entity.__tablename__} {entity.ID}"] = entity.to_dict()
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_dict())
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_dict()]
 
     def get_related_entity(self, entity):
         """
