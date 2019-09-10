@@ -485,16 +485,9 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         :param instrument_id: the id of the instrument
         :return:
         """
-        investigations = self._get_investigations_for_instrument(instrument_id)
-        start_date = datetime.datetime(3000, 1, 1)
-        end_date = datetime.datetime(1, 1, 1)
-        for investigation in investigations:
-            if investigation.STARTDATE < start_date:
-                start_date = investigation.STARTDATE
-            if investigation.ENDDATE > end_date:
-                end_date = investigation.ENDDATE
-        self.start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
-        self.end_date_filter = WhereFilter("STARTDATE", end_date, "lte")
+    def set_filters(self, filters):
+        for query_filter in filters:
+            self.filters.append(QueryFilterFactory.get_query_filter(query_filter))
 
     def _get_investigations_for_instrument(self):
         """
