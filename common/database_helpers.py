@@ -496,14 +496,12 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         self.start_date_filter = WhereFilter("STARTDATE", start_date, "gte")
         self.end_date_filter = WhereFilter("STARTDATE", end_date, "lte")
 
-    @staticmethod
-    def _get_investigations_for_instrument(instrument_id):
+    def _get_investigations_for_instrument(self):
         """
-        Given an instrument id get a list of investigation entities that use the given instrument
-        :param instrument_id: - The Id of the instrument
+        Get a list of investigation entities that use the instrument
         :return: The list of investigation entities
         """
-        instrument = get_row_by_id(INSTRUMENT, instrument_id)
+        instrument = get_row_by_id(INSTRUMENT, self.instrument_id)
         session = session_manager.get_icat_db_session()
         try:
             session.add(instrument)
