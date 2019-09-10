@@ -540,11 +540,17 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
     """
+    try:
     query = InstrumentFacilityCyclesQuery(instrument_id)
-    filter_handler = FilterOrderHandler()
-    filter_handler.add_filter(query.start_date_filter)
-    filter_handler.add_filter(query.end_date_filter)
-    return get_filtered_read_query_results(filter_handler, filters, query)
+        query.set_filters(filters)
+        results = query.get_all_results()
+        if query.include_related_entities:
+            for query_filter in filters:
+                if list(query_filter)[0].upper() == "INCLUDE":
+                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+        return [x.to_dict() for x in results]
+    finally:
+        query.close_all_queries()
 
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
