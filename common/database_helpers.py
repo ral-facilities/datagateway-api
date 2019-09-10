@@ -532,6 +532,10 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
                 self.include_related_entities = True
             self.active_queries.append(query)
 
+    def get_all_results(self):
+        self._set_up_results()
+        return self.results
+
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
     """
