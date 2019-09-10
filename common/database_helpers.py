@@ -509,29 +509,15 @@ def get_facility_cycles_for_instrument_count(instrument_id, filters):
 class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
-        self.instrument_id = instrument_id
-        self.facility_cycle_id = facility_cycle_id
-        self._get_date_filters()
-
-    def _get_date_filters(self):
-        """
-        Sets the date filters to be applied to the query
-        """
-        self.start_date_filter = WhereFilter("STARTDATE", self._get_facility_cycle()["STARTDATE"], "gte")
-        self.end_date_filter = WhereFilter("STARTDATE", self._get_facility_cycle()["ENDDATE"], "lte")
-
-    def _get_facility_cycle(self):
-        """
-        Given a facility cycle_id and instrument_id, get the facility cycle that has an investigation using the given
-        instrument in the cycle
-        :return: The facility cycle
-        """
-        facility_cycles = get_facility_cycles_for_instrument(self.instrument_id, filters=[])
-        try:
-            #  The ID value gets previously converted to str
-            return [cycle for cycle in facility_cycles if cycle["ID"] == str(self.facility_cycle_id)][0]
-        except IndexError:
-            raise MissingRecordError()
+        self.base_query = self.base_query\
+            .join(FACILITY) \
+            .join(FACILITY.FACILITYCYCLE) \
+            .join(FACILITY.INSTRUMENT) \
+            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
+            .filter(INSTRUMENT.ID == instrument_id) \
+            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
 
 def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters):
@@ -544,8 +530,6 @@ def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_
     """
     filter_handler = FilterOrderHandler()
     query = InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id)
-    filter_handler.add_filter(query.end_date_filter)
-    filter_handler.add_filter(query.start_date_filter)
     return get_filtered_read_query_results(filter_handler, filters, query)
 
 
