@@ -422,14 +422,8 @@ class UserInvestigationsQuery(ReadQuery):
     """
 
     def __init__(self, user_id):
-        super().__init__(INVESTIGATIONUSER)
-        self.base_query = self.base_query.join(INVESTIGATION).filter(INVESTIGATIONUSER.USER_ID == user_id)
-
-    def get_all_results(self):
-        return list(map(lambda x: x.INVESTIGATION, super().get_all_results()))
-
-    def get_single_result(self):
-        return list(map(lambda x: x.INVESTIGATION, super().get_single_result()))
+        super().__init__(INVESTIGATION)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
 
 
 def get_investigations_for_user(user_id, filters):
@@ -450,8 +444,8 @@ class UserInvestigationsCountQuery(CountQuery):
     """
 
     def __init__(self, user_id):
-        super().__init__(INVESTIGATIONUSER)
-        self.base_query = self.base_query.join(INVESTIGATION).filter(INVESTIGATIONUSER.USER_ID == user_id)
+        super().__init__(INVESTIGATION)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
 
 
 def get_investigations_for_user_count(user_id, filters):
