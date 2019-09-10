@@ -5,7 +5,8 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
-from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE
+from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
+    INVESTIGATIONINSTRUMENT, FACILITY
 from common.session_manager import session_manager
 
 log = logging.getLogger()
@@ -474,59 +475,13 @@ def get_investigations_for_user_count(user_id, filters):
 class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
-        self.filters = []
-        self.results = []
-        self.instrument_id = instrument_id
-        self.active_queries = []
-
-    def close_all_queries(self):
-        """
-        Closes all queries that were made to facility cycles
-        """
-        for query in self.active_queries:
-            query.session.close()
-
-    def set_filters(self, filters):
-        for query_filter in filters:
-            self.filters.append(QueryFilterFactory.get_query_filter(query_filter))
-
-    def _get_investigations_for_instrument(self):
-        """
-        Get a list of investigation entities that use the instrument
-        :return: The list of investigation entities
-        """
-        instrument = get_row_by_id(INSTRUMENT, self.instrument_id)
-        session = session_manager.get_icat_db_session()
-        try:
-            session.add(instrument)
-            investigations = [i.INVESTIGATION for i in instrument.INVESTIGATIONINSTRUMENT]
-        finally:
-            session.close()
-        return investigations
-
-    def _set_up_results(self):
-        """
-        Makes each individual query to FACILITYCYCLES and extends the result to the base results
-        """
-        investigations = self._get_investigations_for_instrument()
-        for investigation in investigations:
-            query = ReadQuery(FACILITYCYCLE)
-            start_filter = WhereFilter("STARTDATE", investigation.STARTDATE, "lte")
-            end_filter = WhereFilter("ENDDATE", investigation.STARTDATE, "gte")
-            filter_handler = FilterOrderHandler()
-            filter_handler.add_filter(start_filter)
-            filter_handler.add_filter(end_filter)
-            for query_filter in self.filters:
-                filter_handler.add_filter(query_filter)
-            filter_handler.apply_filters(query)
-            self.results.extend(query.get_all_results())
-            if query.include_related_entities:
-                self.include_related_entities = True
-            self.active_queries.append(query)
-
-    def get_all_results(self):
-        self._set_up_results()
-        return self.results
+        self.base_query = self.base_query.join(FACILITYCYCLE.FACILITY)\
+                                    .join(FACILITY.INSTRUMENT)\
+                                    .join(INSTRUMENT.INVESTIGATIONINSTRUMENT)\
+                                    .join(INVESTIGATIONINSTRUMENT.INVESTIGATION)\
+                                    .filter(INSTRUMENT.ID == instrument_id)\
+                                    .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)\
+                                    .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
@@ -536,18 +491,9 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
     """
-    try:
     query = InstrumentFacilityCyclesQuery(instrument_id)
-        query.set_filters(filters)
-        results = query.get_all_results()
-        if query.include_related_entities:
-            for query_filter in filters:
-                if list(query_filter)[0].upper() == "INCLUDE":
-                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
-        return [x.to_dict() for x in results]
-    finally:
-        query.close_all_queries()
-
+    filter_handler = FilterOrderHandler()
+    return get_filtered_read_query_results(filter_handler, filters, query)
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
     """
