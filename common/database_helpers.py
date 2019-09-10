@@ -475,12 +475,13 @@ def get_investigations_for_user_count(user_id, filters):
 class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
-        self.base_query = self.base_query.join(FACILITYCYCLE.FACILITY)\
-                                    .join(FACILITY.INSTRUMENT)\
-                                    .join(INSTRUMENT.INVESTIGATIONINSTRUMENT)\
-                                    .join(INVESTIGATIONINSTRUMENT.INVESTIGATION)\
-                                    .filter(INSTRUMENT.ID == instrument_id)\
-                                    .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)\
+        self.base_query = self.base_query\
+            .join(FACILITYCYCLE.FACILITY) \
+            .join(FACILITY.INSTRUMENT) \
+            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
+            .join(INVESTIGATIONINSTRUMENT.INVESTIGATION) \
+            .filter(INSTRUMENT.ID == instrument_id) \
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
                                     .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
 
@@ -494,6 +495,7 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
     query = InstrumentFacilityCyclesQuery(instrument_id)
     filter_handler = FilterOrderHandler()
     return get_filtered_read_query_results(filter_handler, filters, query)
+
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
     """
