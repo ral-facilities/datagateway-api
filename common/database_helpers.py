@@ -470,7 +470,7 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
             .join(INVESTIGATIONINSTRUMENT.INVESTIGATION) \
             .filter(INSTRUMENT.ID == instrument_id) \
             .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
-                                    .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
