@@ -41,6 +41,9 @@ from src.resources.entities.study_investigations_endpoints import *
 from src.resources.entities.user_groups_endpoints import *
 from src.resources.entities.users_endpoints import *
 from src.resources.non_entities.sessions_endpoints import *
+from src.resources.table_endpoints.table_endpoints import UsersInvestigations, UsersInvestigationsCount, \
+    InstrumentsFacilityCycles, InstrumentsFacilityCyclesCount, InstrumentsFacilityCyclesInvestigations, \
+    InstrumentsFacilityCyclesInvestigationsCount
 from src.swagger.swagger_generator import swagger_gen
 
 swagger_gen.write_swagger_spec()
@@ -199,6 +202,16 @@ api.add_resource(UserGroups, "/usergroups")
 api.add_resource(UserGroupsWithID, "/usergroups/<int:id>")
 api.add_resource(UserGroupsCount, "/usergroups/count")
 api.add_resource(UserGroupsFindOne, "/usergroups/findOne")
+
+# Table specific endpoints
+api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
+api.add_resource(UsersInvestigationsCount, "/users/<int:id>/investigations/count")
+api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilitycycles")
+api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilitycycles/count")
+api.add_resource(InstrumentsFacilityCyclesInvestigations,
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations")
+api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
     app.run(debug=config.is_debug_mode())

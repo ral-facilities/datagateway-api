@@ -5,6 +5,8 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
+from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
+    INVESTIGATIONINSTRUMENT, FACILITY
 from common.session_manager import session_manager
 
 log = logging.getLogger()
@@ -52,6 +54,10 @@ class ReadQuery(Query):
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
+
+    def commit_changes(self):
+        log.info("Closing DB session")
+        self.session.close()
 
     def execute_query(self):
         self.commit_changes()
@@ -131,6 +137,7 @@ class WhereFilter(QueryFilter):
         self.operation = operation
 
     def apply_filter(self, query):
+
         if self.operation == "eq":
             query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
         elif self.operation == "like":
@@ -221,6 +228,7 @@ class FilterOrderHandler(object):
     """
     The FilterOrderHandler takes in filters, sorts them according to the order of operations, then applies them.
     """
+
     def __init__(self):
         self.filters = []
 
@@ -305,15 +313,14 @@ def update_row_from_id(table, id, new_values):
     update_query.execute_query()
 
 
-def get_rows_by_filter(table, filters):
+def get_filtered_read_query_results(filter_handler, filters, query):
     """
-    Given a list of filters supplied in json format, returns entities that match the filters from the given table
-    :param table: The table to checked
-    :param filters: The list of filters to be applied
-    :return: A list of the rows returned in dictionary form
+    Given a filter handler, list of filters and a query. Apply the filters and execute the query
+    :param filter_handler: The filter handler to apply the filters
+    :param filters: The filters to be applied
+    :param query: The query for the filters to be applied to
+    :return: The results of the query as a list of dictionaries
     """
-    query = ReadQuery(table)
-    filter_handler = FilterOrderHandler()
     try:
         for query_filter in filters:
             if len(query_filter) == 0:
@@ -327,8 +334,21 @@ def get_rows_by_filter(table, filters):
                 if list(query_filter)[0].lower() == "include":
                     return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
         return list(map(lambda x: x.to_dict(), results))
+
     finally:
         query.session.close()
+
+
+def get_rows_by_filter(table, filters):
+    """
+    Given a list of filters supplied in json format, returns entities that match the filters from the given table
+    :param table: The table to checked
+    :param filters: The list of filters to be applied
+    :return: A list of the rows returned in dictionary form
+    """
+    query = ReadQuery(table)
+    filter_handler = FilterOrderHandler()
+    return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_first_filtered_row(table, filters):
@@ -388,3 +408,128 @@ def patch_entities(table, json_list):
         raise BadRequestError(f" Bad request made, request: {json_list}")
 
     return results
+
+
+class UserInvestigationsQuery(ReadQuery):
+    """
+    The query class used for the /users/<:id>/investigations endpoint
+    """
+
+    def __init__(self, user_id):
+        super().__init__(INVESTIGATION)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
+
+
+def get_investigations_for_user(user_id, filters):
+    """
+    Given a user id and a list of filters, return a filtered list of all investigations that belong to that user
+    :param user_id: The id of the user
+    :param filters: The list of filters
+    :return: A list of dictionary representations of the investigation entities
+    """
+    query = UserInvestigationsQuery(user_id)
+    filter_handler = FilterOrderHandler()
+    return get_filtered_read_query_results(filter_handler, filters, query)
+
+
+class UserInvestigationsCountQuery(CountQuery):
+    """
+    The query class used for /users/<:id>/investigations/count
+    """
+
+    def __init__(self, user_id):
+        super().__init__(INVESTIGATION)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
+
+
+def get_investigations_for_user_count(user_id, filters):
+    """
+    Given a user id and a list of filters, return the count of all investigations that belong to that user
+    :param user_id: The id of the user
+    :param filters: The list of filters
+    :return: The count
+    """
+    count_query = UserInvestigationsCountQuery(user_id)
+    filter_handler = FilterOrderHandler()
+    for query_filter in filters:
+        if len(query_filter) == 0:
+            pass
+        else:
+            filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+    filter_handler.apply_filters(count_query)
+    return count_query.get_count()
+
+
+class InstrumentFacilityCyclesQuery(ReadQuery):
+    def __init__(self, instrument_id):
+        super().__init__(FACILITYCYCLE)
+        self.base_query = self.base_query\
+            .join(FACILITYCYCLE.FACILITY) \
+            .join(FACILITY.INSTRUMENT) \
+            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
+            .join(INVESTIGATIONINSTRUMENT.INVESTIGATION) \
+            .filter(INSTRUMENT.ID == instrument_id) \
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+
+
+def get_facility_cycles_for_instrument(instrument_id, filters):
+    """
+    Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+    :param filters: The filters to be applied to the query
+    :param instrument_id: The id of the instrument
+    :return: A list of facility cycle entities
+    """
+    query = InstrumentFacilityCyclesQuery(instrument_id)
+    filter_handler = FilterOrderHandler()
+    return get_filtered_read_query_results(filter_handler, filters, query)
+
+
+def get_facility_cycles_for_instrument_count(instrument_id, filters):
+    """
+    Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
+    that cycle
+    :param filters: The filters to be applied to the query
+    :param instrument_id: The id of the instrument
+    :return: The count of the facility cycles
+    """
+    return len(get_facility_cycles_for_instrument(instrument_id, filters))
+
+
+class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
+    def __init__(self, instrument_id, facility_cycle_id):
+        super().__init__(INVESTIGATION)
+        self.base_query = self.base_query\
+            .join(FACILITY) \
+            .join(FACILITY.FACILITYCYCLE) \
+            .join(FACILITY.INSTRUMENT) \
+            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
+            .filter(INSTRUMENT.ID == instrument_id) \
+            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+
+
+def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters):
+    """
+    Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+    :param filters: The filters to be applied to the query
+    :param instrument_id: The id of the instrument
+    :param facility_cycle_id:  the ID of the facility cycle
+    :return: The investigations
+    """
+    filter_handler = FilterOrderHandler()
+    query = InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id)
+    return get_filtered_read_query_results(filter_handler, filters, query)
+
+
+def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id, filters):
+    """
+    Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
+    the given cycle
+    :param filters: The filters to be applied to the query
+    :param instrument_id: The id of the instrument
+    :param facility_cycle_id:  the ID of the facility cycle
+    :return: The investigations count
+    """
+    return len(get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters))
