@@ -137,23 +137,17 @@ class WhereFilter(QueryFilter):
         self.operation = operation
 
     def apply_filter(self, query):
-        table = self._get_table_to_filter(query)
+
         if self.operation == "eq":
-            query.base_query = query.base_query.filter(getattr(table, self.field) == self.value)
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) == self.value)
         elif self.operation == "like":
-            query.base_query = query.base_query.filter(getattr(table, self.field).like(f"%{self.value}%"))
+            query.base_query = query.base_query.filter(getattr(query.table, self.field).like(f"%{self.value}%"))
         elif self.operation == "lte":
-            query.base_query = query.base_query.filter(getattr(table, self.field) <= self.value)
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) <= self.value)
         elif self.operation == "gte":
-            query.base_query = query.base_query.filter(getattr(table, self.field) >= self.value)
+            query.base_query = query.base_query.filter(getattr(query.table, self.field) >= self.value)
         else:
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
-
-    def _get_table_to_filter(self, query):
-        if type(query) is UserInvestigationsQuery or type(query) is UserInvestigationsCountQuery:
-            return INVESTIGATION
-        else:
-            return query.table
 
 
 class OrderFilter(QueryFilter):
