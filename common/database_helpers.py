@@ -474,7 +474,10 @@ def get_investigations_for_user_count(user_id, filters):
 class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
-        self._get_start_and_end_date_filters(instrument_id)
+        self.filters = []
+        self.results = []
+        self.instrument_id = instrument_id
+        self.active_queries = []
 
     def _get_start_and_end_date_filters(self, instrument_id):
         """
@@ -508,6 +511,26 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         finally:
             session.close()
         return investigations
+
+    def _set_up_results(self):
+        """
+        Makes each individual query to FACILITYCYCLES and extends the result to the base results
+        """
+        investigations = self._get_investigations_for_instrument()
+        for investigation in investigations:
+            query = ReadQuery(FACILITYCYCLE)
+            start_filter = WhereFilter("STARTDATE", investigation.STARTDATE, "lte")
+            end_filter = WhereFilter("ENDDATE", investigation.STARTDATE, "gte")
+            filter_handler = FilterOrderHandler()
+            filter_handler.add_filter(start_filter)
+            filter_handler.add_filter(end_filter)
+            for query_filter in self.filters:
+                filter_handler.add_filter(query_filter)
+            filter_handler.apply_filters(query)
+            self.results.extend(query.get_all_results())
+            if query.include_related_entities:
+                self.include_related_entities = True
+            self.active_queries.append(query)
 
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
