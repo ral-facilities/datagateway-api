@@ -479,12 +479,13 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         self.instrument_id = instrument_id
         self.active_queries = []
 
-    def _get_start_and_end_date_filters(self, instrument_id):
+    def close_all_queries(self):
         """
-        Given an instrument ID, get the start_date and end_date filters that will be applied to the query
-        :param instrument_id: the id of the instrument
-        :return:
+        Closes all queries that were made to facility cycles
         """
+        for query in self.active_queries:
+            query.session.close()
+
     def set_filters(self, filters):
         for query_filter in filters:
             self.filters.append(QueryFilterFactory.get_query_filter(query_filter))
