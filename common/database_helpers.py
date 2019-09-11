@@ -325,11 +325,7 @@ def get_filtered_read_query_results(filter_handler, filters, query):
     :return: The results of the query as a list of dictionaries
     """
     try:
-        for query_filter in filters:
-            if len(query_filter) == 0:
-                pass
-            else:
-                filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+        filter_handler.add_filters(filters)
         filter_handler.apply_filters(query)
         results = query.get_all_results()
         if query.include_related_entities:
@@ -376,11 +372,7 @@ def get_filtered_row_count(table, filters):
     log.info(f" getting count for {table.__tablename__}")
     count_query = CountQuery(table)
     filter_handler = FilterOrderHandler()
-    for query_filter in filters:
-        if len(query_filter) == 0:
-            pass
-        else:
-            filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+    filter_handler.add_filters(filters)
     filter_handler.apply_filters(count_query)
     return count_query.get_count()
 
@@ -454,11 +446,7 @@ def get_investigations_for_user_count(user_id, filters):
     """
     count_query = UserInvestigationsCountQuery(user_id)
     filter_handler = FilterOrderHandler()
-    for query_filter in filters:
-        if len(query_filter) == 0:
-            pass
-        else:
-            filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
+    filter_handler.add_filters(filters)
     filter_handler.apply_filters(count_query)
     return count_query.get_count()
 
