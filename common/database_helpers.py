@@ -346,6 +346,8 @@ def get_rows_by_filter(table, filters):
                 filter_handler.add_filter(QueryFilterFactory.get_query_filter(query_filter))
         filter_handler.apply_filters(query)
         results = query.get_all_results()
+        if query.is_distinct_fields_query:
+            return _get_distinct_fields_as_dicts(results)
         if query.include_related_entities:
             return _get_results_with_include(filters, results)
         return list(map(lambda x: x.to_dict(), results))
@@ -364,6 +366,20 @@ def _get_results_with_include(filters, results):
     for query_filter in filters:
         if list(query_filter)[0].lower() == "include":
             return [x.to_nested_dict(query_filter["include"]) for x in results]
+
+
+def _get_distinct_fields_as_dicts(results):
+    """
+    Given a list of column results return a list of dictionaries where each column name is the key and the column value
+    is the dictionary key value
+    :param results: A list of sql alchemy result objects
+    :return: A list of dictionary representations of the sqlalchemy result objects
+    """
+    dictionaries = []
+    for result in results:
+        dictionary = {k: getattr(result, k) for k in result.keys()}
+        dictionaries.append(dictionary)
+    return dictionaries
 
 
 def get_first_filtered_row(table, filters):
