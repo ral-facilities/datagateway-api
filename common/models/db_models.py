@@ -1,6 +1,7 @@
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.collections import InstrumentedList
 
 from common.exceptions import BadFilterError
 
@@ -25,7 +26,7 @@ class EntityHelper(object):
     def to_nested_dict(self, includes):
         """
         Given related models return a nested dictionary with the child or parent rows nested.
-        :param included_relations: string/list/dict - The related models to include.
+        :param includes: string/list/dict - The related models to include.
         :return: A nested dictionary with the included models
         """
         dictionary = self.to_dict()
@@ -33,14 +34,46 @@ class EntityHelper(object):
             includes = includes if type(includes) is list else [includes]
             for include in includes:
                 if type(include) is str:
-                    related_entity = self.get_related_entity(include)
-                    dictionary[related_entity.__tablename__] = related_entity.to_dict()
+                    self._nest_string_include(dictionary, include)
                 elif type(include) is dict:
-                    related_entity = self.get_related_entity(list(include)[0])
-                    dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
+                    self._nest_dictionary_include(dictionary, include)
         except TypeError:
             raise BadFilterError(f" Bad include relations provided: {includes}")
         return dictionary
+
+    def _nest_dictionary_include(self, dictionary, include):
+        """
+        Given a dictionary of related entities names, nest the related entities into the given dictionary representation,
+        of the original entity.
+        :param dictionary: The dictionary representation of the original entity
+        :param include: The dictionary of related entity names to be nested.
+        """
+        related_entity = self.get_related_entity(list(include)[0])
+        if not isinstance(related_entity, InstrumentedList):
+            dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
+        else:
+            for entity in related_entity:
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_nested_dict(include[list(include)[0]]))
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_nested_dict(include[list(include)[0]])]
+
+    def _nest_string_include(self, dictionary, include):
+        """
+        Given the name of a single related entity, nest the related entity into the given dictionary representation of
+        the original entity.
+        :param dictionary: The dictionary representation of an entity to be nested in.
+        :param include: The name of the related entity to be nested
+        """
+        related_entity = self.get_related_entity(include)
+        if not isinstance(related_entity, InstrumentedList):
+            dictionary[related_entity.__tablename__] = related_entity.to_dict()
+        else:
+            for entity in related_entity:
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_dict())
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_dict()]
 
     def get_related_entity(self, entity):
         """
@@ -547,7 +580,6 @@ class JOB(Base, EntityHelper):
     APPLICATION = relationship('APPLICATION', primaryjoin='JOB.APPLICATION_ID == APPLICATION.ID', backref='JOB')
     DATACOLLECTION = relationship('DATACOLLECTION', primaryjoin='JOB.INPUTDATACOLLECTION_ID == DATACOLLECTION.ID',
                                   backref='JOB')
-
 
 
 class KEYWORD(Base, EntityHelper):
