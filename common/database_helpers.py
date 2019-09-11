@@ -467,8 +467,8 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
         investigationInstrument = aliased(INSTRUMENT)
         self.base_query = self.base_query\
             .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENTS) \
-            .join(FACILITY.INVESTIGATIONS) \
+            .join(FACILITY.INSTRUMENT) \
+            .join(FACILITY.INVESTIGATION) \
             .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
             .join(investigationInstrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
             .filter(INSTRUMENT.ID == instrument_id) \
