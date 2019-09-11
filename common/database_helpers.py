@@ -234,6 +234,8 @@ class QueryFilterFactory(object):
             return LimitFilter(filter["limit"])
         elif filter_name == "include":
             return IncludeFilter(filter)
+        elif filter_name == "distinct":
+            return DistinctFieldFilter(filter["distinct"])
         else:
             raise BadFilterError(f" Bad filter: {filter}")
 
