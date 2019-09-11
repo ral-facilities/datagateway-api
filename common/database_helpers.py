@@ -347,12 +347,23 @@ def get_rows_by_filter(table, filters):
         filter_handler.apply_filters(query)
         results = query.get_all_results()
         if query.include_related_entities:
-            for query_filter in filters:
-                if list(query_filter)[0].lower() == "include":
-                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+            return _get_results_with_include(filters, results)
         return list(map(lambda x: x.to_dict(), results))
     finally:
         query.session.close()
+
+
+def _get_results_with_include(filters, results):
+    """
+    Given a list of entities and a list of filters, use the include filter to nest the included entities requested in
+    the include filter given
+    :param filters: The list of filters
+    :param results: The list of entities
+    :return: A list of nested dictionaries representing the entity results
+    """
+    for query_filter in filters:
+        if list(query_filter)[0].lower() == "include":
+            return [x.to_nested_dict(query_filter["include"]) for x in results]
 
 
 def get_first_filtered_row(table, filters):
