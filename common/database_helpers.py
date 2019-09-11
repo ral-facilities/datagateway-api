@@ -190,7 +190,7 @@ class IncludeFilter(QueryFilter):
     precedence = 4
 
     def __init__(self, included_filters):
-        self.included_filters = included_filters
+        self.included_filters = included_filters["include"]
 
     def apply_filter(self, query):
         query.include_related_entities = True
