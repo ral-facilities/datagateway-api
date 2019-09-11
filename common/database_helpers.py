@@ -330,8 +330,8 @@ def get_filtered_read_query_results(filter_handler, filters, query):
         results = query.get_all_results()
         if query.include_related_entities:
             for query_filter in filters:
-                if list(query_filter)[0].lower() == "include":
-                    return list(map(lambda x: x.to_nested_dict(query_filter["include"]), results))
+                if type(query_filter) is IncludeFilter:
+                    return list(map(lambda x: x.to_nested_dict(query_filter.included_filters), results))
         return list(map(lambda x: x.to_dict(), results))
 
     finally:
