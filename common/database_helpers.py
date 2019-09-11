@@ -363,7 +363,6 @@ def get_filtered_read_query_results(filter_handler, filters, query):
         query.session.close()
 
 
-
 def _get_results_with_include(filters, results):
     """
     Given a list of entities and a list of filters, use the include filter to nest the included entities requested in
@@ -390,6 +389,7 @@ def _get_distinct_fields_as_dicts(results):
         dictionaries.append(dictionary)
     return dictionaries
 
+
 def get_rows_by_filter(table, filters):
     """
     Given a list of filters supplied in json format, returns entities that match the filters from the given table
@@ -400,7 +400,6 @@ def get_rows_by_filter(table, filters):
     query = ReadQuery(table)
     filter_handler = FilterOrderHandler()
     return get_filtered_read_query_results(filter_handler, filters, query)
-
 
 
 def get_first_filtered_row(table, filters):
@@ -516,7 +515,7 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
         investigationInstrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query\
+        self.base_query = self.base_query \
             .join(FACILITYCYCLE.FACILITY) \
             .join(FACILITY.INSTRUMENT) \
             .join(FACILITY.INVESTIGATION) \
@@ -555,7 +554,7 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         investigationInstrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query\
+        self.base_query = self.base_query \
             .join(INVESTIGATION.FACILITY) \
             .join(FACILITY.FACILITYCYCLE) \
             .join(FACILITY.INSTRUMENT) \
