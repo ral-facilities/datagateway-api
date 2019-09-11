@@ -3,6 +3,7 @@ import logging
 from abc import ABC, abstractmethod
 
 from sqlalchemy import asc, desc
+from sqlalchemy.orm import aliased
 
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
@@ -463,12 +464,15 @@ def get_investigations_for_user_count(user_id, filters):
 class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
+        investigationInstrument = aliased(INSTRUMENT)
         self.base_query = self.base_query\
             .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
-            .join(INVESTIGATIONINSTRUMENT.INVESTIGATION) \
+            .join(FACILITY.INSTRUMENTS) \
+            .join(FACILITY.INVESTIGATIONS) \
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
+            .join(investigationInstrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
             .filter(INSTRUMENT.ID == instrument_id) \
+            .filter(investigationInstrument.ID == INSTRUMENT.ID) \
             .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
@@ -499,13 +503,16 @@ def get_facility_cycles_for_instrument_count(instrument_id, filters):
 class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
+        investigationInstrument = aliased(INSTRUMENT)
         self.base_query = self.base_query\
-            .join(FACILITY) \
+            .join(INVESTIGATION.FACILITY) \
             .join(FACILITY.FACILITYCYCLE) \
             .join(FACILITY.INSTRUMENT) \
-            .join(INSTRUMENT.INVESTIGATIONINSTRUMENT) \
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
+            .join(investigationInstrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
             .filter(INSTRUMENT.ID == instrument_id) \
             .filter(FACILITYCYCLE.ID == facility_cycle_id) \
+            .filter(investigationInstrument.ID == INSTRUMENT.ID) \
             .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
 
