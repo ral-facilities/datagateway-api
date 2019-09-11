@@ -52,6 +52,7 @@ class ReadQuery(Query):
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
+        self.is_distinct_fields_query = False
 
     def execute_query(self):
         self.commit_changes()
