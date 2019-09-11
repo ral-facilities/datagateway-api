@@ -235,6 +235,9 @@ class FilterOrderHandler(object):
     def add_filter(self, filter):
         self.filters.append(filter)
 
+    def add_filters(self, filters):
+        self.filters.extend(filters)
+
     def sort_filters(self):
         """
         Sorts the filters according to the order of operations
