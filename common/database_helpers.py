@@ -152,8 +152,16 @@ class WhereFilter(QueryFilter):
 class DistinctFieldFilter(QueryFilter):
     precedence = 0
 
+    def __init__(self, fields):
+        self.fields = fields if type(fields) is list else [fields]  # This allows single string distinct filters
+
     def apply_filter(self, query):
-        pass
+        query.is_distinct_fields_query = True
+        try:
+            self.fields = [getattr(query.table, field) for field in self.fields]
+        except AttributeError:
+            raise BadFilterError("Bad field requested")
+        query.base_query = query.session.query(*self.fields).distinct()
 
 
 class OrderFilter(QueryFilter):
