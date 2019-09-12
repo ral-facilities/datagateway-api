@@ -371,8 +371,8 @@ def _get_results_with_include(filters, results):
     :return: A list of nested dictionaries representing the entity results
     """
     for query_filter in filters:
-        if list(query_filter)[0].lower() == "include":
-            return [x.to_nested_dict(query_filter["include"]) for x in results]
+        if type(query_filter) is IncludeFilter:
+            return [x.to_nested_dict(query_filter.included_filters) for x in results]
 
 
 def _get_distinct_fields_as_dicts(results):
