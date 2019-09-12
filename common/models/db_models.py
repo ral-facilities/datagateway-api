@@ -53,7 +53,7 @@ class EntityHelper(object):
     def to_nested_dict(self, includes):
         """
         Given related models return a nested dictionary with the child or parent rows nested.
-        :param included_relations: string/list/dict - The related models to include.
+        :param includes: string/list/dict - The related models to include.
         :return: A nested dictionary with the included models
         """
         dictionary = self.to_dict()
