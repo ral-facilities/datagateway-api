@@ -577,7 +577,6 @@ class JOB(Base, EntityHelper):
                                   backref='JOB')
 
 
-
 class KEYWORD(Base, EntityHelper):
     __tablename__ = 'KEYWORD'
     __table_args__ = (
@@ -624,7 +623,7 @@ class PARAMETERTYPE(Base, EntityHelper):
     NAME = Column(String(255), nullable=False)
     UNITS = Column(String(255), nullable=False)
     UNITSFULLNAME = Column(String(255))
-    VALUETYPE = Column(Integer, nullable=False)
+    VALUETYPE = Column(EnumAsInteger(ValueTypeEnum), nullable=False)
     VERIFIED = Column(Integer, server_default=FetchedValue())
     FACILITY_ID = Column(ForeignKey('FACILITY.ID'), nullable=False)
 
