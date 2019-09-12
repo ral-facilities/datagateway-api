@@ -5,9 +5,34 @@ from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from common.exceptions import BadFilterError
+from common.exceptions import BadFilterError, DatabaseError
 
 Base = declarative_base()
+
+
+class EnumAsInteger(TypeDecorator):
+    """
+    Column type for storing Python enums in a database INTEGER column.
+    """
+    impl = Integer
+
+    def __init__(self, enum_type):
+        super(EnumAsInteger, self).__init__()
+        self.enum_type = enum_type
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, self.enum_type):
+            return value.value
+        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")
+
+    def process_result_value(self, value, dialect):
+        try:
+            return f"{self.enum_type(value)}".replace(f"{self.enum_type.__name__}.", "")  # Strips the enum class name
+        except ValueError:
+            raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")  # This will force a 500 response
+
+    def copy(self, **kwargs):
+        return EnumAsInteger(self.enum_type)
 
 
 class EntityHelper(object):
