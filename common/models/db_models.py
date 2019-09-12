@@ -1,10 +1,39 @@
-from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue
+import enum
+
+from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue, \
+    TypeDecorator
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.collections import InstrumentedList
 
-from common.exceptions import BadFilterError
+from common.exceptions import BadFilterError, DatabaseError
 
 Base = declarative_base()
+
+
+class EnumAsInteger(TypeDecorator):
+    """
+    Column type for storing Python enums in a database INTEGER column.
+    """
+    impl = Integer
+
+    def __init__(self, enum_type):
+        super(EnumAsInteger, self).__init__()
+        self.enum_type = enum_type
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, self.enum_type):
+            return value.value
+        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")
+
+    def process_result_value(self, value, dialect):
+        try:
+            return f"{self.enum_type(value)}".replace(f"{self.enum_type.__name__}.", "")  # Strips the enum class name
+        except ValueError:
+            raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")  # This will force a 500 response
+
+    def copy(self, **kwargs):
+        return EnumAsInteger(self.enum_type)
 
 
 class EntityHelper(object):
@@ -25,7 +54,7 @@ class EntityHelper(object):
     def to_nested_dict(self, includes):
         """
         Given related models return a nested dictionary with the child or parent rows nested.
-        :param included_relations: string/list/dict - The related models to include.
+        :param includes: string/list/dict - The related models to include.
         :return: A nested dictionary with the included models
         """
         dictionary = self.to_dict()
@@ -33,14 +62,46 @@ class EntityHelper(object):
             includes = includes if type(includes) is list else [includes]
             for include in includes:
                 if type(include) is str:
-                    related_entity = self.get_related_entity(include)
-                    dictionary[related_entity.__tablename__] = related_entity.to_dict()
+                    self._nest_string_include(dictionary, include)
                 elif type(include) is dict:
-                    related_entity = self.get_related_entity(list(include)[0])
-                    dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
+                    self._nest_dictionary_include(dictionary, include)
         except TypeError:
             raise BadFilterError(f" Bad include relations provided: {includes}")
         return dictionary
+
+    def _nest_dictionary_include(self, dictionary, include):
+        """
+        Given a dictionary of related entities names, nest the related entities into the given dictionary representation,
+        of the original entity.
+        :param dictionary: The dictionary representation of the original entity
+        :param include: The dictionary of related entity names to be nested.
+        """
+        related_entity = self.get_related_entity(list(include)[0])
+        if not isinstance(related_entity, InstrumentedList):
+            dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(include[list(include)[0]])
+        else:
+            for entity in related_entity:
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_nested_dict(include[list(include)[0]]))
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_nested_dict(include[list(include)[0]])]
+
+    def _nest_string_include(self, dictionary, include):
+        """
+        Given the name of a single related entity, nest the related entity into the given dictionary representation of
+        the original entity.
+        :param dictionary: The dictionary representation of an entity to be nested in.
+        :param include: The name of the related entity to be nested
+        """
+        related_entity = self.get_related_entity(include)
+        if not isinstance(related_entity, InstrumentedList):
+            dictionary[related_entity.__tablename__] = related_entity.to_dict()
+        else:
+            for entity in related_entity:
+                if entity.__tablename__ in dictionary.keys():
+                    dictionary[entity.__tablename__].append(entity.to_dict())
+                else:
+                    dictionary[entity.__tablename__] = [entity.to_dict()]
 
     def get_related_entity(self, entity):
         """
@@ -549,7 +610,6 @@ class JOB(Base, EntityHelper):
                                   backref='JOB')
 
 
-
 class KEYWORD(Base, EntityHelper):
     __tablename__ = 'KEYWORD'
     __table_args__ = (
@@ -574,6 +634,11 @@ class PARAMETERTYPE(Base, EntityHelper):
         Index('UNQ_PARAMETERTYPE_0', 'FACILITY_ID', 'NAME', 'UNITS'),
     )
 
+    class ValueTypeEnum(enum.Enum):
+        DATE_AND_TIME = 0
+        NUMERIC = 1
+        STRING = 2
+
     ID = Column(BigInteger, primary_key=True)
     APPLICABLETODATACOLLECTION = Column(Integer, server_default=FetchedValue())
     APPLICABLETODATAFILE = Column(Integer, server_default=FetchedValue())
@@ -591,7 +656,7 @@ class PARAMETERTYPE(Base, EntityHelper):
     NAME = Column(String(255), nullable=False)
     UNITS = Column(String(255), nullable=False)
     UNITSFULLNAME = Column(String(255))
-    VALUETYPE = Column(Integer, nullable=False)
+    VALUETYPE = Column(EnumAsInteger(ValueTypeEnum), nullable=False)
     VERIFIED = Column(Integer, server_default=FetchedValue())
     FACILITY_ID = Column(ForeignKey('FACILITY.ID'), nullable=False)
 

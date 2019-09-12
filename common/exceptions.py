@@ -1,8 +1,3 @@
-import logging
-
-log = logging.getLogger()
-
-
 class ApiError(Exception):
     pass
 
@@ -20,4 +15,8 @@ class AuthenticationError(ApiError):
 
 
 class BadRequestError(ApiError):
+    pass
+
+
+class DatabaseError(ApiError):
     pass
