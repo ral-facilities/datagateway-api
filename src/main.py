@@ -49,6 +49,7 @@ from src.swagger.swagger_generator import swagger_gen
 swagger_gen.write_swagger_spec()
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 api = Api(app)
 
 setup_logger()
