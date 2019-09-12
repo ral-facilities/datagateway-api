@@ -1,4 +1,7 @@
-from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue
+import enum
+
+from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue, \
+    TypeDecorator
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -573,6 +576,11 @@ class PARAMETERTYPE(Base, EntityHelper):
     __table_args__ = (
         Index('UNQ_PARAMETERTYPE_0', 'FACILITY_ID', 'NAME', 'UNITS'),
     )
+
+    class ValueTypeEnum(enum.Enum):
+        DATE_AND_TIME = 0
+        NUMERIC = 1
+        STRING = 2
 
     ID = Column(BigInteger, primary_key=True)
     APPLICABLETODATACOLLECTION = Column(Integer, server_default=FetchedValue())
