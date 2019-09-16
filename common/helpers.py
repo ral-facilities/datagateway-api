@@ -6,7 +6,8 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError
+from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError, \
+    MissingCredentialsError
 from common.models.db_models import SESSION
 from common.session_manager import session_manager
 
@@ -38,8 +39,11 @@ def requires_session_id(method):
                 log.info(" Could not authenticate consumer, closing DB session")
                 session.close()
                 return "Forbidden", 403
+        except MissingCredentialsError:
+            return "Unauthorized", 401
         except AuthenticationError:
             return "Forbidden", 403
+
 
     return wrapper_requires_session
 
@@ -88,7 +92,7 @@ def get_session_id_from_auth_header():
     args = parser.parse_args()
     auth_header = args["Authorization"].split(" ") if args["Authorization"] is not None else ""
     if auth_header == "":
-        return ""
+        raise MissingCredentialsError(f"No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(f" Could not authenticate consumer with auth header {auth_header}")
     return auth_header[1]
