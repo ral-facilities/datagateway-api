@@ -6,6 +6,19 @@ import yaml
 from common.config import config
 
 
+class Parameter(object):
+    def __init__(self, description, name, param_type, example, location, is_required):
+        self.parameter_as_dict = {
+            "description": description,
+            "in": location,
+            "required": is_required,
+            "name": name,
+            "schema": {
+                "type": param_type,
+                "example": example
+            }
+        }
+
 class SwaggerGenerator(object):
     FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
 
