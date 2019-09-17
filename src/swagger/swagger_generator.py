@@ -241,10 +241,12 @@ class SwaggerGenerator(object):
         """
         Wrapper for Resource classes that appends the class name to the endpoints list
         """
+
         def decorate(cls):
             if config.is_generate_swagger():
                 self.endpoints.append(cls.__name__)
             return cls
+
         return decorate
 
     def write_swagger_spec(self):
@@ -253,9 +255,16 @@ class SwaggerGenerator(object):
 
         """
         if config.is_generate_swagger():
+            swagger_spec = SwaggerSpecification()
+            for endpoint in self.endpoints:
+                entity = Entity(endpoint)
+                swagger_spec.add_path(entity.entity_count_endpoint)
+                swagger_spec.add_path(entity.entity_id_endpoint)
+                swagger_spec.add_path(entity.entity_no_id_endpoint)
+            swagger_dict = swagger_spec.get_spec_as_dict()
+            yaml.Dumper.ignore_aliases = lambda *args : True
             with open(SwaggerGenerator.FILE_PATH, "w+") as target:
-                target.write(self.get_yaml_top())
-                target.write(self.get_yaml_paths())
+                target.write(yaml.dump(swagger_dict))
             target.close()
 
 
