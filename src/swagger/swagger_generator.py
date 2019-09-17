@@ -190,6 +190,36 @@ class Entity(object):
         }
 
 
+class SwaggerSpecification(object):
+    def __init__(self):
+        self.paths = []
+        self.top_part = {
+            'openapi': "3.0.0",
+            "info": {
+                "title": "DataGateway API",
+                "description": "ICAT API to interface with the DataGateway",
+                "version": "0"
+            },
+            "servers": [
+                {
+                    "url": "http://localhost:5000"
+                }
+            ],
+            "paths": {}
+        }
+
+    def add_path(self, path):
+        self.paths.append(path)
+
+    def get_spec_as_dict(self):
+        spec = {}
+        for path in self.paths:
+            self.top_part["paths"].update(path)
+        spec.update(self.top_part)
+
+        return spec
+
+
 class SwaggerGenerator(object):
     FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
 
