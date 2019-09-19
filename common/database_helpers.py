@@ -37,8 +37,6 @@ class Query(ABC):
         """
         log.info(f" Commiting changes to {self.table}")
         self.session.commit()
-        log.info(f" Closing DB session")
-        self.session.close()
 
 
 class CountQuery(Query):
@@ -66,7 +64,6 @@ class ReadQuery(Query):
 
     def commit_changes(self):
         log.info("Closing DB session")
-        self.session.close()
 
     def execute_query(self):
         self.commit_changes()
