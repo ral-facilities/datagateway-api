@@ -20,6 +20,13 @@ class Query(ABC):
         self.table = table
         self.base_query = self.session.query(table)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        log.info("Closing DB session")
+        self.session.close()
+
     @abstractmethod
     def execute_query(self):
         pass
