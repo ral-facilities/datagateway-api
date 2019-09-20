@@ -20,6 +20,13 @@ class Query(ABC):
         self.table = table
         self.base_query = self.session.query(table)
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        log.info("Closing DB session")
+        self.session.close()
+
     @abstractmethod
     def execute_query(self):
         pass
@@ -30,8 +37,6 @@ class Query(ABC):
         """
         log.info(f" Commiting changes to {self.table}")
         self.session.commit()
-        log.info(f" Closing DB session")
-        self.session.close()
 
 
 class CountQuery(Query):
@@ -59,7 +64,6 @@ class ReadQuery(Query):
 
     def commit_changes(self):
         log.info("Closing DB session")
-        self.session.close()
 
     def execute_query(self):
         self.commit_changes()
@@ -284,8 +288,8 @@ def insert_row_into_table(table, row):
     :param table: The table to be inserted to
     :param row: The row to be inserted
     """
-    create_query = CreateQuery(table, row)
-    create_query.execute_query()
+    with CreateQuery(table, row) as create_query:
+        create_query.execute_query()
 
 
 def create_row_from_json(table, json):
@@ -295,8 +299,8 @@ def create_row_from_json(table, json):
     :param json: the dictionary containing the values
     :return: nothing atm
     """
-    create_query = CreateQuery(table, json)
-    create_query.execute_query()
+    with CreateQuery(table, json) as create_query:
+        create_query.execute_query()
 
 
 def get_row_by_id(table, id):
@@ -306,14 +310,11 @@ def get_row_by_id(table, id):
     :param id: the id of the record to find
     :return: the record retrieved
     """
-    read_query = ReadQuery(table)
-    try:
+    with ReadQuery(table) as read_query:
         log.info(f" Querying {table.__tablename__} for record with ID: {id}")
         where_filter = WhereFilter("ID", id, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
-    finally:
-        read_query.session.close()
 
 
 def delete_row_by_id(table, id):
@@ -324,8 +325,8 @@ def delete_row_by_id(table, id):
     """
     log.info(f" Deleting row from {table.__tablename__} with ID: {id}")
     row = get_row_by_id(table, id)
-    delete_query = DeleteQuery(table, row)
-    delete_query.execute_query()
+    with DeleteQuery(table, row) as delete_query:
+        delete_query.execute_query()
 
 
 def update_row_from_id(table, id, new_values):
@@ -336,8 +337,8 @@ def update_row_from_id(table, id, new_values):
     :param new_values: A JSON string containing what columns are to be updated
     """
     row = get_row_by_id(table, id)
-    update_query = UpdateQuery(table, row, new_values)
-    update_query.execute_query()
+    with UpdateQuery(table, row, new_values) as update_query:
+        update_query.execute_query()
 
 
 def get_filtered_read_query_results(filter_handler, filters, query):
@@ -348,18 +349,14 @@ def get_filtered_read_query_results(filter_handler, filters, query):
     :param query: The query for the filters to be applied to
     :return: The results of the query as a list of dictionaries
     """
-    try:
-        filter_handler.add_filters(filters)
-        filter_handler.apply_filters(query)
-        results = query.get_all_results()
-        if query.is_distinct_fields_query:
-            return _get_distinct_fields_as_dicts(results)
-        if query.include_related_entities:
-            return _get_results_with_include(filters, results)
-        return list(map(lambda x: x.to_dict(), results))
-
-    finally:
-        query.session.close()
+    filter_handler.add_filters(filters)
+    filter_handler.apply_filters(query)
+    results = query.get_all_results()
+    if query.is_distinct_fields_query:
+        return _get_distinct_fields_as_dicts(results)
+    if query.include_related_entities:
+        return _get_results_with_include(filters, results)
+    return list(map(lambda x: x.to_dict(), results))
 
 
 def _get_results_with_include(filters, results):
@@ -396,9 +393,9 @@ def get_rows_by_filter(table, filters):
     :param filters: The list of filters to be applied
     :return: A list of the rows returned in dictionary form
     """
-    query = ReadQuery(table)
-    filter_handler = FilterOrderHandler()
-    return get_filtered_read_query_results(filter_handler, filters, query)
+    with ReadQuery(table) as query:
+        filter_handler = FilterOrderHandler()
+        return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_first_filtered_row(table, filters):
@@ -421,11 +418,11 @@ def get_filtered_row_count(table, filters):
     """
 
     log.info(f" getting count for {table.__tablename__}")
-    count_query = CountQuery(table)
-    filter_handler = FilterOrderHandler()
-    filter_handler.add_filters(filters)
-    filter_handler.apply_filters(count_query)
-    return count_query.get_count()
+    with CountQuery(table) as count_query:
+        filter_handler = FilterOrderHandler()
+        filter_handler.add_filters(filters)
+        filter_handler.apply_filters(count_query)
+        return count_query.get_count()
 
 
 def patch_entities(table, json_list):
@@ -473,9 +470,9 @@ def get_investigations_for_user(user_id, filters):
     :param filters: The list of filters
     :return: A list of dictionary representations of the investigation entities
     """
-    query = UserInvestigationsQuery(user_id)
-    filter_handler = FilterOrderHandler()
-    return get_filtered_read_query_results(filter_handler, filters, query)
+    with UserInvestigationsQuery(user_id) as query:
+        filter_handler = FilterOrderHandler()
+        return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 class UserInvestigationsCountQuery(CountQuery):
@@ -495,11 +492,11 @@ def get_investigations_for_user_count(user_id, filters):
     :param filters: The list of filters
     :return: The count
     """
-    count_query = UserInvestigationsCountQuery(user_id)
-    filter_handler = FilterOrderHandler()
-    filter_handler.add_filters(filters)
-    filter_handler.apply_filters(count_query)
-    return count_query.get_count()
+    with UserInvestigationsCountQuery(user_id) as count_query:
+        filter_handler = FilterOrderHandler()
+        filter_handler.add_filters(filters)
+        filter_handler.apply_filters(count_query)
+        return count_query.get_count()
 
 
 class InstrumentFacilityCyclesQuery(ReadQuery):
@@ -525,9 +522,9 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
     """
-    query = InstrumentFacilityCyclesQuery(instrument_id)
-    filter_handler = FilterOrderHandler()
-    return get_filtered_read_query_results(filter_handler, filters, query)
+    with InstrumentFacilityCyclesQuery(instrument_id) as query:
+        filter_handler = FilterOrderHandler()
+        return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
@@ -567,8 +564,8 @@ def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_
     :return: The investigations
     """
     filter_handler = FilterOrderHandler()
-    query = InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id)
-    return get_filtered_read_query_results(filter_handler, filters, query)
+    with InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id) as query:
+        return get_filtered_read_query_results(filter_handler, filters, query)
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id, filters):
