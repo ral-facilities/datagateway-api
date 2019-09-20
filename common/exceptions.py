@@ -14,6 +14,10 @@ class AuthenticationError(ApiError):
     pass
 
 
+class MissingCredentialsError(AuthenticationError):
+    pass
+
+
 class BadRequestError(ApiError):
     pass
 
