@@ -16,7 +16,7 @@ ICAT API to interface with the Data Gateway
 The required python libraries:  
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
    - [flask-restful](https://github.com/flask-restful/flask-restful/)  
-   - [mypysql](https://pymysql.readthedocs.io/en/latest/)  
+   - [pymysql](https://pymysql.readthedocs.io/en/latest/)  
    - [requests](https://2.python-requests.org/en/master/)
    - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
 
