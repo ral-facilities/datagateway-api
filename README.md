@@ -18,9 +18,10 @@ The required python libraries:
    - [flask-restful](https://github.com/flask-restful/flask-restful/)  
    - [mypysql](https://pymysql.readthedocs.io/en/latest/)  
    - [requests](https://2.python-requests.org/en/master/)
+   - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
 
 ## Setup and running the API   
-The database connection needs to be set up first. This is set in config.json
+The database connection needs to be set up first. This is set in config.json, an example config file called `config.json.example` is provided.
 
 
 To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
