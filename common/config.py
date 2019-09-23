@@ -1,11 +1,12 @@
 import json
 import sys
+from pathlib import Path
 
 
 class Config(object):
 
     def __init__(self):
-        with open("../config.json") as target:
+        with open(Path("config.json")) as target:
             self.config = json.load(target)
         target.close()
 
