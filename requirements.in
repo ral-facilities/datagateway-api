@@ -1,0 +1,5 @@
+flask_restful
+sqlalchemy
+pymysql
+pyyaml
+pip-tools
