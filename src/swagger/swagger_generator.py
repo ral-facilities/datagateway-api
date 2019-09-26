@@ -221,7 +221,7 @@ class SwaggerSpecification(object):
 
 
 class SwaggerGenerator(object):
-    FILE_PATH = Path.cwd() / "swagger" / "openapi.yaml"
+    FILE_PATH = Path.cwd() / "src" / "swagger" / "openapi.yaml"
 
     def __init__(self):
         self.endpoints = []

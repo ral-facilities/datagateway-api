@@ -5,7 +5,7 @@ import sys
 class Config(object):
 
     def __init__(self):
-        with open("../config.json") as target:
+        with open("config.json") as target:
             self.config = json.load(target)
         target.close()
 

@@ -2,7 +2,7 @@ import logging.config
 from common.config import  config
 
 log_level = "DEBUG"
-LOG_FILE_NAME = "../logs.log"
+LOG_FILE_NAME = "logs.log"
 logger_config = {
     "version": 1,
     "formatters": {"default": {
