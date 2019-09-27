@@ -111,6 +111,8 @@ def is_valid_json(string):
         json_object = json.loads(string)
     except ValueError:
         return False
+    except TypeError:
+        return False
     return True
 
 
