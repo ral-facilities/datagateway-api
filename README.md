@@ -116,6 +116,7 @@ and updating them, in a form easily converted to JSON.
 
 
 
-
+## Running Tests
+To run the tests use `python -m unittest discover`
 
 
