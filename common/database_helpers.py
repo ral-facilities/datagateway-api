@@ -298,15 +298,16 @@ def insert_row_into_table(table, row):
         create_query.execute_query()
 
 
-def create_row_from_json(table, json):
+def create_row_from_json(table, data):
     """
     Given a json dictionary create a row in the table from it
     :param table: the table for the row to be inserted into
     :param json: the dictionary containing the values
-    :return: nothing atm
+    :return: The created entity as a dictionary
     """
-    with CreateQuery(table, json) as create_query:
-        create_query.execute_query()
+    with CreateQuery(table, data) as query:
+        query.execute_query()
+        return query.inserted_record.to_dict()
 
 
 def get_row_by_id(table, id):
