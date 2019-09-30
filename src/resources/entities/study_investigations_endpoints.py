@@ -2,7 +2,7 @@ from flask import request
 from flask_restful import Resource
 
 from common.database_helpers import get_row_by_id, delete_row_by_id, update_row_from_id, get_rows_by_filter, \
-    get_filtered_row_count, get_first_filtered_row, create_row_from_json, patch_entities
+    get_filtered_row_count, get_first_filtered_row, patch_entities, create_rows_from_json
 from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
 from common.models.db_models import STUDYINVESTIGATION
 from src.swagger.swagger_generator import swagger_gen
@@ -18,8 +18,7 @@ class StudyInvestigations(Resource):
     @requires_session_id
     @queries_records
     def post(self):
-        create_row_from_json(STUDYINVESTIGATION, request.json)
-        return get_row_by_id(STUDYINVESTIGATION, request.json["id"].to_dict()), 200
+        return create_rows_from_json(request.json, STUDYINVESTIGATION), 200
 
     @requires_session_id
     @queries_records
