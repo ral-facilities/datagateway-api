@@ -460,6 +460,18 @@ def patch_entities(table, json_list):
     return results
 
 
+def create_rows_from_json(data, table):
+    """
+    Given some json representations of entities, post the entities and return the created entities
+    :param data: The json data
+    :return: The created entities
+    """
+    if type(data) is list:
+        results = [create_row_from_json(table, entity) for entity in data]
+        return results
+    return create_row_from_json(table, data)
+
+
 class UserInvestigationsQuery(ReadQuery):
     """
     The query class used for the /users/<:id>/investigations endpoint
