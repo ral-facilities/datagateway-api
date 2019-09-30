@@ -10,10 +10,6 @@ class BadFilterError(ApiError):
     pass
 
 
-class MultipleIncludeError(BadFilterError):
-    pass
-
-
 class AuthenticationError(ApiError):
     pass
 
