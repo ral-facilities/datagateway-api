@@ -86,6 +86,7 @@ class CreateQuery(Query):
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
+        self.inserted_row = None
 
     def execute_query(self):
         """Determines if the row is a row object or dictionary then commits it to the table"""
@@ -100,7 +101,8 @@ class CreateQuery(Query):
             record.MOD_ID = "user"  # These will need changing
         self.session.add(record)
         self.commit_changes()
-
+        self.session.refresh(record)
+        self.inserted_row = record
 
 class UpdateQuery(Query):
 
