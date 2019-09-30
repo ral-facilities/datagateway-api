@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import MissingRecordError, BadFilterError, BadRequestError, MultipleIncludeError
+from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
     INVESTIGATIONINSTRUMENT, FACILITY
 from common.session_manager import session_manager
@@ -222,10 +222,14 @@ class IncludeFilter(QueryFilter):
         self.included_filters = included_filters["include"]
 
     def apply_filter(self, query):
+<<<<<<< HEAD
         if not query.include_related_entities:
             query.include_related_entities = True
         else:
             raise MultipleIncludeError("Attempted multiple includes on a single query")
+=======
+        query.include_related_entities = True
+>>>>>>> parent of 31e5b6e... #39: Raise exception if multiple includes applied
 
 
 class QueryFilterFactory(object):
