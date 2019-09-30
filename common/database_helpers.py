@@ -222,14 +222,9 @@ class IncludeFilter(QueryFilter):
         self.included_filters = included_filters["include"]
 
     def apply_filter(self, query):
-<<<<<<< HEAD
         if not query.include_related_entities:
-        query.include_related_entities = True
-        else:
-            raise MultipleIncludeError("Attempted multiple includes on a single query")
-=======
-        query.include_related_entities = True
->>>>>>> parent of 31e5b6e... #39: Raise exception if multiple includes applied
+            query.include_related_entities = True
+
 
 
 class QueryFilterFactory(object):
