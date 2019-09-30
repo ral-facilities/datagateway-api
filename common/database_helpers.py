@@ -305,6 +305,17 @@ def create_row_from_json(table, data):
         create_query.execute_query()
         return create_query.inserted_row.to_dict()
 
+def create_rows_from_json(table, data):
+    """
+    Given a List containing dictionary representations of entities, or a dictionary representation of an entity, insert
+    the entities into the table and return the created entities
+    :param table: The table to insert the entities in
+    :param data: The entities to be inserted
+    :return: The inserted entities
+    """
+    if type(data) is list:
+        return [create_row_from_json(table, entity) for entity in data]
+    return create_row_from_json(table, data)
 
 def get_row_by_id(table, id):
     """
