@@ -2,7 +2,9 @@
   "DB_URL": "mysql+pymysql://root:rootpw@localhost:13306/icatdb",
   "log_level": "WARN",
   "debug_mode": false,
-  "generate_swagger": false
+  "generate_swagger": false,
+  "host": "127.0.0.1",
+  "port": "5000"
 }
 
 

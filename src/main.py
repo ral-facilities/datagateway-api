@@ -215,4 +215,6 @@ api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
                  "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
+    app.run(host=config.get_host(), port=config.get_port())
     app.run(debug=config.is_debug_mode())
+
