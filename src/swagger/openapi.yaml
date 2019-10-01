@@ -27,7 +27,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -198,7 +199,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -369,7 +371,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -540,7 +543,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -711,7 +715,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -882,7 +887,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1053,7 +1059,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1224,7 +1231,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1395,7 +1403,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1566,7 +1575,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1737,7 +1747,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -1908,7 +1919,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2079,7 +2091,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2250,7 +2263,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2421,7 +2435,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2592,7 +2607,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2763,7 +2779,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -2934,7 +2951,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3105,7 +3123,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3276,7 +3295,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3447,7 +3467,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3618,7 +3639,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3789,7 +3811,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -3960,7 +3983,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4131,7 +4155,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4302,7 +4327,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4473,7 +4499,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4644,7 +4671,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4815,7 +4843,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -4986,7 +5015,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -5157,7 +5187,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -5328,7 +5359,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -5499,7 +5531,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -5670,7 +5703,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -5841,7 +5875,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -6012,7 +6047,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
@@ -6183,7 +6219,8 @@ paths:
           - FIELD 1
           - FIELD 2
           type: object
-      - description: Given the names of related entities, include them in the results
+      - description: Given the names of related entities, include them in the results.
+          Only one include parameter is allowed
         in: query
         name: include
         required: false
