@@ -13,12 +13,15 @@ ICAT API to interface with the Data Gateway
 
 
 ## Requirements
+All requirements can be installed with `pip install -r requirements.txt`
+
 The required python libraries:  
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
    - [flask-restful](https://github.com/flask-restful/flask-restful/)  
    - [pymysql](https://pymysql.readthedocs.io/en/latest/)  
    - [requests](https://2.python-requests.org/en/master/)
    - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
+   - [pip-tools](https://github.com/jazzband/pip-tools) (For generating requirements.txt)
 
 ## Setup and running the API   
 The database connection needs to be set up first. This is set in config.json, an example config file called `config.json.example` is provided.
@@ -116,6 +119,7 @@ and updating them, in a form easily converted to JSON.
 
 
 
-
+## Running Tests
+To run the tests use `python -m unittest discover`
 
 

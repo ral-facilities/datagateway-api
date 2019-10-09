@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError
 
 from common.database_helpers import QueryFilterFactory
 from common.exceptions import MissingRecordError, BadFilterError, AuthenticationError, BadRequestError, \
-    MissingCredentialsError
+    MissingCredentialsError, MultipleIncludeError
 from common.models.db_models import SESSION
 from common.session_manager import session_manager
 
@@ -63,6 +63,9 @@ def queries_records(method):
         except MissingRecordError as e:
             log.exception(e)
             return "No such record in table", 404
+        except MultipleIncludeError as e:
+            log.exception(e)
+            return "Bad request, only one include filter may be given per request", 400
         except BadFilterError as e:
             log.exception(e)
             return "Invalid filter requested", 400
@@ -78,7 +81,6 @@ def queries_records(method):
         except BadRequestError as e:
             log.exception(e)
             return "Bad request", 400
-
     return wrapper_gets_records
 
 
@@ -108,6 +110,8 @@ def is_valid_json(string):
     try:
         json_object = json.loads(string)
     except ValueError:
+        return False
+    except TypeError:
         return False
     return True
 

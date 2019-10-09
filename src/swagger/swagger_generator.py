@@ -31,8 +31,9 @@ class Entity(object):
                                "query", False).parameter_as_dict
     ORDER_PARAMETER = Parameter("Given a field and direction, order the returned entities", "order", "string",
                                 "ID DESC", "query", False).parameter_as_dict
-    INCLUDE_PARAMETER = Parameter("Given the names of related entities, include them in the results", "include",
-                                  "object", {"Relation 1": ["Relation A", "Relation B"]}, "query", False).parameter_as_dict
+    INCLUDE_PARAMETER = Parameter(
+        "Given the names of related entities, include them in the results. Only one include parameter is allowed",
+        "include", "object", {"Relation 1": ["Relation A", "Relation B"]}, "query", False).parameter_as_dict
     DISTINCT_PARAMETER = Parameter("Return unique values for the fields requested", "distinct", "object",
                                    ["FIELD 1", "FIELD 2"], "query", False).parameter_as_dict
     PATH_PARAMETER = Parameter("The id of an entity", "id", "integer", 4, "path", True).parameter_as_dict
@@ -262,7 +263,7 @@ class SwaggerGenerator(object):
                 swagger_spec.add_path(entity.entity_id_endpoint)
                 swagger_spec.add_path(entity.entity_no_id_endpoint)
             swagger_dict = swagger_spec.get_spec_as_dict()
-            yaml.Dumper.ignore_aliases = lambda *args : True
+            yaml.Dumper.ignore_aliases = lambda *args: True
             with open(SwaggerGenerator.FILE_PATH, "w+") as target:
                 target.write(yaml.dump(swagger_dict))
             target.close()

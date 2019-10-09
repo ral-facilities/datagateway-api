@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 
 from common.config import config
@@ -49,6 +50,7 @@ from src.swagger.swagger_generator import swagger_gen
 swagger_gen.write_swagger_spec()
 
 app = Flask(__name__)
+cors = CORS(app)
 app.url_map.strict_slashes = False
 api = Api(app)
 
@@ -215,4 +217,6 @@ api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
                  "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
+    app.run(host=config.get_host(), port=config.get_port())
     app.run(debug=config.is_debug_mode())
+

@@ -35,4 +35,17 @@ class Config(object):
         except:
             sys.exit("Missing config value, generate_swagger")
 
+    def get_host(self):
+        try:
+            return self.config["host"]
+        except:
+            sys.exit("Missing config value, host")
+
+    def get_port(self):
+        try:
+            return self.config["port"]
+        except:
+            sys.exit("Missing config value, port")
+
+
 config = Config()

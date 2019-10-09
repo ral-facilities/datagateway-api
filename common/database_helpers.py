@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import MissingRecordError, BadFilterError, BadRequestError
+from common.exceptions import MissingRecordError, BadFilterError, BadRequestError, MultipleIncludeError
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
     INVESTIGATIONINSTRUMENT, FACILITY
 from common.session_manager import session_manager
@@ -86,6 +86,7 @@ class CreateQuery(Query):
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
+        self.inserted_row = None
 
     def execute_query(self):
         """Determines if the row is a row object or dictionary then commits it to the table"""
@@ -100,7 +101,8 @@ class CreateQuery(Query):
             record.MOD_ID = "user"  # These will need changing
         self.session.add(record)
         self.commit_changes()
-
+        self.session.refresh(record)
+        self.inserted_row = record
 
 class UpdateQuery(Query):
 
@@ -219,7 +221,10 @@ class IncludeFilter(QueryFilter):
         self.included_filters = included_filters["include"]
 
     def apply_filter(self, query):
-        query.include_related_entities = True
+        if not query.include_related_entities:
+            query.include_related_entities = True
+        else:
+            raise MultipleIncludeError("Attempted multiple includes on a single query")
 
 
 class QueryFilterFactory(object):
@@ -292,16 +297,28 @@ def insert_row_into_table(table, row):
         create_query.execute_query()
 
 
-def create_row_from_json(table, json):
+def create_row_from_json(table, data):
     """
     Given a json dictionary create a row in the table from it
     :param table: the table for the row to be inserted into
-    :param json: the dictionary containing the values
-    :return: nothing atm
+    :param data: the dictionary containing the values
+    :return: The inserted row as a dictionary
     """
-    with CreateQuery(table, json) as create_query:
+    with CreateQuery(table, data) as create_query:
         create_query.execute_query()
+        return create_query.inserted_row.to_dict()
 
+def create_rows_from_json(table, data):
+    """
+    Given a List containing dictionary representations of entities, or a dictionary representation of an entity, insert
+    the entities into the table and return the created entities
+    :param table: The table to insert the entities in
+    :param data: The entities to be inserted
+    :return: The inserted entities
+    """
+    if type(data) is list:
+        return [create_row_from_json(table, entity) for entity in data]
+    return create_row_from_json(table, data)
 
 def get_row_by_id(table, id):
     """
