@@ -104,6 +104,7 @@ class CreateQuery(Query):
         self.session.refresh(record)
         self.inserted_row = record
 
+
 class UpdateQuery(Query):
 
     def __init__(self, table, row, new_values):
@@ -159,6 +160,8 @@ class WhereFilter(QueryFilter):
             query.base_query = query.base_query.filter(getattr(query.table, self.field) <= self.value)
         elif self.operation == "gte":
             query.base_query = query.base_query.filter(getattr(query.table, self.field) >= self.value)
+        elif self.operation == "in":
+            query.base_query = query.base_query.filter(getattr(query.table, self.field).in_(self.value))
         else:
             raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
 
@@ -308,6 +311,7 @@ def create_row_from_json(table, data):
         create_query.execute_query()
         return create_query.inserted_row.to_dict()
 
+
 def create_rows_from_json(table, data):
     """
     Given a List containing dictionary representations of entities, or a dictionary representation of an entity, insert
@@ -319,6 +323,7 @@ def create_rows_from_json(table, data):
     if type(data) is list:
         return [create_row_from_json(table, entity) for entity in data]
     return create_row_from_json(table, data)
+
 
 def get_row_by_id(table, id):
     """

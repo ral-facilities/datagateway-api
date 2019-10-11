@@ -19,6 +19,8 @@ class TestQueryFilterFactory(TestCase):
         self.assertIs(WhereFilter, type(QueryFilterFactory.get_query_filter({"where": {"ID": {"lte": "1"}}})))
         self.assertIs(WhereFilter, type(QueryFilterFactory.get_query_filter({"where": {"ID": {"gte": "1"}}})))
         self.assertIs(WhereFilter, type(QueryFilterFactory.get_query_filter({"where": {"ID": {"like": "3"}}})))
+        self.assertIs(WhereFilter,
+                      type(QueryFilterFactory.get_query_filter({"where": {"ID": {"in": ["1", "2", "3"]}}})))
 
     def test_include_filter(self):
         self.assertIs(IncludeFilter, type(QueryFilterFactory.get_query_filter({"include": "DATAFILE"})))
