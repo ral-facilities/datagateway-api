@@ -9,6 +9,7 @@ ICAT API to interface with the Data Gateway
     + [Endpoints](#endpoints)
     + [Mapped Classes](#mapped-classes)
     + [Querying and Filtering](#querying-and-filtering)
+    + [Swagger Generation](#generating-the-swagger-spec)
 
 
 
