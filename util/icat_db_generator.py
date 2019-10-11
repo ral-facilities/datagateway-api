@@ -566,6 +566,7 @@ class DatafileGenerator(Generator):
         datafile.DATAFILEFORMAT_ID = randrange(1, DatafileFormatGenerator.amount)
         datafile.DATASET_ID = i % (DatasetGenerator.amount - 1) + 1
         datafile.NAME = f"Datafile {i}"
+        datafile.LOCATION = faker.file_path(depth=2, category="image")
         post_entity(datafile)
 
 
