@@ -80,7 +80,8 @@ This is illustrated below.
     │   │   └── non_entities
     │   │       └── <non_entity>_endpoints.py
     │   ├── swagger
-    │   │   └── openapi.yaml
+    │   │   ├── openapi.yaml
+    │   │   └── swagger_generator.py
     │   └── main.py  
     ├── test
     │   ├── resources
@@ -115,7 +116,21 @@ automatically generated using sqlacodegen. A class `EntityHelper` is defined so 
 inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities 
 and updating them, in a form easily converted to JSON.  
 
+#### Generating the swagger spec: `openapi.yaml`
+The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
+the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
+resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
+entity and outputs the swagger spec to `openapi.yaml` 
 
+Example of the decorator:
+```python
+@swagger_gen.resource_wrapper()
+class DataCollectionDatasets(Resource):
+    @requires_session_id
+    @queries_records
+    def get(self):
+        return get_rows_by_filter(DATACOLLECTIONDATASET, get_filters_from_query_string()), 200
+```
 
 
 ## Running Tests
