@@ -98,9 +98,12 @@ This is illustrated below.
     └── config.json
  `````
 #### Main:
-The main entry point is in `/src/main.py`. This is where each endpoint route is defined and its 
-related class imported e.g.  
+`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is 
+imported and mapped to an endpoint.  
+
+Example:  
  `api.add_resource(DatafilesWithID, "/datafiles/<int:id>")`  
+This means that the http methods defined in the `DatafilesWithID` class are mapped to `/datafiles/<int:id>`   
 
 
 
