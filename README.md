@@ -8,6 +8,7 @@ ICAT API to interface with the Data Gateway
     + [Main](#main)
     + [Endpoints](#endpoints)
     + [Mapped Classes](#mapped-classes)
+    + [Querying and Filtering](#querying-and-filtering)
 
 
 
@@ -116,7 +117,13 @@ automatically generated using sqlacodegen. A class `EntityHelper` is defined so 
 inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities 
 and updating them, in a form easily converted to JSON.  
 
-#### Generating the swagger spec: `openapi.yaml`
+#### Querying and filtering:
+The querying and filtering logic is located in `/common/database_helpers.py`. In this module the abstract `Query` and
+`QueryFilter` classes are defined as well as their implementations. The functions that are used by various endpoints to
+query the database are also in this module.
+Class diagram for this module:
+![image](https://user-images.githubusercontent.com/44777678/66651511-1d401a80-ec2b-11e9-96a4-316e94939a0f.png)
+
 The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
 the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
 resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
