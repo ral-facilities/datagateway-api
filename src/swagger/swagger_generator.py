@@ -23,7 +23,7 @@ class Parameter(object):
 class Entity(object):
     WHERE_PARAMETER = Parameter(
         "Apply a where filter to all entities. The filter can take the form of {\"field\":{<operator>:\"value\"}, "
-        "where the possible operators are like, gte, lte and eq",
+        "where the possible operators are like, gte, lte, in and eq",
         "where", "object", {"ID": {"eq": 1}}, "query", False).parameter_as_dict
     LIMIT_PARAMETER = Parameter("Limit the number of entities returned", "limit", "number", 4,
                                 "query", False).parameter_as_dict
