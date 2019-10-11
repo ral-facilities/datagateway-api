@@ -9,7 +9,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -114,7 +114,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -181,7 +181,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -286,7 +286,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -353,7 +353,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -458,7 +458,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -525,7 +525,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -630,7 +630,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -697,7 +697,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -802,7 +802,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -869,7 +869,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -974,7 +974,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1041,7 +1041,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1146,7 +1146,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1213,7 +1213,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1318,7 +1318,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1385,7 +1385,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1490,7 +1490,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1557,7 +1557,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1662,7 +1662,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1729,7 +1729,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1834,7 +1834,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -1901,7 +1901,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2006,7 +2006,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2073,7 +2073,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2178,7 +2178,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2245,7 +2245,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2350,7 +2350,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2417,7 +2417,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2522,7 +2522,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2589,7 +2589,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2694,7 +2694,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2761,7 +2761,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2866,7 +2866,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -2933,7 +2933,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3038,7 +3038,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3105,7 +3105,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3210,7 +3210,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3277,7 +3277,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3382,7 +3382,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3449,7 +3449,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3554,7 +3554,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3621,7 +3621,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3726,7 +3726,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3793,7 +3793,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3898,7 +3898,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -3965,7 +3965,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4070,7 +4070,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4137,7 +4137,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4242,7 +4242,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4309,7 +4309,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4414,7 +4414,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4481,7 +4481,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4586,7 +4586,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4653,7 +4653,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4758,7 +4758,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4825,7 +4825,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4930,7 +4930,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -4997,7 +4997,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5102,7 +5102,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5169,7 +5169,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5274,7 +5274,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5341,7 +5341,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5446,7 +5446,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5513,7 +5513,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5618,7 +5618,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5685,7 +5685,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5790,7 +5790,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5857,7 +5857,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -5962,7 +5962,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -6029,7 +6029,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -6134,7 +6134,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -6201,7 +6201,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
@@ -6306,7 +6306,7 @@ paths:
       parameters:
       - description: Apply a where filter to all entities. The filter can take the
           form of {"field":{<operator>:"value"}, where the possible operators are
-          like, gte, lte and eq
+          like, gte, lte, in and eq
         in: query
         name: where
         required: false
