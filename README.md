@@ -128,6 +128,15 @@ query the database are also in this module.
 Class diagram for this module:
 ![image](https://user-images.githubusercontent.com/44777678/66651511-1d401a80-ec2b-11e9-96a4-316e94939a0f.png)
 
+
+#### Authentication
+Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authoirzation":"Bearer <session_id>"}` A session ID can be obtained by
+sending a post request to `/sessions/`  
+All endpoint methods that require a session id are decorated with `@requires_session_id`
+
+
+
+#### Generating the swagger spec:
 The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
 the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
 resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
