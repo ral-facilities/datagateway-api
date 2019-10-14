@@ -1,5 +1,6 @@
 import enum
 
+from datetime import datetime
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue, \
     TypeDecorator
 from sqlalchemy.ext.declarative import declarative_base
@@ -48,7 +49,8 @@ class EntityHelper(object):
         """
         dictionary = {}
         for column in self.__table__.columns:
-            dictionary[column.name] = str(getattr(self, column.name))
+            attribute = getattr(self, column.name)
+            dictionary[column.name] = str(attribute) if isinstance(attribute, datetime) else attribute
         return dictionary
 
     def to_nested_dict(self, includes):
