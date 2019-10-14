@@ -1,3 +1,4 @@
+import argparse
 import datetime
 from abc import ABC, abstractmethod
 from multiprocessing import Process, Pool
@@ -8,9 +9,16 @@ from faker import Faker
 from common.models import db_models
 from common.session_manager import session_manager
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--seed", "-s", dest="seed", help="Provide seed for random and faker", type=int, default=1)
+parser.add_argument("--years", "-y", dest="years", help="Provide number of years to generate", type=int, default=20)
+args = parser.parse_args()
+SEED = args.seed
+YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
-faker.seed(1)
-seed(a=1)
+faker.seed(SEED)
+seed(a=SEED)
 
 session = session_manager.get_icat_db_session()
 
@@ -153,7 +161,7 @@ class DatasetTypeGenerator(Generator):
 
 class FacilityCycleGenerator(Generator):
     tier = 1
-    amount = 80  # This gives 4 per year for 20 years
+    amount = 4*YEARS  # This gives 4 per year for 20 years
 
     def generate(self):
         self.pool_map(FacilityCycleGenerator.generate_facility_cycle)
