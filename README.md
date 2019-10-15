@@ -2,12 +2,16 @@
 ICAT API to interface with the Data Gateway
 
 ## Contents
-+ [Requirements](#requirements)
-+ [Setup](#setup-and-running-the-api)
-+ [Project structure](#project-structure)
-    + [Main](#main)
-    + [Endpoints](#endpoints)
-    + [Mapped Classes](#mapped-classes)
+- [datagateway-api](#datagateway-api)
+  - [Contents](#contents)
+  - [Requirements](#requirements)
+  - [Setup and running the API](#setup-and-running-the-api)
+  - [Project structure](#project-structure)
+      - [Main:](#main)
+      - [Endpoints:](#endpoints)
+      - [Mapped classes:](#mapped-classes)
+  - [Database Generator](#database-generator)
+  - [Running Tests](#running-tests)
 
 
 
@@ -46,9 +50,10 @@ PowerShell
 > $env:FLASK_APP = "src/main.py"
 > flask run
 ```
-  
+
 More information can be found [here](http://flask.pocoo.org/docs/1.0/cli/)
 
+Alternatively the api can be run with `python -m src.main`
 
 By default the api will run on `http://localhost:5000` and all requests are made here
 
@@ -91,6 +96,8 @@ This is illustrated below.
     │   └── test_base
     │       ├── constants.py
     │       └── rest_test.py
+    ├── util
+    │   └── icat_db_generator.py
     ├── logs.log
     └── config.json
  `````
@@ -118,6 +125,14 @@ and updating them, in a form easily converted to JSON.
 
 
 
+
+## Database Generator
+There is a tool to generate mock data into the database. It is located in `util/icat_db_generator.py`
+By default it will generate 20 years worth of data (approx 70,000 entities). The script makes use of 
+`random` and `Faker` and is seeded with a seed of 1. The seed and number of years of data generated can 
+be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years.
+For example:  
+`python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10 years of data.
 
 ## Running Tests
 To run the tests use `python -m unittest discover`
