@@ -1,7 +1,8 @@
 import enum
 
+from datetime import datetime
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue, \
-    TypeDecorator
+    TypeDecorator, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
@@ -48,7 +49,8 @@ class EntityHelper(object):
         """
         dictionary = {}
         for column in self.__table__.columns:
-            dictionary[column.name] = str(getattr(self, column.name))
+            attribute = getattr(self, column.name)
+            dictionary[column.name] = str(attribute) if isinstance(attribute, datetime) else attribute
         return dictionary
 
     def to_nested_dict(self, includes):
@@ -318,7 +320,7 @@ class DATASET(Base, EntityHelper):
     )
 
     ID = Column(BigInteger, primary_key=True)
-    COMPLETE = Column(Integer, nullable=False, server_default=FetchedValue())
+    COMPLETE = Column(Boolean, nullable=False, server_default=FetchedValue())
     CREATE_ID = Column(String(255), nullable=False)
     CREATE_TIME = Column(DateTime, nullable=False)
     DESCRIPTION = Column(String(255))
@@ -640,15 +642,15 @@ class PARAMETERTYPE(Base, EntityHelper):
         STRING = 2
 
     ID = Column(BigInteger, primary_key=True)
-    APPLICABLETODATACOLLECTION = Column(Integer, server_default=FetchedValue())
-    APPLICABLETODATAFILE = Column(Integer, server_default=FetchedValue())
-    APPLICABLETODATASET = Column(Integer, server_default=FetchedValue())
-    APPLICABLETOINVESTIGATION = Column(Integer, server_default=FetchedValue())
-    APPLICABLETOSAMPLE = Column(Integer, server_default=FetchedValue())
+    APPLICABLETODATACOLLECTION = Column(Boolean, server_default=FetchedValue())
+    APPLICABLETODATAFILE = Column(Boolean, server_default=FetchedValue())
+    APPLICABLETODATASET = Column(Boolean, server_default=FetchedValue())
+    APPLICABLETOINVESTIGATION = Column(Boolean, server_default=FetchedValue())
+    APPLICABLETOSAMPLE = Column(Boolean, server_default=FetchedValue())
     CREATE_ID = Column(String(255), nullable=False)
     CREATE_TIME = Column(DateTime, nullable=False)
     DESCRIPTION = Column(String(255))
-    ENFORCED = Column(Integer, server_default=FetchedValue())
+    ENFORCED = Column(Boolean, server_default=FetchedValue())
     MAXIMUMNUMERICVALUE = Column(Float(asdecimal=True))
     MINIMUMNUMERICVALUE = Column(Float(asdecimal=True))
     MOD_ID = Column(String(255), nullable=False)
@@ -657,7 +659,7 @@ class PARAMETERTYPE(Base, EntityHelper):
     UNITS = Column(String(255), nullable=False)
     UNITSFULLNAME = Column(String(255))
     VALUETYPE = Column(EnumAsInteger(ValueTypeEnum), nullable=False)
-    VERIFIED = Column(Integer, server_default=FetchedValue())
+    VERIFIED = Column(Boolean, server_default=FetchedValue())
     FACILITY_ID = Column(ForeignKey('FACILITY.ID'), nullable=False)
 
     FACILITY = relationship('FACILITY', primaryjoin='PARAMETERTYPE.FACILITY_ID == FACILITY.ID',
