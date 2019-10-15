@@ -85,7 +85,8 @@ This is illustrated below.
     │   │   └── non_entities
     │   │       └── <non_entity>_endpoints.py
     │   ├── swagger
-    │   │   └── openapi.yaml
+    │   │   ├── openapi.yaml
+    │   │   └── swagger_generator.py
     │   └── main.py  
     ├── test
     │   ├── resources
@@ -131,6 +132,23 @@ By default it will generate 20 years worth of data (approx 70,000 entities). The
 be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years.
 For example:  
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10 years of data.
+
+#### Generating the swagger spec: `openapi.yaml`
+The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
+the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
+resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
+entity and outputs the swagger spec to `openapi.yaml` 
+
+Example of the decorator:
+```python
+@swagger_gen.resource_wrapper()
+class DataCollectionDatasets(Resource):
+    @requires_session_id
+    @queries_records
+    def get(self):
+        return get_rows_by_filter(DATACOLLECTIONDATASET, get_filters_from_query_string()), 200
+```
+
 
 ## Running Tests
 To run the tests use `python -m unittest discover`
