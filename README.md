@@ -10,6 +10,7 @@ ICAT API to interface with the Data Gateway
       - [Main:](#main)
       - [Endpoints:](#endpoints)
       - [Mapped classes:](#mapped-classes)
+      - [Querying and filtering](#querying-and-filtering)
   - [Database Generator](#database-generator)
   - [Running Tests](#running-tests)
 
@@ -132,6 +133,15 @@ By default it will generate 20 years worth of data (approx 70,000 entities). The
 be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years.
 For example:  
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10 years of data.
+
+
+#### Querying and filtering:
+The querying and filtering logic is located in `/common/database_helpers.py`. In this module the abstract `Query` and
+`QueryFilter` classes are defined as well as their implementations. The functions that are used by various endpoints to
+query the database are also in this module.
+Class diagram for this module:
+![image](https://user-images.githubusercontent.com/44777678/66651511-1d401a80-ec2b-11e9-96a4-316e94939a0f.png)
+
 
 #### Generating the swagger spec: `openapi.yaml`
 The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
