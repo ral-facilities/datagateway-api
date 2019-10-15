@@ -34,12 +34,12 @@ def post_entity(entity):
     session.close()
 
 
-def get_time_now():
+def get_date_time():
     """
-    Gets the current datetime
-    :return: the current datetime
+    Generates a datetime
+    :return: the datetime
     """
-    return faker.date_time_between_dates(datetime_start=datetime.datetime(2019, 10, 4),
+    return faker.date_time_between_dates(datetime_start=datetime.datetime(2000, 10, 4),
                                   datetime_end=datetime.datetime(2019, 10, 5))
 
 
@@ -59,8 +59,8 @@ def get_end_date(i):
 def apply_common_attributes(entity, iterator):
     entity.CREATE_ID = "user"
     entity.MOD_ID = "user"
-    entity.MOD_TIME = get_time_now()
-    entity.CREATE_TIME = get_time_now()
+    entity.MOD_TIME = get_date_time()
+    entity.CREATE_TIME = get_date_time()
     entity.NAME = f"{entity.__tablename__} {iterator}"
     entity.DESCRIPTION = faker.text()
     entity.FACILITY_ID = 1
@@ -108,8 +108,8 @@ class FacilityGenerator(Generator):
         facility = db_models.FACILITY()
         facility.CREATE_ID = "user"
         facility.MOD_ID = "user"
-        facility.MOD_TIME = get_time_now()
-        facility.CREATE_TIME = get_time_now()
+        facility.MOD_TIME = get_date_time()
+        facility.CREATE_TIME = get_date_time()
         facility.DAYSUNTILRELEASE = 10
         facility.DESCRIPTION = "Lorem ipsum light source"
         facility.NAME = "LILS"
