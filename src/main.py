@@ -25,8 +25,8 @@ setup_logger()
 for entity_name in endpoints:
     api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")
     api.add_resource(get_id_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/<int:id>")
-    api.add_resource(get_count_endpoint(entity_name, endpoints[entity_name]), f"{entity_name.lower()}/count")
-    api.add_resource(get_find_one_endpoint(entity_name, endpoints[entity_name]), f"{entity_name.lower()}/findone")
+    api.add_resource(get_count_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/count")
+    api.add_resource(get_find_one_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/findone")
 
 # Session endpoint
 api.add_resource(Sessions, "/sessions")
