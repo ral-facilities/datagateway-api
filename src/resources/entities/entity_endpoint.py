@@ -73,5 +73,5 @@ def get_find_one_endpoint(name, table):
             filters = get_filters_from_query_string()
             return get_first_filtered_row(table, filters), 200
 
-    FindOneEndpoint.__name__ = f"{name}Count"
+    FindOneEndpoint.__name__ = f"{name}FindOne"
     return FindOneEndpoint
