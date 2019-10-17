@@ -7,6 +7,14 @@ from common.helpers import requires_session_id, queries_records, get_filters_fro
 
 
 def get_endpoint(name, table):
+    """
+    Given an entity name generate a flask_restful Resource class.
+    In main.py these generated classes are registered with the api e.g
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
+    :param name: The name of the entity
+    :param table: The table the endpoint will use in queries
+    :return: The generated endpoint class
+    """
     class Endpoint(Resource):
         @requires_session_id
         @queries_records
@@ -28,6 +36,14 @@ def get_endpoint(name, table):
 
 
 def get_id_endpoint(name, table):
+    """
+    Given an entity name generate a flask_restful Resource class.
+    In main.py these generated classes are registered with the api e.g
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id>")
+    :param name: The name of the entity
+    :param table: The table the endpoint will use in queries
+    :return: The generated id endpoint class
+    """
     class EndpointWithID(Resource):
 
         @requires_session_id
@@ -52,6 +68,14 @@ def get_id_endpoint(name, table):
 
 
 def get_count_endpoint(name, table):
+    """
+    Given an entity name generate a flask_restful Resource class.
+    In main.py these generated classes are registered with the api e.g
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
+    :param name: The name of the entity
+    :param table: The table the endpoint will use in queries
+    :return: The generated count endpoint class
+    """
     class CountEndpoint(Resource):
 
         @requires_session_id
@@ -65,6 +89,14 @@ def get_count_endpoint(name, table):
 
 
 def get_find_one_endpoint(name, table):
+    """
+    Given an entity name generate a flask_restful Resource class.
+    In main.py these generated classes are registered with the api e.g
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
+    :param name: The name of the entity
+    :param table: The table the endpoint will use in queries
+    :return: The generated findOne endpoint class
+    """
     class FindOneEndpoint(Resource):
 
         @requires_session_id
