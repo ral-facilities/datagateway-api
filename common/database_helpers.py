@@ -168,7 +168,14 @@ class WhereFilter(QueryFilter):
             field = getattr(query.table, self.field)
         except AttributeError:
             raise BadFilterError(f"Bad  WhereFilter requested")
-        if self.included_field:
+
+        if self.included_included_field:
+            included_table = getattr(db_models, self.field)
+            included_included_table = getattr(db_models, self.included_field)
+            query.base_query = query.base_query.join(included_table).join(included_included_table)
+            field = getattr(included_included_table, self.included_included_field)
+
+        elif self.included_field:
             included_table = getattr(db_models, self.field)
             query.base_query = query.base_query.join(included_table)
             field = getattr(included_table, self.included_field)
