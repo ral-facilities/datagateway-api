@@ -147,10 +147,21 @@ class WhereFilter(QueryFilter):
     precedence = 1
 
     def __init__(self, field, value, operation):
-        self.field = field if "." not in field else field.split(".")[0]
-        self.included_field = None if "." not in field else field.split(".")[1]
+        self.field = field
+        self._set_filter_fields()
         self.value = value
         self.operation = operation
+
+    def _set_filter_fields(self):
+        if self.field.count(".") == 1:
+            self.included_field = self.field.split(".")[1]
+            self.field = self.field.split(".")[0]
+
+        if self.field.count(".") == 2:
+            self.included_included_field = self.field.split(".")[2]
+            self.included_field = self.field.split(".")[1]
+            self.field = self.field.split(".")[0]
+
 
     def apply_filter(self, query):
         try:
