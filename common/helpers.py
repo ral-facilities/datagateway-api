@@ -21,7 +21,7 @@ def requires_session_id(method):
     :param method: The method for the endpoint
     :returns a 403, "Forbidden" if a valid session_id is not provided with the request
     """
-    log.info("")
+
 
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
