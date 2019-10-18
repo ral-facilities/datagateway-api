@@ -17,8 +17,7 @@ ICAT API to interface with the Data Gateway
 
 
 ## Requirements
-All requirements can be installed with `pip install -r requirements.txt`, and all development requirements can be installed
-with `pip install -r dev-requirements.txt`
+All requirements can be installed with `pip install -r requirements.txt`, and all development requirements can be installed with `pip install -r dev-requirements.txt`
 
 The required python libraries:  
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
