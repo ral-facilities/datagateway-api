@@ -30,8 +30,14 @@ The required python libraries:
 ## Setup and running the API   
 The database connection needs to be set up first. This is set in config.json, an example config file called `config.json.example` is provided.
 
+Ideally the API would be run with:  
+`python -m src.main`
+However it can be run with the flask run command as shown below:
+  
+  
+**Warning: the host, port and debug config options will not be respected when the API is run this way**
 
-To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
+To use `flask run`, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
 set the API can be run with `flask run` while inside the root directory of the project. The `flask run` command gets installed with flask.   
 
 Examples shown:  
