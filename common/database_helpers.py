@@ -148,6 +148,8 @@ class WhereFilter(QueryFilter):
 
     def __init__(self, field, value, operation):
         self.field = field
+        self.included_field = None
+        self.included_included_field = None
         self._set_filter_fields()
         self.value = value
         self.operation = operation
