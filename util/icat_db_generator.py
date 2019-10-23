@@ -9,7 +9,6 @@ from faker import Faker
 from common.models import db_models
 from common.session_manager import session_manager
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument("--seed", "-s", dest="seed", help="Provide seed for random and faker", type=int, default=1)
 parser.add_argument("--years", "-y", dest="years", help="Provide number of years to generate", type=int, default=20)
@@ -40,7 +39,7 @@ def get_date_time():
     :return: the datetime
     """
     return faker.date_time_between_dates(datetime_start=datetime.datetime(2000, 10, 4),
-                                  datetime_end=datetime.datetime(2019, 10, 5))
+                                         datetime_end=datetime.datetime(2019, 10, 5))
 
 
 def get_start_date(i):
@@ -161,7 +160,7 @@ class DatasetTypeGenerator(Generator):
 
 class FacilityCycleGenerator(Generator):
     tier = 1
-    amount = 4*YEARS  # This gives 4 per year for 20 years
+    amount = 4 * YEARS  # This gives 4 per year for 20 years
 
     def generate(self):
         self.pool_map(FacilityCycleGenerator.generate_facility_cycle)
@@ -522,7 +521,7 @@ class StudyInvestigationGenerator(Generator):
 
 class DatasetGenerator(Generator):
     tier = 4
-    amount = InvestigationGenerator.amount  # One Dataset per investigation
+    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
 
     def generate(self):
         self.pool_map(DatasetGenerator.generate_dataset)
@@ -533,8 +532,10 @@ class DatasetGenerator(Generator):
         apply_common_attributes(dataset, i)
         dataset.COMPLETE = randrange(2)
         dataset.LOCATION = faker.file_path()
-        dataset.INVESTIGATION_ID = i
-        dataset.SAMPLE_ID = i
+        investigation_id = i % InvestigationGenerator.amount
+        dataset.INVESTIGATION_ID = investigation_id if investigation_id != 0 else InvestigationGenerator.amount - 1
+        sample_id = i % SampleGenerator.amount
+        dataset.SAMPLE_ID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
         dataset.TYPE_ID = randrange(1, DatasetTypeGenerator.amount)
         post_entity(dataset)
 
@@ -558,7 +559,7 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 100  # 100 files per Dataset
+    amount = DatasetGenerator.amount * 55  # 55 files per Dataset
 
     def generate(self):
         self.pool_map(DatafileGenerator.generate_datafile)
