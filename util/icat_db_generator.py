@@ -560,7 +560,7 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 100  # 100 files per Dataset
+    amount = DatasetGenerator.amount * 55  # 55 files per Dataset
 
     def generate(self):
         self.pool_map(DatafileGenerator.generate_datafile)
