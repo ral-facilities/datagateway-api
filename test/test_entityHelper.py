@@ -1,12 +1,14 @@
 import datetime
 from unittest import TestCase
 
-from common.models.db_models import DATAFILE, DATASET, DATAFILEFORMAT
+from common.models.db_models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
 
 
 class TestEntityHelper(TestCase):
     def setUp(self):
         self.dataset = DATASET()
+        self.investigation = INVESTIGATION()
+        self.dataset.INVESTIGATION = self.investigation
         self.datafileformat = DATAFILEFORMAT()
         self.datafile = DATAFILE()
         self.datafile.ID = 1
