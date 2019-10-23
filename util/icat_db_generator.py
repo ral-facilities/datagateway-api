@@ -522,7 +522,7 @@ class StudyInvestigationGenerator(Generator):
 
 class DatasetGenerator(Generator):
     tier = 4
-    amount = InvestigationGenerator.amount  # One Dataset per investigation
+    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
 
     def generate(self):
         self.pool_map(DatasetGenerator.generate_dataset)
@@ -533,8 +533,10 @@ class DatasetGenerator(Generator):
         apply_common_attributes(dataset, i)
         dataset.COMPLETE = randrange(2)
         dataset.LOCATION = faker.file_path()
-        dataset.INVESTIGATION_ID = i
-        dataset.SAMPLE_ID = i
+        investigation_id = i % InvestigationGenerator.amount
+        dataset.INVESTIGATION_ID = investigation_id if investigation_id != 0 else InvestigationGenerator.amount - 1
+        sample_id = i % SampleGenerator.amount
+        dataset.SAMPLE_ID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
         dataset.TYPE_ID = randrange(1, DatasetTypeGenerator.amount)
         post_entity(dataset)
 
