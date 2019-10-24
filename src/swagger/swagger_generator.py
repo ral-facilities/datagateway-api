@@ -131,7 +131,7 @@ class Entity(object):
                 "get": {
                     "summary": f"Return the count of the {SwaggerGenerator.pascal_to_normal(entity_name).lower()}",
                     "tags": ["entities"],
-                    "parameters": [self.WHERE_PARAMETER],
+                    "parameters": [self.WHERE_PARAMETER, self.DISTINCT_PARAMETER],
                     "responses": {
                         "200": {
                             "description": f"The count of the {SwaggerGenerator.pascal_to_normal(entity_name).lower()}"
