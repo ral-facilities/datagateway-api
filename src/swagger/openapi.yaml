@@ -123,6 +123,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the applications
@@ -294,6 +303,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -467,6 +485,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the data collection datasets
@@ -638,6 +665,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -811,6 +847,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the data collections
@@ -982,6 +1027,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -1155,6 +1209,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the datafile parameters
@@ -1326,6 +1389,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -1499,6 +1571,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the datasets
@@ -1670,6 +1751,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -1843,6 +1933,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the facilities
@@ -2014,6 +2113,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -2187,6 +2295,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the groupings
@@ -2358,6 +2475,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -2531,6 +2657,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the instrument scientists
@@ -2702,6 +2837,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -2875,6 +3019,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the investigation instruments
@@ -3046,6 +3199,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -3219,6 +3381,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the investigations
@@ -3390,6 +3561,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -3563,6 +3743,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the investigation users
@@ -3734,6 +3923,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -3907,6 +4105,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the keywords
@@ -4078,6 +4285,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -4251,6 +4467,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the permissible string values
@@ -4422,6 +4647,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -4595,6 +4829,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the public steps
@@ -4766,6 +5009,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -4939,6 +5191,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the rules
@@ -5110,6 +5371,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -5283,6 +5553,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the samples
@@ -5454,6 +5733,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -5627,6 +5915,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the shifts
@@ -5798,6 +6095,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
@@ -5971,6 +6277,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the study investigations
@@ -6143,6 +6458,15 @@ paths:
             ID:
               eq: 1
           type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
+          type: object
       responses:
         '200':
           description: The count of the user groups
@@ -6314,6 +6638,15 @@ paths:
           example:
             ID:
               eq: 1
+          type: object
+      - description: Return unique values for the fields requested
+        in: query
+        name: distinct
+        required: false
+        schema:
+          example:
+          - FIELD 1
+          - FIELD 2
           type: object
       responses:
         '200':
