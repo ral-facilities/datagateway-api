@@ -77,7 +77,15 @@ class Entity(object):
                                    self.SKIP_PARAMETER],
                     "responses": {
                         "200": {
-                            "description": f"The {SwaggerGenerator.pascal_to_normal(entity_name).lower()} found"
+                            "description": f"The {SwaggerGenerator.pascal_to_normal(entity_name).lower()} found",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When no results are found"
@@ -107,7 +115,15 @@ class Entity(object):
                     },
                     "responses": {
                         "200": {
-                            "description": f"The created {SwaggerGenerator.pascal_to_normal(entity_name)}"
+                            "description": f"The created {SwaggerGenerator.pascal_to_normal(entity_name)}",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "401": {
                             "description": "When no credentials are provided"
@@ -134,7 +150,15 @@ class Entity(object):
                     },
                     "responses": {
                         "200": {
-                            "description": "The updated entity"
+                            "description": "The updated entity",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When the entity to update could not be found"
@@ -180,7 +204,15 @@ class Entity(object):
                     "parameters": [self.PATH_PARAMETER],
                     "responses": {
                         "200": {
-                            "description": f"The matching {SwaggerGenerator.pascal_to_normal(entity_name).lower()}"
+                            "description": f"The matching {SwaggerGenerator.pascal_to_normal(entity_name).lower()}",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When no result is found"
@@ -268,7 +300,7 @@ class SwaggerGenerator(object):
         if config.is_generate_swagger():
             swagger_spec = SwaggerSpecification()
             for endpoint in endpoints:
-                entity = Entity(endpoint)
+                entity = Entity(endpoint, endpoints[endpoint])
                 swagger_spec.add_path(entity.entity_count_endpoint)
                 swagger_spec.add_path(entity.entity_id_endpoint)
                 swagger_spec.add_path(entity.entity_no_id_endpoint)
