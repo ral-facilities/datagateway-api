@@ -58,6 +58,12 @@ class Entity(object):
         }
         return type_map[type_str]
 
+
+
+    def __init__(self, entity_name, model):
+        self.properties_dict = {}
+        for column in model.__table__.columns:
+            self.properties_dict[column.name] = {"type": self._map_db_type_to_json_type(str(column.type))}
         self.entity_no_id_endpoint = {
             f"/{entity_name.lower()}": {
                 "get": {
