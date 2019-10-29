@@ -39,7 +39,25 @@ class Entity(object):
                                    ["FIELD 1", "FIELD 2"], "query", False).parameter_as_dict
     PATH_PARAMETER = Parameter("The id of an entity", "id", "integer", 4, "path", True).parameter_as_dict
 
-    def __init__(self, entity_name):
+
+    def _map_db_type_to_json_type(self, type_str):
+        """
+        Given the string value of a sqlalchemy column type, return the string of the equivalent JSON type
+        :param type_str: The string value of a sqlalchemy column type
+        :return: The string value of the equivelant json type
+        """
+        if "VARCHAR" in type_str:
+            return "string"
+        type_map = {
+            "BIGINT": "integer",
+            "DATETIME": "string",
+            "FLOAT": "number",
+            "BOOLEAN": "boolean",
+            "INTEGER": "integer",
+
+        }
+        return type_map[type_str]
+
         self.entity_no_id_endpoint = {
             f"/{entity_name.lower()}": {
                 "get": {
