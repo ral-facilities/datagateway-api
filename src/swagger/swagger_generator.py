@@ -39,7 +39,31 @@ class Entity(object):
                                    ["FIELD 1", "FIELD 2"], "query", False).parameter_as_dict
     PATH_PARAMETER = Parameter("The id of an entity", "id", "integer", 4, "path", True).parameter_as_dict
 
-    def __init__(self, entity_name):
+
+    def _map_db_type_to_json_type(self, type_str):
+        """
+        Given the string value of a sqlalchemy column type, return the string of the equivalent JSON type
+        :param type_str: The string value of a sqlalchemy column type
+        :return: The string value of the equivelant json type
+        """
+        if "VARCHAR" in type_str:
+            return "string"
+        type_map = {
+            "BIGINT": "integer",
+            "DATETIME": "string",
+            "FLOAT": "number",
+            "BOOLEAN": "boolean",
+            "INTEGER": "integer",
+
+        }
+        return type_map[type_str]
+
+
+
+    def __init__(self, entity_name, model):
+        self.properties_dict = {}
+        for column in model.__table__.columns:
+            self.properties_dict[column.name] = {"type": self._map_db_type_to_json_type(str(column.type))}
         self.entity_no_id_endpoint = {
             f"/{entity_name.lower()}": {
                 "get": {
@@ -53,7 +77,15 @@ class Entity(object):
                                    self.SKIP_PARAMETER],
                     "responses": {
                         "200": {
-                            "description": f"The {SwaggerGenerator.pascal_to_normal(entity_name).lower()} found"
+                            "description": f"The {SwaggerGenerator.pascal_to_normal(entity_name).lower()} found",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When no results are found"
@@ -83,7 +115,15 @@ class Entity(object):
                     },
                     "responses": {
                         "200": {
-                            "description": f"The created {SwaggerGenerator.pascal_to_normal(entity_name)}"
+                            "description": f"The created {SwaggerGenerator.pascal_to_normal(entity_name)}",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "401": {
                             "description": "When no credentials are provided"
@@ -110,7 +150,15 @@ class Entity(object):
                     },
                     "responses": {
                         "200": {
-                            "description": "The updated entity"
+                            "description": "The updated entity",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When the entity to update could not be found"
@@ -156,7 +204,15 @@ class Entity(object):
                     "parameters": [self.PATH_PARAMETER],
                     "responses": {
                         "200": {
-                            "description": f"The matching {SwaggerGenerator.pascal_to_normal(entity_name).lower()}"
+                            "description": f"The matching {SwaggerGenerator.pascal_to_normal(entity_name).lower()}",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": self.properties_dict
+                                    }
+                                }
+                            }
                         },
                         "404": {
                             "description": "When no result is found"
@@ -244,7 +300,7 @@ class SwaggerGenerator(object):
         if config.is_generate_swagger():
             swagger_spec = SwaggerSpecification()
             for endpoint in endpoints:
-                entity = Entity(endpoint)
+                entity = Entity(endpoint, endpoints[endpoint])
                 swagger_spec.add_path(entity.entity_count_endpoint)
                 swagger_spec.add_path(entity.entity_id_endpoint)
                 swagger_spec.add_path(entity.entity_no_id_endpoint)
