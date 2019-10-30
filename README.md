@@ -147,7 +147,7 @@ Class diagram for this module:
 ![image](https://user-images.githubusercontent.com/44777678/66651511-1d401a80-ec2b-11e9-96a4-316e94939a0f.png)
 
 #### Authentication
-Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authoirzation":"Bearer <session_id>"}` A session ID can be obtained by
+Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session ID can be obtained by
 sending a post request to `/sessions/`  
 All endpoint methods that require a session id are decorated with `@requires_session_id`
 
