@@ -20,7 +20,7 @@ ICAT API to interface with the Data Gateway
 
 
 ## Requirements
-All requirements can be installed with `pip install -r requirements.txt`
+All requirements can be installed with `pip install -r requirements.txt`, and all development requirements can be installed with `pip install -r dev-requirements.txt`
 
 The required python libraries:  
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
@@ -33,8 +33,14 @@ The required python libraries:
 ## Setup and running the API   
 The database connection needs to be set up first. This is set in config.json, an example config file called `config.json.example` is provided.
 
+Ideally the API would be run with:  
+`python -m src.main`
+However it can be run with the flask run command as shown below:
+  
+  
+**Warning: the host, port and debug config options will not be respected when the API is run this way**
 
-To run the API from the command line, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
+To use `flask run`, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
 set the API can be run with `flask run` while inside the root directory of the project. The `flask run` command gets installed with flask.   
 
 Examples shown:  
@@ -84,7 +90,8 @@ This is illustrated below.
     ├── src
     │   ├── resources
     │   │   ├── entities
-    │   │   │   └── <entity>_endpoints.py
+    │   │   │   ├── entity_endpoint.py
+    │   │   │   └── entity_map.py
     │   │   └── non_entities
     │   │       └── <non_entity>_endpoints.py
     │   ├── swagger
@@ -114,11 +121,11 @@ Example:
 This means that the http methods defined in the `DatafilesWithID` class are mapped to  `/datafiles/<int:id>`   
 
 #### Endpoints:  
-The logic for each endpoint are within `/src/resources`. They are split into entities 
-and non entities. Each endpoint has its own file within these folders e.g. the datafile endpoint
-is in `/src/resources/entities/datafiles_endpoints.py`. Inside of this file there is a class for
-each type of endpoint e.g. `/datafiles/count`. Each class is then imported to `/main.py` and added
-as a resource.
+The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and 
+table_endpoints. The entities package contains `entities_map` which maps entity names to their sqlalchemy
+model. The `entity_endpoint` module contains the function that is used to generate endpoints at start up.
+`table_endpoints` contains the endpoint classes that are table specific. Finally, non_entities contains the
+session endpoint.
 
 
 #### Mapped classes:

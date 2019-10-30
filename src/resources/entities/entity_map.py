@@ -1,0 +1,21 @@
+from common.models.db_models import APPLICATION, DATACOLLECTIONDATAFILE, DATACOLLECTIONPARAMETER, DATACOLLECTIONDATASET, \
+    DATACOLLECTION, DATAFILEFORMAT, DATAFILE, FACILITYCYCLE, DATASETTYPE, GROUPING, INSTRUMENT, INSTRUMENTSCIENTIST, \
+    INVESTIGATIONGROUP, INVESTIGATIONINSTRUMENT, INVESTIGATIONTYPE, INVESTIGATION, JOB, KEYWORD, PARAMETERTYPE, \
+    INVESTIGATIONPARAMETER, INVESTIGATIONUSER, PUBLICSTEP, RULE, SAMPLE, USERGROUP, STUDYINVESTIGATION, SAMPLETYPE, \
+    RELATEDDATAFILE, SAMPLEPARAMETER, PUBLICATION, STUDY, USER, SHIFT, PERMISSIBLESTRINGVALUE, FACILITY, \
+    DATAFILEPARAMETER, DATASET
+
+endpoints = {'Applications': APPLICATION, 'DataCollectionDatafiles': DATACOLLECTIONDATAFILE,
+             'DataCollectionDatasets': DATACOLLECTIONDATASET, 'DataCollectionParameters': DATACOLLECTIONPARAMETER,
+             'DataCollections': DATACOLLECTION, 'DatafileFormats': DATAFILEFORMAT,
+             'DatafileParameters': DATAFILEPARAMETER, 'Datafiles': DATAFILE, 'DatasetTypes': DATASETTYPE,
+             'Datasets': DATASET, 'Facilities': FACILITY, 'FacilityCycles': FACILITYCYCLE, 'Groupings': GROUPING,
+             'InstrumentScientists': INSTRUMENTSCIENTIST, 'Instruments': INSTRUMENT,
+             'InvestigationGroups': INVESTIGATIONGROUP,
+             'InvestigationInstruments': INVESTIGATIONINSTRUMENT, 'InvestigationParameters': INVESTIGATIONPARAMETER,
+             'InvestigationTypes': INVESTIGATIONTYPE, 'InvestigationUsers': INVESTIGATIONUSER,
+             'Investigations': INVESTIGATION, 'Jobs': JOB, 'Keywords': KEYWORD, 'ParameterTypes': PARAMETERTYPE,
+             'PermissibleStringValues': PERMISSIBLESTRINGVALUE, 'PublicSteps': PUBLICSTEP,
+             'Publications': PUBLICATION, 'RelatedDatafiles': RELATEDDATAFILE, 'Rules': RULE,
+             'SampleParameters': SAMPLEPARAMETER, 'SampleTypes': SAMPLETYPE, 'Samples': SAMPLE, 'Shifts': SHIFT,
+             'Studies': STUDY, 'StudyInvestigations': STUDYINVESTIGATION, 'UserGroups': USERGROUP, 'Users': USER}

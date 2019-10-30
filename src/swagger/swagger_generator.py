@@ -4,6 +4,7 @@ from pathlib import Path
 import yaml
 
 from common.config import config
+from src.resources.entities.entity_map import endpoints
 
 
 class Parameter(object):
@@ -130,7 +131,7 @@ class Entity(object):
                 "get": {
                     "summary": f"Return the count of the {SwaggerGenerator.pascal_to_normal(entity_name).lower()}",
                     "tags": ["entities"],
-                    "parameters": [self.WHERE_PARAMETER],
+                    "parameters": [self.WHERE_PARAMETER, self.DISTINCT_PARAMETER],
                     "responses": {
                         "200": {
                             "description": f"The count of the {SwaggerGenerator.pascal_to_normal(entity_name).lower()}"
@@ -224,9 +225,6 @@ class SwaggerSpecification(object):
 class SwaggerGenerator(object):
     FILE_PATH = Path.cwd() / "src" / "swagger" / "openapi.yaml"
 
-    def __init__(self):
-        self.endpoints = []
-
     @staticmethod
     def pascal_to_normal(input):
         """
@@ -238,18 +236,6 @@ class SwaggerGenerator(object):
         words = re.findall(r"[A-Z]?[a-z]+|[A-Z]{2,}(?=[A-Z][a-z]|\d|\W|$)|\d+", input)
         return " ".join(map(str.lower, words))
 
-    def resource_wrapper(self):
-        """
-        Wrapper for Resource classes that appends the class name to the endpoints list
-        """
-
-        def decorate(cls):
-            if config.is_generate_swagger():
-                self.endpoints.append(cls.__name__)
-            return cls
-
-        return decorate
-
     def write_swagger_spec(self):
         """
         Writes the openapi.yaml file
@@ -257,7 +243,7 @@ class SwaggerGenerator(object):
         """
         if config.is_generate_swagger():
             swagger_spec = SwaggerSpecification()
-            for endpoint in self.endpoints:
+            for endpoint in endpoints:
                 entity = Entity(endpoint)
                 swagger_spec.add_path(entity.entity_count_endpoint)
                 swagger_spec.add_path(entity.entity_id_endpoint)

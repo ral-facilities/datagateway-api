@@ -1,6 +1,8 @@
 import enum
 
 from datetime import datetime
+from decimal import Decimal
+
 from sqlalchemy import Index, Column, BigInteger, String, DateTime, ForeignKey, Integer, Float, FetchedValue, \
     TypeDecorator, Boolean
 from sqlalchemy.ext.declarative import declarative_base
@@ -50,8 +52,21 @@ class EntityHelper(object):
         dictionary = {}
         for column in self.__table__.columns:
             attribute = getattr(self, column.name)
-            dictionary[column.name] = str(attribute) if isinstance(attribute, datetime) else attribute
+            dictionary[column.name] = self._make_serializable(attribute)
         return dictionary
+
+    def _make_serializable(self, field):
+        """
+        Given a field, convert to a JSON serializable type
+        :param field: The field to be converted
+        :return: The converted field
+        """
+        if isinstance(field, datetime):
+            return str(field)
+        elif isinstance(field, Decimal):
+            return float(field)
+        else:
+            return field
 
     def to_nested_dict(self, includes):
         """
