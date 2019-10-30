@@ -113,12 +113,12 @@ This is illustrated below.
     └── config.json
  `````
 #### Main:
-`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is 
-imported and mapped to an endpoint.  
+`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is generated and mapped 
+to an endpoint.
 
 Example:  
- `api.add_resource(DatafilesWithID, "/datafiles/<int:id>")`  	   
-This means that the http methods defined in the `DatafilesWithID` class are mapped to  `/datafiles/<int:id>`   
+ `api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")`	   
+   
 
 #### Endpoints:  
 The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and 
