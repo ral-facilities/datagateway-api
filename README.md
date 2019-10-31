@@ -150,8 +150,10 @@ For example:
 The querying and filtering logic is located in `/common/database_helpers.py`. In this module the abstract `Query` and
 `QueryFilter` classes are defined as well as their implementations. The functions that are used by various endpoints to
 query the database are also in this module.
-Class diagram for this module:
-![image](https://user-images.githubusercontent.com/44777678/66651511-1d401a80-ec2b-11e9-96a4-316e94939a0f.png)
+Class diagrams for this module:
+![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)  
+![image](https://user-images.githubusercontent.com/44777678/67954834-7fb48700-fbe9-11e9-96f3-ffefc7277ebd.png)
+
 
 #### Authentication
 Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session ID can be obtained by
