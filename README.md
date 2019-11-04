@@ -10,6 +10,9 @@ ICAT API to interface with the Data Gateway
       - [Main:](#main)
       - [Endpoints:](#endpoints)
       - [Mapped classes:](#mapped-classes)
+      - [Querying and filtering](#querying-and-filtering)
+      - [Swagger Generation](#generating-the-swagger-spec-openapiyaml)
+      - [Authentication](#authentication)
   - [Database Generator](#database-generator)
   - [Running Tests](#running-tests)
 
@@ -92,7 +95,8 @@ This is illustrated below.
     │   │   └── non_entities
     │   │       └── <non_entity>_endpoints.py
     │   ├── swagger
-    │   │   └── openapi.yaml
+    │   │   ├── openapi.yaml
+    │   │   └── swagger_generator.py
     │   └── main.py  
     ├── test
     │   ├── resources
@@ -109,12 +113,12 @@ This is illustrated below.
     └── config.json
  `````
 #### Main:
-The main entry point is in `/src/main.py`. This is where each endpoint route is defined and its 
-related class imported e.g.  
- `api.add_resource(DatafilesWithID, "/datafiles/<int:id>")`  
-Debugging may also be turned on or off with, `app.run(debug=True)` and `app.run()` respectively.
-When debugging is enabled the api will restart every time code changes are detected.
+`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is generated and mapped 
+to an endpoint.
 
+Example:  
+ `api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")`	   
+   
 
 #### Endpoints:  
 The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and 
@@ -140,6 +144,40 @@ By default it will generate 20 years worth of data (approx 70,000 entities). The
 be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years.
 For example:  
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10 years of data.
+
+
+#### Querying and filtering:
+The querying and filtering logic is located in `/common/database_helpers.py`. In this module the abstract `Query` and
+`QueryFilter` classes are defined as well as their implementations. The functions that are used by various endpoints to
+query the database are also in this module.
+Class diagrams for this module:
+![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)  
+![image](https://user-images.githubusercontent.com/44777678/67954834-7fb48700-fbe9-11e9-96f3-ffefc7277ebd.png)
+
+
+#### Authentication
+Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session ID can be obtained by
+sending a post request to `/sessions/`  
+All endpoint methods that require a session id are decorated with `@requires_session_id`
+
+
+
+#### Generating the swagger spec: `openapi.yaml`
+The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
+the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
+resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
+entity and outputs the swagger spec to `openapi.yaml` 
+
+Example of the decorator:
+```python
+@swagger_gen.resource_wrapper()
+class DataCollectionDatasets(Resource):
+    @requires_session_id
+    @queries_records
+    def get(self):
+        return get_rows_by_filter(DATACOLLECTIONDATASET, get_filters_from_query_string()), 200
+```
+
 
 ## Running Tests
 To run the tests use `python -m unittest discover`

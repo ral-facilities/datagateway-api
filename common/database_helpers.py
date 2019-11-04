@@ -15,6 +15,10 @@ log = logging.getLogger()
 
 
 class Query(ABC):
+    """
+    The base query class that all other queries extend from. This defines the enter and exit methods, used to handle
+    sessions. It is expected that all queries would be used with the 'with' keyword in most cases for this reason.
+    """
     @abstractmethod
     def __init__(self, table):
         self.session = session_manager.get_icat_db_session()
