@@ -64,6 +64,10 @@ class Entity(object):
         self.properties_dict = {}
         for column in model.__table__.columns:
             self.properties_dict[column.name] = {"type": self._map_db_type_to_json_type(str(column.type))}
+        self.entity_schema = {f"{SwaggerGenerator.singularise(entity_name)}": {
+                                    "type": "object",
+                                    "properties": self.properties_dict}}
+
         self.entity_no_id_endpoint = {
             f"/{entity_name.lower()}": {
                 "get": {
@@ -81,8 +85,7 @@ class Entity(object):
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "properties": self.properties_dict
+                                        "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
                                     }
                                 }
                             }
@@ -119,8 +122,7 @@ class Entity(object):
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "properties": self.properties_dict
+                                        "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
                                     }
                                 }
                             }
@@ -142,7 +144,7 @@ class Entity(object):
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object"
+                                    "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
                                 }
                             }
                         }
@@ -154,8 +156,7 @@ class Entity(object):
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "properties": self.properties_dict
+                                        "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
                                     }
                                 }
                             }
@@ -208,8 +209,7 @@ class Entity(object):
                             "content": {
                                 "application/json": {
                                     "schema": {
-                                        "type": "object",
-                                        "properties": self.properties_dict
+                                        "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
                                     }
                                 }
                             }
@@ -251,6 +251,7 @@ class Entity(object):
 class SwaggerSpecification(object):
     def __init__(self):
         self.paths = []
+        self.schemas = []
         self.top_part = {
             'openapi': "3.0.0",
             "info": {
@@ -263,16 +264,24 @@ class SwaggerSpecification(object):
                     "url": "http://localhost:5000"
                 }
             ],
-            "paths": {}
+            "paths": {},
+            "components": {
+                "schemas":{}
+            }
         }
 
     def add_path(self, path):
         self.paths.append(path)
 
+    def add_schema(self, schema):
+        self.schemas.append(schema)
+
     def get_spec_as_dict(self):
         spec = {}
         for path in self.paths:
             self.top_part["paths"].update(path)
+        for schema in self.schemas:
+            self.top_part["components"]["schemas"].update(schema)
         spec.update(self.top_part)
 
         return spec
@@ -292,6 +301,16 @@ class SwaggerGenerator(object):
         words = re.findall(r"[A-Z]?[a-z]+|[A-Z]{2,}(?=[A-Z][a-z]|\d|\W|$)|\d+", input)
         return " ".join(map(str.lower, words))
 
+    @staticmethod
+    def singularise(plural_word:str):
+        if plural_word.lower().endswith('ies'):
+            singular_word = plural_word[:-3] + ('Y' if plural_word.isupper() else 'y')
+        elif plural_word.lower().endswith('s'):
+            singular_word = plural_word[:-1]
+        else:
+            raise ValueError(f"Don't know how to singularise {plural_word}")
+        return singular_word
+
     def write_swagger_spec(self):
         """
         Writes the openapi.yaml file
@@ -304,6 +323,7 @@ class SwaggerGenerator(object):
                 swagger_spec.add_path(entity.entity_count_endpoint)
                 swagger_spec.add_path(entity.entity_id_endpoint)
                 swagger_spec.add_path(entity.entity_no_id_endpoint)
+                swagger_spec.add_schema(entity.entity_schema)
             swagger_dict = swagger_spec.get_spec_as_dict()
             yaml.Dumper.ignore_aliases = lambda *args: True
             with open(SwaggerGenerator.FILE_PATH, "w+") as target:
