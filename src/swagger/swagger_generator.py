@@ -327,7 +327,7 @@ class SwaggerGenerator(object):
             swagger_dict = swagger_spec.get_spec_as_dict()
             yaml.Dumper.ignore_aliases = lambda *args: True
             with open(SwaggerGenerator.FILE_PATH, "w+") as target:
-                target.write(yaml.dump(swagger_dict))
+                target.write(yaml.dump(swagger_dict, sort_keys=False))
             target.close()
 
 
