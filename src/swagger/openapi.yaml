@@ -1,3 +1,844 @@
+components:
+  schemas:
+    Application:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        VERSION:
+          type: string
+      type: object
+    DataCollection:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DOI:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+      type: object
+    DataCollectionDatafile:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATACOLLECTION_ID:
+          type: integer
+        DATAFILE_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+      type: object
+    DataCollectionDataset:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATACOLLECTION_ID:
+          type: integer
+        DATASET_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+      type: object
+    DataCollectionParameter:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATACOLLECTION_ID:
+          type: integer
+        DATETIME_VALUE:
+          type: string
+        ERROR:
+          type: number
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NUMERIC_VALUE:
+          type: number
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: number
+        RANGETOP:
+          type: number
+        STRING_VALUE:
+          type: string
+      type: object
+    Datafile:
+      properties:
+        CHECKSUM:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATAFILECREATETIME:
+          type: string
+        DATAFILEFORMAT_ID:
+          type: integer
+        DATAFILEMODTIME:
+          type: string
+        DATASET_ID:
+          type: integer
+        DESCRIPTION:
+          type: string
+        DOI:
+          type: string
+        FILESIZE:
+          type: integer
+        ID:
+          type: integer
+        LOCATION:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+      type: object
+    DatafileFormat:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        TYPE:
+          type: string
+        VERSION:
+          type: string
+      type: object
+    DatafileParameter:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATAFILE_ID:
+          type: integer
+        DATETIME_VALUE:
+          type: string
+        ERROR:
+          type: number
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NUMERIC_VALUE:
+          type: number
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: number
+        RANGETOP:
+          type: number
+        STRING_VALUE:
+          type: string
+      type: object
+    Dataset:
+      properties:
+        COMPLETE:
+          type: boolean
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        DOI:
+          type: string
+        END_DATE:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        LOCATION:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        SAMPLE_ID:
+          type: integer
+        STARTDATE:
+          type: string
+        TYPE_ID:
+          type: integer
+      type: object
+    DatasetType:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+      type: object
+    Facility:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DAYSUNTILRELEASE:
+          type: integer
+        DESCRIPTION:
+          type: string
+        FULLNAME:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        URL:
+          type: string
+      type: object
+    FacilityCycle:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        ENDDATE:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        STARTDATE:
+          type: string
+      type: object
+    Grouping:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+      type: object
+    Instrument:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY_ID:
+          type: integer
+        FULLNAME:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        TYPE:
+          type: string
+        URL:
+          type: string
+      type: object
+    InstrumentScientist:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INSTRUMENT_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        USER_ID:
+          type: integer
+      type: object
+    Investigation:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DOI:
+          type: string
+        ENDDATE:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        RELEASEDATE:
+          type: string
+        STARTDATE:
+          type: string
+        SUMMARY:
+          type: string
+        TITLE:
+          type: string
+        TYPE_ID:
+          type: integer
+        VISIT_ID:
+          type: string
+      type: object
+    InvestigationGroup:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        GROUP_ID:
+          type: integer
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        ROLE:
+          type: string
+      type: object
+    InvestigationInstrument:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INSTRUMENT_ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+      type: object
+    InvestigationParameter:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATETIME_VALUE:
+          type: string
+        ERROR:
+          type: number
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NUMERIC_VALUE:
+          type: number
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: number
+        RANGETOP:
+          type: number
+        STRING_VALUE:
+          type: string
+      type: object
+    InvestigationType:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+      type: object
+    InvestigationUser:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        ROLE:
+          type: string
+        USER_ID:
+          type: integer
+      type: object
+    Job:
+      properties:
+        APPLICATION_ID:
+          type: integer
+        ARGUMENTS:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INPUTDATACOLLECTION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        OUTPUTDATACOLLECTION_ID:
+          type: integer
+      type: object
+    Keyword:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+      type: object
+    ParameterType:
+      properties:
+        APPLICABLETODATACOLLECTION:
+          type: boolean
+        APPLICABLETODATAFILE:
+          type: boolean
+        APPLICABLETODATASET:
+          type: boolean
+        APPLICABLETOINVESTIGATION:
+          type: boolean
+        APPLICABLETOSAMPLE:
+          type: boolean
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        ENFORCED:
+          type: boolean
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MAXIMUMNUMERICVALUE:
+          type: number
+        MINIMUMNUMERICVALUE:
+          type: number
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        UNITS:
+          type: string
+        UNITSFULLNAME:
+          type: string
+        VALUETYPE:
+          type: integer
+        VERIFIED:
+          type: boolean
+      type: object
+    PermissibleStringValue:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        PARAMETERTYPE_ID:
+          type: integer
+        VALUE:
+          type: string
+      type: object
+    PublicStep:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        FIELD:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        ORIGIN:
+          type: string
+      type: object
+    Publication:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DOI:
+          type: string
+        FULLREFERENCE:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        REPOSITORY:
+          type: string
+        REPOSITORYID:
+          type: string
+        URL:
+          type: string
+      type: object
+    RelatedDatafile:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DEST_DATAFILE_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        RELATION:
+          type: string
+        SOURCE_DATAFILE_ID:
+          type: integer
+      type: object
+    Rule:
+      properties:
+        ATTRIBUTE:
+          type: string
+        BEAN:
+          type: string
+        C:
+          type: integer
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        CRUDFLAGS:
+          type: string
+        CRUDJPQL:
+          type: string
+        D:
+          type: integer
+        GROUPING_ID:
+          type: integer
+        ID:
+          type: integer
+        INCLUDEJPQL:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        R:
+          type: integer
+        RESTRICTED:
+          type: integer
+        SEARCHJPQL:
+          type: string
+        U:
+          type: integer
+        WHAT:
+          type: string
+      type: object
+    Sample:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        SAMPLETYPE_ID:
+          type: integer
+      type: object
+    SampleParameter:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DATETIME_VALUE:
+          type: string
+        ERROR:
+          type: number
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NUMERIC_VALUE:
+          type: number
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: number
+        RANGETOP:
+          type: number
+        SAMPLE_ID:
+          type: integer
+        STRING_VALUE:
+          type: string
+      type: object
+    SampleType:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        FACILITY_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        MOLECULARFORMULA:
+          type: string
+        NAME:
+          type: string
+        SAFETYINFORMATION:
+          type: string
+      type: object
+    Shift:
+      properties:
+        COMMENT:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ENDDATE:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        STARTDATE:
+          type: string
+      type: object
+    Study:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        DESCRIPTION:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        STARTDATE:
+          type: string
+        STATUS:
+          type: integer
+        USER_ID:
+          type: integer
+      type: object
+    StudyInvestigation:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        ID:
+          type: integer
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        STUDY_ID:
+          type: integer
+      type: object
+    User:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        EMAIL:
+          type: string
+        FULLNAME:
+          type: string
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        NAME:
+          type: string
+        ORCIDID:
+          type: string
+      type: object
+    UserGroup:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          type: string
+        GROUP_ID:
+          type: integer
+        ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          type: string
+        USER_ID:
+          type: integer
+      type: object
 info:
   description: ICAT API to interface with the DataGateway
   title: DataGateway API
@@ -64,24 +905,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Application'
           description: The applications found
         '401':
           description: When no credentials are provided
@@ -97,7 +921,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Application'
         description: Update one or multiple applications
         required: true
       responses:
@@ -105,24 +929,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Application'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -146,24 +953,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Application'
           description: The created applications
         '401':
           description: When no credentials are provided
@@ -241,24 +1031,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Application'
           description: The matching applications
         '401':
           description: When no credentials are provided
@@ -329,22 +1102,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDatafile'
           description: The data collection datafiles found
         '401':
           description: When no credentials are provided
@@ -360,7 +1118,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DataCollectionDatafile'
         description: Update one or multiple data collection datafiles
         required: true
       responses:
@@ -368,22 +1126,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDatafile'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -407,22 +1150,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDatafile'
           description: The created data collection datafiles
         '401':
           description: When no credentials are provided
@@ -500,22 +1228,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDatafile'
           description: The matching data collection datafiles
         '401':
           description: When no credentials are provided
@@ -586,22 +1299,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATASET_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDataset'
           description: The data collection datasets found
         '401':
           description: When no credentials are provided
@@ -617,7 +1315,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DataCollectionDataset'
         description: Update one or multiple data collection datasets
         required: true
       responses:
@@ -625,22 +1323,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATASET_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDataset'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -664,22 +1347,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATASET_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDataset'
           description: The created data collection datasets
         '401':
           description: When no credentials are provided
@@ -757,22 +1425,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATASET_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionDataset'
           description: The matching data collection datasets
         '401':
           description: When no credentials are provided
@@ -843,34 +1496,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionParameter'
           description: The data collection parameters found
         '401':
           description: When no credentials are provided
@@ -886,7 +1512,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DataCollectionParameter'
         description: Update one or multiple data collection parameters
         required: true
       responses:
@@ -894,34 +1520,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionParameter'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -945,34 +1544,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionParameter'
           description: The created data collection parameters
         '401':
           description: When no credentials are provided
@@ -1050,34 +1622,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATACOLLECTION_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollectionParameter'
           description: The matching data collection parameters
         '401':
           description: When no credentials are provided
@@ -1148,20 +1693,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollection'
           description: The data collections found
         '401':
           description: When no credentials are provided
@@ -1177,7 +1709,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DataCollection'
         description: Update one or multiple data collections
         required: true
       responses:
@@ -1185,20 +1717,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollection'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -1222,20 +1741,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollection'
           description: The created data collections
         '401':
           description: When no credentials are provided
@@ -1313,20 +1819,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DataCollection'
           description: The matching data collections
         '401':
           description: When no credentials are provided
@@ -1397,28 +1890,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileFormat'
           description: The datafile formats found
         '401':
           description: When no credentials are provided
@@ -1434,7 +1906,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DatafileFormat'
         description: Update one or multiple datafile formats
         required: true
       responses:
@@ -1442,28 +1914,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileFormat'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -1487,28 +1938,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileFormat'
           description: The created datafile formats
         '401':
           description: When no credentials are provided
@@ -1586,28 +2016,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  VERSION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileFormat'
           description: The matching datafile formats
         '401':
           description: When no credentials are provided
@@ -1678,34 +2087,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILE_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileParameter'
           description: The datafile parameters found
         '401':
           description: When no credentials are provided
@@ -1721,7 +2103,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DatafileParameter'
         description: Update one or multiple datafile parameters
         required: true
       responses:
@@ -1729,34 +2111,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILE_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileParameter'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -1780,34 +2135,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILE_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileParameter'
           description: The created datafile parameters
         '401':
           description: When no credentials are provided
@@ -1885,34 +2213,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILE_ID:
-                    type: integer
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatafileParameter'
           description: The matching datafile parameters
         '401':
           description: When no credentials are provided
@@ -1983,38 +2284,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CHECKSUM:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILECREATETIME:
-                    type: string
-                  DATAFILEFORMAT_ID:
-                    type: integer
-                  DATAFILEMODTIME:
-                    type: string
-                  DATASET_ID:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  FILESIZE:
-                    type: integer
-                  ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Datafile'
           description: The datafiles found
         '401':
           description: When no credentials are provided
@@ -2030,7 +2300,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Datafile'
         description: Update one or multiple datafiles
         required: true
       responses:
@@ -2038,38 +2308,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CHECKSUM:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILECREATETIME:
-                    type: string
-                  DATAFILEFORMAT_ID:
-                    type: integer
-                  DATAFILEMODTIME:
-                    type: string
-                  DATASET_ID:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  FILESIZE:
-                    type: integer
-                  ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Datafile'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -2093,38 +2332,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CHECKSUM:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILECREATETIME:
-                    type: string
-                  DATAFILEFORMAT_ID:
-                    type: integer
-                  DATAFILEMODTIME:
-                    type: string
-                  DATASET_ID:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  FILESIZE:
-                    type: integer
-                  ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Datafile'
           description: The created datafiles
         '401':
           description: When no credentials are provided
@@ -2202,38 +2410,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CHECKSUM:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATAFILECREATETIME:
-                    type: string
-                  DATAFILEFORMAT_ID:
-                    type: integer
-                  DATAFILEMODTIME:
-                    type: string
-                  DATASET_ID:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  FILESIZE:
-                    type: integer
-                  ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Datafile'
           description: The matching datafiles
         '401':
           description: When no credentials are provided
@@ -2304,38 +2481,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMPLETE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  END_DATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLE_ID:
-                    type: integer
-                  STARTDATE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Dataset'
           description: The datasets found
         '401':
           description: When no credentials are provided
@@ -2351,7 +2497,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Dataset'
         description: Update one or multiple datasets
         required: true
       responses:
@@ -2359,38 +2505,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMPLETE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  END_DATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLE_ID:
-                    type: integer
-                  STARTDATE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Dataset'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -2414,38 +2529,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMPLETE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  END_DATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLE_ID:
-                    type: integer
-                  STARTDATE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Dataset'
           description: The created datasets
         '401':
           description: When no credentials are provided
@@ -2523,38 +2607,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMPLETE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  DOI:
-                    type: string
-                  END_DATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  LOCATION:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLE_ID:
-                    type: integer
-                  STARTDATE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Dataset'
           description: The matching datasets
         '401':
           description: When no credentials are provided
@@ -2625,24 +2678,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatasetType'
           description: The dataset types found
         '401':
           description: When no credentials are provided
@@ -2658,7 +2694,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/DatasetType'
         description: Update one or multiple dataset types
         required: true
       responses:
@@ -2666,24 +2702,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatasetType'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -2707,24 +2726,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatasetType'
           description: The created dataset types
         '401':
           description: When no credentials are provided
@@ -2802,24 +2804,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/DatasetType'
           description: The matching dataset types
         '401':
           description: When no credentials are provided
@@ -2890,28 +2875,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DAYSUNTILRELEASE:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Facility'
           description: The facilities found
         '401':
           description: When no credentials are provided
@@ -2927,7 +2891,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Facility'
         description: Update one or multiple facilities
         required: true
       responses:
@@ -2935,28 +2899,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DAYSUNTILRELEASE:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Facility'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -2980,28 +2923,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DAYSUNTILRELEASE:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Facility'
           description: The created facilities
         '401':
           description: When no credentials are provided
@@ -3079,28 +3001,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DAYSUNTILRELEASE:
-                    type: integer
-                  DESCRIPTION:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Facility'
           description: The matching facilities
         '401':
           description: When no credentials are provided
@@ -3171,28 +3072,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/FacilityCycle'
           description: The facility cycles found
         '401':
           description: When no credentials are provided
@@ -3208,7 +3088,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/FacilityCycle'
         description: Update one or multiple facility cycles
         required: true
       responses:
@@ -3216,28 +3096,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/FacilityCycle'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -3261,28 +3120,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/FacilityCycle'
           description: The created facility cycles
         '401':
           description: When no credentials are provided
@@ -3360,28 +3198,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/FacilityCycle'
           description: The matching facility cycles
         '401':
           description: When no credentials are provided
@@ -3452,20 +3269,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Grouping'
           description: The groupings found
         '401':
           description: When no credentials are provided
@@ -3481,7 +3285,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Grouping'
         description: Update one or multiple groupings
         required: true
       responses:
@@ -3489,20 +3293,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Grouping'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -3526,20 +3317,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Grouping'
           description: The created groupings
         '401':
           description: When no credentials are provided
@@ -3617,20 +3395,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Grouping'
           description: The matching groupings
         '401':
           description: When no credentials are provided
@@ -3701,30 +3466,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Instrument'
           description: The instruments found
         '401':
           description: When no credentials are provided
@@ -3740,7 +3482,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Instrument'
         description: Update one or multiple instruments
         required: true
       responses:
@@ -3748,30 +3490,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Instrument'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -3795,30 +3514,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Instrument'
           description: The created instruments
         '401':
           description: When no credentials are provided
@@ -3896,30 +3592,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  TYPE:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Instrument'
           description: The matching instruments
         '401':
           description: When no credentials are provided
@@ -3990,22 +3663,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InstrumentScientist'
           description: The instrument scientists found
         '401':
           description: When no credentials are provided
@@ -4021,7 +3679,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InstrumentScientist'
         description: Update one or multiple instrument scientists
         required: true
       responses:
@@ -4029,22 +3687,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InstrumentScientist'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -4068,22 +3711,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InstrumentScientist'
           description: The created instrument scientists
         '401':
           description: When no credentials are provided
@@ -4161,22 +3789,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InstrumentScientist'
           description: The matching instrument scientists
         '401':
           description: When no credentials are provided
@@ -4247,24 +3860,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationGroup'
           description: The investigation groups found
         '401':
           description: When no credentials are provided
@@ -4280,7 +3876,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InvestigationGroup'
         description: Update one or multiple investigation groups
         required: true
       responses:
@@ -4288,24 +3884,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationGroup'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -4329,24 +3908,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationGroup'
           description: The created investigation groups
         '401':
           description: When no credentials are provided
@@ -4424,24 +3986,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationGroup'
           description: The matching investigation groups
         '401':
           description: When no credentials are provided
@@ -4512,22 +4057,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationInstrument'
           description: The investigation instruments found
         '401':
           description: When no credentials are provided
@@ -4543,7 +4073,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InvestigationInstrument'
         description: Update one or multiple investigation instruments
         required: true
       responses:
@@ -4551,22 +4081,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationInstrument'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -4590,22 +4105,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationInstrument'
           description: The created investigation instruments
         '401':
           description: When no credentials are provided
@@ -4683,22 +4183,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INSTRUMENT_ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationInstrument'
           description: The matching investigation instruments
         '401':
           description: When no credentials are provided
@@ -4769,34 +4254,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationParameter'
           description: The investigation parameters found
         '401':
           description: When no credentials are provided
@@ -4812,7 +4270,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InvestigationParameter'
         description: Update one or multiple investigation parameters
         required: true
       responses:
@@ -4820,34 +4278,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationParameter'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -4871,34 +4302,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationParameter'
           description: The created investigation parameters
         '401':
           description: When no credentials are provided
@@ -4976,34 +4380,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationParameter'
           description: The matching investigation parameters
         '401':
           description: When no credentials are provided
@@ -5074,38 +4451,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  RELEASEDATE:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  SUMMARY:
-                    type: string
-                  TITLE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                  VISIT_ID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Investigation'
           description: The investigations found
         '401':
           description: When no credentials are provided
@@ -5121,7 +4467,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Investigation'
         description: Update one or multiple investigations
         required: true
       responses:
@@ -5129,38 +4475,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  RELEASEDATE:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  SUMMARY:
-                    type: string
-                  TITLE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                  VISIT_ID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Investigation'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -5184,38 +4499,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  RELEASEDATE:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  SUMMARY:
-                    type: string
-                  TITLE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                  VISIT_ID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Investigation'
           description: The created investigations
         '401':
           description: When no credentials are provided
@@ -5293,38 +4577,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  RELEASEDATE:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  SUMMARY:
-                    type: string
-                  TITLE:
-                    type: string
-                  TYPE_ID:
-                    type: integer
-                  VISIT_ID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Investigation'
           description: The matching investigations
         '401':
           description: When no credentials are provided
@@ -5395,24 +4648,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationType'
           description: The investigation types found
         '401':
           description: When no credentials are provided
@@ -5428,7 +4664,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InvestigationType'
         description: Update one or multiple investigation types
         required: true
       responses:
@@ -5436,24 +4672,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationType'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -5477,24 +4696,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationType'
           description: The created investigation types
         '401':
           description: When no credentials are provided
@@ -5572,24 +4774,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/InvestigationType'
           description: The matching investigation types
         '401':
           description: When no credentials are provided
@@ -5660,24 +4845,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InvestigationUser'
           description: The investigation users found
         '401':
           description: When no credentials are provided
@@ -5693,7 +4861,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/InvestigationUser'
         description: Update one or multiple investigation users
         required: true
       responses:
@@ -5701,24 +4869,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InvestigationUser'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -5742,24 +4893,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InvestigationUser'
           description: The created investigation users
         '401':
           description: When no credentials are provided
@@ -5837,24 +4971,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ROLE:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/InvestigationUser'
           description: The matching investigation users
         '401':
           description: When no credentials are provided
@@ -5925,26 +5042,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICATION_ID:
-                    type: integer
-                  ARGUMENTS:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INPUTDATACOLLECTION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  OUTPUTDATACOLLECTION_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Job'
           description: The jobs found
         '401':
           description: When no credentials are provided
@@ -5960,7 +5058,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Job'
         description: Update one or multiple jobs
         required: true
       responses:
@@ -5968,26 +5066,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICATION_ID:
-                    type: integer
-                  ARGUMENTS:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INPUTDATACOLLECTION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  OUTPUTDATACOLLECTION_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Job'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -6011,26 +5090,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICATION_ID:
-                    type: integer
-                  ARGUMENTS:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INPUTDATACOLLECTION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  OUTPUTDATACOLLECTION_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Job'
           description: The created jobs
         '401':
           description: When no credentials are provided
@@ -6108,26 +5168,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICATION_ID:
-                    type: integer
-                  ARGUMENTS:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INPUTDATACOLLECTION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  OUTPUTDATACOLLECTION_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Job'
           description: The matching jobs
         '401':
           description: When no credentials are provided
@@ -6198,22 +5239,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Keyword'
           description: The keywords found
         '401':
           description: When no credentials are provided
@@ -6229,7 +5255,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Keyword'
         description: Update one or multiple keywords
         required: true
       responses:
@@ -6237,22 +5263,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Keyword'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -6276,22 +5287,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Keyword'
           description: The created keywords
         '401':
           description: When no credentials are provided
@@ -6369,22 +5365,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Keyword'
           description: The matching keywords
         '401':
           description: When no credentials are provided
@@ -6455,48 +5436,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICABLETODATACOLLECTION:
-                    type: boolean
-                  APPLICABLETODATAFILE:
-                    type: boolean
-                  APPLICABLETODATASET:
-                    type: boolean
-                  APPLICABLETOINVESTIGATION:
-                    type: boolean
-                  APPLICABLETOSAMPLE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENFORCED:
-                    type: boolean
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MAXIMUMNUMERICVALUE:
-                    type: number
-                  MINIMUMNUMERICVALUE:
-                    type: number
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  UNITS:
-                    type: string
-                  UNITSFULLNAME:
-                    type: string
-                  VALUETYPE:
-                    type: integer
-                  VERIFIED:
-                    type: boolean
-                type: object
+                $ref: '#/components/schemas/ParameterType'
           description: The parameter types found
         '401':
           description: When no credentials are provided
@@ -6512,7 +5452,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/ParameterType'
         description: Update one or multiple parameter types
         required: true
       responses:
@@ -6520,48 +5460,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICABLETODATACOLLECTION:
-                    type: boolean
-                  APPLICABLETODATAFILE:
-                    type: boolean
-                  APPLICABLETODATASET:
-                    type: boolean
-                  APPLICABLETOINVESTIGATION:
-                    type: boolean
-                  APPLICABLETOSAMPLE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENFORCED:
-                    type: boolean
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MAXIMUMNUMERICVALUE:
-                    type: number
-                  MINIMUMNUMERICVALUE:
-                    type: number
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  UNITS:
-                    type: string
-                  UNITSFULLNAME:
-                    type: string
-                  VALUETYPE:
-                    type: integer
-                  VERIFIED:
-                    type: boolean
-                type: object
+                $ref: '#/components/schemas/ParameterType'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -6585,48 +5484,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICABLETODATACOLLECTION:
-                    type: boolean
-                  APPLICABLETODATAFILE:
-                    type: boolean
-                  APPLICABLETODATASET:
-                    type: boolean
-                  APPLICABLETOINVESTIGATION:
-                    type: boolean
-                  APPLICABLETOSAMPLE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENFORCED:
-                    type: boolean
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MAXIMUMNUMERICVALUE:
-                    type: number
-                  MINIMUMNUMERICVALUE:
-                    type: number
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  UNITS:
-                    type: string
-                  UNITSFULLNAME:
-                    type: string
-                  VALUETYPE:
-                    type: integer
-                  VERIFIED:
-                    type: boolean
-                type: object
+                $ref: '#/components/schemas/ParameterType'
           description: The created parameter types
         '401':
           description: When no credentials are provided
@@ -6704,48 +5562,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  APPLICABLETODATACOLLECTION:
-                    type: boolean
-                  APPLICABLETODATAFILE:
-                    type: boolean
-                  APPLICABLETODATASET:
-                    type: boolean
-                  APPLICABLETOINVESTIGATION:
-                    type: boolean
-                  APPLICABLETOSAMPLE:
-                    type: boolean
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ENFORCED:
-                    type: boolean
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MAXIMUMNUMERICVALUE:
-                    type: number
-                  MINIMUMNUMERICVALUE:
-                    type: number
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  UNITS:
-                    type: string
-                  UNITSFULLNAME:
-                    type: string
-                  VALUETYPE:
-                    type: integer
-                  VERIFIED:
-                    type: boolean
-                type: object
+                $ref: '#/components/schemas/ParameterType'
           description: The matching parameter types
         '401':
           description: When no credentials are provided
@@ -6816,22 +5633,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  PARAMETERTYPE_ID:
-                    type: integer
-                  VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PermissibleStringValue'
           description: The permissible string values found
         '401':
           description: When no credentials are provided
@@ -6847,7 +5649,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/PermissibleStringValue'
         description: Update one or multiple permissible string values
         required: true
       responses:
@@ -6855,22 +5657,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  PARAMETERTYPE_ID:
-                    type: integer
-                  VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PermissibleStringValue'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -6894,22 +5681,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  PARAMETERTYPE_ID:
-                    type: integer
-                  VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PermissibleStringValue'
           description: The created permissible string values
         '401':
           description: When no credentials are provided
@@ -6987,22 +5759,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  PARAMETERTYPE_ID:
-                    type: integer
-                  VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PermissibleStringValue'
           description: The matching permissible string values
         '401':
           description: When no credentials are provided
@@ -7073,30 +5830,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  FULLREFERENCE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  REPOSITORY:
-                    type: string
-                  REPOSITORYID:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Publication'
           description: The publications found
         '401':
           description: When no credentials are provided
@@ -7112,7 +5846,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Publication'
         description: Update one or multiple publications
         required: true
       responses:
@@ -7120,30 +5854,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  FULLREFERENCE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  REPOSITORY:
-                    type: string
-                  REPOSITORYID:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Publication'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -7167,30 +5878,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  FULLREFERENCE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  REPOSITORY:
-                    type: string
-                  REPOSITORYID:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Publication'
           description: The created publications
         '401':
           description: When no credentials are provided
@@ -7268,30 +5956,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DOI:
-                    type: string
-                  FULLREFERENCE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  REPOSITORY:
-                    type: string
-                  REPOSITORYID:
-                    type: string
-                  URL:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Publication'
           description: The matching publications
         '401':
           description: When no credentials are provided
@@ -7362,22 +6027,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FIELD:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ORIGIN:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PublicStep'
           description: The public steps found
         '401':
           description: When no credentials are provided
@@ -7393,7 +6043,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/PublicStep'
         description: Update one or multiple public steps
         required: true
       responses:
@@ -7401,22 +6051,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FIELD:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ORIGIN:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PublicStep'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -7440,22 +6075,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FIELD:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ORIGIN:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PublicStep'
           description: The created public steps
         '401':
           description: When no credentials are provided
@@ -7533,22 +6153,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FIELD:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  ORIGIN:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/PublicStep'
           description: The matching public steps
         '401':
           description: When no credentials are provided
@@ -7619,24 +6224,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DEST_DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  RELATION:
-                    type: string
-                  SOURCE_DATAFILE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/RelatedDatafile'
           description: The related datafiles found
         '401':
           description: When no credentials are provided
@@ -7652,7 +6240,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/RelatedDatafile'
         description: Update one or multiple related datafiles
         required: true
       responses:
@@ -7660,24 +6248,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DEST_DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  RELATION:
-                    type: string
-                  SOURCE_DATAFILE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/RelatedDatafile'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -7701,24 +6272,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DEST_DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  RELATION:
-                    type: string
-                  SOURCE_DATAFILE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/RelatedDatafile'
           description: The created related datafiles
         '401':
           description: When no credentials are provided
@@ -7796,24 +6350,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DEST_DATAFILE_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  RELATION:
-                    type: string
-                  SOURCE_DATAFILE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/RelatedDatafile'
           description: The matching related datafiles
         '401':
           description: When no credentials are provided
@@ -7884,44 +6421,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  ATTRIBUTE:
-                    type: string
-                  BEAN:
-                    type: string
-                  C:
-                    type: integer
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  CRUDFLAGS:
-                    type: string
-                  CRUDJPQL:
-                    type: string
-                  D:
-                    type: integer
-                  GROUPING_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INCLUDEJPQL:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  R:
-                    type: integer
-                  RESTRICTED:
-                    type: integer
-                  SEARCHJPQL:
-                    type: string
-                  U:
-                    type: integer
-                  WHAT:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Rule'
           description: The rules found
         '401':
           description: When no credentials are provided
@@ -7937,7 +6437,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Rule'
         description: Update one or multiple rules
         required: true
       responses:
@@ -7945,44 +6445,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  ATTRIBUTE:
-                    type: string
-                  BEAN:
-                    type: string
-                  C:
-                    type: integer
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  CRUDFLAGS:
-                    type: string
-                  CRUDJPQL:
-                    type: string
-                  D:
-                    type: integer
-                  GROUPING_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INCLUDEJPQL:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  R:
-                    type: integer
-                  RESTRICTED:
-                    type: integer
-                  SEARCHJPQL:
-                    type: string
-                  U:
-                    type: integer
-                  WHAT:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Rule'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -8006,44 +6469,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  ATTRIBUTE:
-                    type: string
-                  BEAN:
-                    type: string
-                  C:
-                    type: integer
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  CRUDFLAGS:
-                    type: string
-                  CRUDJPQL:
-                    type: string
-                  D:
-                    type: integer
-                  GROUPING_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INCLUDEJPQL:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  R:
-                    type: integer
-                  RESTRICTED:
-                    type: integer
-                  SEARCHJPQL:
-                    type: string
-                  U:
-                    type: integer
-                  WHAT:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Rule'
           description: The created rules
         '401':
           description: When no credentials are provided
@@ -8121,44 +6547,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  ATTRIBUTE:
-                    type: string
-                  BEAN:
-                    type: string
-                  C:
-                    type: integer
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  CRUDFLAGS:
-                    type: string
-                  CRUDJPQL:
-                    type: string
-                  D:
-                    type: integer
-                  GROUPING_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  INCLUDEJPQL:
-                    type: string
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  R:
-                    type: integer
-                  RESTRICTED:
-                    type: integer
-                  SEARCHJPQL:
-                    type: string
-                  U:
-                    type: integer
-                  WHAT:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Rule'
           description: The matching rules
         '401':
           description: When no credentials are provided
@@ -8229,34 +6618,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  SAMPLE_ID:
-                    type: integer
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleParameter'
           description: The sample parameters found
         '401':
           description: When no credentials are provided
@@ -8272,7 +6634,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/SampleParameter'
         description: Update one or multiple sample parameters
         required: true
       responses:
@@ -8280,34 +6642,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  SAMPLE_ID:
-                    type: integer
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleParameter'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -8331,34 +6666,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  SAMPLE_ID:
-                    type: integer
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleParameter'
           description: The created sample parameters
         '401':
           description: When no credentials are provided
@@ -8436,34 +6744,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DATETIME_VALUE:
-                    type: string
-                  ERROR:
-                    type: number
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NUMERIC_VALUE:
-                    type: number
-                  PARAMETER_TYPE_ID:
-                    type: integer
-                  RANGEBOTTOM:
-                    type: number
-                  RANGETOP:
-                    type: number
-                  SAMPLE_ID:
-                    type: integer
-                  STRING_VALUE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleParameter'
           description: The matching sample parameters
         '401':
           description: When no credentials are provided
@@ -8534,24 +6815,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLETYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Sample'
           description: The samples found
         '401':
           description: When no credentials are provided
@@ -8567,7 +6831,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Sample'
         description: Update one or multiple samples
         required: true
       responses:
@@ -8575,24 +6839,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLETYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Sample'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -8616,24 +6863,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLETYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Sample'
           description: The created samples
         '401':
           description: When no credentials are provided
@@ -8711,24 +6941,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  SAMPLETYPE_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Sample'
           description: The matching samples
         '401':
           description: When no credentials are provided
@@ -8799,26 +7012,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  MOLECULARFORMULA:
-                    type: string
-                  NAME:
-                    type: string
-                  SAFETYINFORMATION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleType'
           description: The sample types found
         '401':
           description: When no credentials are provided
@@ -8834,7 +7028,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/SampleType'
         description: Update one or multiple sample types
         required: true
       responses:
@@ -8842,26 +7036,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  MOLECULARFORMULA:
-                    type: string
-                  NAME:
-                    type: string
-                  SAFETYINFORMATION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleType'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -8885,26 +7060,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  MOLECULARFORMULA:
-                    type: string
-                  NAME:
-                    type: string
-                  SAFETYINFORMATION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleType'
           description: The created sample types
         '401':
           description: When no credentials are provided
@@ -8982,26 +7138,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  FACILITY_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  MOLECULARFORMULA:
-                    type: string
-                  NAME:
-                    type: string
-                  SAFETYINFORMATION:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/SampleType'
           description: The matching sample types
         '401':
           description: When no credentials are provided
@@ -9072,26 +7209,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMMENT:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Shift'
           description: The shifts found
         '401':
           description: When no credentials are provided
@@ -9107,7 +7225,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Shift'
         description: Update one or multiple shifts
         required: true
       responses:
@@ -9115,26 +7233,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMMENT:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Shift'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -9158,26 +7257,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMMENT:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Shift'
           description: The created shifts
         '401':
           description: When no credentials are provided
@@ -9255,26 +7335,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  COMMENT:
-                    type: string
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ENDDATE:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/Shift'
           description: The matching shifts
         '401':
           description: When no credentials are provided
@@ -9345,28 +7406,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  STATUS:
-                    type: integer
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Study'
           description: The studies found
         '401':
           description: When no credentials are provided
@@ -9382,7 +7422,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Study'
         description: Update one or multiple studies
         required: true
       responses:
@@ -9390,28 +7430,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  STATUS:
-                    type: integer
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Study'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -9435,28 +7454,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  STATUS:
-                    type: integer
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Study'
           description: The created studies
         '401':
           description: When no credentials are provided
@@ -9534,28 +7532,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  DESCRIPTION:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  STARTDATE:
-                    type: string
-                  STATUS:
-                    type: integer
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/Study'
           description: The matching studies
         '401':
           description: When no credentials are provided
@@ -9626,22 +7603,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STUDY_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/StudyInvestigation'
           description: The study investigations found
         '401':
           description: When no credentials are provided
@@ -9657,7 +7619,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/StudyInvestigation'
         description: Update one or multiple study investigations
         required: true
       responses:
@@ -9665,22 +7627,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STUDY_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/StudyInvestigation'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -9704,22 +7651,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STUDY_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/StudyInvestigation'
           description: The created study investigations
         '401':
           description: When no credentials are provided
@@ -9797,22 +7729,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  ID:
-                    type: integer
-                  INVESTIGATION_ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  STUDY_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/StudyInvestigation'
           description: The matching study investigations
         '401':
           description: When no credentials are provided
@@ -9883,22 +7800,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/UserGroup'
           description: The user groups found
         '401':
           description: When no credentials are provided
@@ -9914,7 +7816,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/UserGroup'
         description: Update one or multiple user groups
         required: true
       responses:
@@ -9922,22 +7824,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/UserGroup'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -9961,22 +7848,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/UserGroup'
           description: The created user groups
         '401':
           description: When no credentials are provided
@@ -10054,22 +7926,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  GROUP_ID:
-                    type: integer
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  USER_ID:
-                    type: integer
-                type: object
+                $ref: '#/components/schemas/UserGroup'
           description: The matching user groups
         '401':
           description: When no credentials are provided
@@ -10140,26 +7997,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  EMAIL:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  ORCIDID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/User'
           description: The users found
         '401':
           description: When no credentials are provided
@@ -10175,7 +8013,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/User'
         description: Update one or multiple users
         required: true
       responses:
@@ -10183,26 +8021,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  EMAIL:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  ORCIDID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/User'
           description: The updated entity
         '401':
           description: When no credentials are provided
@@ -10226,26 +8045,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  EMAIL:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  ORCIDID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/User'
           description: The created users
         '401':
           description: When no credentials are provided
@@ -10323,26 +8123,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  CREATE_ID:
-                    type: string
-                  CREATE_TIME:
-                    type: string
-                  EMAIL:
-                    type: string
-                  FULLNAME:
-                    type: string
-                  ID:
-                    type: integer
-                  MOD_ID:
-                    type: string
-                  MOD_TIME:
-                    type: string
-                  NAME:
-                    type: string
-                  ORCIDID:
-                    type: string
-                type: object
+                $ref: '#/components/schemas/User'
           description: The matching users
         '401':
           description: When no credentials are provided
