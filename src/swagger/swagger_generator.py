@@ -246,6 +246,41 @@ class Entity(object):
                 }
             }
         }
+        self.entity_findone_endpoint = {
+            f"/{entity_name.lower()}/findone": {
+                "get": {
+                    "summary": f"Get one {SwaggerGenerator.singularise(entity_name).lower()} entity based on filters",
+                    "tags": ["entities"],
+                    "parameters": [self.WHERE_PARAMETER,
+                                   self.DISTINCT_PARAMETER,
+                                   self.INCLUDE_PARAMETER,
+                                   self.LIMIT_PARAMETER,
+                                   self.ORDER_PARAMETER,
+                                   self.SKIP_PARAMETER],
+                    "responses": {
+                        "200": {
+                            "description": f"The first {SwaggerGenerator.singularise(entity_name).lower()} entity found",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": f"#/components/schemas/{SwaggerGenerator.singularise(entity_name)}"
+                                    }
+                                }
+                            }
+                        },
+                        "404": {
+                            "description": "When no results are found"
+                        },
+                        "401": {
+                            "description": "When no credentials are provided"
+                        },
+                        "403": {
+                            "description": "When bad credentials are provided"
+                        }
+                    }
+                }
+            }
+        }
 
 
 class SwaggerSpecification(object):
@@ -266,7 +301,7 @@ class SwaggerSpecification(object):
             ],
             "paths": {},
             "components": {
-                "schemas":{}
+                "schemas": {}
             }
         }
 
@@ -302,7 +337,7 @@ class SwaggerGenerator(object):
         return " ".join(map(str.lower, words))
 
     @staticmethod
-    def singularise(plural_word:str):
+    def singularise(plural_word: str):
         if plural_word.lower().endswith('ies'):
             singular_word = plural_word[:-3] + ('Y' if plural_word.isupper() else 'y')
         elif plural_word.lower().endswith('s'):
@@ -323,6 +358,7 @@ class SwaggerGenerator(object):
                 swagger_spec.add_path(entity.entity_count_endpoint)
                 swagger_spec.add_path(entity.entity_id_endpoint)
                 swagger_spec.add_path(entity.entity_no_id_endpoint)
+                swagger_spec.add_path(entity.entity_findone_endpoint)
                 swagger_spec.add_schema(entity.entity_schema)
             swagger_dict = swagger_spec.get_spec_as_dict()
             yaml.Dumper.ignore_aliases = lambda *args: True
