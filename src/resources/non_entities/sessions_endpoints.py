@@ -6,6 +6,7 @@ from flask_restful import Resource, reqparse
 from common.database_helpers import insert_row_into_table, delete_row_by_id, get_row_by_id
 from common.helpers import get_session_id_from_auth_header, requires_session_id, queries_records
 from common.models.db_models import SESSION
+import datetime
 
 
 class Sessions(Resource):
@@ -19,7 +20,7 @@ class Sessions(Resource):
             return "Bad request", 400
         if request.json["username"] == "user" and request.json["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION, SESSION(ID=session_id))
+            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME="datagateway-api/user", EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
             return {"sessionID": session_id}, 201
         return "Forbidden", 403
 
