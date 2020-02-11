@@ -20,7 +20,7 @@ class Sessions(Resource):
             return "Bad request", 400
         if request.json["username"] == "user" and request.json["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME="datagateway-api/user", EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
+            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME="simple/root", EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
             return {"sessionID": session_id}, 201
         return "Forbidden", 403
 
