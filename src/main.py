@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
+from flask_swagger_ui import get_swaggerui_blueprint
 
 from common.config import config
 from common.logger_setup import setup_logger
@@ -11,35 +12,91 @@ from src.resources.non_entities.sessions_endpoints import *
 from src.resources.table_endpoints.table_endpoints import UsersInvestigations, UsersInvestigationsCount, \
     InstrumentsFacilityCycles, InstrumentsFacilityCyclesCount, InstrumentsFacilityCyclesInvestigations, \
     InstrumentsFacilityCyclesInvestigationsCount
-from src.swagger.swagger_generator import swagger_gen
 
-swagger_gen.write_swagger_spec()
+from apispec import APISpec
+from pathlib import Path
+import json
+from src.swagger.apispec_flask_restful import RestfulPlugin
+from src.swagger.initialise_spec import initialise_spec
+
+
+spec = APISpec(title="DataGateway API", version="1.0", openapi_version="3.0.3",
+               plugins=[RestfulPlugin()], security=[{"session_id": []}])
 
 app = Flask(__name__)
 cors = CORS(app)
 app.url_map.strict_slashes = False
 api = Api(app)
 
+swaggerui_blueprint = get_swaggerui_blueprint(
+    "",
+    "/openapi.json",
+    config={
+        'app_name': "DataGateway API OpenAPI Spec"
+    },
+)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix="/")
+
 setup_logger()
 
+initialise_spec(spec)
+
 for entity_name in endpoints:
-    api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")
-    api.add_resource(get_id_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/<int:id>")
-    api.add_resource(get_count_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/count")
-    api.add_resource(get_find_one_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}/findone")
+    get_endpoint_resource = get_endpoint(entity_name, endpoints[entity_name])
+    api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
+    spec.path(resource=get_endpoint_resource, api=api)
+
+    get_id_endpoint_resource = get_id_endpoint(
+        entity_name, endpoints[entity_name])
+    api.add_resource(get_id_endpoint_resource,
+                     f"/{entity_name.lower()}/<int:id>")
+    spec.path(resource=get_id_endpoint_resource, api=api)
+
+    get_count_endpoint_resource = get_count_endpoint(
+        entity_name, endpoints[entity_name])
+    api.add_resource(get_count_endpoint_resource,
+                     f"/{entity_name.lower()}/count")
+    spec.path(resource=get_count_endpoint_resource, api=api)
+
+    get_find_one_endpoint_resource = get_find_one_endpoint(
+        entity_name, endpoints[entity_name])
+    api.add_resource(get_find_one_endpoint_resource,
+                     f"/{entity_name.lower()}/findone")
+    spec.path(resource=get_find_one_endpoint_resource, api=api)
+
 
 # Session endpoint
 api.add_resource(Sessions, "/sessions")
+spec.path(resource=Sessions, api=api)
+
+# TODO: move this to a script that we run separately?
+# with app.test_request_context():
+openapi_spec_path = Path(__file__).parent / "swagger/openapi-new.yaml"
+with open(openapi_spec_path, "w") as f:
+    f.write(spec.to_yaml())
+
+
+@app.route("/openapi.json")
+def specs():
+    resp = app.make_response(json.dumps(spec.to_dict(), indent=2))
+    resp.mimetype = "application/json"
+    return resp
+
 
 # Table specific endpoints
 api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
-api.add_resource(UsersInvestigationsCount, "/users/<int:id>/investigations/count")
-api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilitycycles")
-api.add_resource(InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilitycycles/count")
+api.add_resource(UsersInvestigationsCount,
+                 "/users/<int:id>/investigations/count")
+api.add_resource(InstrumentsFacilityCycles,
+                 "/instruments/<int:id>/facilitycycles")
+api.add_resource(InstrumentsFacilityCyclesCount,
+                 "/instruments/<int:id>/facilitycycles/count")
 api.add_resource(InstrumentsFacilityCyclesInvestigations,
                  "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations")
 api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
                  "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
-    app.run(host=config.get_host(), port=config.get_port(), debug=config.is_debug_mode())
+    app.run(host=config.get_host(), port=config.get_port(),
+            debug=config.is_debug_mode())

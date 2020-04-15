@@ -21,15 +21,123 @@ def get_endpoint(name, table):
         def get(self):
             return get_rows_by_filter(table, get_filters_from_query_string()), 200
 
+        get.__doc__ = f"""
+            ---
+            summary: Get {name}
+            description: Retrieves a list of {table.__name__} objects
+            tags:
+                - {name}
+            parameters:
+                - WHERE_FILTER
+                - ORDER_FILTER
+                - LIMIT_FILTER
+                - SKIP_FILTER
+                - DISTINCT_FILTER
+                - INCLUDE_FILTER
+            responses:
+                200:
+                    description: Success - a user's session details
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
+
         @requires_session_id
         @queries_records
         def post(self):
             return create_rows_from_json(table, request.json), 200
 
+        post.__doc__ = f"""
+            ---
+            summary: Create new {name}
+            description: Creates new {table.__name__} object(s) with details provided in the request body
+            tags:
+                - {name}
+            requestBody:
+              description: The values to use to create the new object(s) with
+              required: true
+              content:
+                application/json:
+                  schema:
+                    oneOf:
+                      - $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                      - type: array
+                        items:
+                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+            responses:
+                200:
+                    description: Success - returns the created object
+                    content:
+                      application/json:
+                        schema:
+                          oneOf:
+                            - $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                            - type: array
+                              items:
+                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
+
         @requires_session_id
         @queries_records
         def patch(self):
             return list(map(lambda x: x.to_dict(), patch_entities(table, request.json))), 200
+
+        patch.__doc__ = f"""
+            ---
+            summary: Update {name}
+            description: Updates {table.__name__} object(s) with details provided in the request body
+            tags:
+                - {name}
+            requestBody:
+              description: The values to use to update the object(s) with
+              required: true
+              content:
+                application/json:
+                  schema:
+                    oneOf:
+                      - $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                      - type: array
+                        items:
+                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+            responses:
+                200:
+                    description: Success - returns the updated objects
+                    content:
+                      application/json:
+                        schema:
+                          oneOf:
+                            - $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                            - type: array
+                              items:
+                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
 
     Endpoint.__name__ = name
     return Endpoint

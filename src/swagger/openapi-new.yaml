@@ -1,0 +1,5963 @@
+components:
+  parameters:
+    DISTINCT_FILTER:
+      description: Apply distinct filter to the query. Return unique values for the
+        fields requested.
+      in: query
+      name: distinct
+      schema:
+        items:
+          type: string
+        type: array
+    INCLUDE_FILTER:
+      description: Apply include filter to the query. Given the names of related entities,
+        include them in the results. Only one include parameter is allowed.
+      examples:
+        array:
+          value:
+          - RELATED_COLUMN_1
+          - RELATED_COLUMN_2
+        array of multi-level:
+          value:
+          - RELATED_COLUMN_1
+          - RELATED_COLUMN_2: RELATED_COLUMN_2_RELATED_COLUMN_1
+          - RELATED_COLUMN_3:
+            - RELATED_COLUMN_3_RELATED_COLUMN_1
+            - RELATED_COLUMN_3_RELATED_COLUMN_2
+        multi-level:
+          value:
+            RELATED_COLUMN: RELATED_COLUMN_RELATED_COLUMN
+        multi-level array:
+          value:
+            RELATED_COLUMN:
+            - RELATED_COLUMN_RELATED_COLUMN_1
+            - RELATED_COLUMN_RELATED_COLUMN_2
+        single:
+          value: RELATED_COLUMN
+      in: query
+      name: include
+      schema:
+        oneOf:
+        - type: string
+        - items:
+            oneOf:
+            - type: string
+            - additionalProperties:
+                oneOf:
+                - type: string
+                - items:
+                  - type: string
+                  type: array
+              type: object
+          type: array
+        - additionalProperties:
+            oneOf:
+            - type: string
+            - items:
+              - type: string
+              type: array
+          type: object
+    LIMIT_FILTER:
+      description: Apply limit filter to the query. Limit the number of entities returned.
+      in: query
+      name: limit
+      schema:
+        type: integer
+    ORDER_FILTER:
+      description: Apply order filters to the query. Given a field and direction,
+        order the returned entities.
+      examples:
+        asc:
+          value:
+          - ID asc
+        desc:
+          value:
+          - ID desc
+      in: query
+      name: order
+      schema:
+        items:
+          type: string
+        type: array
+    SKIP_FILTER:
+      description: Apply skip filter to the query. Offset the returned entities by
+        a given number.
+      in: query
+      name: skip
+      schema:
+        type: integer
+    WHERE_FILTER:
+      description: Apply where filters to the query. The possible operators are like,
+        gte, lte, in and eq
+      examples:
+        eq:
+          value:
+          - ID:
+              eq: 1
+        gte:
+          value:
+          - ID:
+              gte: 50
+        in:
+          value:
+          - ID:
+              in:
+              - 1
+              - 2
+              - 3
+        like:
+          value:
+          - NAME:
+              like: dog
+        lte:
+          value:
+          - ID:
+              lte: 50
+      in: query
+      name: where
+      schema:
+        items:
+          additionalProperties:
+            description: Name of the column to apply the filter on
+            maxProperties: 1
+            minProperties: 1
+            oneOf:
+            - properties:
+                eq:
+                  oneOf:
+                  - type: string
+                  - type: number
+                  - type: integer
+                  - type: boolean
+              title: Equality
+              type: object
+            - properties:
+                gte:
+                  oneOf:
+                  - type: number
+                  - type: integer
+              title: Greater than or equal
+              type: object
+            - properties:
+                lte:
+                  oneOf:
+                  - type: number
+                  - type: integer
+              title: Less than or equal
+              type: object
+            - properties:
+                like:
+                  type: string
+              title: Substring equality
+              type: object
+            - properties:
+                in:
+                  items:
+                    oneOf:
+                    - type: string
+                    - type: number
+                    - type: integer
+                  type: array
+              title: Equality from a list of values
+              type: object
+            title: Column
+            type: object
+          type: object
+        type: array
+  schemas:
+    APPLICATION:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        JOB:
+          items:
+            $ref: '#/components/schemas/JOB'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        VERSION:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - VERSION
+      - FACILITY_ID
+    DATACOLLECTION:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTIONDATAFILE:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+          type: array
+        DATACOLLECTIONDATASET:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+          type: array
+        DATACOLLECTIONPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          type: array
+        DOI:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        JOB:
+          items:
+            $ref: '#/components/schemas/JOB'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+    DATACOLLECTIONDATAFILE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        DATACOLLECTION_ID:
+          type: integer
+        DATAFILE:
+          $ref: '#/components/schemas/DATAFILE'
+        DATAFILE_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - DATACOLLECTION_ID
+      - DATAFILE_ID
+    DATACOLLECTIONDATASET:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        DATACOLLECTION_ID:
+          type: integer
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        DATASET_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - DATACOLLECTION_ID
+      - DATASET_ID
+    DATACOLLECTIONPARAMETER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        DATACOLLECTION_ID:
+          type: integer
+        DATETIME_VALUE:
+          format: datetime
+          type: string
+        ERROR:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NUMERIC_VALUE:
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: string
+        RANGETOP:
+          type: string
+        STRING_VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - DATACOLLECTION_ID
+      - PARAMETER_TYPE_ID
+    DATAFILE:
+      properties:
+        CHECKSUM:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTIONDATAFILE:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+          type: array
+        DATAFILECREATETIME:
+          format: datetime
+          type: string
+        DATAFILEFORMAT:
+          $ref: '#/components/schemas/DATAFILEFORMAT'
+        DATAFILEFORMAT_ID:
+          type: integer
+        DATAFILEMODTIME:
+          format: datetime
+          type: string
+        DATAFILEPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATAFILEPARAMETER'
+          type: array
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        DATASET_ID:
+          type: integer
+        DESCRIPTION:
+          type: string
+        DOI:
+          type: string
+        FILESIZE:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        LOCATION:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        RELATEDDATAFILE:
+          items:
+            $ref: '#/components/schemas/RELATEDDATAFILE'
+          type: array
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - DATASET_ID
+    DATAFILEFORMAT:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATAFILE:
+          items:
+            $ref: '#/components/schemas/DATAFILE'
+          type: array
+        DESCRIPTION:
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        TYPE:
+          type: string
+        VERSION:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - VERSION
+      - FACILITY_ID
+    DATAFILEPARAMETER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATAFILE:
+          $ref: '#/components/schemas/DATAFILE'
+        DATAFILE_ID:
+          type: integer
+        DATETIME_VALUE:
+          format: datetime
+          type: string
+        ERROR:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NUMERIC_VALUE:
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: string
+        RANGETOP:
+          type: string
+        STRING_VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - DATAFILE_ID
+      - PARAMETER_TYPE_ID
+    DATASET:
+      properties:
+        COMPLETE:
+          type: boolean
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTIONDATASET:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+          type: array
+        DATAFILE:
+          items:
+            $ref: '#/components/schemas/DATAFILE'
+          type: array
+        DATASETPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATASETPARAMETER'
+          type: array
+        DATASETTYPE:
+          $ref: '#/components/schemas/DATASETTYPE'
+        DESCRIPTION:
+          type: string
+        DOI:
+          type: string
+        END_DATE:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        LOCATION:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        SAMPLE:
+          $ref: '#/components/schemas/SAMPLE'
+        SAMPLE_ID:
+          type: integer
+        STARTDATE:
+          format: datetime
+          type: string
+        TYPE_ID:
+          type: integer
+      required:
+      - ID
+      - COMPLETE
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - INVESTIGATION_ID
+      - TYPE_ID
+    DATASETPARAMETER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        DATASET_ID:
+          type: integer
+        DATETIME_VALUE:
+          format: datetime
+          type: string
+        ERROR:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NUMERIC_VALUE:
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: string
+        RANGETOP:
+          type: string
+        STRING_VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - DATASET_ID
+      - PARAMETER_TYPE_ID
+    DATASETTYPE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATASET:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
+        DESCRIPTION:
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - FACILITY_ID
+    FACILITY:
+      properties:
+        APPLICATION:
+          items:
+            $ref: '#/components/schemas/APPLICATION'
+          type: array
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATAFILEFORMAT:
+          items:
+            $ref: '#/components/schemas/DATAFILEFORMAT'
+          type: array
+        DATASETTYPE:
+          items:
+            $ref: '#/components/schemas/DATASETTYPE'
+          type: array
+        DAYSUNTILRELEASE:
+          type: integer
+        DESCRIPTION:
+          type: string
+        FACILITYCYCLE:
+          items:
+            $ref: '#/components/schemas/FACILITYCYCLE'
+          type: array
+        FULLNAME:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INSTRUMENT:
+          items:
+            $ref: '#/components/schemas/INSTRUMENT'
+          type: array
+        INVESTIGATION:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
+        INVESTIGATIONTYPE:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONTYPE'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        PARAMETERTYPE:
+          items:
+            $ref: '#/components/schemas/PARAMETERTYPE'
+          type: array
+        SAMPLETYPE:
+          items:
+            $ref: '#/components/schemas/SAMPLETYPE'
+          type: array
+        URL:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+    FACILITYCYCLE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DESCRIPTION:
+          type: string
+        ENDDATE:
+          format: datetime
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        STARTDATE:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - FACILITY_ID
+    GROUPING:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATIONGROUP:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        RULE:
+          items:
+            $ref: '#/components/schemas/RULE'
+          type: array
+        USERGROUP:
+          items:
+            $ref: '#/components/schemas/USERGROUP'
+          type: array
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+    INSTRUMENT:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        FULLNAME:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INSTRUMENTSCIENTIST:
+          items:
+            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          type: array
+        INVESTIGATIONINSTRUMENT:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        TYPE:
+          type: string
+        URL:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - FACILITY_ID
+    INSTRUMENTSCIENTIST:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INSTRUMENT:
+          $ref: '#/components/schemas/INSTRUMENT'
+        INSTRUMENT_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        USER_:
+          $ref: '#/components/schemas/USER'
+        USER_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - INSTRUMENT_ID
+      - USER_ID
+    INVESTIGATION:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATASET:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
+        DOI:
+          type: string
+        ENDDATE:
+          format: datetime
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATIONGROUP:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
+        INVESTIGATIONINSTRUMENT:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
+        INVESTIGATIONPARAMETER:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          type: array
+        INVESTIGATIONTYPE:
+          $ref: '#/components/schemas/INVESTIGATIONTYPE'
+        INVESTIGATIONUSER:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONUSER'
+          type: array
+        KEYWORD:
+          items:
+            $ref: '#/components/schemas/KEYWORD'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        PUBLICATION:
+          items:
+            $ref: '#/components/schemas/PUBLICATION'
+          type: array
+        RELEASEDATE:
+          format: datetime
+          type: string
+        SAMPLE:
+          items:
+            $ref: '#/components/schemas/SAMPLE'
+          type: array
+        SHIFT:
+          items:
+            $ref: '#/components/schemas/SHIFT'
+          type: array
+        STARTDATE:
+          format: datetime
+          type: string
+        STUDYINVESTIGATION:
+          items:
+            $ref: '#/components/schemas/STUDYINVESTIGATION'
+          type: array
+        SUMMARY:
+          type: string
+        TITLE:
+          type: string
+        TYPE_ID:
+          type: integer
+        VISIT_ID:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - TITLE
+      - VISIT_ID
+      - FACILITY_ID
+      - TYPE_ID
+    INVESTIGATIONGROUP:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        GROUPING:
+          $ref: '#/components/schemas/GROUPING'
+        GROUP_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        ROLE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - ROLE
+      - GROUP_ID
+      - INVESTIGATION_ID
+    INVESTIGATIONINSTRUMENT:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INSTRUMENT:
+          $ref: '#/components/schemas/INSTRUMENT'
+        INSTRUMENT_ID:
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - INSTRUMENT_ID
+      - INVESTIGATION_ID
+    INVESTIGATIONPARAMETER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATETIME_VALUE:
+          format: datetime
+          type: string
+        ERROR:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NUMERIC_VALUE:
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: string
+        RANGETOP:
+          type: string
+        STRING_VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - INVESTIGATION_ID
+      - PARAMETER_TYPE_ID
+    INVESTIGATIONTYPE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DESCRIPTION:
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - FACILITY_ID
+    INVESTIGATIONUSER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        ROLE:
+          type: string
+        USER_:
+          $ref: '#/components/schemas/USER'
+        USER_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - ROLE
+      - INVESTIGATION_ID
+      - USER_ID
+    JOB:
+      properties:
+        APPLICATION:
+          $ref: '#/components/schemas/APPLICATION'
+        APPLICATION_ID:
+          type: integer
+        ARGUMENTS:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        ID:
+          readOnly: true
+          type: integer
+        INPUTDATACOLLECTION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        OUTPUTDATACOLLECTION_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - APPLICATION_ID
+    KEYWORD:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - INVESTIGATION_ID
+    PARAMETERTYPE:
+      properties:
+        APPLICABLETODATACOLLECTION:
+          type: boolean
+        APPLICABLETODATAFILE:
+          type: boolean
+        APPLICABLETODATASET:
+          type: boolean
+        APPLICABLETOINVESTIGATION:
+          type: boolean
+        APPLICABLETOSAMPLE:
+          type: boolean
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATACOLLECTIONPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          type: array
+        DATAFILEPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATAFILEPARAMETER'
+          type: array
+        DATASETPARAMETER:
+          items:
+            $ref: '#/components/schemas/DATASETPARAMETER'
+          type: array
+        DESCRIPTION:
+          type: string
+        ENFORCED:
+          type: boolean
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATIONPARAMETER:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          type: array
+        MAXIMUMNUMERICVALUE:
+          type: string
+        MINIMUMNUMERICVALUE:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        PERMISSIBLESTRINGVALUE:
+          items:
+            $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+          type: array
+        SAMPLEPARAMETER:
+          items:
+            $ref: '#/components/schemas/SAMPLEPARAMETER'
+          type: array
+        UNITS:
+          type: string
+        UNITSFULLNAME:
+          type: string
+        VALUETYPE:
+          type: integer
+        VERIFIED:
+          type: boolean
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - UNITS
+      - VALUETYPE
+      - FACILITY_ID
+    PERMISSIBLESTRINGVALUE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETERTYPE_ID:
+          type: integer
+        VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - VALUE
+      - PARAMETERTYPE_ID
+    PUBLICATION:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DOI:
+          type: string
+        FULLREFERENCE:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        REPOSITORY:
+          type: string
+        REPOSITORYID:
+          type: string
+        URL:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - FULLREFERENCE
+      - MOD_ID
+      - MOD_TIME
+      - INVESTIGATION_ID
+    PUBLICSTEP:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        FIELD:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        ORIGIN:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - FIELD
+      - MOD_ID
+      - MOD_TIME
+      - ORIGIN
+    RELATEDDATAFILE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATAFILE:
+          $ref: '#/components/schemas/DATAFILE'
+        DEST_DATAFILE_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        RELATION:
+          type: string
+        SOURCE_DATAFILE_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - RELATION
+      - DEST_DATAFILE_ID
+      - SOURCE_DATAFILE_ID
+    RULE:
+      properties:
+        ATTRIBUTE:
+          type: string
+        BEAN:
+          type: string
+        C:
+          type: integer
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        CRUDFLAGS:
+          type: string
+        CRUDJPQL:
+          type: string
+        D:
+          type: integer
+        GROUPING:
+          $ref: '#/components/schemas/GROUPING'
+        GROUPING_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        INCLUDEJPQL:
+          type: string
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        R:
+          type: integer
+        RESTRICTED:
+          type: integer
+        SEARCHJPQL:
+          type: string
+        U:
+          type: integer
+        WHAT:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - CRUDFLAGS
+      - MOD_ID
+      - MOD_TIME
+      - WHAT
+    SAMPLE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATASET:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        SAMPLEPARAMETER:
+          items:
+            $ref: '#/components/schemas/SAMPLEPARAMETER'
+          type: array
+        SAMPLETYPE:
+          $ref: '#/components/schemas/SAMPLETYPE'
+        SAMPLETYPE_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+      - INVESTIGATION_ID
+    SAMPLEPARAMETER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DATETIME_VALUE:
+          format: datetime
+          type: string
+        ERROR:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NUMERIC_VALUE:
+          type: string
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        PARAMETER_TYPE_ID:
+          type: integer
+        RANGEBOTTOM:
+          type: string
+        RANGETOP:
+          type: string
+        SAMPLE:
+          $ref: '#/components/schemas/SAMPLE'
+        SAMPLE_ID:
+          type: integer
+        STRING_VALUE:
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - SAMPLE_ID
+      - PARAMETER_TYPE_ID
+    SAMPLETYPE:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        FACILITY_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        MOLECULARFORMULA:
+          type: string
+        NAME:
+          type: string
+        SAFETYINFORMATION:
+          type: string
+        SAMPLE:
+          items:
+            $ref: '#/components/schemas/SAMPLE'
+          type: array
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - MOLECULARFORMULA
+      - NAME
+      - FACILITY_ID
+    SHIFT:
+      properties:
+        COMMENT:
+          type: string
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ENDDATE:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        STARTDATE:
+          format: datetime
+          type: string
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - ENDDATE
+      - MOD_ID
+      - MOD_TIME
+      - STARTDATE
+      - INVESTIGATION_ID
+    STUDY:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        DESCRIPTION:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        STARTDATE:
+          format: datetime
+          type: string
+        STATUS:
+          type: integer
+        STUDYINVESTIGATION:
+          items:
+            $ref: '#/components/schemas/STUDYINVESTIGATION'
+          type: array
+        USER_:
+          $ref: '#/components/schemas/USER'
+        USER_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+    STUDYINVESTIGATION:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        INVESTIGATION_ID:
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        STUDY:
+          $ref: '#/components/schemas/STUDY'
+        STUDY_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - INVESTIGATION_ID
+      - STUDY_ID
+    USER:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        EMAIL:
+          type: string
+        FULLNAME:
+          type: string
+        ID:
+          readOnly: true
+          type: integer
+        INSTRUMENTSCIENTIST:
+          items:
+            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          type: array
+        INVESTIGATIONUSER:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONUSER'
+          type: array
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        NAME:
+          type: string
+        ORCIDID:
+          type: string
+        STUDY:
+          items:
+            $ref: '#/components/schemas/STUDY'
+          type: array
+        USERGROUP:
+          items:
+            $ref: '#/components/schemas/USERGROUP'
+          type: array
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - NAME
+    USERGROUP:
+      properties:
+        CREATE_ID:
+          type: string
+        CREATE_TIME:
+          format: datetime
+          type: string
+        GROUPING:
+          $ref: '#/components/schemas/GROUPING'
+        GROUP_ID:
+          type: integer
+        ID:
+          readOnly: true
+          type: integer
+        MOD_ID:
+          type: string
+        MOD_TIME:
+          format: datetime
+          type: string
+        USER_:
+          $ref: '#/components/schemas/USER'
+        USER_ID:
+          type: integer
+      required:
+      - ID
+      - CREATE_ID
+      - CREATE_TIME
+      - MOD_ID
+      - MOD_TIME
+      - GROUP_ID
+      - USER_ID
+  securitySchemes:
+    session_id:
+      bearerFormat: uuid
+      scheme: bearer
+      type: http
+info:
+  title: DataGateway API
+  version: '1.0'
+openapi: 3.0.3
+paths:
+  /applications:
+    post:
+      description: Creates new APPLICATION object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/APPLICATION'
+              - items:
+                  $ref: '#/components/schemas/APPLICATION'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/APPLICATION'
+                - items:
+                    $ref: '#/components/schemas/APPLICATION'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Applications
+      tags:
+      - Applications
+    get:
+      description: Retrieves a list of APPLICATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/APPLICATION'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Applications
+      tags:
+      - Applications
+    patch:
+      description: Updates APPLICATION object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/APPLICATION'
+              - items:
+                  $ref: '#/components/schemas/APPLICATION'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/APPLICATION'
+                - items:
+                    $ref: '#/components/schemas/APPLICATION'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Applications
+      tags:
+      - Applications
+  /applications/{id}: {}
+  /applications/count: {}
+  /applications/findone: {}
+  /datacollectiondatafiles:
+    post:
+      description: Creates new DATACOLLECTIONDATAFILE object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DataCollectionDatafiles
+      tags:
+      - DataCollectionDatafiles
+    get:
+      description: Retrieves a list of DATACOLLECTIONDATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionDatafiles
+      tags:
+      - DataCollectionDatafiles
+    patch:
+      description: Updates DATACOLLECTIONDATAFILE object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DataCollectionDatafiles
+      tags:
+      - DataCollectionDatafiles
+  /datacollectiondatafiles/{id}: {}
+  /datacollectiondatafiles/count: {}
+  /datacollectiondatafiles/findone: {}
+  /datacollectiondatasets:
+    post:
+      description: Creates new DATACOLLECTIONDATASET object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DataCollectionDatasets
+      tags:
+      - DataCollectionDatasets
+    get:
+      description: Retrieves a list of DATACOLLECTIONDATASET objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionDatasets
+      tags:
+      - DataCollectionDatasets
+    patch:
+      description: Updates DATACOLLECTIONDATASET object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DataCollectionDatasets
+      tags:
+      - DataCollectionDatasets
+  /datacollectiondatasets/{id}: {}
+  /datacollectiondatasets/count: {}
+  /datacollectiondatasets/findone: {}
+  /datacollectionparameters:
+    post:
+      description: Creates new DATACOLLECTIONPARAMETER object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DataCollectionParameters
+      tags:
+      - DataCollectionParameters
+    get:
+      description: Retrieves a list of DATACOLLECTIONPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionParameters
+      tags:
+      - DataCollectionParameters
+    patch:
+      description: Updates DATACOLLECTIONPARAMETER object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DataCollectionParameters
+      tags:
+      - DataCollectionParameters
+  /datacollectionparameters/{id}: {}
+  /datacollectionparameters/count: {}
+  /datacollectionparameters/findone: {}
+  /datacollections:
+    post:
+      description: Creates new DATACOLLECTION object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTION'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTION'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTION'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTION'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DataCollections
+      tags:
+      - DataCollections
+    get:
+      description: Retrieves a list of DATACOLLECTION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTION'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollections
+      tags:
+      - DataCollections
+    patch:
+      description: Updates DATACOLLECTION object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATACOLLECTION'
+              - items:
+                  $ref: '#/components/schemas/DATACOLLECTION'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATACOLLECTION'
+                - items:
+                    $ref: '#/components/schemas/DATACOLLECTION'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DataCollections
+      tags:
+      - DataCollections
+  /datacollections/{id}: {}
+  /datacollections/count: {}
+  /datacollections/findone: {}
+  /datafileformats:
+    post:
+      description: Creates new DATAFILEFORMAT object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILEFORMAT'
+              - items:
+                  $ref: '#/components/schemas/DATAFILEFORMAT'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILEFORMAT'
+                - items:
+                    $ref: '#/components/schemas/DATAFILEFORMAT'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DatafileFormats
+      tags:
+      - DatafileFormats
+    get:
+      description: Retrieves a list of DATAFILEFORMAT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILEFORMAT'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatafileFormats
+      tags:
+      - DatafileFormats
+    patch:
+      description: Updates DATAFILEFORMAT object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILEFORMAT'
+              - items:
+                  $ref: '#/components/schemas/DATAFILEFORMAT'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILEFORMAT'
+                - items:
+                    $ref: '#/components/schemas/DATAFILEFORMAT'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DatafileFormats
+      tags:
+      - DatafileFormats
+  /datafileformats/{id}: {}
+  /datafileformats/count: {}
+  /datafileformats/findone: {}
+  /datafileparameters:
+    post:
+      description: Creates new DATAFILEPARAMETER object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILEPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATAFILEPARAMETER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILEPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATAFILEPARAMETER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DatafileParameters
+      tags:
+      - DatafileParameters
+    get:
+      description: Retrieves a list of DATAFILEPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILEPARAMETER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatafileParameters
+      tags:
+      - DatafileParameters
+    patch:
+      description: Updates DATAFILEPARAMETER object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILEPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATAFILEPARAMETER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILEPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATAFILEPARAMETER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DatafileParameters
+      tags:
+      - DatafileParameters
+  /datafileparameters/{id}: {}
+  /datafileparameters/count: {}
+  /datafileparameters/findone: {}
+  /datafiles:
+    post:
+      description: Creates new DATAFILE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILE'
+              - items:
+                  $ref: '#/components/schemas/DATAFILE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILE'
+                - items:
+                    $ref: '#/components/schemas/DATAFILE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Datafiles
+      tags:
+      - Datafiles
+    get:
+      description: Retrieves a list of DATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Datafiles
+      tags:
+      - Datafiles
+    patch:
+      description: Updates DATAFILE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATAFILE'
+              - items:
+                  $ref: '#/components/schemas/DATAFILE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATAFILE'
+                - items:
+                    $ref: '#/components/schemas/DATAFILE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Datafiles
+      tags:
+      - Datafiles
+  /datafiles/{id}: {}
+  /datafiles/count: {}
+  /datafiles/findone: {}
+  /datasetparameters:
+    post:
+      description: Creates new DATASETPARAMETER object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASETPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATASETPARAMETER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASETPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATASETPARAMETER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DatasetParameters
+      tags:
+      - DatasetParameters
+    get:
+      description: Retrieves a list of DATASETPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETPARAMETER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatasetParameters
+      tags:
+      - DatasetParameters
+    patch:
+      description: Updates DATASETPARAMETER object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASETPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/DATASETPARAMETER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASETPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/DATASETPARAMETER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DatasetParameters
+      tags:
+      - DatasetParameters
+  /datasetparameters/{id}: {}
+  /datasetparameters/count: {}
+  /datasetparameters/findone: {}
+  /datasettypes:
+    post:
+      description: Creates new DATASETTYPE object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASETTYPE'
+              - items:
+                  $ref: '#/components/schemas/DATASETTYPE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASETTYPE'
+                - items:
+                    $ref: '#/components/schemas/DATASETTYPE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new DatasetTypes
+      tags:
+      - DatasetTypes
+    get:
+      description: Retrieves a list of DATASETTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETTYPE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatasetTypes
+      tags:
+      - DatasetTypes
+    patch:
+      description: Updates DATASETTYPE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASETTYPE'
+              - items:
+                  $ref: '#/components/schemas/DATASETTYPE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASETTYPE'
+                - items:
+                    $ref: '#/components/schemas/DATASETTYPE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update DatasetTypes
+      tags:
+      - DatasetTypes
+  /datasettypes/{id}: {}
+  /datasettypes/count: {}
+  /datasettypes/findone: {}
+  /datasets:
+    post:
+      description: Creates new DATASET object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASET'
+              - items:
+                  $ref: '#/components/schemas/DATASET'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASET'
+                - items:
+                    $ref: '#/components/schemas/DATASET'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Datasets
+      tags:
+      - Datasets
+    get:
+      description: Retrieves a list of DATASET objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASET'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Datasets
+      tags:
+      - Datasets
+    patch:
+      description: Updates DATASET object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/DATASET'
+              - items:
+                  $ref: '#/components/schemas/DATASET'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/DATASET'
+                - items:
+                    $ref: '#/components/schemas/DATASET'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Datasets
+      tags:
+      - Datasets
+  /datasets/{id}: {}
+  /datasets/count: {}
+  /datasets/findone: {}
+  /facilities:
+    post:
+      description: Creates new FACILITY object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/FACILITY'
+              - items:
+                  $ref: '#/components/schemas/FACILITY'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/FACILITY'
+                - items:
+                    $ref: '#/components/schemas/FACILITY'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Facilities
+      tags:
+      - Facilities
+    get:
+      description: Retrieves a list of FACILITY objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FACILITY'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Facilities
+      tags:
+      - Facilities
+    patch:
+      description: Updates FACILITY object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/FACILITY'
+              - items:
+                  $ref: '#/components/schemas/FACILITY'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/FACILITY'
+                - items:
+                    $ref: '#/components/schemas/FACILITY'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Facilities
+      tags:
+      - Facilities
+  /facilities/{id}: {}
+  /facilities/count: {}
+  /facilities/findone: {}
+  /facilitycycles:
+    post:
+      description: Creates new FACILITYCYCLE object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/FACILITYCYCLE'
+              - items:
+                  $ref: '#/components/schemas/FACILITYCYCLE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/FACILITYCYCLE'
+                - items:
+                    $ref: '#/components/schemas/FACILITYCYCLE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new FacilityCycles
+      tags:
+      - FacilityCycles
+    get:
+      description: Retrieves a list of FACILITYCYCLE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FACILITYCYCLE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get FacilityCycles
+      tags:
+      - FacilityCycles
+    patch:
+      description: Updates FACILITYCYCLE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/FACILITYCYCLE'
+              - items:
+                  $ref: '#/components/schemas/FACILITYCYCLE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/FACILITYCYCLE'
+                - items:
+                    $ref: '#/components/schemas/FACILITYCYCLE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update FacilityCycles
+      tags:
+      - FacilityCycles
+  /facilitycycles/{id}: {}
+  /facilitycycles/count: {}
+  /facilitycycles/findone: {}
+  /groupings:
+    post:
+      description: Creates new GROUPING object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/GROUPING'
+              - items:
+                  $ref: '#/components/schemas/GROUPING'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/GROUPING'
+                - items:
+                    $ref: '#/components/schemas/GROUPING'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Groupings
+      tags:
+      - Groupings
+    get:
+      description: Retrieves a list of GROUPING objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GROUPING'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Groupings
+      tags:
+      - Groupings
+    patch:
+      description: Updates GROUPING object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/GROUPING'
+              - items:
+                  $ref: '#/components/schemas/GROUPING'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/GROUPING'
+                - items:
+                    $ref: '#/components/schemas/GROUPING'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Groupings
+      tags:
+      - Groupings
+  /groupings/{id}: {}
+  /groupings/count: {}
+  /groupings/findone: {}
+  /instrumentscientists:
+    post:
+      description: Creates new INSTRUMENTSCIENTIST object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+              - items:
+                  $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                - items:
+                    $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InstrumentScientists
+      tags:
+      - InstrumentScientists
+    get:
+      description: Retrieves a list of INSTRUMENTSCIENTIST objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InstrumentScientists
+      tags:
+      - InstrumentScientists
+    patch:
+      description: Updates INSTRUMENTSCIENTIST object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+              - items:
+                  $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                - items:
+                    $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InstrumentScientists
+      tags:
+      - InstrumentScientists
+  /instrumentscientists/{id}: {}
+  /instrumentscientists/count: {}
+  /instrumentscientists/findone: {}
+  /instruments:
+    post:
+      description: Creates new INSTRUMENT object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INSTRUMENT'
+              - items:
+                  $ref: '#/components/schemas/INSTRUMENT'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INSTRUMENT'
+                - items:
+                    $ref: '#/components/schemas/INSTRUMENT'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Instruments
+      tags:
+      - Instruments
+    get:
+      description: Retrieves a list of INSTRUMENT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INSTRUMENT'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Instruments
+      tags:
+      - Instruments
+    patch:
+      description: Updates INSTRUMENT object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INSTRUMENT'
+              - items:
+                  $ref: '#/components/schemas/INSTRUMENT'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INSTRUMENT'
+                - items:
+                    $ref: '#/components/schemas/INSTRUMENT'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Instruments
+      tags:
+      - Instruments
+  /instruments/{id}: {}
+  /instruments/count: {}
+  /instruments/findone: {}
+  /investigationgroups:
+    post:
+      description: Creates new INVESTIGATIONGROUP object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONGROUP'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InvestigationGroups
+      tags:
+      - InvestigationGroups
+    get:
+      description: Retrieves a list of INVESTIGATIONGROUP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationGroups
+      tags:
+      - InvestigationGroups
+    patch:
+      description: Updates INVESTIGATIONGROUP object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONGROUP'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InvestigationGroups
+      tags:
+      - InvestigationGroups
+  /investigationgroups/{id}: {}
+  /investigationgroups/count: {}
+  /investigationgroups/findone: {}
+  /investigationinstruments:
+    post:
+      description: Creates new INVESTIGATIONINSTRUMENT object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InvestigationInstruments
+      tags:
+      - InvestigationInstruments
+    get:
+      description: Retrieves a list of INVESTIGATIONINSTRUMENT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationInstruments
+      tags:
+      - InvestigationInstruments
+    patch:
+      description: Updates INVESTIGATIONINSTRUMENT object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InvestigationInstruments
+      tags:
+      - InvestigationInstruments
+  /investigationinstruments/{id}: {}
+  /investigationinstruments/count: {}
+  /investigationinstruments/findone: {}
+  /investigationparameters:
+    post:
+      description: Creates new INVESTIGATIONPARAMETER object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InvestigationParameters
+      tags:
+      - InvestigationParameters
+    get:
+      description: Retrieves a list of INVESTIGATIONPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationParameters
+      tags:
+      - InvestigationParameters
+    patch:
+      description: Updates INVESTIGATIONPARAMETER object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InvestigationParameters
+      tags:
+      - InvestigationParameters
+  /investigationparameters/{id}: {}
+  /investigationparameters/count: {}
+  /investigationparameters/findone: {}
+  /investigationtypes:
+    post:
+      description: Creates new INVESTIGATIONTYPE object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONTYPE'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InvestigationTypes
+      tags:
+      - InvestigationTypes
+    get:
+      description: Retrieves a list of INVESTIGATIONTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationTypes
+      tags:
+      - InvestigationTypes
+    patch:
+      description: Updates INVESTIGATIONTYPE object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONTYPE'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InvestigationTypes
+      tags:
+      - InvestigationTypes
+  /investigationtypes/{id}: {}
+  /investigationtypes/count: {}
+  /investigationtypes/findone: {}
+  /investigationusers:
+    post:
+      description: Creates new INVESTIGATIONUSER object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONUSER'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONUSER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONUSER'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONUSER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new InvestigationUsers
+      tags:
+      - InvestigationUsers
+    get:
+      description: Retrieves a list of INVESTIGATIONUSER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONUSER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationUsers
+      tags:
+      - InvestigationUsers
+    patch:
+      description: Updates INVESTIGATIONUSER object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATIONUSER'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATIONUSER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATIONUSER'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATIONUSER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update InvestigationUsers
+      tags:
+      - InvestigationUsers
+  /investigationusers/{id}: {}
+  /investigationusers/count: {}
+  /investigationusers/findone: {}
+  /investigations:
+    post:
+      description: Creates new INVESTIGATION object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATION'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATION'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATION'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATION'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Investigations
+      tags:
+      - Investigations
+    get:
+      description: Retrieves a list of INVESTIGATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATION'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Investigations
+      tags:
+      - Investigations
+    patch:
+      description: Updates INVESTIGATION object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/INVESTIGATION'
+              - items:
+                  $ref: '#/components/schemas/INVESTIGATION'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/INVESTIGATION'
+                - items:
+                    $ref: '#/components/schemas/INVESTIGATION'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Investigations
+      tags:
+      - Investigations
+  /investigations/{id}: {}
+  /investigations/count: {}
+  /investigations/findone: {}
+  /jobs:
+    post:
+      description: Creates new JOB object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/JOB'
+              - items:
+                  $ref: '#/components/schemas/JOB'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/JOB'
+                - items:
+                    $ref: '#/components/schemas/JOB'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Jobs
+      tags:
+      - Jobs
+    get:
+      description: Retrieves a list of JOB objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/JOB'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Jobs
+      tags:
+      - Jobs
+    patch:
+      description: Updates JOB object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/JOB'
+              - items:
+                  $ref: '#/components/schemas/JOB'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/JOB'
+                - items:
+                    $ref: '#/components/schemas/JOB'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Jobs
+      tags:
+      - Jobs
+  /jobs/{id}: {}
+  /jobs/count: {}
+  /jobs/findone: {}
+  /keywords:
+    post:
+      description: Creates new KEYWORD object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/KEYWORD'
+              - items:
+                  $ref: '#/components/schemas/KEYWORD'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/KEYWORD'
+                - items:
+                    $ref: '#/components/schemas/KEYWORD'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Keywords
+      tags:
+      - Keywords
+    get:
+      description: Retrieves a list of KEYWORD objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/KEYWORD'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Keywords
+      tags:
+      - Keywords
+    patch:
+      description: Updates KEYWORD object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/KEYWORD'
+              - items:
+                  $ref: '#/components/schemas/KEYWORD'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/KEYWORD'
+                - items:
+                    $ref: '#/components/schemas/KEYWORD'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Keywords
+      tags:
+      - Keywords
+  /keywords/{id}: {}
+  /keywords/count: {}
+  /keywords/findone: {}
+  /parametertypes:
+    post:
+      description: Creates new PARAMETERTYPE object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PARAMETERTYPE'
+              - items:
+                  $ref: '#/components/schemas/PARAMETERTYPE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PARAMETERTYPE'
+                - items:
+                    $ref: '#/components/schemas/PARAMETERTYPE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new ParameterTypes
+      tags:
+      - ParameterTypes
+    get:
+      description: Retrieves a list of PARAMETERTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PARAMETERTYPE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get ParameterTypes
+      tags:
+      - ParameterTypes
+    patch:
+      description: Updates PARAMETERTYPE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PARAMETERTYPE'
+              - items:
+                  $ref: '#/components/schemas/PARAMETERTYPE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PARAMETERTYPE'
+                - items:
+                    $ref: '#/components/schemas/PARAMETERTYPE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update ParameterTypes
+      tags:
+      - ParameterTypes
+  /parametertypes/{id}: {}
+  /parametertypes/count: {}
+  /parametertypes/findone: {}
+  /permissiblestringvalues:
+    post:
+      description: Creates new PERMISSIBLESTRINGVALUE object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+              - items:
+                  $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                - items:
+                    $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new PermissibleStringValues
+      tags:
+      - PermissibleStringValues
+    get:
+      description: Retrieves a list of PERMISSIBLESTRINGVALUE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get PermissibleStringValues
+      tags:
+      - PermissibleStringValues
+    patch:
+      description: Updates PERMISSIBLESTRINGVALUE object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+              - items:
+                  $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                - items:
+                    $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update PermissibleStringValues
+      tags:
+      - PermissibleStringValues
+  /permissiblestringvalues/{id}: {}
+  /permissiblestringvalues/count: {}
+  /permissiblestringvalues/findone: {}
+  /publicsteps:
+    post:
+      description: Creates new PUBLICSTEP object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PUBLICSTEP'
+              - items:
+                  $ref: '#/components/schemas/PUBLICSTEP'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PUBLICSTEP'
+                - items:
+                    $ref: '#/components/schemas/PUBLICSTEP'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new PublicSteps
+      tags:
+      - PublicSteps
+    get:
+      description: Retrieves a list of PUBLICSTEP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PUBLICSTEP'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get PublicSteps
+      tags:
+      - PublicSteps
+    patch:
+      description: Updates PUBLICSTEP object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PUBLICSTEP'
+              - items:
+                  $ref: '#/components/schemas/PUBLICSTEP'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PUBLICSTEP'
+                - items:
+                    $ref: '#/components/schemas/PUBLICSTEP'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update PublicSteps
+      tags:
+      - PublicSteps
+  /publicsteps/{id}: {}
+  /publicsteps/count: {}
+  /publicsteps/findone: {}
+  /publications:
+    post:
+      description: Creates new PUBLICATION object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PUBLICATION'
+              - items:
+                  $ref: '#/components/schemas/PUBLICATION'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PUBLICATION'
+                - items:
+                    $ref: '#/components/schemas/PUBLICATION'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Publications
+      tags:
+      - Publications
+    get:
+      description: Retrieves a list of PUBLICATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PUBLICATION'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Publications
+      tags:
+      - Publications
+    patch:
+      description: Updates PUBLICATION object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/PUBLICATION'
+              - items:
+                  $ref: '#/components/schemas/PUBLICATION'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/PUBLICATION'
+                - items:
+                    $ref: '#/components/schemas/PUBLICATION'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Publications
+      tags:
+      - Publications
+  /publications/{id}: {}
+  /publications/count: {}
+  /publications/findone: {}
+  /relateddatafiles:
+    post:
+      description: Creates new RELATEDDATAFILE object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/RELATEDDATAFILE'
+              - items:
+                  $ref: '#/components/schemas/RELATEDDATAFILE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/RELATEDDATAFILE'
+                - items:
+                    $ref: '#/components/schemas/RELATEDDATAFILE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new RelatedDatafiles
+      tags:
+      - RelatedDatafiles
+    get:
+      description: Retrieves a list of RELATEDDATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RELATEDDATAFILE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get RelatedDatafiles
+      tags:
+      - RelatedDatafiles
+    patch:
+      description: Updates RELATEDDATAFILE object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/RELATEDDATAFILE'
+              - items:
+                  $ref: '#/components/schemas/RELATEDDATAFILE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/RELATEDDATAFILE'
+                - items:
+                    $ref: '#/components/schemas/RELATEDDATAFILE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update RelatedDatafiles
+      tags:
+      - RelatedDatafiles
+  /relateddatafiles/{id}: {}
+  /relateddatafiles/count: {}
+  /relateddatafiles/findone: {}
+  /rules:
+    post:
+      description: Creates new RULE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/RULE'
+              - items:
+                  $ref: '#/components/schemas/RULE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/RULE'
+                - items:
+                    $ref: '#/components/schemas/RULE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Rules
+      tags:
+      - Rules
+    get:
+      description: Retrieves a list of RULE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RULE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Rules
+      tags:
+      - Rules
+    patch:
+      description: Updates RULE object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/RULE'
+              - items:
+                  $ref: '#/components/schemas/RULE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/RULE'
+                - items:
+                    $ref: '#/components/schemas/RULE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Rules
+      tags:
+      - Rules
+  /rules/{id}: {}
+  /rules/count: {}
+  /rules/findone: {}
+  /sampleparameters:
+    post:
+      description: Creates new SAMPLEPARAMETER object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLEPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/SAMPLEPARAMETER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLEPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/SAMPLEPARAMETER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new SampleParameters
+      tags:
+      - SampleParameters
+    get:
+      description: Retrieves a list of SAMPLEPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLEPARAMETER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get SampleParameters
+      tags:
+      - SampleParameters
+    patch:
+      description: Updates SAMPLEPARAMETER object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLEPARAMETER'
+              - items:
+                  $ref: '#/components/schemas/SAMPLEPARAMETER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLEPARAMETER'
+                - items:
+                    $ref: '#/components/schemas/SAMPLEPARAMETER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update SampleParameters
+      tags:
+      - SampleParameters
+  /sampleparameters/{id}: {}
+  /sampleparameters/count: {}
+  /sampleparameters/findone: {}
+  /sampletypes:
+    post:
+      description: Creates new SAMPLETYPE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLETYPE'
+              - items:
+                  $ref: '#/components/schemas/SAMPLETYPE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLETYPE'
+                - items:
+                    $ref: '#/components/schemas/SAMPLETYPE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new SampleTypes
+      tags:
+      - SampleTypes
+    get:
+      description: Retrieves a list of SAMPLETYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLETYPE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get SampleTypes
+      tags:
+      - SampleTypes
+    patch:
+      description: Updates SAMPLETYPE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLETYPE'
+              - items:
+                  $ref: '#/components/schemas/SAMPLETYPE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLETYPE'
+                - items:
+                    $ref: '#/components/schemas/SAMPLETYPE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update SampleTypes
+      tags:
+      - SampleTypes
+  /sampletypes/{id}: {}
+  /sampletypes/count: {}
+  /sampletypes/findone: {}
+  /samples:
+    post:
+      description: Creates new SAMPLE object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLE'
+              - items:
+                  $ref: '#/components/schemas/SAMPLE'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLE'
+                - items:
+                    $ref: '#/components/schemas/SAMPLE'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Samples
+      tags:
+      - Samples
+    get:
+      description: Retrieves a list of SAMPLE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLE'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Samples
+      tags:
+      - Samples
+    patch:
+      description: Updates SAMPLE object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SAMPLE'
+              - items:
+                  $ref: '#/components/schemas/SAMPLE'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SAMPLE'
+                - items:
+                    $ref: '#/components/schemas/SAMPLE'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Samples
+      tags:
+      - Samples
+  /samples/{id}: {}
+  /samples/count: {}
+  /samples/findone: {}
+  /shifts:
+    post:
+      description: Creates new SHIFT object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SHIFT'
+              - items:
+                  $ref: '#/components/schemas/SHIFT'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SHIFT'
+                - items:
+                    $ref: '#/components/schemas/SHIFT'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Shifts
+      tags:
+      - Shifts
+    get:
+      description: Retrieves a list of SHIFT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SHIFT'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Shifts
+      tags:
+      - Shifts
+    patch:
+      description: Updates SHIFT object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/SHIFT'
+              - items:
+                  $ref: '#/components/schemas/SHIFT'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/SHIFT'
+                - items:
+                    $ref: '#/components/schemas/SHIFT'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Shifts
+      tags:
+      - Shifts
+  /shifts/{id}: {}
+  /shifts/count: {}
+  /shifts/findone: {}
+  /studies:
+    post:
+      description: Creates new STUDY object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/STUDY'
+              - items:
+                  $ref: '#/components/schemas/STUDY'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/STUDY'
+                - items:
+                    $ref: '#/components/schemas/STUDY'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Studies
+      tags:
+      - Studies
+    get:
+      description: Retrieves a list of STUDY objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/STUDY'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Studies
+      tags:
+      - Studies
+    patch:
+      description: Updates STUDY object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/STUDY'
+              - items:
+                  $ref: '#/components/schemas/STUDY'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/STUDY'
+                - items:
+                    $ref: '#/components/schemas/STUDY'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Studies
+      tags:
+      - Studies
+  /studies/{id}: {}
+  /studies/count: {}
+  /studies/findone: {}
+  /studyinvestigations:
+    post:
+      description: Creates new STUDYINVESTIGATION object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/STUDYINVESTIGATION'
+              - items:
+                  $ref: '#/components/schemas/STUDYINVESTIGATION'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/STUDYINVESTIGATION'
+                - items:
+                    $ref: '#/components/schemas/STUDYINVESTIGATION'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new StudyInvestigations
+      tags:
+      - StudyInvestigations
+    get:
+      description: Retrieves a list of STUDYINVESTIGATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/STUDYINVESTIGATION'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get StudyInvestigations
+      tags:
+      - StudyInvestigations
+    patch:
+      description: Updates STUDYINVESTIGATION object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/STUDYINVESTIGATION'
+              - items:
+                  $ref: '#/components/schemas/STUDYINVESTIGATION'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/STUDYINVESTIGATION'
+                - items:
+                    $ref: '#/components/schemas/STUDYINVESTIGATION'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update StudyInvestigations
+      tags:
+      - StudyInvestigations
+  /studyinvestigations/{id}: {}
+  /studyinvestigations/count: {}
+  /studyinvestigations/findone: {}
+  /usergroups:
+    post:
+      description: Creates new USERGROUP object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/USERGROUP'
+              - items:
+                  $ref: '#/components/schemas/USERGROUP'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/USERGROUP'
+                - items:
+                    $ref: '#/components/schemas/USERGROUP'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new UserGroups
+      tags:
+      - UserGroups
+    get:
+      description: Retrieves a list of USERGROUP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/USERGROUP'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get UserGroups
+      tags:
+      - UserGroups
+    patch:
+      description: Updates USERGROUP object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/USERGROUP'
+              - items:
+                  $ref: '#/components/schemas/USERGROUP'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/USERGROUP'
+                - items:
+                    $ref: '#/components/schemas/USERGROUP'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update UserGroups
+      tags:
+      - UserGroups
+  /usergroups/{id}: {}
+  /usergroups/count: {}
+  /usergroups/findone: {}
+  /users:
+    post:
+      description: Creates new USER object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/USER'
+              - items:
+                  $ref: '#/components/schemas/USER'
+                type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/USER'
+                - items:
+                    $ref: '#/components/schemas/USER'
+                  type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Create new Users
+      tags:
+      - Users
+    get:
+      description: Retrieves a list of USER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/USER'
+                type: array
+          description: Success - a user's session details
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Users
+      tags:
+      - Users
+    patch:
+      description: Updates USER object(s) with details provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/USER'
+              - items:
+                  $ref: '#/components/schemas/USER'
+                type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/USER'
+                - items:
+                    $ref: '#/components/schemas/USER'
+                  type: array
+          description: Success - returns the updated objects
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Update Users
+      tags:
+      - Users
+  /users/{id}: {}
+  /users/count: {}
+  /users/findone: {}
+  /sessions:
+    post:
+      description: Generates a sessionID if the user has correct credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+              type: object
+        description: User credentials to login with
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                properties:
+                  sessionID:
+                    description: Session ID
+                    example: xxxxxx-yyyyyyy-zzzzzz
+                    type: string
+                type: object
+          description: Success - returns a session ID
+        '400':
+          description: Bad request. User credentials were not provided in request
+            body.
+        '403':
+          description: Forbidden. User credentials were invalid
+      security: []
+      summary: Login
+      tags:
+      - Sessions
+    get:
+      description: Gives details of a user's session
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  EXPIREDATETIME:
+                    description: When this session expires
+                    example: '2017-07-21T17:32:28Z'
+                    format: datetime
+                    type: string
+                  ID:
+                    description: The session ID
+                    example: xxxxxx-yyyyyyy-zzzzzz
+                    type: string
+                  USERNAME:
+                    description: Username associated with this session
+                    type: string
+                type: object
+          description: Success - a user's session details
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+      summary: Get session details
+      tags:
+      - Sessions
+    put:
+      description: Refreshes a users session
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Session ID
+                example: xxxxxx-yyyyyyy-zzzzzz
+                type: string
+          description: Success - the user's session ID that has been refreshed
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+      summary: Refresh session
+      tags:
+      - Sessions
+    delete:
+      description: Deletes a users sessionID when they logout
+      responses:
+        '200':
+          description: Success - User's session was successfully deleted
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: Not Found - Unable to find session ID
+      summary: Delete session
+      tags:
+      - Sessions
+security:
+- session_id: []

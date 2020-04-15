@@ -22,7 +22,6 @@ def requires_session_id(method):
     :returns a 403, "Forbidden" if a valid session_id is not provided with the request
     """
 
-
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
@@ -45,7 +44,6 @@ def requires_session_id(method):
         except AuthenticationError:
             return "Forbidden", 403
 
-
     return wrapper_requires_session
 
 
@@ -54,6 +52,7 @@ def queries_records(method):
     Decorator for endpoint resources that search for a record in a table
     :param method: The method for the endpoint
     :return: Will return a 404, "No such record" if a MissingRecordError is caught
+    :return: Will return a 400, "Error message" if other expected errors are caught
     """
 
     @wraps(method)
@@ -93,11 +92,14 @@ def get_session_id_from_auth_header():
     parser = reqparse.RequestParser()
     parser.add_argument("Authorization", location="headers")
     args = parser.parse_args()
-    auth_header = args["Authorization"].split(" ") if args["Authorization"] is not None else ""
+    auth_header = args["Authorization"].split(
+        " ") if args["Authorization"] is not None else ""
     if auth_header == "":
-        raise MissingCredentialsError(f"No credentials provided in auth header")
+        raise MissingCredentialsError(
+            f"No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
-        raise AuthenticationError(f" Could not authenticate consumer with auth header {auth_header}")
+        raise AuthenticationError(
+            f" Could not authenticate consumer with auth header {auth_header}")
     return auth_header[1]
 
 
@@ -125,5 +127,6 @@ def get_filters_from_query_string():
     filters = []
     for arg in request.args:
         for value in request.args.getlist(arg):
-            filters.append(QueryFilterFactory.get_query_filter({arg: json.loads(value)}))
+            filters.append(QueryFilterFactory.get_query_filter(
+                {arg: json.loads(value)}))
     return filters
