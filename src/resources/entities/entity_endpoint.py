@@ -36,7 +36,7 @@ def get_endpoint(name, table):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - a user's session details
+                    description: Success - returns {table.__name__} that satisfy the filters
                     content:
                         application/json:
                             schema:
@@ -44,7 +44,7 @@ def get_endpoint(name, table):
                                 items:
                                   $ref: '#/components/schemas/{table.__name__.strip("_")}'
                 400:
-                    description: Bad request - something was wrong with the request
+                    description: Bad request - Something was wrong with the request
                 401:
                     description: Unauthorized - No session ID was found in the HTTP Authorization header
                 403:
@@ -87,7 +87,7 @@ def get_endpoint(name, table):
                               items:
                                 $ref: '#/components/schemas/{table.__name__.strip("_")}'
                 400:
-                    description: Bad request - something was wrong with the request
+                    description: Bad request - Something was wrong with the request
                 401:
                     description: Unauthorized - No session ID was found in the HTTP Authorization header
                 403:
@@ -120,7 +120,7 @@ def get_endpoint(name, table):
                           $ref: '#/components/schemas/{table.__name__.strip("_")}'
             responses:
                 200:
-                    description: Success - returns the updated objects
+                    description: Success - returns the updated object(s)
                     content:
                       application/json:
                         schema:
@@ -130,7 +130,7 @@ def get_endpoint(name, table):
                               items:
                                 $ref: '#/components/schemas/{table.__name__.strip("_")}'
                 400:
-                    description: Bad request - something was wrong with the request
+                    description: Bad request - Something was wrong with the request
                 401:
                     description: Unauthorized - No session ID was found in the HTTP Authorization header
                 403:
@@ -159,17 +159,110 @@ def get_id_endpoint(name, table):
         def get(self, id):
             return get_row_by_id(table, id).to_dict(), 200
 
+        get.__doc__ = f"""
+            ---
+            summary: Find the {table.__name__} matching the given ID
+            description: Retrieves a list of {table.__name__} objects
+            tags:
+                - {name}
+            parameters:
+                - in: path
+                  required: true
+                  name: ID
+                  description: The id of the entity to retrieve
+                  schema:
+                    type: integer
+            responses:
+                200:
+                    description: Success - the matching {table.__name__}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
+
         @requires_session_id
         @queries_records
         def delete(self, id):
             delete_row_by_id(table, id)
             return "", 204
 
+        delete.__doc__ = f"""
+            ---
+            summary: Delete {name} by id
+            description: Updates {table.__name__} with the specified ID with details provided in the request body
+            tags:
+                - {name}
+            parameters:
+                - in: path
+                  required: true
+                  name: ID
+                  description: The id of the entity to delete
+                  schema:
+                    type: integer
+            responses:
+                204:
+                    description: No Content - Object was successfully deleted
+                400:
+                    description: Bad request - Something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
+
         @requires_session_id
         @queries_records
         def patch(self, id):
             update_row_from_id(table, id, request.json)
             return get_row_by_id(table, id).to_dict(), 200
+
+        patch.__doc__ = f"""
+            ---
+            summary: Update {name} by id
+            description: Updates {table.__name__} with the specified ID with details provided in the request body
+            tags:
+                - {name}
+            parameters:
+                - in: path
+                  required: true
+                  name: ID
+                  description: The id of the entity to update
+                  schema:
+                    type: integer
+            requestBody:
+              description: The values to use to update the object(s) with
+              required: true
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/{table.__name__.strip("_")}'
+            responses:
+                200:
+                    description: Success - returns the updated object
+                    content:
+                      application/json:
+                        schema:
+                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
 
     EndpointWithID.__name__ = f"{name}WithID"
     return EndpointWithID
@@ -192,6 +285,32 @@ def get_count_endpoint(name, table):
             filters = get_filters_from_query_string()
             return get_filtered_row_count(table, filters), 200
 
+        get.__doc__ = f"""
+            ---
+            summary: Count {name}
+            description: Return the count of the {table.__name__} objects that would be retrieved given the filters provided
+            tags:
+                - {name}
+            parameters:
+                - WHERE_FILTER
+                - DISTINCT_FILTER
+            responses:
+                200:
+                    description: Success - The count of the {table.__name__} objects
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                400:
+                    description: Bad request - Something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
+
     CountEndpoint.__name__ = f"{name}Count"
     return CountEndpoint
 
@@ -212,6 +331,36 @@ def get_find_one_endpoint(name, table):
         def get(self):
             filters = get_filters_from_query_string()
             return get_first_filtered_row(table, filters), 200
+
+        get.__doc__ = f"""
+            ---
+            summary: Get single {table.__name__}
+            description: Retrieves the first {table.__name__} objects that satisfies the filters.
+            tags:
+                - {name}
+            parameters:
+                - WHERE_FILTER
+                - ORDER_FILTER
+                - LIMIT_FILTER
+                - SKIP_FILTER
+                - DISTINCT_FILTER
+                - INCLUDE_FILTER
+            responses:
+                200:
+                    description: Success - a {table.__name__} object that satisfies the filters
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                401:
+                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                403:
+                    description: Forbidden - The session ID provided is invalid
+                404:
+                    description: No such record - Unable to find a record in the database
+            """
 
     FindOneEndpoint.__name__ = f"{name}FindOne"
     return FindOneEndpoint

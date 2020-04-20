@@ -70,9 +70,26 @@ for entity_name in endpoints:
 api.add_resource(Sessions, "/sessions")
 spec.path(resource=Sessions, api=api)
 
-# TODO: move this to a script that we run separately?
-# with app.test_request_context():
-openapi_spec_path = Path(__file__).parent / "swagger/openapi-new.yaml"
+# Table specific endpoints
+api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
+spec.path(resource=UsersInvestigations, api=api)
+api.add_resource(UsersInvestigationsCount,
+                 "/users/<int:id>/investigations/count")
+spec.path(resource=UsersInvestigationsCount, api=api)
+api.add_resource(InstrumentsFacilityCycles,
+                 "/instruments/<int:id>/facilitycycles")
+spec.path(resource=InstrumentsFacilityCycles, api=api)
+api.add_resource(InstrumentsFacilityCyclesCount,
+                 "/instruments/<int:id>/facilitycycles/count")
+spec.path(resource=InstrumentsFacilityCyclesCount, api=api)
+api.add_resource(InstrumentsFacilityCyclesInvestigations,
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations")
+spec.path(resource=InstrumentsFacilityCyclesInvestigations, api=api)
+api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
+                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
+spec.path(resource=InstrumentsFacilityCyclesInvestigationsCount, api=api)
+
+openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
 with open(openapi_spec_path, "w") as f:
     f.write(spec.to_yaml())
 
@@ -83,19 +100,6 @@ def specs():
     resp.mimetype = "application/json"
     return resp
 
-
-# Table specific endpoints
-api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
-api.add_resource(UsersInvestigationsCount,
-                 "/users/<int:id>/investigations/count")
-api.add_resource(InstrumentsFacilityCycles,
-                 "/instruments/<int:id>/facilitycycles")
-api.add_resource(InstrumentsFacilityCyclesCount,
-                 "/instruments/<int:id>/facilitycycles/count")
-api.add_resource(InstrumentsFacilityCyclesInvestigations,
-                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations")
-api.add_resource(InstrumentsFacilityCyclesInvestigationsCount,
-                 "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count")
 
 if __name__ == "__main__":
     app.run(host=config.get_host(), port=config.get_port(),
