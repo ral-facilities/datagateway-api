@@ -177,8 +177,10 @@ class WhereFilter(QueryFilter):
         if self.included_included_field:
             included_table = getattr(db_models, self.field)
             included_included_table = getattr(db_models, self.included_field)
-            query.base_query = query.base_query.join(included_table).join(included_included_table)
-            field = getattr(included_included_table, self.included_included_field)
+            query.base_query = query.base_query.join(
+                included_table).join(included_included_table)
+            field = getattr(included_included_table,
+                            self.included_included_field)
 
         elif self.included_field:
             included_table = getattr(db_models, self.field)
@@ -188,7 +190,8 @@ class WhereFilter(QueryFilter):
         if self.operation == "eq":
             query.base_query = query.base_query.filter(field == self.value)
         elif self.operation == "like":
-            query.base_query = query.base_query.filter(field.like(f"%{self.value}%"))
+            query.base_query = query.base_query.filter(
+                field.like(f"%{self.value}%"))
         elif self.operation == "lte":
             query.base_query = query.base_query.filter(field <= self.value)
         elif self.operation == "gte":
@@ -196,19 +199,22 @@ class WhereFilter(QueryFilter):
         elif self.operation == "in":
             query.base_query = query.base_query.filter(field.in_(self.value))
         else:
-            raise BadFilterError(f" Bad operation given to where filter. operation: {self.operation}")
+            raise BadFilterError(
+                f" Bad operation given to where filter. operation: {self.operation}")
 
 
 class DistinctFieldFilter(QueryFilter):
     precedence = 0
 
     def __init__(self, fields):
-        self.fields = fields if type(fields) is list else [fields]  # This allows single string distinct filters
+        # This allows single string distinct filters
+        self.fields = fields if type(fields) is list else [fields]
 
     def apply_filter(self, query):
         query.is_distinct_fields_query = True
         try:
-            self.fields = [getattr(query.table, field) for field in self.fields]
+            self.fields = [getattr(query.table, field)
+                           for field in self.fields]
         except AttributeError:
             raise BadFilterError("Bad field requested")
         query.base_query = query.session.query(*self.fields).distinct()
@@ -223,9 +229,11 @@ class OrderFilter(QueryFilter):
 
     def apply_filter(self, query):
         if self.direction.upper() == "ASC":
-            query.base_query = query.base_query.order_by(asc(self.field.upper()))
+            query.base_query = query.base_query.order_by(
+                asc(self.field.upper()))
         elif self.direction.upper() == "DESC":
-            query.base_query = query.base_query.order_by(desc(self.field.upper()))
+            query.base_query = query.base_query.order_by(
+                desc(self.field.upper()))
         else:
             raise BadFilterError(f" Bad filter: {self.direction}")
 
@@ -260,7 +268,7 @@ class IncludeFilter(QueryFilter):
         if not query.include_related_entities:
             query.include_related_entities = True
         else:
-            raise MultipleIncludeError("Attempted multiple includes on a single query")
+            raise MultipleIncludeError()
 
 
 class QueryFilterFactory(object):
@@ -515,7 +523,8 @@ class UserInvestigationsQuery(ReadQuery):
 
     def __init__(self, user_id):
         super().__init__(INVESTIGATION)
-        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(
+            INVESTIGATIONUSER.USER_ID == user_id)
 
 
 def get_investigations_for_user(user_id, filters):
@@ -537,7 +546,8 @@ class UserInvestigationsCountQuery(CountQuery):
 
     def __init__(self, user_id):
         super().__init__(INVESTIGATION)
-        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
+        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(
+            INVESTIGATIONUSER.USER_ID == user_id)
 
 
 def get_investigations_for_user_count(user_id, filters):

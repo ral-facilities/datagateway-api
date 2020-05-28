@@ -12,6 +12,12 @@ class Config(object):
             self.config = json.load(target)
         target.close()
 
+    def get_backend_type(self):
+        try:
+            return self.config["backend"]
+        except:
+            sys.exit("Missing config value, backend")
+
     def get_db_url(self):
         try:
             return self.config["DB_URL"]
