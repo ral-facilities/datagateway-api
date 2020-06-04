@@ -47,6 +47,7 @@ def queries_records(method):
     Decorator for endpoint resources that search for a record in a table
     :param method: The method for the endpoint
     :return: Will return a 404, "No such record" if a MissingRecordError is caught
+    :return: Will return a 400, "Error message" if other expected errors are caught
     """
 
     @wraps(method)

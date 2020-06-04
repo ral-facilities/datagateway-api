@@ -10,6 +10,7 @@ from common.config import config
 import uuid
 import sys
 from common.exceptions import AuthenticationError
+import datetime
 
 
 class Backend(ABC):
@@ -218,7 +219,8 @@ class DatabaseBackend(Backend):
     def login(self, credentials):
         if credentials["username"] == "user" and credentials["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION, SESSION(ID=session_id))
+            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME="simple/root",
+                                                   EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
             return session_id
         else:
             raise AuthenticationError("Username and password are incorrect")
