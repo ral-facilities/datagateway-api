@@ -150,7 +150,7 @@ def get_id_endpoint(name, table):
     class EndpointWithID(Resource):
 
         def get(self, id):
-            return backend.get_with_id(get_session_id_from_auth_header(), table, id).to_dict(), 200
+            return backend.get_with_id(get_session_id_from_auth_header(), table, id), 200
 
         get.__doc__ = f"""
             ---
@@ -161,7 +161,7 @@ def get_id_endpoint(name, table):
             parameters:
                 - in: path
                   required: true
-                  name: ID
+                  name: id
                   description: The id of the entity to retrieve
                   schema:
                     type: integer
