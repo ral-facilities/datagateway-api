@@ -508,52 +508,6 @@ def patch_entities(table, json_list):
     return results
 
 
-class UserInvestigationsQuery(ReadQuery):
-    """
-    The query class used for the /users/<:id>/investigations endpoint
-    """
-
-    def __init__(self, user_id):
-        super().__init__(INVESTIGATION)
-        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
-
-
-def get_investigations_for_user(user_id, filters):
-    """
-    Given a user id and a list of filters, return a filtered list of all investigations that belong to that user
-    :param user_id: The id of the user
-    :param filters: The list of filters
-    :return: A list of dictionary representations of the investigation entities
-    """
-    with UserInvestigationsQuery(user_id) as query:
-        filter_handler = FilterOrderHandler()
-        return get_filtered_read_query_results(filter_handler, filters, query)
-
-
-class UserInvestigationsCountQuery(CountQuery):
-    """
-    The query class used for /users/<:id>/investigations/count
-    """
-
-    def __init__(self, user_id):
-        super().__init__(INVESTIGATION)
-        self.base_query = self.base_query.join(INVESTIGATIONUSER).filter(INVESTIGATIONUSER.USER_ID == user_id)
-
-
-def get_investigations_for_user_count(user_id, filters):
-    """
-    Given a user id and a list of filters, return the count of all investigations that belong to that user
-    :param user_id: The id of the user
-    :param filters: The list of filters
-    :return: The count
-    """
-    with UserInvestigationsCountQuery(user_id) as count_query:
-        filter_handler = FilterOrderHandler()
-        filter_handler.add_filters(filters)
-        filter_handler.apply_filters(count_query)
-        return count_query.get_count()
-
-
 class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
