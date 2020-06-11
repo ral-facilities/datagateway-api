@@ -294,6 +294,7 @@ def get_count_endpoint(name, table):
             parameters:
                 - WHERE_FILTER
                 - DISTINCT_FILTER
+                - INCLUDE_FILTER
             responses:
                 200:
                     description: Success - The count of the {table.__name__} objects
