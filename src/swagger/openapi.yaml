@@ -1760,6 +1760,36 @@ info:
 openapi: 3.0.3
 paths:
   /applications:
+    get:
+      description: Retrieves a list of APPLICATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/APPLICATION'
+                type: array
+          description: Success - returns APPLICATION that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Applications
+      tags:
+      - Applications
     patch:
       description: Updates APPLICATION object(s) with details provided in the request
         body
@@ -1834,24 +1864,23 @@ paths:
       summary: Create new Applications
       tags:
       - Applications
+  /applications/{id}:
     get:
       description: Retrieves a list of APPLICATION objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/APPLICATION'
-                type: array
-          description: Success - returns APPLICATION that satisfy the filters
+                $ref: '#/components/schemas/APPLICATION'
+          description: Success - the matching APPLICATION
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -1861,17 +1890,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Applications
+      summary: Find the APPLICATION matching the given ID
       tags:
       - Applications
-  /applications/{id}:
     patch:
       description: Updates APPLICATION with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -1907,7 +1935,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -1924,34 +1952,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Applications by id
-      tags:
-      - Applications
-    get:
-      description: Retrieves a list of APPLICATION objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/APPLICATION'
-          description: Success - the matching APPLICATION
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the APPLICATION matching the given ID
       tags:
       - Applications
   /applications/count:
@@ -2011,6 +2011,36 @@ paths:
       tags:
       - Applications
   /datacollectiondatafiles:
+    get:
+      description: Retrieves a list of DATACOLLECTIONDATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+                type: array
+          description: Success - returns DATACOLLECTIONDATAFILE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionDatafiles
+      tags:
+      - DataCollectionDatafiles
     patch:
       description: Updates DATACOLLECTIONDATAFILE object(s) with details provided
         in the request body
@@ -2085,24 +2115,23 @@ paths:
       summary: Create new DataCollectionDatafiles
       tags:
       - DataCollectionDatafiles
+  /datacollectiondatafiles/{id}:
     get:
       description: Retrieves a list of DATACOLLECTIONDATAFILE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
-                type: array
-          description: Success - returns DATACOLLECTIONDATAFILE that satisfy the filters
+                $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+          description: Success - the matching DATACOLLECTIONDATAFILE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -2112,17 +2141,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DataCollectionDatafiles
+      summary: Find the DATACOLLECTIONDATAFILE matching the given ID
       tags:
       - DataCollectionDatafiles
-  /datacollectiondatafiles/{id}:
     patch:
       description: Updates DATACOLLECTIONDATAFILE with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2158,7 +2186,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2175,34 +2203,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DataCollectionDatafiles by id
-      tags:
-      - DataCollectionDatafiles
-    get:
-      description: Retrieves a list of DATACOLLECTIONDATAFILE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
-          description: Success - the matching DATACOLLECTIONDATAFILE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATACOLLECTIONDATAFILE matching the given ID
       tags:
       - DataCollectionDatafiles
   /datacollectiondatafiles/count:
@@ -2264,6 +2264,36 @@ paths:
       tags:
       - DataCollectionDatafiles
   /datacollectiondatasets:
+    get:
+      description: Retrieves a list of DATACOLLECTIONDATASET objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+                type: array
+          description: Success - returns DATACOLLECTIONDATASET that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionDatasets
+      tags:
+      - DataCollectionDatasets
     patch:
       description: Updates DATACOLLECTIONDATASET object(s) with details provided in
         the request body
@@ -2338,24 +2368,23 @@ paths:
       summary: Create new DataCollectionDatasets
       tags:
       - DataCollectionDatasets
+  /datacollectiondatasets/{id}:
     get:
       description: Retrieves a list of DATACOLLECTIONDATASET objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATACOLLECTIONDATASET'
-                type: array
-          description: Success - returns DATACOLLECTIONDATASET that satisfy the filters
+                $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+          description: Success - the matching DATACOLLECTIONDATASET
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -2365,17 +2394,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DataCollectionDatasets
+      summary: Find the DATACOLLECTIONDATASET matching the given ID
       tags:
       - DataCollectionDatasets
-  /datacollectiondatasets/{id}:
     patch:
       description: Updates DATACOLLECTIONDATASET with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2411,7 +2439,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2428,34 +2456,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DataCollectionDatasets by id
-      tags:
-      - DataCollectionDatasets
-    get:
-      description: Retrieves a list of DATACOLLECTIONDATASET objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATACOLLECTIONDATASET'
-          description: Success - the matching DATACOLLECTIONDATASET
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATACOLLECTIONDATASET matching the given ID
       tags:
       - DataCollectionDatasets
   /datacollectiondatasets/count:
@@ -2517,6 +2517,37 @@ paths:
       tags:
       - DataCollectionDatasets
   /datacollectionparameters:
+    get:
+      description: Retrieves a list of DATACOLLECTIONPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+                type: array
+          description: Success - returns DATACOLLECTIONPARAMETER that satisfy the
+            filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollectionParameters
+      tags:
+      - DataCollectionParameters
     patch:
       description: Updates DATACOLLECTIONPARAMETER object(s) with details provided
         in the request body
@@ -2591,25 +2622,23 @@ paths:
       summary: Create new DataCollectionParameters
       tags:
       - DataCollectionParameters
+  /datacollectionparameters/{id}:
     get:
       description: Retrieves a list of DATACOLLECTIONPARAMETER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
-                type: array
-          description: Success - returns DATACOLLECTIONPARAMETER that satisfy the
-            filters
+                $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          description: Success - the matching DATACOLLECTIONPARAMETER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -2619,17 +2648,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DataCollectionParameters
+      summary: Find the DATACOLLECTIONPARAMETER matching the given ID
       tags:
       - DataCollectionParameters
-  /datacollectionparameters/{id}:
     patch:
       description: Updates DATACOLLECTIONPARAMETER with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2665,7 +2693,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2682,34 +2710,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DataCollectionParameters by id
-      tags:
-      - DataCollectionParameters
-    get:
-      description: Retrieves a list of DATACOLLECTIONPARAMETER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
-          description: Success - the matching DATACOLLECTIONPARAMETER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATACOLLECTIONPARAMETER matching the given ID
       tags:
       - DataCollectionParameters
   /datacollectionparameters/count:
@@ -2771,6 +2771,36 @@ paths:
       tags:
       - DataCollectionParameters
   /datacollections:
+    get:
+      description: Retrieves a list of DATACOLLECTION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTION'
+                type: array
+          description: Success - returns DATACOLLECTION that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DataCollections
+      tags:
+      - DataCollections
     patch:
       description: Updates DATACOLLECTION object(s) with details provided in the request
         body
@@ -2845,24 +2875,23 @@ paths:
       summary: Create new DataCollections
       tags:
       - DataCollections
+  /datacollections/{id}:
     get:
       description: Retrieves a list of DATACOLLECTION objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATACOLLECTION'
-                type: array
-          description: Success - returns DATACOLLECTION that satisfy the filters
+                $ref: '#/components/schemas/DATACOLLECTION'
+          description: Success - the matching DATACOLLECTION
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -2872,17 +2901,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DataCollections
+      summary: Find the DATACOLLECTION matching the given ID
       tags:
       - DataCollections
-  /datacollections/{id}:
     patch:
       description: Updates DATACOLLECTION with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2918,7 +2946,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -2935,34 +2963,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DataCollections by id
-      tags:
-      - DataCollections
-    get:
-      description: Retrieves a list of DATACOLLECTION objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATACOLLECTION'
-          description: Success - the matching DATACOLLECTION
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATACOLLECTION matching the given ID
       tags:
       - DataCollections
   /datacollections/count:
@@ -3022,6 +3022,36 @@ paths:
       tags:
       - DataCollections
   /datafileformats:
+    get:
+      description: Retrieves a list of DATAFILEFORMAT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILEFORMAT'
+                type: array
+          description: Success - returns DATAFILEFORMAT that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatafileFormats
+      tags:
+      - DatafileFormats
     patch:
       description: Updates DATAFILEFORMAT object(s) with details provided in the request
         body
@@ -3096,24 +3126,23 @@ paths:
       summary: Create new DatafileFormats
       tags:
       - DatafileFormats
+  /datafileformats/{id}:
     get:
       description: Retrieves a list of DATAFILEFORMAT objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATAFILEFORMAT'
-                type: array
-          description: Success - returns DATAFILEFORMAT that satisfy the filters
+                $ref: '#/components/schemas/DATAFILEFORMAT'
+          description: Success - the matching DATAFILEFORMAT
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -3123,17 +3152,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DatafileFormats
+      summary: Find the DATAFILEFORMAT matching the given ID
       tags:
       - DatafileFormats
-  /datafileformats/{id}:
     patch:
       description: Updates DATAFILEFORMAT with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3169,7 +3197,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3186,34 +3214,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DatafileFormats by id
-      tags:
-      - DatafileFormats
-    get:
-      description: Retrieves a list of DATAFILEFORMAT objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATAFILEFORMAT'
-          description: Success - the matching DATAFILEFORMAT
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATAFILEFORMAT matching the given ID
       tags:
       - DatafileFormats
   /datafileformats/count:
@@ -3273,6 +3273,36 @@ paths:
       tags:
       - DatafileFormats
   /datafileparameters:
+    get:
+      description: Retrieves a list of DATAFILEPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILEPARAMETER'
+                type: array
+          description: Success - returns DATAFILEPARAMETER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatafileParameters
+      tags:
+      - DatafileParameters
     patch:
       description: Updates DATAFILEPARAMETER object(s) with details provided in the
         request body
@@ -3347,24 +3377,23 @@ paths:
       summary: Create new DatafileParameters
       tags:
       - DatafileParameters
+  /datafileparameters/{id}:
     get:
       description: Retrieves a list of DATAFILEPARAMETER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATAFILEPARAMETER'
-                type: array
-          description: Success - returns DATAFILEPARAMETER that satisfy the filters
+                $ref: '#/components/schemas/DATAFILEPARAMETER'
+          description: Success - the matching DATAFILEPARAMETER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -3374,17 +3403,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DatafileParameters
+      summary: Find the DATAFILEPARAMETER matching the given ID
       tags:
       - DatafileParameters
-  /datafileparameters/{id}:
     patch:
       description: Updates DATAFILEPARAMETER with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3420,7 +3448,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3437,34 +3465,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DatafileParameters by id
-      tags:
-      - DatafileParameters
-    get:
-      description: Retrieves a list of DATAFILEPARAMETER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATAFILEPARAMETER'
-          description: Success - the matching DATAFILEPARAMETER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATAFILEPARAMETER matching the given ID
       tags:
       - DatafileParameters
   /datafileparameters/count:
@@ -3525,6 +3525,36 @@ paths:
       tags:
       - DatafileParameters
   /datafiles:
+    get:
+      description: Retrieves a list of DATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAFILE'
+                type: array
+          description: Success - returns DATAFILE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Datafiles
+      tags:
+      - Datafiles
     patch:
       description: Updates DATAFILE object(s) with details provided in the request
         body
@@ -3599,24 +3629,23 @@ paths:
       summary: Create new Datafiles
       tags:
       - Datafiles
+  /datafiles/{id}:
     get:
       description: Retrieves a list of DATAFILE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATAFILE'
-                type: array
-          description: Success - returns DATAFILE that satisfy the filters
+                $ref: '#/components/schemas/DATAFILE'
+          description: Success - the matching DATAFILE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -3626,17 +3655,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Datafiles
+      summary: Find the DATAFILE matching the given ID
       tags:
       - Datafiles
-  /datafiles/{id}:
     patch:
       description: Updates DATAFILE with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3672,7 +3700,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3689,34 +3717,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Datafiles by id
-      tags:
-      - Datafiles
-    get:
-      description: Retrieves a list of DATAFILE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATAFILE'
-          description: Success - the matching DATAFILE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATAFILE matching the given ID
       tags:
       - Datafiles
   /datafiles/count:
@@ -3776,6 +3776,36 @@ paths:
       tags:
       - Datafiles
   /datasetparameters:
+    get:
+      description: Retrieves a list of DATASETPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETPARAMETER'
+                type: array
+          description: Success - returns DATASETPARAMETER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatasetParameters
+      tags:
+      - DatasetParameters
     patch:
       description: Updates DATASETPARAMETER object(s) with details provided in the
         request body
@@ -3850,24 +3880,23 @@ paths:
       summary: Create new DatasetParameters
       tags:
       - DatasetParameters
+  /datasetparameters/{id}:
     get:
       description: Retrieves a list of DATASETPARAMETER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATASETPARAMETER'
-                type: array
-          description: Success - returns DATASETPARAMETER that satisfy the filters
+                $ref: '#/components/schemas/DATASETPARAMETER'
+          description: Success - the matching DATASETPARAMETER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -3877,17 +3906,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DatasetParameters
+      summary: Find the DATASETPARAMETER matching the given ID
       tags:
       - DatasetParameters
-  /datasetparameters/{id}:
     patch:
       description: Updates DATASETPARAMETER with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3923,7 +3951,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -3940,34 +3968,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DatasetParameters by id
-      tags:
-      - DatasetParameters
-    get:
-      description: Retrieves a list of DATASETPARAMETER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATASETPARAMETER'
-          description: Success - the matching DATASETPARAMETER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATASETPARAMETER matching the given ID
       tags:
       - DatasetParameters
   /datasetparameters/count:
@@ -4028,6 +4028,36 @@ paths:
       tags:
       - DatasetParameters
   /datasettypes:
+    get:
+      description: Retrieves a list of DATASETTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETTYPE'
+                type: array
+          description: Success - returns DATASETTYPE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get DatasetTypes
+      tags:
+      - DatasetTypes
     patch:
       description: Updates DATASETTYPE object(s) with details provided in the request
         body
@@ -4102,24 +4132,23 @@ paths:
       summary: Create new DatasetTypes
       tags:
       - DatasetTypes
+  /datasettypes/{id}:
     get:
       description: Retrieves a list of DATASETTYPE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATASETTYPE'
-                type: array
-          description: Success - returns DATASETTYPE that satisfy the filters
+                $ref: '#/components/schemas/DATASETTYPE'
+          description: Success - the matching DATASETTYPE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -4129,17 +4158,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get DatasetTypes
+      summary: Find the DATASETTYPE matching the given ID
       tags:
       - DatasetTypes
-  /datasettypes/{id}:
     patch:
       description: Updates DATASETTYPE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4175,7 +4203,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4192,34 +4220,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete DatasetTypes by id
-      tags:
-      - DatasetTypes
-    get:
-      description: Retrieves a list of DATASETTYPE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATASETTYPE'
-          description: Success - the matching DATASETTYPE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATASETTYPE matching the given ID
       tags:
       - DatasetTypes
   /datasettypes/count:
@@ -4279,6 +4279,36 @@ paths:
       tags:
       - DatasetTypes
   /datasets:
+    get:
+      description: Retrieves a list of DATASET objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASET'
+                type: array
+          description: Success - returns DATASET that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Datasets
+      tags:
+      - Datasets
     patch:
       description: Updates DATASET object(s) with details provided in the request
         body
@@ -4353,24 +4383,23 @@ paths:
       summary: Create new Datasets
       tags:
       - Datasets
+  /datasets/{id}:
     get:
       description: Retrieves a list of DATASET objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/DATASET'
-                type: array
-          description: Success - returns DATASET that satisfy the filters
+                $ref: '#/components/schemas/DATASET'
+          description: Success - the matching DATASET
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -4380,17 +4409,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Datasets
+      summary: Find the DATASET matching the given ID
       tags:
       - Datasets
-  /datasets/{id}:
     patch:
       description: Updates DATASET with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4426,7 +4454,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4443,34 +4471,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Datasets by id
-      tags:
-      - Datasets
-    get:
-      description: Retrieves a list of DATASET objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/DATASET'
-          description: Success - the matching DATASET
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the DATASET matching the given ID
       tags:
       - Datasets
   /datasets/count:
@@ -4530,6 +4530,36 @@ paths:
       tags:
       - Datasets
   /facilities:
+    get:
+      description: Retrieves a list of FACILITY objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FACILITY'
+                type: array
+          description: Success - returns FACILITY that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Facilities
+      tags:
+      - Facilities
     patch:
       description: Updates FACILITY object(s) with details provided in the request
         body
@@ -4604,24 +4634,23 @@ paths:
       summary: Create new Facilities
       tags:
       - Facilities
+  /facilities/{id}:
     get:
       description: Retrieves a list of FACILITY objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/FACILITY'
-                type: array
-          description: Success - returns FACILITY that satisfy the filters
+                $ref: '#/components/schemas/FACILITY'
+          description: Success - the matching FACILITY
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -4631,17 +4660,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Facilities
+      summary: Find the FACILITY matching the given ID
       tags:
       - Facilities
-  /facilities/{id}:
     patch:
       description: Updates FACILITY with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4677,7 +4705,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4694,34 +4722,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Facilities by id
-      tags:
-      - Facilities
-    get:
-      description: Retrieves a list of FACILITY objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FACILITY'
-          description: Success - the matching FACILITY
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the FACILITY matching the given ID
       tags:
       - Facilities
   /facilities/count:
@@ -4781,6 +4781,36 @@ paths:
       tags:
       - Facilities
   /facilitycycles:
+    get:
+      description: Retrieves a list of FACILITYCYCLE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FACILITYCYCLE'
+                type: array
+          description: Success - returns FACILITYCYCLE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get FacilityCycles
+      tags:
+      - FacilityCycles
     patch:
       description: Updates FACILITYCYCLE object(s) with details provided in the request
         body
@@ -4855,24 +4885,23 @@ paths:
       summary: Create new FacilityCycles
       tags:
       - FacilityCycles
+  /facilitycycles/{id}:
     get:
       description: Retrieves a list of FACILITYCYCLE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/FACILITYCYCLE'
-                type: array
-          description: Success - returns FACILITYCYCLE that satisfy the filters
+                $ref: '#/components/schemas/FACILITYCYCLE'
+          description: Success - the matching FACILITYCYCLE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -4882,17 +4911,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get FacilityCycles
+      summary: Find the FACILITYCYCLE matching the given ID
       tags:
       - FacilityCycles
-  /facilitycycles/{id}:
     patch:
       description: Updates FACILITYCYCLE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4928,7 +4956,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -4945,34 +4973,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete FacilityCycles by id
-      tags:
-      - FacilityCycles
-    get:
-      description: Retrieves a list of FACILITYCYCLE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FACILITYCYCLE'
-          description: Success - the matching FACILITYCYCLE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the FACILITYCYCLE matching the given ID
       tags:
       - FacilityCycles
   /facilitycycles/count:
@@ -5032,6 +5032,36 @@ paths:
       tags:
       - FacilityCycles
   /groupings:
+    get:
+      description: Retrieves a list of GROUPING objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GROUPING'
+                type: array
+          description: Success - returns GROUPING that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Groupings
+      tags:
+      - Groupings
     patch:
       description: Updates GROUPING object(s) with details provided in the request
         body
@@ -5106,24 +5136,23 @@ paths:
       summary: Create new Groupings
       tags:
       - Groupings
+  /groupings/{id}:
     get:
       description: Retrieves a list of GROUPING objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/GROUPING'
-                type: array
-          description: Success - returns GROUPING that satisfy the filters
+                $ref: '#/components/schemas/GROUPING'
+          description: Success - the matching GROUPING
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -5133,17 +5162,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Groupings
+      summary: Find the GROUPING matching the given ID
       tags:
       - Groupings
-  /groupings/{id}:
     patch:
       description: Updates GROUPING with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5179,7 +5207,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5196,34 +5224,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Groupings by id
-      tags:
-      - Groupings
-    get:
-      description: Retrieves a list of GROUPING objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GROUPING'
-          description: Success - the matching GROUPING
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the GROUPING matching the given ID
       tags:
       - Groupings
   /groupings/count:
@@ -5283,6 +5283,36 @@ paths:
       tags:
       - Groupings
   /instrumentscientists:
+    get:
+      description: Retrieves a list of INSTRUMENTSCIENTIST objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+                type: array
+          description: Success - returns INSTRUMENTSCIENTIST that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InstrumentScientists
+      tags:
+      - InstrumentScientists
     patch:
       description: Updates INSTRUMENTSCIENTIST object(s) with details provided in
         the request body
@@ -5357,24 +5387,23 @@ paths:
       summary: Create new InstrumentScientists
       tags:
       - InstrumentScientists
+  /instrumentscientists/{id}:
     get:
       description: Retrieves a list of INSTRUMENTSCIENTIST objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
-                type: array
-          description: Success - returns INSTRUMENTSCIENTIST that satisfy the filters
+                $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          description: Success - the matching INSTRUMENTSCIENTIST
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -5384,17 +5413,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InstrumentScientists
+      summary: Find the INSTRUMENTSCIENTIST matching the given ID
       tags:
       - InstrumentScientists
-  /instrumentscientists/{id}:
     patch:
       description: Updates INSTRUMENTSCIENTIST with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5430,7 +5458,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5447,34 +5475,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InstrumentScientists by id
-      tags:
-      - InstrumentScientists
-    get:
-      description: Retrieves a list of INSTRUMENTSCIENTIST objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
-          description: Success - the matching INSTRUMENTSCIENTIST
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INSTRUMENTSCIENTIST matching the given ID
       tags:
       - InstrumentScientists
   /instrumentscientists/count:
@@ -5535,6 +5535,36 @@ paths:
       tags:
       - InstrumentScientists
   /instruments:
+    get:
+      description: Retrieves a list of INSTRUMENT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INSTRUMENT'
+                type: array
+          description: Success - returns INSTRUMENT that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Instruments
+      tags:
+      - Instruments
     patch:
       description: Updates INSTRUMENT object(s) with details provided in the request
         body
@@ -5609,24 +5639,23 @@ paths:
       summary: Create new Instruments
       tags:
       - Instruments
+  /instruments/{id}:
     get:
       description: Retrieves a list of INSTRUMENT objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INSTRUMENT'
-                type: array
-          description: Success - returns INSTRUMENT that satisfy the filters
+                $ref: '#/components/schemas/INSTRUMENT'
+          description: Success - the matching INSTRUMENT
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -5636,17 +5665,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Instruments
+      summary: Find the INSTRUMENT matching the given ID
       tags:
       - Instruments
-  /instruments/{id}:
     patch:
       description: Updates INSTRUMENT with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5682,7 +5710,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5699,34 +5727,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Instruments by id
-      tags:
-      - Instruments
-    get:
-      description: Retrieves a list of INSTRUMENT objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INSTRUMENT'
-          description: Success - the matching INSTRUMENT
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INSTRUMENT matching the given ID
       tags:
       - Instruments
   /instruments/count:
@@ -5786,6 +5786,36 @@ paths:
       tags:
       - Instruments
   /investigationgroups:
+    get:
+      description: Retrieves a list of INVESTIGATIONGROUP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONGROUP'
+                type: array
+          description: Success - returns INVESTIGATIONGROUP that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationGroups
+      tags:
+      - InvestigationGroups
     patch:
       description: Updates INVESTIGATIONGROUP object(s) with details provided in the
         request body
@@ -5860,24 +5890,23 @@ paths:
       summary: Create new InvestigationGroups
       tags:
       - InvestigationGroups
+  /investigationgroups/{id}:
     get:
       description: Retrieves a list of INVESTIGATIONGROUP objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATIONGROUP'
-                type: array
-          description: Success - returns INVESTIGATIONGROUP that satisfy the filters
+                $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          description: Success - the matching INVESTIGATIONGROUP
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -5887,17 +5916,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InvestigationGroups
+      summary: Find the INVESTIGATIONGROUP matching the given ID
       tags:
       - InvestigationGroups
-  /investigationgroups/{id}:
     patch:
       description: Updates INVESTIGATIONGROUP with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5933,7 +5961,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -5950,34 +5978,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InvestigationGroups by id
-      tags:
-      - InvestigationGroups
-    get:
-      description: Retrieves a list of INVESTIGATIONGROUP objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATIONGROUP'
-          description: Success - the matching INVESTIGATIONGROUP
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATIONGROUP matching the given ID
       tags:
       - InvestigationGroups
   /investigationgroups/count:
@@ -6038,6 +6038,37 @@ paths:
       tags:
       - InvestigationGroups
   /investigationinstruments:
+    get:
+      description: Retrieves a list of INVESTIGATIONINSTRUMENT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+                type: array
+          description: Success - returns INVESTIGATIONINSTRUMENT that satisfy the
+            filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationInstruments
+      tags:
+      - InvestigationInstruments
     patch:
       description: Updates INVESTIGATIONINSTRUMENT object(s) with details provided
         in the request body
@@ -6112,25 +6143,23 @@ paths:
       summary: Create new InvestigationInstruments
       tags:
       - InvestigationInstruments
+  /investigationinstruments/{id}:
     get:
       description: Retrieves a list of INVESTIGATIONINSTRUMENT objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-                type: array
-          description: Success - returns INVESTIGATIONINSTRUMENT that satisfy the
-            filters
+                $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          description: Success - the matching INVESTIGATIONINSTRUMENT
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -6140,17 +6169,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InvestigationInstruments
+      summary: Find the INVESTIGATIONINSTRUMENT matching the given ID
       tags:
       - InvestigationInstruments
-  /investigationinstruments/{id}:
     patch:
       description: Updates INVESTIGATIONINSTRUMENT with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6186,7 +6214,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6203,34 +6231,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InvestigationInstruments by id
-      tags:
-      - InvestigationInstruments
-    get:
-      description: Retrieves a list of INVESTIGATIONINSTRUMENT objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-          description: Success - the matching INVESTIGATIONINSTRUMENT
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATIONINSTRUMENT matching the given ID
       tags:
       - InvestigationInstruments
   /investigationinstruments/count:
@@ -6292,6 +6292,36 @@ paths:
       tags:
       - InvestigationInstruments
   /investigationparameters:
+    get:
+      description: Retrieves a list of INVESTIGATIONPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+                type: array
+          description: Success - returns INVESTIGATIONPARAMETER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationParameters
+      tags:
+      - InvestigationParameters
     patch:
       description: Updates INVESTIGATIONPARAMETER object(s) with details provided
         in the request body
@@ -6366,24 +6396,23 @@ paths:
       summary: Create new InvestigationParameters
       tags:
       - InvestigationParameters
+  /investigationparameters/{id}:
     get:
       description: Retrieves a list of INVESTIGATIONPARAMETER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
-                type: array
-          description: Success - returns INVESTIGATIONPARAMETER that satisfy the filters
+                $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          description: Success - the matching INVESTIGATIONPARAMETER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -6393,17 +6422,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InvestigationParameters
+      summary: Find the INVESTIGATIONPARAMETER matching the given ID
       tags:
       - InvestigationParameters
-  /investigationparameters/{id}:
     patch:
       description: Updates INVESTIGATIONPARAMETER with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6439,7 +6467,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6456,34 +6484,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InvestigationParameters by id
-      tags:
-      - InvestigationParameters
-    get:
-      description: Retrieves a list of INVESTIGATIONPARAMETER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
-          description: Success - the matching INVESTIGATIONPARAMETER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATIONPARAMETER matching the given ID
       tags:
       - InvestigationParameters
   /investigationparameters/count:
@@ -6545,6 +6545,36 @@ paths:
       tags:
       - InvestigationParameters
   /investigationtypes:
+    get:
+      description: Retrieves a list of INVESTIGATIONTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONTYPE'
+                type: array
+          description: Success - returns INVESTIGATIONTYPE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationTypes
+      tags:
+      - InvestigationTypes
     patch:
       description: Updates INVESTIGATIONTYPE object(s) with details provided in the
         request body
@@ -6619,24 +6649,23 @@ paths:
       summary: Create new InvestigationTypes
       tags:
       - InvestigationTypes
+  /investigationtypes/{id}:
     get:
       description: Retrieves a list of INVESTIGATIONTYPE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATIONTYPE'
-                type: array
-          description: Success - returns INVESTIGATIONTYPE that satisfy the filters
+                $ref: '#/components/schemas/INVESTIGATIONTYPE'
+          description: Success - the matching INVESTIGATIONTYPE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -6646,17 +6675,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InvestigationTypes
+      summary: Find the INVESTIGATIONTYPE matching the given ID
       tags:
       - InvestigationTypes
-  /investigationtypes/{id}:
     patch:
       description: Updates INVESTIGATIONTYPE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6692,7 +6720,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6709,34 +6737,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InvestigationTypes by id
-      tags:
-      - InvestigationTypes
-    get:
-      description: Retrieves a list of INVESTIGATIONTYPE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATIONTYPE'
-          description: Success - the matching INVESTIGATIONTYPE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATIONTYPE matching the given ID
       tags:
       - InvestigationTypes
   /investigationtypes/count:
@@ -6797,6 +6797,36 @@ paths:
       tags:
       - InvestigationTypes
   /investigationusers:
+    get:
+      description: Retrieves a list of INVESTIGATIONUSER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONUSER'
+                type: array
+          description: Success - returns INVESTIGATIONUSER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get InvestigationUsers
+      tags:
+      - InvestigationUsers
     patch:
       description: Updates INVESTIGATIONUSER object(s) with details provided in the
         request body
@@ -6871,24 +6901,23 @@ paths:
       summary: Create new InvestigationUsers
       tags:
       - InvestigationUsers
+  /investigationusers/{id}:
     get:
       description: Retrieves a list of INVESTIGATIONUSER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATIONUSER'
-                type: array
-          description: Success - returns INVESTIGATIONUSER that satisfy the filters
+                $ref: '#/components/schemas/INVESTIGATIONUSER'
+          description: Success - the matching INVESTIGATIONUSER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -6898,17 +6927,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get InvestigationUsers
+      summary: Find the INVESTIGATIONUSER matching the given ID
       tags:
       - InvestigationUsers
-  /investigationusers/{id}:
     patch:
       description: Updates INVESTIGATIONUSER with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6944,7 +6972,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -6961,34 +6989,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete InvestigationUsers by id
-      tags:
-      - InvestigationUsers
-    get:
-      description: Retrieves a list of INVESTIGATIONUSER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATIONUSER'
-          description: Success - the matching INVESTIGATIONUSER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATIONUSER matching the given ID
       tags:
       - InvestigationUsers
   /investigationusers/count:
@@ -7049,6 +7049,36 @@ paths:
       tags:
       - InvestigationUsers
   /investigations:
+    get:
+      description: Retrieves a list of INVESTIGATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATION'
+                type: array
+          description: Success - returns INVESTIGATION that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Investigations
+      tags:
+      - Investigations
     patch:
       description: Updates INVESTIGATION object(s) with details provided in the request
         body
@@ -7123,24 +7153,23 @@ paths:
       summary: Create new Investigations
       tags:
       - Investigations
+  /investigations/{id}:
     get:
       description: Retrieves a list of INVESTIGATION objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/INVESTIGATION'
-                type: array
-          description: Success - returns INVESTIGATION that satisfy the filters
+                $ref: '#/components/schemas/INVESTIGATION'
+          description: Success - the matching INVESTIGATION
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -7150,17 +7179,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Investigations
+      summary: Find the INVESTIGATION matching the given ID
       tags:
       - Investigations
-  /investigations/{id}:
     patch:
       description: Updates INVESTIGATION with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7196,7 +7224,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7213,34 +7241,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Investigations by id
-      tags:
-      - Investigations
-    get:
-      description: Retrieves a list of INVESTIGATION objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/INVESTIGATION'
-          description: Success - the matching INVESTIGATION
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the INVESTIGATION matching the given ID
       tags:
       - Investigations
   /investigations/count:
@@ -7300,6 +7300,36 @@ paths:
       tags:
       - Investigations
   /jobs:
+    get:
+      description: Retrieves a list of JOB objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/JOB'
+                type: array
+          description: Success - returns JOB that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Jobs
+      tags:
+      - Jobs
     patch:
       description: Updates JOB object(s) with details provided in the request body
       requestBody:
@@ -7373,24 +7403,23 @@ paths:
       summary: Create new Jobs
       tags:
       - Jobs
+  /jobs/{id}:
     get:
       description: Retrieves a list of JOB objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/JOB'
-                type: array
-          description: Success - returns JOB that satisfy the filters
+                $ref: '#/components/schemas/JOB'
+          description: Success - the matching JOB
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -7400,17 +7429,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Jobs
+      summary: Find the JOB matching the given ID
       tags:
       - Jobs
-  /jobs/{id}:
     patch:
       description: Updates JOB with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7446,7 +7474,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7463,34 +7491,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Jobs by id
-      tags:
-      - Jobs
-    get:
-      description: Retrieves a list of JOB objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JOB'
-          description: Success - the matching JOB
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the JOB matching the given ID
       tags:
       - Jobs
   /jobs/count:
@@ -7550,6 +7550,36 @@ paths:
       tags:
       - Jobs
   /keywords:
+    get:
+      description: Retrieves a list of KEYWORD objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/KEYWORD'
+                type: array
+          description: Success - returns KEYWORD that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Keywords
+      tags:
+      - Keywords
     patch:
       description: Updates KEYWORD object(s) with details provided in the request
         body
@@ -7624,24 +7654,23 @@ paths:
       summary: Create new Keywords
       tags:
       - Keywords
+  /keywords/{id}:
     get:
       description: Retrieves a list of KEYWORD objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/KEYWORD'
-                type: array
-          description: Success - returns KEYWORD that satisfy the filters
+                $ref: '#/components/schemas/KEYWORD'
+          description: Success - the matching KEYWORD
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -7651,17 +7680,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Keywords
+      summary: Find the KEYWORD matching the given ID
       tags:
       - Keywords
-  /keywords/{id}:
     patch:
       description: Updates KEYWORD with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7697,7 +7725,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7714,34 +7742,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Keywords by id
-      tags:
-      - Keywords
-    get:
-      description: Retrieves a list of KEYWORD objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KEYWORD'
-          description: Success - the matching KEYWORD
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the KEYWORD matching the given ID
       tags:
       - Keywords
   /keywords/count:
@@ -7801,6 +7801,36 @@ paths:
       tags:
       - Keywords
   /parametertypes:
+    get:
+      description: Retrieves a list of PARAMETERTYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PARAMETERTYPE'
+                type: array
+          description: Success - returns PARAMETERTYPE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get ParameterTypes
+      tags:
+      - ParameterTypes
     patch:
       description: Updates PARAMETERTYPE object(s) with details provided in the request
         body
@@ -7875,24 +7905,23 @@ paths:
       summary: Create new ParameterTypes
       tags:
       - ParameterTypes
+  /parametertypes/{id}:
     get:
       description: Retrieves a list of PARAMETERTYPE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/PARAMETERTYPE'
-                type: array
-          description: Success - returns PARAMETERTYPE that satisfy the filters
+                $ref: '#/components/schemas/PARAMETERTYPE'
+          description: Success - the matching PARAMETERTYPE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -7902,17 +7931,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get ParameterTypes
+      summary: Find the PARAMETERTYPE matching the given ID
       tags:
       - ParameterTypes
-  /parametertypes/{id}:
     patch:
       description: Updates PARAMETERTYPE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7948,7 +7976,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -7965,34 +7993,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete ParameterTypes by id
-      tags:
-      - ParameterTypes
-    get:
-      description: Retrieves a list of PARAMETERTYPE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PARAMETERTYPE'
-          description: Success - the matching PARAMETERTYPE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the PARAMETERTYPE matching the given ID
       tags:
       - ParameterTypes
   /parametertypes/count:
@@ -8052,6 +8052,36 @@ paths:
       tags:
       - ParameterTypes
   /permissiblestringvalues:
+    get:
+      description: Retrieves a list of PERMISSIBLESTRINGVALUE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+                type: array
+          description: Success - returns PERMISSIBLESTRINGVALUE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get PermissibleStringValues
+      tags:
+      - PermissibleStringValues
     patch:
       description: Updates PERMISSIBLESTRINGVALUE object(s) with details provided
         in the request body
@@ -8126,24 +8156,23 @@ paths:
       summary: Create new PermissibleStringValues
       tags:
       - PermissibleStringValues
+  /permissiblestringvalues/{id}:
     get:
       description: Retrieves a list of PERMISSIBLESTRINGVALUE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
-                type: array
-          description: Success - returns PERMISSIBLESTRINGVALUE that satisfy the filters
+                $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+          description: Success - the matching PERMISSIBLESTRINGVALUE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -8153,17 +8182,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get PermissibleStringValues
+      summary: Find the PERMISSIBLESTRINGVALUE matching the given ID
       tags:
       - PermissibleStringValues
-  /permissiblestringvalues/{id}:
     patch:
       description: Updates PERMISSIBLESTRINGVALUE with the specified ID with details
         provided in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8199,7 +8227,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8216,34 +8244,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete PermissibleStringValues by id
-      tags:
-      - PermissibleStringValues
-    get:
-      description: Retrieves a list of PERMISSIBLESTRINGVALUE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
-          description: Success - the matching PERMISSIBLESTRINGVALUE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the PERMISSIBLESTRINGVALUE matching the given ID
       tags:
       - PermissibleStringValues
   /permissiblestringvalues/count:
@@ -8305,6 +8305,36 @@ paths:
       tags:
       - PermissibleStringValues
   /publicsteps:
+    get:
+      description: Retrieves a list of PUBLICSTEP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PUBLICSTEP'
+                type: array
+          description: Success - returns PUBLICSTEP that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get PublicSteps
+      tags:
+      - PublicSteps
     patch:
       description: Updates PUBLICSTEP object(s) with details provided in the request
         body
@@ -8379,24 +8409,23 @@ paths:
       summary: Create new PublicSteps
       tags:
       - PublicSteps
+  /publicsteps/{id}:
     get:
       description: Retrieves a list of PUBLICSTEP objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/PUBLICSTEP'
-                type: array
-          description: Success - returns PUBLICSTEP that satisfy the filters
+                $ref: '#/components/schemas/PUBLICSTEP'
+          description: Success - the matching PUBLICSTEP
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -8406,17 +8435,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get PublicSteps
+      summary: Find the PUBLICSTEP matching the given ID
       tags:
       - PublicSteps
-  /publicsteps/{id}:
     patch:
       description: Updates PUBLICSTEP with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8452,7 +8480,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8469,34 +8497,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete PublicSteps by id
-      tags:
-      - PublicSteps
-    get:
-      description: Retrieves a list of PUBLICSTEP objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PUBLICSTEP'
-          description: Success - the matching PUBLICSTEP
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the PUBLICSTEP matching the given ID
       tags:
       - PublicSteps
   /publicsteps/count:
@@ -8556,6 +8556,36 @@ paths:
       tags:
       - PublicSteps
   /publications:
+    get:
+      description: Retrieves a list of PUBLICATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PUBLICATION'
+                type: array
+          description: Success - returns PUBLICATION that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Publications
+      tags:
+      - Publications
     patch:
       description: Updates PUBLICATION object(s) with details provided in the request
         body
@@ -8630,24 +8660,23 @@ paths:
       summary: Create new Publications
       tags:
       - Publications
+  /publications/{id}:
     get:
       description: Retrieves a list of PUBLICATION objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/PUBLICATION'
-                type: array
-          description: Success - returns PUBLICATION that satisfy the filters
+                $ref: '#/components/schemas/PUBLICATION'
+          description: Success - the matching PUBLICATION
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -8657,17 +8686,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Publications
+      summary: Find the PUBLICATION matching the given ID
       tags:
       - Publications
-  /publications/{id}:
     patch:
       description: Updates PUBLICATION with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8703,7 +8731,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8720,34 +8748,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Publications by id
-      tags:
-      - Publications
-    get:
-      description: Retrieves a list of PUBLICATION objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PUBLICATION'
-          description: Success - the matching PUBLICATION
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the PUBLICATION matching the given ID
       tags:
       - Publications
   /publications/count:
@@ -8807,6 +8807,36 @@ paths:
       tags:
       - Publications
   /relateddatafiles:
+    get:
+      description: Retrieves a list of RELATEDDATAFILE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RELATEDDATAFILE'
+                type: array
+          description: Success - returns RELATEDDATAFILE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get RelatedDatafiles
+      tags:
+      - RelatedDatafiles
     patch:
       description: Updates RELATEDDATAFILE object(s) with details provided in the
         request body
@@ -8881,24 +8911,23 @@ paths:
       summary: Create new RelatedDatafiles
       tags:
       - RelatedDatafiles
+  /relateddatafiles/{id}:
     get:
       description: Retrieves a list of RELATEDDATAFILE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/RELATEDDATAFILE'
-                type: array
-          description: Success - returns RELATEDDATAFILE that satisfy the filters
+                $ref: '#/components/schemas/RELATEDDATAFILE'
+          description: Success - the matching RELATEDDATAFILE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -8908,17 +8937,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get RelatedDatafiles
+      summary: Find the RELATEDDATAFILE matching the given ID
       tags:
       - RelatedDatafiles
-  /relateddatafiles/{id}:
     patch:
       description: Updates RELATEDDATAFILE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8954,7 +8982,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -8971,34 +8999,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete RelatedDatafiles by id
-      tags:
-      - RelatedDatafiles
-    get:
-      description: Retrieves a list of RELATEDDATAFILE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RELATEDDATAFILE'
-          description: Success - the matching RELATEDDATAFILE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the RELATEDDATAFILE matching the given ID
       tags:
       - RelatedDatafiles
   /relateddatafiles/count:
@@ -9059,6 +9059,36 @@ paths:
       tags:
       - RelatedDatafiles
   /rules:
+    get:
+      description: Retrieves a list of RULE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RULE'
+                type: array
+          description: Success - returns RULE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Rules
+      tags:
+      - Rules
     patch:
       description: Updates RULE object(s) with details provided in the request body
       requestBody:
@@ -9132,24 +9162,23 @@ paths:
       summary: Create new Rules
       tags:
       - Rules
+  /rules/{id}:
     get:
       description: Retrieves a list of RULE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/RULE'
-                type: array
-          description: Success - returns RULE that satisfy the filters
+                $ref: '#/components/schemas/RULE'
+          description: Success - the matching RULE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -9159,17 +9188,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Rules
+      summary: Find the RULE matching the given ID
       tags:
       - Rules
-  /rules/{id}:
     patch:
       description: Updates RULE with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9205,7 +9233,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9222,34 +9250,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Rules by id
-      tags:
-      - Rules
-    get:
-      description: Retrieves a list of RULE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RULE'
-          description: Success - the matching RULE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the RULE matching the given ID
       tags:
       - Rules
   /rules/count:
@@ -9309,6 +9309,36 @@ paths:
       tags:
       - Rules
   /sampleparameters:
+    get:
+      description: Retrieves a list of SAMPLEPARAMETER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLEPARAMETER'
+                type: array
+          description: Success - returns SAMPLEPARAMETER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get SampleParameters
+      tags:
+      - SampleParameters
     patch:
       description: Updates SAMPLEPARAMETER object(s) with details provided in the
         request body
@@ -9383,24 +9413,23 @@ paths:
       summary: Create new SampleParameters
       tags:
       - SampleParameters
+  /sampleparameters/{id}:
     get:
       description: Retrieves a list of SAMPLEPARAMETER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/SAMPLEPARAMETER'
-                type: array
-          description: Success - returns SAMPLEPARAMETER that satisfy the filters
+                $ref: '#/components/schemas/SAMPLEPARAMETER'
+          description: Success - the matching SAMPLEPARAMETER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -9410,17 +9439,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get SampleParameters
+      summary: Find the SAMPLEPARAMETER matching the given ID
       tags:
       - SampleParameters
-  /sampleparameters/{id}:
     patch:
       description: Updates SAMPLEPARAMETER with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9456,7 +9484,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9473,34 +9501,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete SampleParameters by id
-      tags:
-      - SampleParameters
-    get:
-      description: Retrieves a list of SAMPLEPARAMETER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMPLEPARAMETER'
-          description: Success - the matching SAMPLEPARAMETER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the SAMPLEPARAMETER matching the given ID
       tags:
       - SampleParameters
   /sampleparameters/count:
@@ -9561,6 +9561,36 @@ paths:
       tags:
       - SampleParameters
   /sampletypes:
+    get:
+      description: Retrieves a list of SAMPLETYPE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLETYPE'
+                type: array
+          description: Success - returns SAMPLETYPE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get SampleTypes
+      tags:
+      - SampleTypes
     patch:
       description: Updates SAMPLETYPE object(s) with details provided in the request
         body
@@ -9635,24 +9665,23 @@ paths:
       summary: Create new SampleTypes
       tags:
       - SampleTypes
+  /sampletypes/{id}:
     get:
       description: Retrieves a list of SAMPLETYPE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/SAMPLETYPE'
-                type: array
-          description: Success - returns SAMPLETYPE that satisfy the filters
+                $ref: '#/components/schemas/SAMPLETYPE'
+          description: Success - the matching SAMPLETYPE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -9662,17 +9691,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get SampleTypes
+      summary: Find the SAMPLETYPE matching the given ID
       tags:
       - SampleTypes
-  /sampletypes/{id}:
     patch:
       description: Updates SAMPLETYPE with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9708,7 +9736,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9725,34 +9753,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete SampleTypes by id
-      tags:
-      - SampleTypes
-    get:
-      description: Retrieves a list of SAMPLETYPE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMPLETYPE'
-          description: Success - the matching SAMPLETYPE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the SAMPLETYPE matching the given ID
       tags:
       - SampleTypes
   /sampletypes/count:
@@ -9812,6 +9812,36 @@ paths:
       tags:
       - SampleTypes
   /samples:
+    get:
+      description: Retrieves a list of SAMPLE objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SAMPLE'
+                type: array
+          description: Success - returns SAMPLE that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Samples
+      tags:
+      - Samples
     patch:
       description: Updates SAMPLE object(s) with details provided in the request body
       requestBody:
@@ -9885,24 +9915,23 @@ paths:
       summary: Create new Samples
       tags:
       - Samples
+  /samples/{id}:
     get:
       description: Retrieves a list of SAMPLE objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/SAMPLE'
-                type: array
-          description: Success - returns SAMPLE that satisfy the filters
+                $ref: '#/components/schemas/SAMPLE'
+          description: Success - the matching SAMPLE
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -9912,17 +9941,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Samples
+      summary: Find the SAMPLE matching the given ID
       tags:
       - Samples
-  /samples/{id}:
     patch:
       description: Updates SAMPLE with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9958,7 +9986,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -9975,34 +10003,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Samples by id
-      tags:
-      - Samples
-    get:
-      description: Retrieves a list of SAMPLE objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SAMPLE'
-          description: Success - the matching SAMPLE
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the SAMPLE matching the given ID
       tags:
       - Samples
   /samples/count:
@@ -10062,6 +10062,36 @@ paths:
       tags:
       - Samples
   /shifts:
+    get:
+      description: Retrieves a list of SHIFT objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SHIFT'
+                type: array
+          description: Success - returns SHIFT that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Shifts
+      tags:
+      - Shifts
     patch:
       description: Updates SHIFT object(s) with details provided in the request body
       requestBody:
@@ -10135,24 +10165,23 @@ paths:
       summary: Create new Shifts
       tags:
       - Shifts
+  /shifts/{id}:
     get:
       description: Retrieves a list of SHIFT objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/SHIFT'
-                type: array
-          description: Success - returns SHIFT that satisfy the filters
+                $ref: '#/components/schemas/SHIFT'
+          description: Success - the matching SHIFT
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -10162,17 +10191,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Shifts
+      summary: Find the SHIFT matching the given ID
       tags:
       - Shifts
-  /shifts/{id}:
     patch:
       description: Updates SHIFT with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10208,7 +10236,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10225,34 +10253,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Shifts by id
-      tags:
-      - Shifts
-    get:
-      description: Retrieves a list of SHIFT objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SHIFT'
-          description: Success - the matching SHIFT
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the SHIFT matching the given ID
       tags:
       - Shifts
   /shifts/count:
@@ -10312,6 +10312,36 @@ paths:
       tags:
       - Shifts
   /studies:
+    get:
+      description: Retrieves a list of STUDY objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/STUDY'
+                type: array
+          description: Success - returns STUDY that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Studies
+      tags:
+      - Studies
     patch:
       description: Updates STUDY object(s) with details provided in the request body
       requestBody:
@@ -10385,24 +10415,23 @@ paths:
       summary: Create new Studies
       tags:
       - Studies
+  /studies/{id}:
     get:
       description: Retrieves a list of STUDY objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/STUDY'
-                type: array
-          description: Success - returns STUDY that satisfy the filters
+                $ref: '#/components/schemas/STUDY'
+          description: Success - the matching STUDY
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -10412,17 +10441,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Studies
+      summary: Find the STUDY matching the given ID
       tags:
       - Studies
-  /studies/{id}:
     patch:
       description: Updates STUDY with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10458,7 +10486,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10475,34 +10503,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Studies by id
-      tags:
-      - Studies
-    get:
-      description: Retrieves a list of STUDY objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/STUDY'
-          description: Success - the matching STUDY
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the STUDY matching the given ID
       tags:
       - Studies
   /studies/count:
@@ -10562,6 +10562,36 @@ paths:
       tags:
       - Studies
   /studyinvestigations:
+    get:
+      description: Retrieves a list of STUDYINVESTIGATION objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/STUDYINVESTIGATION'
+                type: array
+          description: Success - returns STUDYINVESTIGATION that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get StudyInvestigations
+      tags:
+      - StudyInvestigations
     patch:
       description: Updates STUDYINVESTIGATION object(s) with details provided in the
         request body
@@ -10636,24 +10666,23 @@ paths:
       summary: Create new StudyInvestigations
       tags:
       - StudyInvestigations
+  /studyinvestigations/{id}:
     get:
       description: Retrieves a list of STUDYINVESTIGATION objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/STUDYINVESTIGATION'
-                type: array
-          description: Success - returns STUDYINVESTIGATION that satisfy the filters
+                $ref: '#/components/schemas/STUDYINVESTIGATION'
+          description: Success - the matching STUDYINVESTIGATION
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -10663,17 +10692,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get StudyInvestigations
+      summary: Find the STUDYINVESTIGATION matching the given ID
       tags:
       - StudyInvestigations
-  /studyinvestigations/{id}:
     patch:
       description: Updates STUDYINVESTIGATION with the specified ID with details provided
         in the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10709,7 +10737,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10726,34 +10754,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete StudyInvestigations by id
-      tags:
-      - StudyInvestigations
-    get:
-      description: Retrieves a list of STUDYINVESTIGATION objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/STUDYINVESTIGATION'
-          description: Success - the matching STUDYINVESTIGATION
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the STUDYINVESTIGATION matching the given ID
       tags:
       - StudyInvestigations
   /studyinvestigations/count:
@@ -10814,6 +10814,36 @@ paths:
       tags:
       - StudyInvestigations
   /usergroups:
+    get:
+      description: Retrieves a list of USERGROUP objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/USERGROUP'
+                type: array
+          description: Success - returns USERGROUP that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get UserGroups
+      tags:
+      - UserGroups
     patch:
       description: Updates USERGROUP object(s) with details provided in the request
         body
@@ -10888,24 +10918,23 @@ paths:
       summary: Create new UserGroups
       tags:
       - UserGroups
+  /usergroups/{id}:
     get:
       description: Retrieves a list of USERGROUP objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/USERGROUP'
-                type: array
-          description: Success - returns USERGROUP that satisfy the filters
+                $ref: '#/components/schemas/USERGROUP'
+          description: Success - the matching USERGROUP
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -10915,17 +10944,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get UserGroups
+      summary: Find the USERGROUP matching the given ID
       tags:
       - UserGroups
-  /usergroups/{id}:
     patch:
       description: Updates USERGROUP with the specified ID with details provided in
         the request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10961,7 +10989,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -10978,34 +11006,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete UserGroups by id
-      tags:
-      - UserGroups
-    get:
-      description: Retrieves a list of USERGROUP objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/USERGROUP'
-          description: Success - the matching USERGROUP
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the USERGROUP matching the given ID
       tags:
       - UserGroups
   /usergroups/count:
@@ -11065,6 +11065,36 @@ paths:
       tags:
       - UserGroups
   /users:
+    get:
+      description: Retrieves a list of USER objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/USER'
+                type: array
+          description: Success - returns USER that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Get Users
+      tags:
+      - Users
     patch:
       description: Updates USER object(s) with details provided in the request body
       requestBody:
@@ -11138,24 +11168,23 @@ paths:
       summary: Create new Users
       tags:
       - Users
+  /users/{id}:
     get:
       description: Retrieves a list of USER objects
       parameters:
-      - $ref: '#/components/parameters/WHERE_FILTER'
-      - $ref: '#/components/parameters/ORDER_FILTER'
-      - $ref: '#/components/parameters/LIMIT_FILTER'
-      - $ref: '#/components/parameters/SKIP_FILTER'
-      - $ref: '#/components/parameters/DISTINCT_FILTER'
-      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      - description: The id of the entity to retrieve
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/USER'
-                type: array
-          description: Success - returns USER that satisfy the filters
+                $ref: '#/components/schemas/USER'
+          description: Success - the matching USER
         '400':
           description: Bad request - Something was wrong with the request
         '401':
@@ -11165,17 +11194,16 @@ paths:
           description: Forbidden - The session ID provided is invalid
         '404':
           description: No such record - Unable to find a record in the database
-      summary: Get Users
+      summary: Find the USER matching the given ID
       tags:
       - Users
-  /users/{id}:
     patch:
       description: Updates USER with the specified ID with details provided in the
         request body
       parameters:
       - description: The id of the entity to update
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -11211,7 +11239,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -11228,34 +11256,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Delete Users by id
-      tags:
-      - Users
-    get:
-      description: Retrieves a list of USER objects
-      parameters:
-      - description: The id of the entity to retrieve
-        in: path
-        name: ID
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/USER'
-          description: Success - the matching USER
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Find the USER matching the given ID
       tags:
       - Users
   /users/count:
@@ -11315,39 +11315,34 @@ paths:
       tags:
       - Users
   /sessions:
-    post:
-      description: Generates a sessionID if the user has correct credentials
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                password:
-                  type: string
-                username:
-                  type: string
-              type: object
-        description: User credentials to login with
-        required: true
+    get:
+      description: Gives details of a user's session
       responses:
-        '201':
+        '200':
           content:
             application/json:
               schema:
                 properties:
-                  sessionID:
-                    description: Session ID
+                  EXPIREDATETIME:
+                    description: When this session expires
+                    example: '2017-07-21T17:32:28Z'
+                    format: datetime
+                    type: string
+                  ID:
+                    description: The session ID
                     example: xxxxxx-yyyyyyy-zzzzzz
                     type: string
+                  USERNAME:
+                    description: Username associated with this session
+                    type: string
                 type: object
-          description: Success - returns a session ID
-        '400':
-          description: Bad request. User credentials were not provided in request
-            body.
+          description: Success - a user's session details
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
         '403':
-          description: Forbidden. User credentials were invalid
-      security: []
-      summary: Login
+          description: Forbidden - The session ID provided is invalid
+      summary: Get session details
       tags:
       - Sessions
     put:
@@ -11386,34 +11381,39 @@ paths:
       summary: Delete session
       tags:
       - Sessions
-    get:
-      description: Gives details of a user's session
+    post:
+      description: Generates a sessionID if the user has correct credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+              type: object
+        description: User credentials to login with
+        required: true
       responses:
-        '200':
+        '201':
           content:
             application/json:
               schema:
                 properties:
-                  EXPIREDATETIME:
-                    description: When this session expires
-                    example: '2017-07-21T17:32:28Z'
-                    format: datetime
-                    type: string
-                  ID:
-                    description: The session ID
+                  sessionID:
+                    description: Session ID
                     example: xxxxxx-yyyyyyy-zzzzzz
                     type: string
-                  USERNAME:
-                    description: Username associated with this session
-                    type: string
                 type: object
-          description: Success - a user's session details
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
+          description: Success - returns a session ID
+        '400':
+          description: Bad request. User credentials were not provided in request
+            body.
         '403':
-          description: Forbidden - The session ID provided is invalid
-      summary: Get session details
+          description: Forbidden. User credentials were invalid
+      security: []
+      summary: Login
       tags:
       - Sessions
   /instruments/{id}/facilitycycles:
@@ -11423,7 +11423,7 @@ paths:
       parameters:
       - description: The id of the instrument to retrieve the facility cycles of
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -11463,7 +11463,7 @@ paths:
       parameters:
       - description: The id of the instrument to count the facility cycles of
         in: path
-        name: ID
+        name: id
         required: true
         schema:
           type: integer
@@ -11496,14 +11496,14 @@ paths:
       parameters:
       - description: The id of the instrument to retrieve the investigations of
         in: path
-        name: Instrument ID
+        name: instrument_id
         required: true
         schema:
           type: integer
       - description: The id of the facility cycles to retrieve the investigations
           of
         in: path
-        name: Facility Cycle ID
+        name: cycle_id
         required: true
         schema:
           type: integer
@@ -11519,7 +11519,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/INVESTIGATIONS'
+                  $ref: '#/components/schemas/INVESTIGATION'
                 type: array
           description: Success - returns a list of the investigations for the given
             instrument and facility cycle that satisfy the filters
@@ -11543,14 +11543,14 @@ paths:
       parameters:
       - description: The id of the instrument to retrieve the investigations of
         in: path
-        name: Instrument ID
+        name: instrument_id
         required: true
         schema:
           type: integer
       - description: The id of the facility cycles to retrieve the investigations
           of
         in: path
-        name: Facility Cycle ID
+        name: cycle_id
         required: true
         schema:
           type: integer

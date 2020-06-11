@@ -18,7 +18,7 @@ class InstrumentsFacilityCycles(Resource):
         parameters:
             - in: path
               required: true
-              name: ID
+              name: id
               description: The id of the instrument to retrieve the facility cycles of
               schema:
                 type: integer
@@ -62,7 +62,7 @@ class InstrumentsFacilityCyclesCount(Resource):
         parameters:
             - in: path
               required: true
-              name: ID
+              name: id
               description: The id of the instrument to count the facility cycles of
               schema:
                 type: integer
@@ -100,13 +100,13 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
         parameters:
             - in: path
               required: true
-              name: Instrument ID
+              name: instrument_id
               description: The id of the instrument to retrieve the investigations of
               schema:
                 type: integer
             - in: path
               required: true
-              name: Facility Cycle ID
+              name: cycle_id
               description: The id of the facility cycles to retrieve the investigations of
               schema:
                 type: integer
@@ -124,7 +124,7 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
                         schema:
                             type: array
                             items:
-                                $ref: '#/components/schemas/INVESTIGATIONS'
+                                $ref: '#/components/schemas/INVESTIGATION'
             400:
                 description: Bad request - Something was wrong with the request
             401:
@@ -151,13 +151,13 @@ class InstrumentsFacilityCyclesInvestigationsCount(Resource):
         parameters:
             - in: path
               required: true
-              name: Instrument ID
+              name: instrument_id
               description: The id of the instrument to retrieve the investigations of
               schema:
                 type: integer
             - in: path
               required: true
-              name: Facility Cycle ID
+              name: cycle_id
               description: The id of the facility cycles to retrieve the investigations of
               schema:
                 type: integer
