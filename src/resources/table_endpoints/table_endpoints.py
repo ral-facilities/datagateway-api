@@ -1,88 +1,9 @@
 from flask_restful import Resource
 
-from common.database_helpers import get_investigations_for_user, get_investigations_for_user_count, \
-    get_facility_cycles_for_instrument, get_facility_cycles_for_instrument_count, \
+from common.database_helpers import get_facility_cycles_for_instrument, get_facility_cycles_for_instrument_count, \
     get_investigations_for_instrument_in_facility_cycle, get_investigations_for_instrument_in_facility_cycle_count
 from common.helpers import get_session_id_from_auth_header, get_filters_from_query_string
 from common.backends import backend
-
-
-class UsersInvestigations(Resource):
-    def get(self, id):
-        """
-        ---
-        summary: Get a user's Investigations
-        description: Retrieve the investigations that a user of a given ID is an InvestigationUser on, subject to filters.
-        tags:
-            - Investigations
-        parameters:
-            - in: path
-              required: true
-              name: ID
-              description: The id of the user to retrieve the investigations of
-              schema:
-                type: integer
-            - WHERE_FILTER
-            - ORDER_FILTER
-            - LIMIT_FILTER
-            - SKIP_FILTER
-            - DISTINCT_FILTER
-            - INCLUDE_FILTER
-        responses:
-            200:
-                description: Success - returns a list of the user's investigations that satisfy the filters
-                content:
-                    application/json:
-                        schema:
-                            type: array
-                            items:
-                                $ref: '#/components/schemas/INVESTIGATION'
-            400:
-                description: Bad request - Something was wrong with the request
-            401:
-                description: Unauthorized - No session ID was found in the HTTP Authorization header
-            403:
-                description: Forbidden - The session ID provided is invalid
-            404:
-                description: No such record - Unable to find a record in the database
-        """
-        return backend.get_investigations_for_user(get_session_id_from_auth_header(), id, get_filters_from_query_string()), 200
-
-
-class UsersInvestigationsCount(Resource):
-    def get(self, id):
-        """
-        ---
-        summary: Count a user's Investigations
-        description: Return the count of the Investigations that belong to a given user that would be retrieved given the filters provided
-        tags:
-            - Investigations
-        parameters:
-            - in: path
-              required: true
-              name: ID
-              description: The id of the user to count the investigations of
-              schema:
-                type: integer
-            - WHERE_FILTER
-            - DISTINCT_FILTER
-        responses:
-            200:
-                description: Success - The count of the user's investigations that satisfy the filters
-                content:
-                    application/json:
-                        schema:
-                            type: integer
-            400:
-                description: Bad request - Something was wrong with the request
-            401:
-                description: Unauthorized - No session ID was found in the HTTP Authorization header
-            403:
-                description: Forbidden - The session ID provided is invalid
-            404:
-                description: No such record - Unable to find a record in the database
-        """
-        return backend.get_investigations_for_user_count(get_session_id_from_auth_header(), id, get_filters_from_query_string()), 200
 
 
 class InstrumentsFacilityCycles(Resource):
@@ -96,7 +17,7 @@ class InstrumentsFacilityCycles(Resource):
         parameters:
             - in: path
               required: true
-              name: ID
+              name: id
               description: The id of the instrument to retrieve the facility cycles of
               schema:
                 type: integer
@@ -138,7 +59,7 @@ class InstrumentsFacilityCyclesCount(Resource):
         parameters:
             - in: path
               required: true
-              name: ID
+              name: id
               description: The id of the instrument to count the facility cycles of
               schema:
                 type: integer
@@ -174,13 +95,13 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
         parameters:
             - in: path
               required: true
-              name: Instrument ID
+              name: instrument_id
               description: The id of the instrument to retrieve the investigations of
               schema:
                 type: integer
             - in: path
               required: true
-              name: Facility Cycle ID
+              name: cycle_id
               description: The id of the facility cycles to retrieve the investigations of
               schema:
                 type: integer
@@ -198,7 +119,7 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
                         schema:
                             type: array
                             items:
-                                $ref: '#/components/schemas/INVESTIGATIONS'
+                                $ref: '#/components/schemas/INVESTIGATION'
             400:
                 description: Bad request - Something was wrong with the request
             401:
@@ -223,13 +144,13 @@ class InstrumentsFacilityCyclesInvestigationsCount(Resource):
         parameters:
             - in: path
               required: true
-              name: Instrument ID
+              name: instrument_id
               description: The id of the instrument to retrieve the investigations of
               schema:
                 type: integer
             - in: path
               required: true
-              name: Facility Cycle ID
+              name: cycle_id
               description: The id of the facility cycles to retrieve the investigations of
               schema:
                 type: integer

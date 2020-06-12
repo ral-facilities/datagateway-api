@@ -129,28 +129,6 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_users_investigations_with_filters(self, session_id, user_id, filters):
-        """
-        Given a user id and a list of filters, return a filtered list of all investigations that belong to that user
-        :param session_id: The session id of the requesting user
-        :param user_id: The id of the user
-        :param filters: The list of filters
-        :return: A list of dictionary representations of the investigation entities
-        """
-        pass
-
-    @abstractmethod
-    def count_users_investigations_with_filters(self, session_id, user_id, filters):
-        """
-        Given a user id and a list of filters, return the count of all investigations that belong to that user
-        :param session_id: The session id of the requesting user
-        :param user_id: The id of the user
-        :param filters: The list of filters
-        :return: The count
-        """
-        pass
-
-    @abstractmethod
     def get_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
         """
         Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle

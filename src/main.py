@@ -9,9 +9,8 @@ from src.resources.entities.entity_endpoint import get_endpoint, get_id_endpoint
     get_find_one_endpoint
 from src.resources.entities.entity_map import endpoints
 from src.resources.non_entities.sessions_endpoints import *
-from src.resources.table_endpoints.table_endpoints import UsersInvestigations, UsersInvestigationsCount, \
-    InstrumentsFacilityCycles, InstrumentsFacilityCyclesCount, InstrumentsFacilityCyclesInvestigations, \
-    InstrumentsFacilityCyclesInvestigationsCount
+from src.resources.table_endpoints.table_endpoints import InstrumentsFacilityCycles, InstrumentsFacilityCyclesCount, \
+    InstrumentsFacilityCyclesInvestigations, InstrumentsFacilityCyclesInvestigationsCount
 from common.exceptions import ApiError
 from apispec import APISpec
 from pathlib import Path
@@ -79,11 +78,6 @@ api.add_resource(Sessions, "/sessions")
 spec.path(resource=Sessions, api=api)
 
 # Table specific endpoints
-api.add_resource(UsersInvestigations, "/users/<int:id>/investigations")
-spec.path(resource=UsersInvestigations, api=api)
-api.add_resource(UsersInvestigationsCount,
-                 "/users/<int:id>/investigations/count")
-spec.path(resource=UsersInvestigationsCount, api=api)
 api.add_resource(InstrumentsFacilityCycles,
                  "/instruments/<int:id>/facilitycycles")
 spec.path(resource=InstrumentsFacilityCycles, api=api)
