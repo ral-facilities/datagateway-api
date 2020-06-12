@@ -29,9 +29,11 @@ app.url_map.strict_slashes = False
 api = Api(app)
 
 
-@app.errorhandler(ApiError)
 def handle_error(e):
     return str(e), e.status_code
+
+
+app.register_error_handler(ApiError, handle_error)
 
 
 swaggerui_blueprint = get_swaggerui_blueprint(
