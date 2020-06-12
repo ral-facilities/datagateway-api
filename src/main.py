@@ -11,7 +11,7 @@ from src.resources.entities.entity_map import endpoints
 from src.resources.non_entities.sessions_endpoints import *
 from src.resources.table_endpoints.table_endpoints import InstrumentsFacilityCycles, InstrumentsFacilityCyclesCount, \
     InstrumentsFacilityCyclesInvestigations, InstrumentsFacilityCyclesInvestigationsCount
-
+from common.exceptions import ApiError
 from apispec import APISpec
 from pathlib import Path
 import json
@@ -26,6 +26,14 @@ app = Flask(__name__)
 cors = CORS(app)
 app.url_map.strict_slashes = False
 api = Api(app)
+
+
+def handle_error(e):
+    return str(e), e.status_code
+
+
+app.register_error_handler(ApiError, handle_error)
+
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     "",

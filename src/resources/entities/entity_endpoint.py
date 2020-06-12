@@ -3,7 +3,8 @@ from flask_restful import Resource
 
 from common.database_helpers import get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, \
     delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row
-from common.helpers import requires_session_id, queries_records, get_filters_from_query_string
+from common.helpers import get_session_id_from_auth_header, get_filters_from_query_string
+from common.backends import backend
 
 
 def get_endpoint(name, table):
@@ -16,10 +17,8 @@ def get_endpoint(name, table):
     :return: The generated endpoint class
     """
     class Endpoint(Resource):
-        @requires_session_id
-        @queries_records
         def get(self):
-            return get_rows_by_filter(table, get_filters_from_query_string()), 200
+            return backend.get_with_filters(get_session_id_from_auth_header(), table, get_filters_from_query_string()), 200
 
         get.__doc__ = f"""
             ---
@@ -53,10 +52,8 @@ def get_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        @requires_session_id
-        @queries_records
         def post(self):
-            return create_rows_from_json(table, request.json), 200
+            return backend.create(get_session_id_from_auth_header(), table, request.json), 200
 
         post.__doc__ = f"""
             ---
@@ -96,10 +93,8 @@ def get_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        @requires_session_id
-        @queries_records
         def patch(self):
-            return list(map(lambda x: x.to_dict(), patch_entities(table, request.json))), 200
+            return list(map(lambda x: x.to_dict(), backend.update(get_session_id_from_auth_header(), table, request.json))), 200
 
         patch.__doc__ = f"""
             ---
@@ -154,10 +149,8 @@ def get_id_endpoint(name, table):
     """
     class EndpointWithID(Resource):
 
-        @requires_session_id
-        @queries_records
         def get(self, id):
-            return get_row_by_id(table, id).to_dict(), 200
+            return backend.get_with_id(get_session_id_from_auth_header(), table, id), 200
 
         get.__doc__ = f"""
             ---
@@ -189,10 +182,9 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        @requires_session_id
-        @queries_records
         def delete(self, id):
-            delete_row_by_id(table, id)
+            backend.delete_with_id(
+                get_session_id_from_auth_header(), table, id)
             return "", 204
 
         delete.__doc__ = f"""
@@ -221,11 +213,10 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        @requires_session_id
-        @queries_records
         def patch(self, id):
-            update_row_from_id(table, id, request.json)
-            return get_row_by_id(table, id).to_dict(), 200
+            session_id = get_session_id_from_auth_header()
+            backend.update_with_id(session_id, table, id, request.json)
+            return backend.get_with_id(session_id, table, id).to_dict(), 200
 
         patch.__doc__ = f"""
             ---
@@ -279,11 +270,9 @@ def get_count_endpoint(name, table):
     """
     class CountEndpoint(Resource):
 
-        @requires_session_id
-        @queries_records
         def get(self):
             filters = get_filters_from_query_string()
-            return get_filtered_row_count(table, filters), 200
+            return backend.count_with_filters(get_session_id_from_auth_header(), table, filters), 200
 
         get.__doc__ = f"""
             ---
@@ -327,11 +316,9 @@ def get_find_one_endpoint(name, table):
     """
     class FindOneEndpoint(Resource):
 
-        @requires_session_id
-        @queries_records
         def get(self):
             filters = get_filters_from_query_string()
-            return get_first_filtered_row(table, filters), 200
+            return backend.get_one_with_filters(get_session_id_from_auth_header(), table, filters), 200
 
         get.__doc__ = f"""
             ---

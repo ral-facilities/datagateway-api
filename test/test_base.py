@@ -9,5 +9,5 @@ class FlaskAppTest(TestCase):
     """
 
     def setUp(self):
+        app.config["TESTING"] = True
         self.app = app.test_client()
-        self.app.testing = True
