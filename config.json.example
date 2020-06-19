@@ -1,6 +1,7 @@
 {
   "backend": "db",
   "DB_URL": "mysql+pymysql://root:rootpw@localhost:13306/icatdb",
+  "ICAT_URL": "https://localhost.localdomain:8181",
   "log_level": "WARN",
   "debug_mode": false,
   "generate_swagger": false,

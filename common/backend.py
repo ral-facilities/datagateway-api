@@ -10,7 +10,7 @@ class Backend(ABC):
     def login(self, credentials):
         """
         Attempt to log a user in using the provided credentials
-        :param credentials: The user's credentials
+        :param credentials: The user's credentials (including mechanism)
         :returns: a session ID
         """
         pass

@@ -1,15 +1,32 @@
-from common.backend import Backend
-from common.helpers import requires_session_id, queries_records
-#from common.python_icat_helpers import
+import logging
 
+import icat.client
+from icat.exception import ICATSessionError
+
+from common.backend import Backend
+from common.helpers import queries_records, requires_session_id
+from common.config import config
+from common.exceptions import AuthenticationError
+from common.models.db_models import SESSION
+
+log = logging.getLogger()
 
 class PythonICATBackend(Backend):
     """
     Class that contains functions to access and modify data in an ICAT database directly
     """
 
-    def login(self, credentials, mnemonic):
-        pass
+    def login(self, credentials):
+        icat_server_url = config.get_icat_url()
+        client = icat.client.Client(icat_server_url, checkCert=False)
+        # Syntax for Python ICAT
+        login_details = {'username': credentials['username'], 'password': credentials['password']}
+
+        try:
+            session_id = client.login(credentials["mechanism"], login_details)
+            return session_id
+        except ICATSessionError:
+            raise AuthenticationError("User credentials are incorrect")
 
     @requires_session_id
     def get_session_details(self, session_id):
@@ -86,4 +103,3 @@ class PythonICATBackend(Backend):
     def count_instrument_facilitycycles_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
         pass
         #return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)
-

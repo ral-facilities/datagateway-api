@@ -9,6 +9,8 @@ import uuid
 from common.exceptions import AuthenticationError
 import datetime
 
+import logging
+log = logging.getLogger()
 
 class DatabaseBackend(Backend):
     """
@@ -18,7 +20,7 @@ class DatabaseBackend(Backend):
     def login(self, credentials):
         if credentials["username"] == "user" and credentials["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME="simple/root",
+            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME=f"{credentials['mechanism']}/root",
                                                    EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
             return session_id
         else:
