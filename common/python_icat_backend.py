@@ -15,15 +15,17 @@ class PythonICATBackend(Backend):
     """
     Class that contains functions to access and modify data in an ICAT database directly
     """
+    
+    def __init__(self):
+        icat_server_url = config.get_icat_url()
+        self.client = icat.client.Client(icat_server_url, checkCert=config.get_icat_check_cert())
 
     def login(self, credentials):
-        icat_server_url = config.get_icat_url()
-        client = icat.client.Client(icat_server_url, checkCert=False)
         # Syntax for Python ICAT
         login_details = {'username': credentials['username'], 'password': credentials['password']}
 
         try:
-            session_id = client.login(credentials["mechanism"], login_details)
+            session_id = self.client.login(credentials["mechanism"], login_details)
             return session_id
         except ICATSessionError:
             raise AuthenticationError("User credentials are incorrect")
