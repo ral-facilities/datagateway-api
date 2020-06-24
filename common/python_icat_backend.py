@@ -4,7 +4,8 @@ import icat.client
 from icat.exception import ICATSessionError
 
 from common.backend import Backend
-from common.helpers import queries_records, requires_session_id
+from common.helpers import queries_records
+from common.python_icat_helpers import requires_session_id, get_session_details_helper
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION
@@ -32,7 +33,8 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     def get_session_details(self, session_id):
-        pass
+        self.client.sessionId = session_id
+        return get_session_details_helper(self.client)
 
     @requires_session_id
     def refresh(self, session_id):

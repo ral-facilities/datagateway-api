@@ -1,4 +1,5 @@
 import uuid
+import logging
 
 from flask import request
 from flask_restful import Resource, reqparse
@@ -9,6 +10,7 @@ from common.models.db_models import SESSION
 from common.backends import backend
 from common.exceptions import AuthenticationError
 
+log = logging.getLogger()
 
 class Sessions(Resource):
 
@@ -120,7 +122,7 @@ class Sessions(Resource):
           403:
             description: Forbidden - The session ID provided is invalid
         """
-        return backend.get_session_details(get_session_id_from_auth_header()).to_dict(), 200
+        return backend.get_session_details(get_session_id_from_auth_header()), 200
 
     def put(self):
         """
