@@ -55,3 +55,7 @@ def get_session_details_helper(client):
     username = client.getUserName()
 
     return {"ID": client.sessionId, "EXPIREDATETIME": str(session_expiry_time), "USERNAME": username}
+
+
+def logout_icat_client(client):
+    client.logout()

@@ -5,7 +5,7 @@ from icat.exception import ICATSessionError
 
 from common.backend import Backend
 from common.helpers import queries_records
-from common.python_icat_helpers import requires_session_id, get_session_details_helper
+from common.python_icat_helpers import requires_session_id, get_session_details_helper, logout_icat_client
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION
@@ -43,7 +43,8 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def logout(self, session_id):
-        pass
+        self.client.sessionId = session_id
+        return logout_icat_client(self.client)
 
     @requires_session_id
     @queries_records
