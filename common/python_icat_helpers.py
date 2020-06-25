@@ -59,3 +59,7 @@ def get_session_details_helper(client):
 
 def logout_icat_client(client):
     client.logout()
+
+
+def refresh_client_session(client):
+    client.refresh()
