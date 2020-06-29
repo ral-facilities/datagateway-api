@@ -37,6 +37,8 @@ class Sessions(Resource):
                     type: string
                   password:
                     type: string
+                  mechanism:
+                    type: string
         responses:
           201:
             description: Success - returns a session ID
