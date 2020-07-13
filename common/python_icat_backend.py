@@ -18,13 +18,17 @@ class PythonICATBackend(Backend):
     """
     
     def __init__(self):
-        icat_server_url = config.get_icat_url()
-        self.client = icat.client.Client(icat_server_url, checkCert=config.get_icat_check_cert())
+        # Client object is created here as well as in login() to avoid uncaught exceptions 
+        # where the object is None. This could happen where a user tries to use an endpoint before
+        # logging in. Also helps to give a bit of certainty to what's stored here
+        self.client = icat.client.Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
 
     def login(self, credentials):
+        # Client object is re-created here so session IDs aren't overwritten in the database
+        self.client = icat.client.Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
+
         # Syntax for Python ICAT
         login_details = {'username': credentials['username'], 'password': credentials['password']}
-
         try:
             session_id = self.client.login(credentials["mechanism"], login_details)
             return session_id
