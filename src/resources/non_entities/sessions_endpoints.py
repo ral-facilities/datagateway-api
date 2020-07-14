@@ -1,4 +1,5 @@
 import uuid
+import logging
 
 from flask import request
 from flask_restful import Resource, reqparse
@@ -9,6 +10,7 @@ from common.models.db_models import SESSION
 from common.backends import backend
 from common.exceptions import AuthenticationError
 
+log = logging.getLogger()
 
 class Sessions(Resource):
 
@@ -35,6 +37,8 @@ class Sessions(Resource):
                     type: string
                   password:
                     type: string
+                  mechanism:
+                    type: string
         responses:
           201:
             description: Success - returns a session ID
@@ -54,6 +58,9 @@ class Sessions(Resource):
         """
         if not (request.data and "username" in request.json and "password" in request.json):
             return "Bad request", 400
+        # If no mechanism is present in request body, default to simple
+        if not ("mechanism" in request.json):
+            request.json["mechanism"] = "simple"
         try:
             return {"sessionID": backend.login(request.json)}, 201
         except AuthenticationError:
@@ -117,7 +124,7 @@ class Sessions(Resource):
           403:
             description: Forbidden - The session ID provided is invalid
         """
-        return backend.get_session_details(get_session_id_from_auth_header()).to_dict(), 200
+        return backend.get_session_details(get_session_id_from_auth_header()), 200
 
     def put(self):
         """

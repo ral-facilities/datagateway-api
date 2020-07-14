@@ -8,38 +8,8 @@ from sqlalchemy.exc import IntegrityError
 
 from common.database_helpers import QueryFilterFactory
 from common.exceptions import ApiError, AuthenticationError, BadFilterError, BadRequestError, MissingCredentialsError, MissingRecordError, MultipleIncludeError
-from common.models.db_models import SESSION
-from common.session_manager import session_manager
 
 log = logging.getLogger()
-
-
-def requires_session_id(method):
-    """
-    Decorator for database backend methods that makes sure a valid session_id is provided
-    It expects that session_id is the second argument supplied to the function
-    :param method: The method for the backend operation
-    :raises AuthenticationError, if a valid session_id is not provided with the request
-    """
-
-    @wraps(method)
-    def wrapper_requires_session(*args, **kwargs):
-        log.info(" Authenticating consumer")
-        session = session_manager.get_icat_db_session()
-        query = session.query(SESSION).filter(
-            SESSION.ID == args[1]).first()
-        if query is not None:
-            log.info(" Closing DB session")
-            session.close()
-            session.close()
-            log.info(" Consumer authenticated")
-            return method(*args, **kwargs)
-        else:
-            log.info(" Could not authenticate consumer, closing DB session")
-            session.close()
-            raise AuthenticationError("Forbidden")
-
-    return wrapper_requires_session
 
 
 def queries_records(method):

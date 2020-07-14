@@ -24,6 +24,21 @@ class Config(object):
         except:
             sys.exit("Missing config value, DB_URL")
 
+    def get_icat_url(self):
+        try:
+            return self.config["ICAT_URL"]
+        except:
+            sys.exit("Missing config value, ICAT_URL")
+
+    def get_icat_check_cert(self):
+        try:
+            return self.config["icat_check_cert"]
+        except:
+            # This could be set to true if there's no value, and log a warning
+            # that no value has been found from the config - save app from 
+            # exiting
+            sys.exit("Missing config value, icat_check_cert")
+
     def get_log_level(self):
         try:
             return self.config["log_level"]

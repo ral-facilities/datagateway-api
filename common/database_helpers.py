@@ -1,17 +1,45 @@
 import datetime
 import logging
 from abc import ABC, abstractmethod
+from functools import wraps
 
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import MissingRecordError, BadFilterError, BadRequestError, MultipleIncludeError
+from common.exceptions import AuthenticationError, MissingRecordError, BadFilterError, BadRequestError, MultipleIncludeError
 from common.models import db_models
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
-    INVESTIGATIONINSTRUMENT, FACILITY
+    INVESTIGATIONINSTRUMENT, FACILITY, SESSION
 from common.session_manager import session_manager
 
 log = logging.getLogger()
+
+def requires_session_id(method):
+    """
+    Decorator for database backend methods that makes sure a valid session_id is provided
+    It expects that session_id is the second argument supplied to the function
+    :param method: The method for the backend operation
+    :raises AuthenticationError, if a valid session_id is not provided with the request
+    """
+
+    @wraps(method)
+    def wrapper_requires_session(*args, **kwargs):
+        log.info(" Authenticating consumer")
+        session = session_manager.get_icat_db_session()
+        query = session.query(SESSION).filter(
+            SESSION.ID == args[1]).first()
+        if query is not None:
+            log.info(" Closing DB session")
+            session.close()
+            session.close()
+            log.info(" Consumer authenticated")
+            return method(*args, **kwargs)
+        else:
+            log.info(" Could not authenticate consumer, closing DB session")
+            session.close()
+            raise AuthenticationError("Forbidden")
+
+    return wrapper_requires_session
 
 
 class Query(ABC):
