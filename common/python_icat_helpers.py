@@ -1,7 +1,7 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
-
+from icat.query import Query
 
 from icat.exception import ICATSessionError
 from common.exceptions import AuthenticationError
@@ -63,3 +63,29 @@ def logout_icat_client(client):
 
 def refresh_client_session(client):
     client.refresh()
+
+
+def construct_icat_query(client, entity_name, conditions=None):
+    return Query(client, entity_name, conditions=conditions)
+
+
+def execute_icat_query(client, query):
+    client.search(query)
+
+
+def get_entity_by_id(client, table, id):
+    id_condition = {'id': f'= {id}'}
+
+    # TODO - Sort out entities
+    id_query = construct_icat_query(client, "User", id_condition)
+
+    # TODO - Should all query executions be converted to strings?
+    query_result = client.search(id_query)
+    for result in query_result:
+        final_result = result.as_dict()
+
+        for key, value in final_result.items():
+            # Convert everything to strings so it can be converted into JSON
+            final_result[key] = str(final_result[key])
+
+    return final_result
