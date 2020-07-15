@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from icat.query import Query
 
 from icat.exception import ICATSessionError
-from common.exceptions import AuthenticationError
+from common.exceptions import AuthenticationError, BadRequestError
 
 log = logging.getLogger()
 
@@ -66,26 +66,79 @@ def refresh_client_session(client):
 
 
 def construct_icat_query(client, entity_name, conditions=None):
+    """
+    Create a Query object within Python ICAT 
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param entity_name: Name of the entity to get data from
+    :type entity_name: TODO
+    :param conditions: TODO
+    :type conditions: TODO
+    :return: Query object from Python ICAT
+    """
     return Query(client, entity_name, conditions=conditions)
 
 
 def execute_icat_query(client, query):
-    client.search(query)
+    """
+    Execute a previously created ICAT Query object
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param query: ICAT Query object to execute within Python ICAT
+    :type query: :class:`icat.query.Query`
+    :return: Data (of type list) from the executed query in a format that can be converted straight to JSON
+    """
+    query_result = client.search(query)
+
+    data = []
+    for result in query_result:
+        dict_result = result.as_dict()
+        for key, value in dict_result.items():
+            # Convert datetime objects to strings so they can be JSON serialisable
+            if isinstance(dict_result[key], datetime):
+                dict_result[key] = str(dict_result[key])
+
+        data.append(dict_result)
+
+    return data
 
 
 def get_entity_by_id(client, table, id):
+    """
+    Gets a record of a given ID of the specified entity
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table: Table to extract which entity to use
+    :type table: TODO
+    :param id: ID number of the entity to retrieve
+    :type id: :class:`int`
+    :return: The record of the specified ID from the given entity
+    """
+
+    # Set query condition for the selected ID
+    # TODO - Could this be moved out of this function for more generic conditions that'll be implemented later on?
     id_condition = {'id': f'= {id}'}
 
-    # TODO - Sort out entities
-    id_query = construct_icat_query(client, "User", id_condition)
+    # Due to the case sensitivity of Python ICAT, the table name must be compared with each of the
+    # valid entity names within Python ICAT to get the correctly cased entity name. This is done by
+    # putting everything to lowercase and comparing from there
+    lowercase_table_name = table.__name__.lower()
+    entity_names = client.getEntityNames()
+    selected_entity = None
+    for entity_name in entity_names:
+        lowercase_name = entity_name.lower()
 
-    # TODO - Should all query executions be converted to strings?
-    query_result = client.search(id_query)
-    for result in query_result:
-        final_result = result.as_dict()
+        if lowercase_name == lowercase_table_name:
+            selected_entity = entity_name
 
-        for key, value in final_result.items():
-            # Convert everything to strings so it can be converted into JSON
-            final_result[key] = str(final_result[key])
+    # Raise a 400 if a valid entity cannot be found
+    if selected_entity is None:
+        raise BadRequestError(f"Bad request made, cannot find {table.__name__} entity within Python ICAT")
 
-    return final_result
+    id_query = construct_icat_query(client, selected_entity, id_condition)
+    entity_by_id_data = execute_icat_query(client, id_query)
+
+    return entity_by_id_data
