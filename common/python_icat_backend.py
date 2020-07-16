@@ -6,7 +6,7 @@ from icat.exception import ICATSessionError
 from common.backend import Backend
 from common.helpers import queries_records
 from common.python_icat_helpers import requires_session_id, get_session_details_helper, logout_icat_client, \
-                                       refresh_client_session, get_entity_by_id
+                                       refresh_client_session, get_entity_by_id, update_entity_by_id
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION
@@ -90,7 +90,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def update_with_id(self, session_id, table, id, data):
-        pass
+        return update_entity_by_id(self.client, table.__name__, id, data)
 
     @requires_session_id
     @queries_records

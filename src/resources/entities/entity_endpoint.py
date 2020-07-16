@@ -216,7 +216,7 @@ def get_id_endpoint(name, table):
         def patch(self, id):
             session_id = get_session_id_from_auth_header()
             backend.update_with_id(session_id, table, id, request.json)
-            return backend.get_with_id(session_id, table, id).to_dict(), 200
+            return backend.get_with_id(session_id, table, id), 200
 
         patch.__doc__ = f"""
             ---

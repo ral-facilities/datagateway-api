@@ -131,14 +131,20 @@ def get_entity_by_id(client, table, id):
     for entity_name in entity_names:
         lowercase_name = entity_name.lower()
 
-        if lowercase_name == lowercase_table_name:
-            selected_entity = entity_name
+def update_entity_by_id(client, table_name, id, new_data):
+    """
+    Updates certain attributes Gets a record of a given ID of the specified entity
 
-    # Raise a 400 if a valid entity cannot be found
-    if selected_entity is None:
-        raise BadRequestError(f"Bad request made, cannot find {table.__name__} entity within Python ICAT")
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: TODO
+    :param id: ID number of the entity to retrieve
+    :type id: :class:`int`
+    :param new_data: JSON from request body providing new data to update the record with the
+        specified ID
+    """
 
-    id_query = construct_icat_query(client, selected_entity, id_condition)
-    entity_by_id_data = execute_icat_query(client, id_query)
+    pass
 
     return entity_by_id_data
