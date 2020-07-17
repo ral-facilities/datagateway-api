@@ -72,14 +72,15 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None):
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param entity_name: Name of the entity to get data from
-    :type entity_name: TODO
-    :param conditions: TODO
-    :type conditions: TODO
+    :type entity_name: :class:`suds.sax.text.Text`
+    :param conditions: Constraints used when an entity is queried
+    :type conditions: :class:`dict`
     :param aggregate: Name of the aggregate function to apply. Operations such as counting the
         number of records. See `icat.query.setAggregate for valid values.
     :type aggregate: :class:`str`
     :return: Query object from Python ICAT
     """
+
     return Query(client, entity_name, conditions=conditions, aggregate=aggregate)
 
 
@@ -103,16 +104,16 @@ def execute_icat_query(client, query, return_json_formattable=False):
     query_result = client.search(query)
 
     if return_json_formattable:
-    data = []
-    for result in query_result:
-        dict_result = result.as_dict()
-        for key, value in dict_result.items():
-            # Convert datetime objects to strings so they can be JSON serialisable
-            if isinstance(dict_result[key], datetime):
-                dict_result[key] = str(dict_result[key])
+        data = []
+        for result in query_result:
+            dict_result = result.as_dict()
+            for key, value in dict_result.items():
+                # Convert datetime objects to strings so they can be JSON serialisable
+                if isinstance(dict_result[key], datetime):
+                    dict_result[key] = str(dict_result[key])
 
-        data.append(dict_result)
-    return data
+            data.append(dict_result)
+        return data
     else:
         return query_result
 
@@ -162,7 +163,25 @@ def create_condition(attribute_name, operator, value):
     condition[attribute_name] = f"{operator} '{value}'"
 
     return condition
-    
+
+
+def update_attributes(object, dictionary):
+    """
+    Updates the attribute(s) of a given object which is a record of an entity from Python ICAT
+
+    :param object: An entity from Python ICAT
+    :type object: :class:`icat.entities.ENTITY`
+    :param dictionary: Dictionary containing the new data to be modified
+    :type dictionary: :class:`dict`
+    """
+    for key in dictionary:
+        try:
+            setattr(object, key, dictionary[key])
+        except AttributeError:
+            raise BadRequestError(f"Bad request made, cannot modify attribute '{key}' within the {object.BeanName} entity")
+
+    object.update()
+
 
 def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     """
@@ -171,7 +190,7 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
-    :type table_name: TODO
+    :type table_name: :class:`str`
     :param id: ID number of the entity to retrieve
     :type id: :class:`int`
     :param return_json_formattable_data: Flag to determine whether the data should be returned as a
@@ -194,18 +213,24 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
 
 def update_entity_by_id(client, table_name, id, new_data):
     """
-    Updates certain attributes Gets a record of a given ID of the specified entity
+    Gets a record of a given ID of the specified entity
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
-    :type table_name: TODO
+    :type table_name: :class:`str`
     :param id: ID number of the entity to retrieve
     :type id: :class:`int`
     :param new_data: JSON from request body providing new data to update the record with the
         specified ID
     """
 
-    pass
+    entity_id_data = get_entity_by_id(client, table_name, id, False)
+    # There will only ever be one record associated with a single ID
+    entity_id_data = entity_id_data[0]
 
-    return entity_by_id_data
+    update_attributes(entity_id_data, new_data)
+
+    # The record is re-obtained from Python ICAT (rather than using entity_id_data) to show to the
+    # user whether the change has actually been applied
+    return get_entity_by_id(client, table_name, id, True)
