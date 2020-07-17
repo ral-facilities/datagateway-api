@@ -24,7 +24,7 @@ def requires_session_id(method):
             client = args[0].client
             # Find out if session has expired
             session_time = client.getRemainingMinutes()
-            log.info("Session time: {}".format(session_time))
+            log.info(f"Session time: {session_time}")
             if session_time < 0:
                 raise AuthenticationError("Forbidden")
             else:
@@ -83,19 +83,26 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None):
     return Query(client, entity_name, conditions=conditions, aggregate=aggregate)
 
 
-def execute_icat_query(client, query):
+def execute_icat_query(client, query, return_json_formattable=False):
     """
-    Execute a previously created ICAT Query object
+    Execute a previously created ICAT Query object and return in the format specified by the
+    return_json_formattable flag
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param query: ICAT Query object to execute within Python ICAT
     :type query: :class:`icat.query.Query`
-    :return: Data (of type list) from the executed query in a format that can be converted
-        straight to JSON
+    :param return_json_formattable: Flag to determine whether the data from the query should be
+        returned as a list of data ready to be converted straight to JSON (i.e. if the data will be
+        used as a response for an API call) or whether to leave the data in a Python ICAT format
+        (i.e. if it's going to be manipulated at some point)
+    :type return_json_formattable_data: :class:`bool`
+    :return: Data (of type list) from the executed query
     """
+
     query_result = client.search(query)
 
+    if return_json_formattable:
     data = []
     for result in query_result:
         dict_result = result.as_dict()
@@ -105,8 +112,9 @@ def execute_icat_query(client, query):
                 dict_result[key] = str(dict_result[key])
 
         data.append(dict_result)
-
     return data
+    else:
+        return query_result
 
 
 def get_python_icat_entity_name(client, database_table_name):
@@ -141,9 +149,24 @@ def get_python_icat_entity_name(client, database_table_name):
     return python_icat_entity_name
 
 
-def get_entity_by_id(client, table_name, id):
+def create_condition(attribute_name, operator, value):
     """
-    Gets a record of a given ID of the specified entity
+    Construct and return a Python dictionary containing a condition to be used in a Query object
+
+    This currently only allows a single condition to be entered, this should be increased to allow
+    multiple conditions to be stored in the same dictionary
+    """
+
+    # TODO - Could this be turned into a class/done more elegantly?
+    condition = {}
+    condition[attribute_name] = f"{operator} '{value}'"
+
+    return condition
+    
+
+def get_entity_by_id(client, table_name, id, return_json_formattable_data):
+    """
+    Gets a record of a given ID from the specified entity
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -151,19 +174,20 @@ def get_entity_by_id(client, table_name, id):
     :type table_name: TODO
     :param id: ID number of the entity to retrieve
     :type id: :class:`int`
+    :param return_json_formattable_data: Flag to determine whether the data should be returned as a
+        list of data ready to be converted straight to JSON (i.e. if the data will be used as a
+        response for an API call) or whether to leave the data in a Python ICAT format
+    :type return_json_formattable_data: :class:`bool`
     :return: The record of the specified ID from the given entity
     """
 
     # Set query condition for the selected ID
-    # TODO - Could this be moved out of this function for more generic conditions that'll be implemented later on?
-    id_condition = {}
-    operator = '='
-    id_condition[attribute_name] = f"{operator} '{id}'"
+    id_condition = create_condition('id', '=', id)
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
     id_query = construct_icat_query(client, selected_entity_name, id_condition)
-    entity_by_id_data = execute_icat_query(client, id_query)
+    entity_by_id_data = execute_icat_query(client, id_query, return_json_formattable_data)
 
     return entity_by_id_data
 

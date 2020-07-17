@@ -80,7 +80,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_id(self, session_id, table, id):
-        return get_entity_by_id(self.client, table.__name__, id)
+        return get_entity_by_id(self.client, table.__name__, id, True)
 
     @requires_session_id
     @queries_records
