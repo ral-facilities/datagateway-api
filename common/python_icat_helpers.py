@@ -1,8 +1,8 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
-from icat.query import Query
 
+from icat.query import Query
 from icat.exception import ICATSessionError
 from common.exceptions import AuthenticationError, BadRequestError
 
@@ -81,7 +81,13 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None):
     :return: Query object from Python ICAT
     """
 
-    return Query(client, entity_name, conditions=conditions, aggregate=aggregate)
+    try:
+        query = Query(client, entity_name, conditions=conditions, aggregate=aggregate)
+    except ValueError:
+        # TODO - Add appropriate action
+        pass
+
+    return query
 
 
 def execute_icat_query(client, query, return_json_formattable=False):
@@ -165,6 +171,31 @@ def create_condition(attribute_name, operator, value):
     return condition
 
 
+def str_to_date_object(icat_attribute, data):
+    """
+    Where data is stored as dates in ICAT (which this function determines), convert strings (i.e.
+    user data from PATCH/POST requests) into datetime objects so they can be stored in ICAT
+
+    :param icat_attribute: Attribute that will be updated with new data
+    :type icat_attribute: Any valid data type that can be stored in Python ICAT
+    :param data: Single data value from the request body
+    :type data: Data type of the data as per user's request body
+    """
+
+    log.debug(f"ICAT Attribute: {icat_attribute}, Type: {type(icat_attribute)}")
+    log.debug(f"Data: {data}, Type: {type(data)}")
+
+    accepted_date_format = "%Y-%m-%d %H:%M:%S"
+
+    if isinstance(icat_attribute, datetime):
+        try:
+            data = datetime.strptime(data, accepted_date_format)
+        except ValueError:
+            raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API")
+
+    return data
+
+
 def update_attributes(object, dictionary):
     """
     Updates the attribute(s) of a given object which is a record of an entity from Python ICAT
@@ -175,6 +206,9 @@ def update_attributes(object, dictionary):
     :type dictionary: :class:`dict`
     """
     for key in dictionary:
+        original_data_attribute = getattr(object, key)
+        dictionary[key] = str_to_date_object(original_data_attribute, dictionary[key])
+
         try:
             setattr(object, key, dictionary[key])
         except AttributeError:
