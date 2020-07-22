@@ -65,7 +65,7 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def construct_icat_query(client, entity_name, conditions=None, aggregate=None):
+def construct_icat_query(client, entity_name, conditions=None, aggregate=None, includes=None):
     """
     Create a Query object within Python ICAT 
 
@@ -78,11 +78,13 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None):
     :param aggregate: Name of the aggregate function to apply. Operations such as counting the
         number of records. See `icat.query.setAggregate for valid values.
     :type aggregate: :class:`str`
+    :param includes: TODO
+    :type includes: iterable of :class:`str` or :class:`str`
     :return: Query object from Python ICAT
     """
 
     try:
-        query = Query(client, entity_name, conditions=conditions, aggregate=aggregate)
+        query = Query(client, entity_name, conditions=conditions, aggregate=aggregate, includes=includes)
     except ValueError:
         # TODO - Add appropriate action
         pass
@@ -239,8 +241,12 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
-    id_query = construct_icat_query(client, selected_entity_name, id_condition)
+    id_query = construct_icat_query(client, selected_entity_name, conditions=id_condition, includes="1")
     entity_by_id_data = execute_icat_query(client, id_query, return_json_formattable_data)
+
+    if entity_by_id_data == []:
+        # Cannot find any data matching the given ID
+        raise MissingRecordError("No result found")
 
     return entity_by_id_data
 
@@ -273,13 +279,14 @@ def update_entity_by_id(client, table_name, id, new_data):
     :type id: :class:`int`
     :param new_data: JSON from request body providing new data to update the record with the
         specified ID
+    :return: The updated record of the specified ID from the given entity
     """
 
     entity_id_data = get_entity_by_id(client, table_name, id, False)
-    # There will only ever be one record associated with a single ID
-    entity_id_data = entity_id_data[0]
-
-    update_attributes(entity_id_data, new_data)
+    # There will only ever be one record associated with a single ID - if a record with the
+    # specified ID cannot be found, it'll be picked up by the MissingRecordError in 
+    # get_entity_by_id()
+    update_attributes(entity_id_data[0], new_data)
 
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to show to the
     # user whether the change has actually been applied
