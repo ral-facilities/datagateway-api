@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from icat.query import Query
 from icat.exception import ICATSessionError
-from common.exceptions import AuthenticationError, BadRequestError
+from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError
 
 log = logging.getLogger()
 
@@ -243,6 +243,22 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     entity_by_id_data = execute_icat_query(client, id_query, return_json_formattable_data)
 
     return entity_by_id_data
+
+
+def delete_entity_by_id(client, table_name, id):
+    """
+    Deletes a record of a given ID of the specified entity
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to delete
+    :type table_name: :class:`str`
+    :param id: ID number of the entity to delete
+    :type id: :class:`int`
+    """
+
+    entity_id_data = get_entity_by_id(client, table_name, id, False)
+    client.delete(entity_id_data[0])
 
 
 def update_entity_by_id(client, table_name, id, new_data):
