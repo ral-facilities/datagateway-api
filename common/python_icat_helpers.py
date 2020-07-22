@@ -232,8 +232,11 @@ def update_attributes(object, dictionary):
         allow an attribute to be edited (e.g. modId & modTime)
     """
     for key in dictionary:
-        original_data_attribute = getattr(object, key)
-        dictionary[key] = str_to_date_object(original_data_attribute, dictionary[key])
+        try:
+            original_data_attribute = getattr(object, key)
+            dictionary[key] = str_to_date_object(original_data_attribute, dictionary[key])
+        except AttributeError:
+            raise BadRequestError(f"Bad request made, cannot find attribute '{key}' within the {object.BeanName} entity")
 
         try:
             setattr(object, key, dictionary[key])
