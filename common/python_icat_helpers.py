@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from icat.query import Query
 from icat.exception import ICATSessionError
-from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError
+from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError, PythonICATError
 
 log = logging.getLogger()
 
@@ -12,9 +12,10 @@ def requires_session_id(method):
     """
     Decorator for Python ICAT backend methods that looks out for session errors when using the API.
     The API call runs and an ICATSessionError may be raised due to an expired session, invalid 
-    session ID etc. This does not explictly check whether a session ID is valid or not, 
+    session ID etc.
+ 
     :param method: The method for the backend operation
-    :raises AuthenticationError, if a valid session_id is not provided with the request
+    :raises AuthenticationError: If a valid session_id is not provided with the request
     """
 
     @wraps(method)
@@ -35,19 +36,14 @@ def requires_session_id(method):
     return wrapper_requires_session
 
 
-def queries_records(method):
-    """
-    Docstring
-    """
-
-    @wraps(method)
-    def wrapper_gets_records(*args, **kwargs):
-        pass
-
-    return wrapper_gets_records
-
-
 def get_session_details_helper(client):
+    """
+    Retrieve details regarding the current session within `client`
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :return: Details of the user's session, ready to be converted into a JSON response body
+    """
     # Remove rounding 
     session_time_remaining = client.getRemainingMinutes()
     session_expiry_time = datetime.now() + timedelta(minutes=session_time_remaining)
@@ -58,10 +54,23 @@ def get_session_details_helper(client):
 
 
 def logout_icat_client(client):
+    """
+    Logout a user of the currently authenticated user within `client`
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    """
+
     client.logout()
 
 
 def refresh_client_session(client):
+    """
+    Refresh the session of the currently authenticated user within `client`
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    """
     client.refresh()
 
 
@@ -78,16 +87,17 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None, i
     :param aggregate: Name of the aggregate function to apply. Operations such as counting the
         number of records. See `icat.query.setAggregate for valid values.
     :type aggregate: :class:`str`
-    :param includes: TODO
-    :type includes: iterable of :class:`str` or :class:`str`
+    :param includes: List of related entity names to add to the query so related entities (and
+        their data) can be returned with the query result
+    :type includes: Iterable of :class:`str` or :class:`str`
     :return: Query object from Python ICAT
+    :raises PythonICATError: If a ValueError is raised when creating a Query(), 500 will be returned as a response
     """
 
     try:
         query = Query(client, entity_name, conditions=conditions, aggregate=aggregate, includes=includes)
     except ValueError:
-        # TODO - Add appropriate action
-        pass
+        raise PythonICATError(f"An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument")
 
     return query
 
@@ -140,6 +150,7 @@ def get_python_icat_entity_name(client, database_table_name):
     :param database_table_name: Table name (from icatdb) to be interacted with
     :type database_table_name: :class:`str`
     :return: Entity name (of type string) in the correct casing ready to be passed into Python ICAT
+    :raises BadRequestError: If the entity cannot be found
     """
 
     lowercase_table_name = database_table_name.lower()
@@ -164,6 +175,14 @@ def create_condition(attribute_name, operator, value):
 
     This currently only allows a single condition to be entered, this should be increased to allow
     multiple conditions to be stored in the same dictionary
+
+    :param attribute_name: Attribute name to search
+    :type attribute_name: :class:`str`
+    :param operator: Operator to use when filtering the data
+    :type operator: :class:`str`
+    :param value: What ICAT will use to filter the data
+    :type value: :class:`str`
+    :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT Query object
     """
 
     # TODO - Could this be turned into a class/done more elegantly?
@@ -182,6 +201,9 @@ def str_to_date_object(icat_attribute, data):
     :type icat_attribute: Any valid data type that can be stored in Python ICAT
     :param data: Single data value from the request body
     :type data: Data type of the data as per user's request body
+    :return: Date converted into a :class:`datetime` object
+    :raises BadRequestError: If the date is entered in the incorrect format, as per
+        `accepted_date_format`
     """
 
     log.debug(f"ICAT Attribute: {icat_attribute}, Type: {type(icat_attribute)}")
@@ -206,6 +228,8 @@ def update_attributes(object, dictionary):
     :type object: :class:`icat.entities.ENTITY`
     :param dictionary: Dictionary containing the new data to be modified
     :type dictionary: :class:`dict`
+    :raises BadRequestError: If the attribute cannot be edited - typically if Python ICAT doesn't
+        allow an attribute to be edited (e.g. modId & modTime)
     """
     for key in dictionary:
         original_data_attribute = getattr(object, key)
@@ -234,6 +258,7 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
         response for an API call) or whether to leave the data in a Python ICAT format
     :type return_json_formattable_data: :class:`bool`
     :return: The record of the specified ID from the given entity
+    :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
 
     # Set query condition for the selected ID
