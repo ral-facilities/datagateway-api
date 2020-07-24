@@ -319,3 +319,14 @@ def update_entity_by_id(client, table_name, id, new_data):
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to show to the
     # user whether the change has actually been applied
     return get_entity_by_id(client, table_name, id, True)
+
+
+def get_entity_with_filters(client, table_name, filters):
+    selected_entity_name = get_python_icat_entity_name(client, table_name)
+    query = construct_icat_query(client, selected_entity_name)
+    data = execute_icat_query(client, query, True)
+
+    if data == []:
+        raise MissingRecordError("No results found")
+
+    return data
