@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 
 from icat.query import Query
-from icat.exception import ICATSessionError
+from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError, PythonICATError
 
 log = logging.getLogger()
@@ -119,7 +119,10 @@ def execute_icat_query(client, query, return_json_formattable=False):
     :return: Data (of type list) from the executed query
     """
 
-    query_result = client.search(query)
+    try:
+        query_result = client.search(query)
+    except ICATValidationError as e:
+        raise PythonICATError(e)
 
     if return_json_formattable:
         data = []
