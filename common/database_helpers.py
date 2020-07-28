@@ -11,6 +11,7 @@ from common.models import db_models
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
     INVESTIGATIONINSTRUMENT, FACILITY, SESSION
 from common.session_manager import session_manager
+from common.filters import FilterOrderHandler
 
 log = logging.getLogger()
 
@@ -327,36 +328,6 @@ class QueryFilterFactory(object):
             return DistinctFieldFilter(filter["distinct"])
         else:
             raise BadFilterError(f" Bad filter: {filter}")
-
-
-class FilterOrderHandler(object):
-    """
-    The FilterOrderHandler takes in filters, sorts them according to the order of operations, then applies them.
-    """
-
-    def __init__(self):
-        self.filters = []
-
-    def add_filter(self, filter):
-        self.filters.append(filter)
-
-    def add_filters(self, filters):
-        self.filters.extend(filters)
-
-    def sort_filters(self):
-        """
-        Sorts the filters according to the order of operations
-        """
-        self.filters.sort(key=lambda x: x.precedence)
-
-    def apply_filters(self, query):
-        """
-        Given a query apply the filters the handler has in the correct order.
-        :param query: The query to have filters applied to
-        """
-        self.sort_filters()
-        for filter in self.filters:
-            filter.apply_filter(query)
 
 
 def insert_row_into_table(table, row):

@@ -1,7 +1,8 @@
 from unittest import TestCase
 
-from common.database_helpers import QueryFilterFactory, OrderFilter, LimitFilter, SkipFilter, WhereFilter, \
-    IncludeFilter, DistinctFieldFilter
+#from common.filters import QueryFilterFactory
+from common.database_helpers import OrderFilter, LimitFilter, SkipFilter, WhereFilter, \
+    IncludeFilter, DistinctFieldFilter, QueryFilterFactory
 
 
 class TestQueryFilterFactory(TestCase):
