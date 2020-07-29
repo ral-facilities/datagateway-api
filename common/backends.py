@@ -1,5 +1,5 @@
 from common.database.backend import DatabaseBackend
-from common.python_icat_backend import PythonICATBackend
+from common.icat.backend import PythonICATBackend
 from common.backend import Backend
 from common.config import config
 import sys

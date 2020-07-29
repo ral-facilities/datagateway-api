@@ -5,9 +5,9 @@ from icat.exception import ICATSessionError
 
 from common.backend import Backend
 from common.helpers import queries_records
-from common.python_icat_helpers import requires_session_id, get_session_details_helper, logout_icat_client, \
-                                       refresh_client_session, get_entity_by_id, update_entity_by_id, \
-                                       delete_entity_by_id, get_entity_with_filters
+from common.icat.helpers import requires_session_id, get_session_details_helper, logout_icat_client, \
+    refresh_client_session, get_entity_by_id, update_entity_by_id, delete_entity_by_id, get_entity_with_filters
+                                       
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION

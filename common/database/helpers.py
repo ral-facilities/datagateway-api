@@ -20,7 +20,9 @@ if backend_type == "db":
         DatabaseOrderFilter as OrderFilter, DatabaseSkipFilter as SkipFilter, DatabaseLimitFilter as LimitFilter, \
         DatabaseIncludeFilter as IncludeFilter
 elif backend_type == "python_icat":
-    pass
+    from common.icat.filters import PythonICATWhereFilter as WhereFilter, PythonICATDistinctFieldFilter as DistinctFieldFilter, \
+        PythonICATOrderFilter as OrderFilter, PythonICATSkipFilter as SkipFilter, PythonICATLimitFilter as LimitFilter, \
+        PythonICATIncludeFilter as IncludeFilter
 else:
     # TODO - Check this works
     raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
