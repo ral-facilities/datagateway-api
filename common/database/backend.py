@@ -1,9 +1,8 @@
 from common.backend import Backend
-from common.database_helpers import get_facility_cycles_for_instrument, get_facility_cycles_for_instrument_count, \
+from common.database.helpers import get_facility_cycles_for_instrument, get_facility_cycles_for_instrument_count, \
     get_investigations_for_instrument_in_facility_cycle, get_investigations_for_instrument_in_facility_cycle_count, \
     get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, insert_row_into_table, \
-    delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row
-from common.database_helpers import requires_session_id
+    delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row, requires_session_id
 from common.helpers import queries_records
 from common.models.db_models import SESSION
 import uuid

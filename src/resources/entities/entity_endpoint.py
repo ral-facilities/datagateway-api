@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database_helpers import get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, \
+from common.database.helpers import get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, \
     delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row
 from common.helpers import get_session_id_from_auth_header, get_filters_from_query_string
 from common.backends import backend

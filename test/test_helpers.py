@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
 
-from common.database_helpers import delete_row_by_id, insert_row_into_table, LimitFilter, DistinctFieldFilter, \
+from common.database.helpers import delete_row_by_id, insert_row_into_table, LimitFilter, DistinctFieldFilter, \
     IncludeFilter, SkipFilter, WhereFilter, OrderFilter
 from common.exceptions import MissingRecordError, BadFilterError, BadRequestError, MissingCredentialsError, \
     AuthenticationError

@@ -4,7 +4,7 @@ import logging
 from flask import request
 from flask_restful import Resource, reqparse
 
-from common.database_helpers import insert_row_into_table, delete_row_by_id, get_row_by_id
+from common.database.helpers import insert_row_into_table, delete_row_by_id, get_row_by_id
 from common.helpers import get_session_id_from_auth_header
 from common.models.db_models import SESSION
 from common.backends import backend

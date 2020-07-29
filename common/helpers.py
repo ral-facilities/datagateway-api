@@ -6,7 +6,7 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from common.database_helpers import QueryFilterFactory
+from common.database.helpers import QueryFilterFactory
 from common.exceptions import ApiError, AuthenticationError, BadFilterError, BadRequestError, MissingCredentialsError, MissingRecordError, MultipleIncludeError
 
 log = logging.getLogger()

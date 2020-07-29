@@ -1,4 +1,4 @@
-from common.database_backend import DatabaseBackend
+from common.database.backend import DatabaseBackend
 from common.python_icat_backend import PythonICATBackend
 from common.backend import Backend
 from common.config import config

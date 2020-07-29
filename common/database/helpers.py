@@ -12,6 +12,18 @@ from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT
     INVESTIGATIONINSTRUMENT, FACILITY, SESSION
 from common.session_manager import session_manager
 from common.filters import FilterOrderHandler
+from common.config import config
+
+backend_type = config.get_backend_type()
+if backend_type == "db":
+    from common.database.filters import DatabaseWhereFilter as WhereFilter, DatabaseDistinctFieldFilter as DistinctFieldFilter, \
+        DatabaseOrderFilter as OrderFilter, DatabaseSkipFilter as SkipFilter, DatabaseLimitFilter as LimitFilter, \
+        DatabaseIncludeFilter as IncludeFilter
+elif backend_type == "python_icat":
+    pass
+else:
+    # TODO - Check this works
+    raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
 
 log = logging.getLogger()
 
@@ -163,141 +175,6 @@ class DeleteQuery(Query):
         log.info(f" Deleting row {self.row} from {self.table.__tablename__}")
         self.session.delete(self.row)
         self.commit_changes()
-
-
-class QueryFilter(ABC):
-    @property
-    @abstractmethod
-    def precedence(self):
-        pass
-
-    @abstractmethod
-    def apply_filter(self, query):
-        pass
-
-
-class WhereFilter(QueryFilter):
-    precedence = 1
-
-    def __init__(self, field, value, operation):
-        self.field = field
-        self.included_field = None
-        self.included_included_field = None
-        self._set_filter_fields()
-        self.value = value
-        self.operation = operation
-
-    def _set_filter_fields(self):
-        if self.field.count(".") == 1:
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
-
-        if self.field.count(".") == 2:
-            self.included_included_field = self.field.split(".")[2]
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
-
-    def apply_filter(self, query):
-        try:
-            field = getattr(query.table, self.field)
-        except AttributeError:
-            raise BadFilterError(f"Bad  WhereFilter requested")
-
-        if self.included_included_field:
-            included_table = getattr(db_models, self.field)
-            included_included_table = getattr(db_models, self.included_field)
-            query.base_query = query.base_query.join(
-                included_table).join(included_included_table)
-            field = getattr(included_included_table,
-                            self.included_included_field)
-
-        elif self.included_field:
-            included_table = getattr(db_models, self.field)
-            query.base_query = query.base_query.join(included_table)
-            field = getattr(included_table, self.included_field)
-
-        if self.operation == "eq":
-            query.base_query = query.base_query.filter(field == self.value)
-        elif self.operation == "like":
-            query.base_query = query.base_query.filter(
-                field.like(f"%{self.value}%"))
-        elif self.operation == "lte":
-            query.base_query = query.base_query.filter(field <= self.value)
-        elif self.operation == "gte":
-            query.base_query = query.base_query.filter(field >= self.value)
-        elif self.operation == "in":
-            query.base_query = query.base_query.filter(field.in_(self.value))
-        else:
-            raise BadFilterError(
-                f" Bad operation given to where filter. operation: {self.operation}")
-
-
-class DistinctFieldFilter(QueryFilter):
-    precedence = 0
-
-    def __init__(self, fields):
-        # This allows single string distinct filters
-        self.fields = fields if type(fields) is list else [fields]
-
-    def apply_filter(self, query):
-        query.is_distinct_fields_query = True
-        try:
-            self.fields = [getattr(query.table, field)
-                           for field in self.fields]
-        except AttributeError:
-            raise BadFilterError("Bad field requested")
-        query.base_query = query.session.query(*self.fields).distinct()
-
-
-class OrderFilter(QueryFilter):
-    precedence = 2
-
-    def __init__(self, field, direction):
-        self.field = field
-        self.direction = direction
-
-    def apply_filter(self, query):
-        if self.direction.upper() == "ASC":
-            query.base_query = query.base_query.order_by(
-                asc(self.field.upper()))
-        elif self.direction.upper() == "DESC":
-            query.base_query = query.base_query.order_by(
-                desc(self.field.upper()))
-        else:
-            raise BadFilterError(f" Bad filter: {self.direction}")
-
-
-class SkipFilter(QueryFilter):
-    precedence = 3
-
-    def __init__(self, skip_value):
-        self.skip_value = skip_value
-
-    def apply_filter(self, query):
-        query.base_query = query.base_query.offset(self.skip_value)
-
-
-class LimitFilter(QueryFilter):
-    precedence = 4
-
-    def __init__(self, limit_value):
-        self.limit_value = limit_value
-
-    def apply_filter(self, query):
-        query.base_query = query.base_query.limit(self.limit_value)
-
-
-class IncludeFilter(QueryFilter):
-    precedence = 5
-
-    def __init__(self, included_filters):
-        self.included_filters = included_filters["include"]
-
-    def apply_filter(self, query):
-        if not query.include_related_entities:
-            query.include_related_entities = True
-        else:
-            raise MultipleIncludeError()
 
 
 class QueryFilterFactory(object):

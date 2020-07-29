@@ -1,8 +1,18 @@
 from unittest import TestCase
 
-#from common.filters import QueryFilterFactory
-from common.database_helpers import OrderFilter, LimitFilter, SkipFilter, WhereFilter, \
-    IncludeFilter, DistinctFieldFilter, QueryFilterFactory
+from common.database.helpers import QueryFilterFactory
+from common.config import config
+
+backend_type = config.get_backend_type()
+if backend_type == "db":
+    from common.database.filters import DatabaseWhereFilter as WhereFilter, DatabaseDistinctFieldFilter as DistinctFieldFilter, \
+        DatabaseOrderFilter as OrderFilter, DatabaseSkipFilter as SkipFilter, DatabaseLimitFilter as LimitFilter, \
+        DatabaseIncludeFilter as IncludeFilter
+elif backend_type == "python_icat":
+    pass
+else:
+    # TODO - Check this works
+    raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
 
 
 class TestQueryFilterFactory(TestCase):
