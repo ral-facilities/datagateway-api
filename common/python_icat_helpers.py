@@ -329,7 +329,7 @@ def get_entity_with_filters(client, table_name, filters):
     query = construct_icat_query(client, selected_entity_name)
     data = execute_icat_query(client, query, True)
 
-    if data == []:
+    if not data:
         raise MissingRecordError("No results found")
-
-    return data
+    else:
+        return data
