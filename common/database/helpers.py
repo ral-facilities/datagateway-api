@@ -184,6 +184,12 @@ class QueryFilterFactory(object):
     def get_query_filter(filter):
         """
         Given a filter return a matching Query filter object
+
+        This factory is not in common.filters so the created filter can be for the correct backend.
+        Moving the factory into that file would mean the filters would be based off the abstract
+        classes (because they're in the same file) which won't enable filters to be unique to the 
+        backend
+
         :param filter: dict - The filter to create the QueryFilter for
         :return: The QueryFilter object created
         """

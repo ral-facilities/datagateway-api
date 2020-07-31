@@ -2,25 +2,8 @@ from common.filters import WhereFilter, DistinctFieldFilter, OrderFilter, SkipFi
     IncludeFilter
 
 class DatabaseWhereFilter(WhereFilter):
-    precedence = 1
-
     def __init__(self, field, value, operation):
-        self.field = field
-        self.included_field = None
-        self.included_included_field = None
-        self._set_filter_fields()
-        self.value = value
-        self.operation = operation
-
-    def _set_filter_fields(self):
-        if self.field.count(".") == 1:
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
-
-        if self.field.count(".") == 2:
-            self.included_included_field = self.field.split(".")[2]
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
+        super().__init__(field, value, operation)
 
     def apply_filter(self, query):
         try:
@@ -58,11 +41,8 @@ class DatabaseWhereFilter(WhereFilter):
 
 
 class DatabaseDistinctFieldFilter(DistinctFieldFilter):
-    precedence = 0
-
     def __init__(self, fields):
-        # This allows single string distinct filters
-        self.fields = fields if type(fields) is list else [fields]
+        super().__init__(fields)
 
     def apply_filter(self, query):
         query.is_distinct_fields_query = True
@@ -75,11 +55,8 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter):
 
 
 class DatabaseOrderFilter(OrderFilter):
-    precedence = 2
-
     def __init__(self, field, direction):
-        self.field = field
-        self.direction = direction
+        super().__init__(field, direction)
 
     def apply_filter(self, query):
         if self.direction.upper() == "ASC":
@@ -93,18 +70,14 @@ class DatabaseOrderFilter(OrderFilter):
 
 
 class DatabaseSkipFilter(SkipFilter):
-    precedence = 3
-
     def __init__(self, skip_value):
-        self.skip_value = skip_value
+        super().__init__(skip_value)
 
     def apply_filter(self, query):
         query.base_query = query.base_query.offset(self.skip_value)
 
 
 class DatabaseLimitFilter(LimitFilter):
-    precedence = 4
-
     def __init__(self, limit_value):
         self.limit_value = limit_value
 
@@ -113,10 +86,8 @@ class DatabaseLimitFilter(LimitFilter):
 
 
 class DatabaseIncludeFilter(IncludeFilter):
-    precedence = 5
-
     def __init__(self, included_filters):
-        self.included_filters = included_filters["include"]
+        super().__init__(included_filters)
 
     def apply_filter(self, query):
         if not query.include_related_entities:
