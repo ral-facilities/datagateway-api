@@ -193,10 +193,15 @@ def create_condition(attribute_name, operator, value):
     return condition
 
 
-def str_to_date_object(icat_attribute, data):
+def str_to_datetime_object(icat_attribute, data):
     """
     Where data is stored as dates in ICAT (which this function determines), convert strings (i.e.
     user data from PATCH/POST requests) into datetime objects so they can be stored in ICAT
+
+    Python 3.7+ has support for `datetime.fromisoformat()` which would be a more elegant solution
+    to this conversion operation since dates are converted into ISO format within this file,
+    however, the production instance of this API is typically built on Python 3.6, and it doesn't
+    seem of enough value to mandate 3.7 for a single line of code
 
     :param icat_attribute: Attribute that will be updated with new data
     :type icat_attribute: Any valid data type that can be stored in Python ICAT
@@ -212,39 +217,39 @@ def str_to_date_object(icat_attribute, data):
 
     accepted_date_format = "%Y-%m-%d %H:%M:%S"
 
-    if isinstance(icat_attribute, datetime):
-        try:
-            data = datetime.strptime(data, accepted_date_format)
-        except ValueError:
-            raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API")
+    try:
+        data = datetime.strptime(data, accepted_date_format)
+    except ValueError:
+        raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API")
 
     return data
 
 
-def update_attributes(object, dictionary):
+def update_attributes(old_entity, new_entity):
     """
     Updates the attribute(s) of a given object which is a record of an entity from Python ICAT
 
-    :param object: An entity from Python ICAT
+    :param old_entity: An existing entity record from Python ICAT
     :type object: :class:`icat.entities.ENTITY`
-    :param dictionary: Dictionary containing the new data to be modified
-    :type dictionary: :class:`dict`
-    :raises BadRequestError: If the attribute cannot be edited - typically if Python ICAT doesn't
-        allow an attribute to be edited (e.g. modId & modTime)
+    :param new_entity: Dictionary containing the new data to be modified
+    :type new_entity: :class:`dict`
+    :raises BadRequestError: If the attribute cannot be found, or if it cannot be edited -
+        typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId & modTime)
     """
-    for key in dictionary:
+    for key in new_entity:
         try:
-            original_data_attribute = getattr(object, key)
-            dictionary[key] = str_to_date_object(original_data_attribute, dictionary[key])
+            original_data_attribute = getattr(old_entity, key)
+            if isinstance(original_data_attribute, datetime):
+                new_entity[key] = str_to_datetime_object(original_data_attribute, new_entity[key])
         except AttributeError:
-            raise BadRequestError(f"Bad request made, cannot find attribute '{key}' within the {object.BeanName} entity")
+            raise BadRequestError(f"Bad request made, cannot find attribute '{key}' within the {old_entity.BeanName} entity")
 
         try:
-            setattr(object, key, dictionary[key])
+            setattr(old_entity, key, new_entity[key])
         except AttributeError:
-            raise BadRequestError(f"Bad request made, cannot modify attribute '{key}' within the {object.BeanName} entity")
+            raise BadRequestError(f"Bad request made, cannot modify attribute '{key}' within the {old_entity.BeanName} entity")
 
-    object.update()
+    old_entity.update()
 
 
 def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
