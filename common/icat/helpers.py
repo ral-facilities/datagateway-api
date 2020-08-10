@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from icat.query import Query
 from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError, PythonICATError
+from common.filters import FilterOrderHandler
 
 log = logging.getLogger()
 
@@ -85,11 +86,11 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None, i
     :param conditions: Constraints used when an entity is queried
     :type conditions: :class:`dict`
     :param aggregate: Name of the aggregate function to apply. Operations such as counting the
-        number of records. See `icat.query.setAggregate for valid values.
+        number of records. See `icat.query.setAggregate` for valid values.
     :type aggregate: :class:`str`
     :param includes: List of related entity names to add to the query so related entities (and
         their data) can be returned with the query result
-    :type includes: Iterable of :class:`str` or :class:`str`
+    :type includes: :class:`str` or iterable of :class:`str`
     :return: Query object from Python ICAT
     :raises PythonICATError: If a ValueError is raised when creating a Query(), 500 will be returned as a response
     """
@@ -172,27 +173,25 @@ def get_python_icat_entity_name(client, database_table_name):
     return python_icat_entity_name
 
 
-def create_condition(attribute_name, operator, value):
+def create_condition(attribute_name, operator, values):
     """
-    Construct and return a Python dictionary containing a condition to be used in a Query object
-
-    This currently only allows a single condition to be entered, this should be increased to allow
-    multiple conditions to be stored in the same dictionary
+    Construct and return a Python dictionary containing conditions to be used in a Query object
 
     :param attribute_name: Attribute name to search
     :type attribute_name: :class:`str`
     :param operator: Operator to use when filtering the data
     :type operator: :class:`str`
-    :param value: What ICAT will use to filter the data
-    :type value: :class:`str`
+    :param values: What ICAT will use to filter the data
+    :type values: List of :class:`str`
     :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT Query object
     """
 
-    # TODO - Could this be turned into a class/done more elegantly?
-    condition = {}
-    condition[attribute_name] = f"{operator} '{value}'"
+    conditions = {}
+    for value in values:
+        log.debug(f"Value: {value}")
+        conditions[attribute_name] = f"{operator} '{value}'"
 
-    return condition
+    return conditions
 
 
 def str_to_date_object(icat_attribute, data):
@@ -268,7 +267,7 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     """
 
     # Set query condition for the selected ID
-    id_condition = create_condition('id', '=', id)
+    id_condition = create_condition('id', '=', [id])
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
@@ -327,6 +326,10 @@ def update_entity_by_id(client, table_name, id, new_data):
 def get_entity_with_filters(client, table_name, filters):
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     query = construct_icat_query(client, selected_entity_name)
+    filter_handler = FilterOrderHandler()
+    filter_handler.add_filters(filters)
+    filter_handler.apply_filters(query)
+    
     data = execute_icat_query(client, query, True)
 
     if data == []:
