@@ -3,8 +3,10 @@ import logging
 from datetime import datetime, timedelta
 
 from icat.query import Query
-from icat.exception import ICATSessionError
+from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError, PythonICATError
+from common.constants import Constants
+
 
 log = logging.getLogger()
 
@@ -128,8 +130,8 @@ def execute_icat_query(client, query, return_json_formattable=False):
             for key, value in dict_result.items():
                 # Convert datetime objects to strings so they can be JSON serialisable
                 if isinstance(value, datetime):
-                    # Remove timezone data which isn't utilised in ICAT and convert to ISO format
-                    dict_result[key] = value.replace(tzinfo=None).isoformat(' ')
+                    # Remove timezone data which isn't utilised in ICAT
+                    dict_result[key] = value.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
 
             data.append(dict_result)
         return data
@@ -209,18 +211,13 @@ def str_to_datetime_object(icat_attribute, data):
     :type data: Data type of the data as per user's request body
     :return: Date converted into a :class:`datetime` object
     :raises BadRequestError: If the date is entered in the incorrect format, as per
-        `accepted_date_format`
+        `Constants.ACCEPTED_DATE_FORMAT`
     """
 
-    log.debug("ICAT Attribute: %s, Type: %s", icat_attribute, type(icat_attribute))
-    log.debug("Data: %s, Type: %s", data, type(data))
-
-    accepted_date_format = "%Y-%m-%d %H:%M:%S"
-
     try:
-        data = datetime.strptime(data, accepted_date_format)
+        data = datetime.strptime(data, Constants.ACCEPTED_DATE_FORMAT)
     except ValueError:
-        raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API")
+        raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {Constants.ACCEPTED_DATE_FORMAT} format to submit dates to the API")
 
     return data
 
@@ -249,7 +246,10 @@ def update_attributes(old_entity, new_entity):
         except AttributeError:
             raise BadRequestError(f"Bad request made, cannot modify attribute '{key}' within the {old_entity.BeanName} entity")
 
-    old_entity.update()
+    try:
+        old_entity.update()
+    except ICATValidationError as e:
+        raise PythonICATError(e)
 
 
 def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
