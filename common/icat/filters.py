@@ -13,26 +13,19 @@ class PythonICATWhereFilter(WhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
-        # Convert the properties into stuff that ICAT will accept
-            # Check self.field actually exists within the entity
-            # 
-
-
+        
         if self.operation == "eq":
-            where_filter = create_condition(self.field, '=', [self.value])
+            where_filter = create_condition(self.field, '=', self.value)
         elif self.operation == "like":
-            pass
+            where_filter = create_condition(self.field, 'like', self.value)
         elif self.operation == "lte":
-            where_filter = create_condition(self.field, '<=', [self.value])
+            where_filter = create_condition(self.field, '<=', self.value)
         elif self.operation == "gte":
-            where_filter = create_condition(self.field, '>=', [self.value])
+            where_filter = create_condition(self.field, '>=', self.value)
         elif self.operation == "in":
-            log.debug(f"Field: {self.field}, Type: {type(self.field)}, Value: {self.value}, Type: {type(self.value)}")
-            where_filter = create_condition(self.field, '=', [self.value])
-            log.debug(f"IN Filter: {where_filter}")
+            where_filter = create_condition(self.field, 'in', tuple(self.value))
         else:
-            raise BadFilterError(
-                f" Bad operation given to where filter. operation: {self.operation}")
+            raise BadFilterError(f"Bad operation given to where filter: {self.operation}")
 
         try:
             query.addConditions(where_filter)

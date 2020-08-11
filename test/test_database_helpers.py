@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from common.database.helpers import QueryFilterFactory
 from common.config import config
+from common.exceptions import ApiError
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
@@ -14,7 +15,6 @@ elif backend_type == "python_icat":
         PythonICATOrderFilter as OrderFilter, PythonICATSkipFilter as SkipFilter, PythonICATLimitFilter as LimitFilter, \
         PythonICATIncludeFilter as IncludeFilter
 else:
-    # TODO - Check this works
     raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
 
 

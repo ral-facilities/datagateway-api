@@ -173,7 +173,7 @@ def get_python_icat_entity_name(client, database_table_name):
     return python_icat_entity_name
 
 
-def create_condition(attribute_name, operator, values):
+def create_condition(attribute_name, operator, value):
     """
     Construct and return a Python dictionary containing conditions to be used in a Query object
 
@@ -181,15 +181,15 @@ def create_condition(attribute_name, operator, values):
     :type attribute_name: :class:`str`
     :param operator: Operator to use when filtering the data
     :type operator: :class:`str`
-    :param values: What ICAT will use to filter the data
-    :type values: List of :class:`str`
+    :param value: What ICAT will use to filter the data
+    :type value: :class:`str` or :class:`tuple` (when using an IN expression)
     :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT Query object
     """
 
     conditions = {}
-    for value in values:
-        log.debug(f"Value: {value}")
-        conditions[attribute_name] = f"{operator} '{value}'"
+    # Removing quote marks when doing conditions with IN expressions
+    jpql_value = f"{value}" if isinstance(value, tuple) else f"'{value}'"
+    conditions[attribute_name] = f"{operator} {jpql_value}"
 
     return conditions
 

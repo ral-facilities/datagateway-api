@@ -6,7 +6,8 @@ from functools import wraps
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import AuthenticationError, MissingRecordError, BadFilterError, BadRequestError, MultipleIncludeError
+from common.exceptions import ApiError, AuthenticationError, MissingRecordError, BadFilterError, \
+    BadRequestError, MultipleIncludeError
 from common.models import db_models
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
     INVESTIGATIONINSTRUMENT, FACILITY, SESSION
@@ -24,7 +25,6 @@ elif backend_type == "python_icat":
         PythonICATOrderFilter as OrderFilter, PythonICATSkipFilter as SkipFilter, PythonICATLimitFilter as LimitFilter, \
         PythonICATIncludeFilter as IncludeFilter
 else:
-    # TODO - Check this works
     raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
 
 log = logging.getLogger()
