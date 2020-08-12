@@ -80,18 +80,18 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, table, id):
-        return get_entity_by_id(self.client, table.__name__, id, True)
+    def get_with_id(self, session_id, table, id_):
+        return get_entity_by_id(self.client, table.__name__, id_, True)
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, table, id):
-        return delete_entity_by_id(self.client, table.__name__, id)
+    def delete_with_id(self, session_id, table, id_):
+        return delete_entity_by_id(self.client, table.__name__, id_)
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, table, id, data):
-        return update_entity_by_id(self.client, table.__name__, id, data)
+    def update_with_id(self, session_id, table, id_, data):
+        return update_entity_by_id(self.client, table.__name__, id_, data)
 
     @requires_session_id
     @queries_records
