@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
+from datetime import datetime, timedelta
 
 from common.database_helpers import delete_row_by_id, insert_row_into_table, LimitFilter, DistinctFieldFilter, \
     IncludeFilter, SkipFilter, WhereFilter, OrderFilter
@@ -46,6 +47,9 @@ class TestRequires_session_id(FlaskAppTest):
         self.bad_credentials_header = {"Authorization": "Bearer BadTest"}
         session = SESSION()
         session.ID = "Test"
+        session.EXPIREDATETIME = datetime.now() + timedelta(hours=1)
+        session.username = "Test User"
+
         insert_row_into_table(SESSION, session)
 
     def tearDown(self):
