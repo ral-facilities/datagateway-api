@@ -121,7 +121,10 @@ def execute_icat_query(client, query, return_json_formattable=False):
     :return: Data (of type list) from the executed query
     """
 
-    query_result = client.search(query)
+    try:
+        query_result = client.search(query)
+    except ICATValidationError as e:
+        raise PythonICATError(e)
 
     if return_json_formattable:
         data = []
@@ -325,3 +328,14 @@ def update_entity_by_id(client, table_name, id_, new_data):
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to show to the
     # user whether the change has actually been applied
     return get_entity_by_id(client, table_name, id_, True)
+
+
+def get_entity_with_filters(client, table_name, filters):
+    selected_entity_name = get_python_icat_entity_name(client, table_name)
+    query = construct_icat_query(client, selected_entity_name)
+    data = execute_icat_query(client, query, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        return data
