@@ -37,18 +37,15 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     def get_session_details(self, session_id):
-        self.client.sessionId = session_id
         return get_session_details_helper(self.client)
 
     @requires_session_id
     def refresh(self, session_id):
-        self.client.sessionId = session_id
         return refresh_client_session(self.client)
 
     @requires_session_id
     @queries_records
     def logout(self, session_id):
-        self.client.sessionId = session_id
         return logout_icat_client(self.client)
 
     @requires_session_id
