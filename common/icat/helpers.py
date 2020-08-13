@@ -311,7 +311,7 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     """
 
     # Set query condition for the selected ID
-    id_condition = create_condition("id", "=", [id])
+    id_condition = create_condition("id", "=", id)
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
