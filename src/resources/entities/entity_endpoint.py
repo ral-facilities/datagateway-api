@@ -149,8 +149,8 @@ def get_id_endpoint(name, table):
     """
     class EndpointWithID(Resource):
 
-        def get(self, id):
-            return backend.get_with_id(get_session_id_from_auth_header(), table, id), 200
+        def get(self, id_):
+            return backend.get_with_id(get_session_id_from_auth_header(), table, id_), 200
 
         get.__doc__ = f"""
             ---
@@ -182,9 +182,9 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        def delete(self, id):
+        def delete(self, id_):
             backend.delete_with_id(
-                get_session_id_from_auth_header(), table, id)
+                get_session_id_from_auth_header(), table, id_)
             return "", 204
 
         delete.__doc__ = f"""
@@ -213,10 +213,10 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        def patch(self, id):
+        def patch(self, id_):
             session_id = get_session_id_from_auth_header()
-            backend.update_with_id(session_id, table, id, request.json)
-            return backend.get_with_id(session_id, table, id), 200
+            backend.update_with_id(session_id, table, id_, request.json)
+            return backend.get_with_id(session_id, table, id_), 200
 
         patch.__doc__ = f"""
             ---
