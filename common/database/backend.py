@@ -86,18 +86,18 @@ class DatabaseBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, table, id):
-        return get_row_by_id(table, id).to_dict()
+    def get_with_id(self, session_id, table, id_):
+        return get_row_by_id(table, id_).to_dict()
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, table, id):
-        return delete_row_by_id(table, id)
+    def delete_with_id(self, session_id, table, id_):
+        return delete_row_by_id(table, id_)
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, table, id, data):
-        return update_row_from_id(table, id, data)
+    def update_with_id(self, session_id, table, id_, data):
+        return update_row_from_id(table, id_, data)
 
     @requires_session_id
     @queries_records

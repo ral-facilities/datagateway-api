@@ -14,7 +14,7 @@ from common.backends import backend
 
 
 class InstrumentsFacilityCycles(Resource):
-    def get(self, id):
+    def get(self, id_):
         """
         ---
         summary: Get an Instrument's FacilityCycles 
@@ -54,14 +54,14 @@ class InstrumentsFacilityCycles(Resource):
         """
         return (
             backend.get_facility_cycles_for_instrument(
-                get_session_id_from_auth_header(), id, get_filters_from_query_string()
+                get_session_id_from_auth_header(), id_, get_filters_from_query_string()
             ),
             200,
         )
 
 
 class InstrumentsFacilityCyclesCount(Resource):
-    def get(self, id):
+    def get(self, id_):
         """
         ---
         summary: Count an Instrument's FacilityCycles 
@@ -95,7 +95,7 @@ class InstrumentsFacilityCyclesCount(Resource):
         """
         return (
             backend.get_facility_cycles_for_instrument_count(
-                get_session_id_from_auth_header(), id, get_filters_from_query_string()
+                get_session_id_from_auth_header(), id_, get_filters_from_query_string()
             ),
             200,
         )

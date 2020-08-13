@@ -106,35 +106,36 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_with_id(self, session_id, entity_type, id):
+    def get_with_id(self, session_id, entity_type, id_):
         """
         Gets the entity matching the given ID for the given entity type
 
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
-        :param id: the id of the record to find
+        :param id_: the id of the record to find
         :return: the entity retrieved
         """
         pass
 
     @abstractmethod
-    def delete_with_id(self, session_id, entity_type, id):
+    def delete_with_id(self, session_id, entity_type, id_):
         """
         Deletes the row matching the given ID for the given entity type
 
         :param session_id: The session id of the requesting user
         :param table: the table to be searched
-        :param id: the id of the record to delete
+        :param id_: the id of the record to delete
         """
         pass
 
     @abstractmethod
-    def update_with_id(self, session_id, entity_type, id, data):
+    def update_with_id(self, session_id, entity_type, id_, data):
         """
         Updates the row matching the given ID for the given entity type
 
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
+        :param id_: the id of the record to update
         :param data: The dictionary that the entity should be updated with
         :return: The updated entity.
         """

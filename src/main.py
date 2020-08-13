@@ -64,7 +64,7 @@ for entity_name in endpoints:
     spec.path(resource=get_endpoint_resource, api=api)
 
     get_id_endpoint_resource = get_id_endpoint(entity_name, endpoints[entity_name])
-    api.add_resource(get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id>")
+    api.add_resource(get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id_>")
     spec.path(resource=get_id_endpoint_resource, api=api)
 
     get_count_endpoint_resource = get_count_endpoint(
@@ -85,10 +85,10 @@ api.add_resource(Sessions, "/sessions")
 spec.path(resource=Sessions, api=api)
 
 # Table specific endpoints
-api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id>/facilitycycles")
+api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id_>/facilitycycles")
 spec.path(resource=InstrumentsFacilityCycles, api=api)
 api.add_resource(
-    InstrumentsFacilityCyclesCount, "/instruments/<int:id>/facilitycycles/count"
+    InstrumentsFacilityCyclesCount, "/instruments/<int:id_>/facilitycycles/count"
 )
 spec.path(resource=InstrumentsFacilityCyclesCount, api=api)
 api.add_resource(

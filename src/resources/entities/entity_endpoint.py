@@ -175,7 +175,7 @@ def get_id_endpoint(name, table):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id>")
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
 
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
@@ -183,9 +183,9 @@ def get_id_endpoint(name, table):
     """
 
     class EndpointWithID(Resource):
-        def get(self, id):
+        def get(self, id_):
             return (
-                backend.get_with_id(get_session_id_from_auth_header(), table, id),
+                backend.get_with_id(get_session_id_from_auth_header(), table, id_),
                 200,
             )
 
@@ -219,8 +219,8 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        def delete(self, id):
-            backend.delete_with_id(get_session_id_from_auth_header(), table, id)
+        def delete(self, id_):
+            backend.delete_with_id(get_session_id_from_auth_header(), table, id_)
             return "", 204
 
         delete.__doc__ = f"""
@@ -249,10 +249,10 @@ def get_id_endpoint(name, table):
                     description: No such record - Unable to find a record in the database
             """
 
-        def patch(self, id):
+        def patch(self, id_):
             session_id = get_session_id_from_auth_header()
-            backend.update_with_id(session_id, table, id, request.json)
-            return backend.get_with_id(session_id, table, id), 200
+            backend.update_with_id(session_id, table, id_, request.json)
+            return backend.get_with_id(session_id, table, id_), 200
 
         patch.__doc__ = f"""
             ---
