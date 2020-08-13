@@ -74,7 +74,8 @@ class IncludeFilter(QueryFilter):
 
 class FilterOrderHandler(object):
     """
-    The FilterOrderHandler takes in filters, sorts them according to the order of operations, then applies them.
+    The FilterOrderHandler takes in filters, sorts them according to the order of
+    operations, then applies them.
     """
 
     def __init__(self):

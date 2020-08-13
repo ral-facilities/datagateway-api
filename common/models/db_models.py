@@ -84,7 +84,9 @@ class EntityHelper(object):
 
     def to_nested_dict(self, includes):
         """
-        Given related models return a nested dictionary with the child or parent rows nested.
+        Given related models return a nested dictionary with the child or parent rows
+        nested.
+
         :param includes: string/list/dict - The related models to include.
         :return: A nested dictionary with the included models
         """
@@ -102,8 +104,9 @@ class EntityHelper(object):
 
     def _nest_dictionary_include(self, dictionary, include):
         """
-        Given a dictionary of related entities names, nest the related entities into the given dictionary representation,
-        of the original entity.
+        Given a dictionary of related entities names, nest the related entities into the
+        given dictionary representation, of the original entity.
+
         :param dictionary: The dictionary representation of the original entity
         :param include: The dictionary of related entity names to be nested.
         """
@@ -125,8 +128,9 @@ class EntityHelper(object):
 
     def _nest_string_include(self, dictionary, include):
         """
-        Given the name of a single related entity, nest the related entity into the given dictionary representation of
-        the original entity.
+        Given the name of a single related entity, nest the related entity into the
+        given dictionary representation of the original entity.
+
         :param dictionary: The dictionary representation of an entity to be nested in.
         :param include: The name of the related entity to be nested
         """
@@ -153,7 +157,9 @@ class EntityHelper(object):
 
     def update_from_dict(self, dictionary):
         """
-        Given a dictionary containing field names and variables, updates the entity from the given dictionary
+        Given a dictionary containing field names and variables, updates the entity from
+        the given dictionary
+        
         :param dictionary: dict: dictionary containing the new values
         :returns: The updated dict
         """

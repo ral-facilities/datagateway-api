@@ -23,6 +23,7 @@ def get_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
+    
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated endpoint class
@@ -175,6 +176,7 @@ def get_id_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id>")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated id endpoint class
@@ -298,6 +300,7 @@ def get_count_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated count endpoint class
@@ -349,6 +352,7 @@ def get_find_one_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated findOne endpoint class

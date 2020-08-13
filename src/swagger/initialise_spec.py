@@ -3,7 +3,9 @@ from src.resources.entities.entity_map import create_entity_models
 
 def initialise_spec(spec):
     """
-    Given a apispec spec object, will initialise it with the security scheme, models and parameters we use
+    Given a apispec spec object, will initialise it with the security scheme, models and
+    parameters we use
+
     :spec: ApiSpec: spec object to initialise
     :return: void
     """

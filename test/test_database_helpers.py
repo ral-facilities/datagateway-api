@@ -25,6 +25,7 @@ elif backend_type == "python_icat":
         PythonICATIncludeFilter as IncludeFilter,
     )
 else:
+    # TODO - Change
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file has a valid backend type"
     )

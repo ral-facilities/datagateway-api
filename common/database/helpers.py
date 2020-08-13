@@ -48,8 +48,10 @@ elif backend_type == "python_icat":
         PythonICATIncludeFilter as IncludeFilter,
     )
 else:
+    # TODO - Check this way of string formatting works
     raise ApiError(
-        "Cannot select which implementation of filters to import, check the config file has a valid backend type"
+        "Cannot select which implementation of filters to import, check the config file"
+        " has a valid backend type"
     )
 
 log = logging.getLogger()
@@ -84,8 +86,9 @@ def requires_session_id(method):
 
 class Query(ABC):
     """
-    The base query class that all other queries extend from. This defines the enter and exit methods, used to handle
-    sessions. It is expected that all queries would be used with the 'with' keyword in most cases for this reason.
+    The base query class that all other queries extend from. This defines the enter and
+    exit methods, used to handle sessions. It is expected that all queries would be used
+    with the 'with' keyword in most cases for this reason.
     """
 
     @abstractmethod
@@ -160,7 +163,9 @@ class CreateQuery(Query):
         self.inserted_row = None
 
     def execute_query(self):
-        """Determines if the row is a row object or dictionary then commits it to the table"""
+        """
+        Determines if the row is a row object or dictionary then commits it to the table
+        """
         if type(self.row) is not dict:
             record = self.row
         else:
@@ -206,10 +211,10 @@ class QueryFilterFactory(object):
         """
         Given a filter return a matching Query filter object
 
-        This factory is not in common.filters so the created filter can be for the correct backend.
-        Moving the factory into that file would mean the filters would be based off the abstract
-        classes (because they're in the same file) which won't enable filters to be unique to the 
-        backend
+        This factory is not in common.filters so the created filter can be for the
+        correct backend. Moving the factory into that file would mean the filters would
+        be based off the abstract classes (because they're in the same file) which won't
+        enable filters to be unique to the backend
 
         :param filter: dict - The filter to create the QueryFilter for
         :return: The QueryFilter object created
@@ -260,8 +265,10 @@ def create_row_from_json(table, data):
 
 def create_rows_from_json(table, data):
     """
-    Given a List containing dictionary representations of entities, or a dictionary representation of an entity, insert
-    the entities into the table and return the created entities
+    Given a List containing dictionary representations of entities, or a dictionary
+    representation of an entity, insert the entities into the table and return the
+    created entities
+
     :param table: The table to insert the entities in
     :param data: The entities to be inserted
     :return: The inserted entities
@@ -273,7 +280,9 @@ def create_rows_from_json(table, data):
 
 def get_row_by_id(table, id):
     """
-    Gets the row matching the given ID from the given table, raises MissingRecordError if it can not be found
+    Gets the row matching the given ID from the given table, raises MissingRecordError
+    if it can not be found
+
     :param table: the table to be searched
     :param id: the id of the record to find
     :return: the record retrieved
@@ -287,7 +296,9 @@ def get_row_by_id(table, id):
 
 def delete_row_by_id(table, id):
     """
-    Deletes the row matching the given ID from the given table, raises MissingRecordError if it can not be found
+    Deletes the row matching the given ID from the given table, raises
+    MissingRecordError if it can not be found
+
     :param table: the table to be searched
     :param id: the id of the record to delete
     """
@@ -300,6 +311,7 @@ def delete_row_by_id(table, id):
 def update_row_from_id(table, id, new_values):
     """
     Updates a record in a table
+
     :param table: The table the record is in
     :param id: The id of the record
     :param new_values: A JSON string containing what columns are to be updated
@@ -311,7 +323,9 @@ def update_row_from_id(table, id, new_values):
 
 def get_filtered_read_query_results(filter_handler, filters, query):
     """
-    Given a filter handler, list of filters and a query. Apply the filters and execute the query
+    Given a filter handler, list of filters and a query. Apply the filters and execute
+    the query
+
     :param filter_handler: The filter handler to apply the filters
     :param filters: The filters to be applied
     :param query: The query for the filters to be applied to
@@ -329,8 +343,9 @@ def get_filtered_read_query_results(filter_handler, filters, query):
 
 def _get_results_with_include(filters, results):
     """
-    Given a list of entities and a list of filters, use the include filter to nest the included entities requested in
-    the include filter given
+    Given a list of entities and a list of filters, use the include filter to nest the
+    included entities requested in the include filter given
+
     :param filters: The list of filters
     :param results: The list of entities
     :return: A list of nested dictionaries representing the entity results
@@ -342,8 +357,9 @@ def _get_results_with_include(filters, results):
 
 def _get_distinct_fields_as_dicts(results):
     """
-    Given a list of column results return a list of dictionaries where each column name is the key and the column value
-    is the dictionary key value
+    Given a list of column results return a list of dictionaries where each column name
+    is the key and the column value is the dictionary key value
+
     :param results: A list of sql alchemy result objects
     :return: A list of dictionary representations of the sqlalchemy result objects
     """
@@ -356,7 +372,9 @@ def _get_distinct_fields_as_dicts(results):
 
 def get_rows_by_filter(table, filters):
     """
-    Given a list of filters supplied in json format, returns entities that match the filters from the given table
+    Given a list of filters supplied in json format, returns entities that match the
+    filters from the given table
+
     :param table: The table to checked
     :param filters: The list of filters to be applied
     :return: A list of the rows returned in dictionary form
@@ -395,7 +413,9 @@ def get_filtered_row_count(table, filters):
 
 def patch_entities(table, json_list):
     """
-    Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
+    Update one or more rows in the given table, from the given list containing json.
+    Each entity must contain its ID
+
     :param table: The table of the entities
     :param json_list: the list of updated values or a dictionary
     :return: The list of updated rows.
@@ -440,7 +460,9 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
     """
-    Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+    Given an instrument_id get facility cycles where the instrument has investigations
+    that occur within that cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
@@ -469,8 +491,9 @@ class InstrumentFacilityCyclesCountQuery(CountQuery):
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
     """
-    Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
-    that cycle
+    Given an instrument_id get the facility cycles count where the instrument has
+    investigations that occur within that cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: The count of the facility cycles
@@ -504,7 +527,9 @@ def get_investigations_for_instrument_in_facility_cycle(
     instrument_id, facility_cycle_id, filters
 ):
     """
-    Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+    Given an instrument id and facility cycle id, get investigations that use the given
+    instrument in the given cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :param facility_cycle_id:  the ID of the facility cycle
@@ -539,8 +564,9 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     instrument_id, facility_cycle_id, filters
 ):
     """
-    Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
-    the given cycle
+    Given an instrument id and facility cycle id, get the count of the investigations
+    that use the given instrument in the given cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :param facility_cycle_id:  the ID of the facility cycle

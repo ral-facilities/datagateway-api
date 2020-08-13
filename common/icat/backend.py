@@ -29,15 +29,17 @@ class PythonICATBackend(Backend):
     """
 
     def __init__(self):
-        # Client object is created here as well as in login() to avoid uncaught exceptions
-        # where the object is None. This could happen where a user tries to use an endpoint before
-        # logging in. Also helps to give a bit of certainty to what's stored here
+        # Client object is created here as well as in login() to avoid uncaught
+        # exceptions where the object is None. This could happen where a user tries to
+        # use an endpoint before logging in. Also helps to give a bit of certainty to
+        # what's stored here
         self.client = icat.client.Client(
             config.get_icat_url(), checkCert=config.get_icat_check_cert()
         )
 
     def login(self, credentials):
-        # Client object is re-created here so session IDs aren't overwritten in the database
+        # Client object is re-created here so session IDs aren't overwritten in the
+        # database
         self.client = icat.client.Client(
             config.get_icat_url(), checkCert=config.get_icat_check_cert()
         )

@@ -1,4 +1,5 @@
-# TODO: when apispec-flask-restful updates to support apispec v3, use the version from PyPi instead
+# TODO: when apispec-flask-restful updates to support apispec v3, use the version from
+# PyPi instead
 
 import logging
 import re
