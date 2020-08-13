@@ -80,12 +80,18 @@ This is illustrated below.
 
 `````
 ─── datagateway-api
-    ├── common  
+    ├── common
+    │   ├── database
+    │   │   ├── backend.py
+    │   │   ├── filters.py
+    │   │   └── helpers.py
+    │   ├── icat
     │   ├── models
     │   │   └── db_models.py
+    │   ├── backends.py
     │   ├── constants.py
-    │   ├── database_helpers.py
     │   ├── exceptions.py
+    │   ├── filters.py
     │   └── helpers.py
     ├── src
     │   ├── resources
