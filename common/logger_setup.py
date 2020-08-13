@@ -3,7 +3,6 @@ from pathlib import Path
 
 from common.config import config
 
-# TODO - Test logging works with trailing commas
 log_level = "DEBUG"
 LOG_FILE_NAME = Path(__file__).parent.parent / "logs.log"
 logger_config = {

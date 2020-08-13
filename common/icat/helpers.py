@@ -118,9 +118,9 @@ def construct_icat_query(
             includes=includes,
         )
     except ValueError:
-        # TODO - Convert once I've tested the other one
         raise PythonICATError(
-            f"An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument"
+            "An issue has occurred while creating a Python ICAT Query object,"
+            " suggesting an invalid argument"
         )
 
     return query
@@ -193,9 +193,9 @@ def get_python_icat_entity_name(client, database_table_name):
 
     # Raise a 400 if a valid entity cannot be found
     if python_icat_entity_name is None:
-        # TODO - Change
         raise BadRequestError(
-            f"Bad request made, cannot find {database_table_name} entity within Python ICAT"
+            f"Bad request made, cannot find {database_table_name} entity within Python"
+            " ICAT"
         )
 
     return python_icat_entity_name
@@ -248,9 +248,9 @@ def str_to_date_object(icat_attribute, data):
         try:
             data = datetime.strptime(data, accepted_date_format)
         except ValueError:
-            # TODO - Change
             raise BadRequestError(
-                f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API"
+                "Bad request made, the date entered is not in the correct format. Use"
+                f" the {accepted_date_format} format to submit dates to the API"
             )
 
     return data
@@ -275,17 +275,17 @@ def update_attributes(object, dictionary):
                 original_data_attribute, dictionary[key]
             )
         except AttributeError:
-            # TODO - Change
             raise BadRequestError(
-                f"Bad request made, cannot find attribute '{key}' within the {object.BeanName} entity"
+                f"Bad request made, cannot find attribute '{key}' within the"
+                f" {object.BeanName} entity"
             )
 
         try:
             setattr(object, key, dictionary[key])
         except AttributeError:
-            # TODO - Change
             raise BadRequestError(
-                f"Bad request made, cannot modify attribute '{key}' within the {object.BeanName} entity"
+                f"Bad request made, cannot modify attribute '{key}' within the"
+                f" {object.BeanName} entity"
             )
 
     object.update()

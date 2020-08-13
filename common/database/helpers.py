@@ -48,7 +48,6 @@ elif backend_type == "python_icat":
         PythonICATIncludeFilter as IncludeFilter,
     )
 else:
-    # TODO - Check this way of string formatting works
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file"
         " has a valid backend type"
@@ -59,8 +58,9 @@ log = logging.getLogger()
 
 def requires_session_id(method):
     """
-    Decorator for database backend methods that makes sure a valid session_id is provided
-    It expects that session_id is the second argument supplied to the function
+    Decorator for database backend methods that makes sure a valid session_id is
+    provided. It expects that session_id is the second argument supplied to the function
+
     :param method: The method for the backend operation
     :raises AuthenticationError, if a valid session_id is not provided with the request
     """

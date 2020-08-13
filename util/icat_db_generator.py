@@ -681,9 +681,9 @@ def generate_all(i, generators):
     processes = []
     for generator in generators:
         if generator.tier == i:
-            # TODO - Change
             print(
-                f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of tier {generator.tier}"
+                f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of"
+                f" tier {generator.tier}"
             )
             processes.append(Process(target=generator.generate))
 
@@ -699,9 +699,9 @@ def main():
     for i in range(TIERS):
         generate_all(i, generators)
 
-    # TODO - Change
     print(
-        f"Added {sum(generator.amount for generator in generators)} entities in {datetime.datetime.now() - start_time}"
+        f"Added {sum(generator.amount for generator in generators)} entities in"
+        f" {datetime.datetime.now() - start_time}"
     )
 
 
