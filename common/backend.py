@@ -129,7 +129,9 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def get_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         """
         Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
         :param session_id: The session id of the requesting user
@@ -140,7 +142,9 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def count_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         """
         Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
         that cycle
@@ -152,7 +156,9 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycle_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def get_instrument_facilitycycle_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         """
         Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
         :param session_id: The session id of the requesting user
@@ -164,7 +170,9 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def count_instrument_facilitycycles_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         """
         Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
         the given cycle

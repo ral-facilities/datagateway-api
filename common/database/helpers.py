@@ -6,28 +6,54 @@ from functools import wraps
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import ApiError, AuthenticationError, MissingRecordError, BadFilterError, \
-    BadRequestError, MultipleIncludeError
+from common.exceptions import (
+    ApiError,
+    AuthenticationError,
+    MissingRecordError,
+    BadFilterError,
+    BadRequestError,
+    MultipleIncludeError,
+)
 from common.models import db_models
-from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
-    INVESTIGATIONINSTRUMENT, FACILITY, SESSION
+from common.models.db_models import (
+    INVESTIGATIONUSER,
+    INVESTIGATION,
+    INSTRUMENT,
+    FACILITYCYCLE,
+    INVESTIGATIONINSTRUMENT,
+    FACILITY,
+    SESSION,
+)
 from common.session_manager import session_manager
 from common.filters import FilterOrderHandler
 from common.config import config
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
-    from common.database.filters import DatabaseWhereFilter as WhereFilter, DatabaseDistinctFieldFilter as DistinctFieldFilter, \
-        DatabaseOrderFilter as OrderFilter, DatabaseSkipFilter as SkipFilter, DatabaseLimitFilter as LimitFilter, \
-        DatabaseIncludeFilter as IncludeFilter
+    from common.database.filters import (
+        DatabaseWhereFilter as WhereFilter,
+        DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseOrderFilter as OrderFilter,
+        DatabaseSkipFilter as SkipFilter,
+        DatabaseLimitFilter as LimitFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+    )
 elif backend_type == "python_icat":
-    from common.icat.filters import PythonICATWhereFilter as WhereFilter, PythonICATDistinctFieldFilter as DistinctFieldFilter, \
-        PythonICATOrderFilter as OrderFilter, PythonICATSkipFilter as SkipFilter, PythonICATLimitFilter as LimitFilter, \
-        PythonICATIncludeFilter as IncludeFilter
+    from common.icat.filters import (
+        PythonICATWhereFilter as WhereFilter,
+        PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATOrderFilter as OrderFilter,
+        PythonICATSkipFilter as SkipFilter,
+        PythonICATLimitFilter as LimitFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+    )
 else:
-    raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
+    raise ApiError(
+        "Cannot select which implementation of filters to import, check the config file has a valid backend type"
+    )
 
 log = logging.getLogger()
+
 
 def requires_session_id(method):
     """
@@ -41,8 +67,7 @@ def requires_session_id(method):
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
         session = session_manager.get_icat_db_session()
-        query = session.query(SESSION).filter(
-            SESSION.ID == args[1]).first()
+        query = session.query(SESSION).filter(SESSION.ID == args[1]).first()
         if query is not None:
             log.info(" Closing DB session")
             session.close()
@@ -62,6 +87,7 @@ class Query(ABC):
     The base query class that all other queries extend from. This defines the enter and exit methods, used to handle
     sessions. It is expected that all queries would be used with the 'with' keyword in most cases for this reason.
     """
+
     @abstractmethod
     def __init__(self, table):
         self.session = session_manager.get_icat_db_session()
@@ -88,7 +114,6 @@ class Query(ABC):
 
 
 class CountQuery(Query):
-
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
@@ -104,7 +129,6 @@ class CountQuery(Query):
 
 
 class ReadQuery(Query):
-
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
@@ -130,7 +154,6 @@ class ReadQuery(Query):
 
 
 class CreateQuery(Query):
-
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
@@ -154,7 +177,6 @@ class CreateQuery(Query):
 
 
 class UpdateQuery(Query):
-
     def __init__(self, table, row, new_values):
         super().__init__(table)
         self.row = row
@@ -168,7 +190,6 @@ class UpdateQuery(Query):
 
 
 class DeleteQuery(Query):
-
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
@@ -404,16 +425,17 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(FACILITY.INVESTIGATION) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(FACILITYCYCLE.FACILITY)
+            .join(FACILITY.INSTRUMENT)
+            .join(FACILITY.INVESTIGATION)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
@@ -429,20 +451,20 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
 
 
 class InstrumentFacilityCyclesCountQuery(CountQuery):
-
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query\
-            .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(FACILITY.INVESTIGATION) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(FACILITYCYCLE.FACILITY)
+            .join(FACILITY.INSTRUMENT)
+            .join(FACILITY.INVESTIGATION)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
@@ -464,20 +486,23 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(INVESTIGATION.FACILITY) \
-            .join(FACILITY.FACILITYCYCLE) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(INVESTIGATION.FACILITY)
+            .join(FACILITY.FACILITYCYCLE)
+            .join(FACILITY.INSTRUMENT)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(FACILITYCYCLE.ID == facility_cycle_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
-def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters):
+def get_investigations_for_instrument_in_facility_cycle(
+    instrument_id, facility_cycle_id, filters
+):
     """
     Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
     :param filters: The filters to be applied to the query
@@ -486,7 +511,9 @@ def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_
     :return: The investigations
     """
     filter_handler = FilterOrderHandler()
-    with InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id) as query:
+    with InstrumentFacilityCycleInvestigationsQuery(
+        instrument_id, facility_cycle_id
+    ) as query:
         return get_filtered_read_query_results(filter_handler, filters, query)
 
 
@@ -494,20 +521,23 @@ class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(INVESTIGATION.FACILITY) \
-            .join(FACILITY.FACILITYCYCLE) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(INVESTIGATION.FACILITY)
+            .join(FACILITY.FACILITYCYCLE)
+            .join(FACILITY.INSTRUMENT)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(FACILITYCYCLE.ID == facility_cycle_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
-def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id, filters):
+def get_investigations_for_instrument_in_facility_cycle_count(
+    instrument_id, facility_cycle_id, filters
+):
     """
     Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
     the given cycle
@@ -516,7 +546,9 @@ def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, fac
     :param facility_cycle_id:  the ID of the facility cycle
     :return: The investigations count
     """
-    with InstrumentFacilityCycleInvestigationsCountQuery(instrument_id, facility_cycle_id) as query:
+    with InstrumentFacilityCycleInvestigationsCountQuery(
+        instrument_id, facility_cycle_id
+    ) as query:
         filter_handler = FilterOrderHandler()
         filter_handler.add_filters(filters)
         filter_handler.apply_filters(query)

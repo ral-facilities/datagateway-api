@@ -4,10 +4,16 @@ from datetime import datetime, timedelta
 
 from icat.query import Query
 from icat.exception import ICATSessionError, ICATValidationError
-from common.exceptions import AuthenticationError, BadRequestError, MissingRecordError, PythonICATError
+from common.exceptions import (
+    AuthenticationError,
+    BadRequestError,
+    MissingRecordError,
+    PythonICATError,
+)
 from common.filters import FilterOrderHandler
 
 log = logging.getLogger()
+
 
 def requires_session_id(method):
     """
@@ -45,13 +51,17 @@ def get_session_details_helper(client):
     :type client: :class:`icat.client.Client`
     :return: Details of the user's session, ready to be converted into a JSON response body
     """
-    # Remove rounding 
+    # Remove rounding
     session_time_remaining = client.getRemainingMinutes()
     session_expiry_time = datetime.now() + timedelta(minutes=session_time_remaining)
 
     username = client.getUserName()
 
-    return {"ID": client.sessionId, "EXPIREDATETIME": str(session_expiry_time), "USERNAME": username}
+    return {
+        "ID": client.sessionId,
+        "EXPIREDATETIME": str(session_expiry_time),
+        "USERNAME": username,
+    }
 
 
 def logout_icat_client(client):
@@ -75,7 +85,9 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def construct_icat_query(client, entity_name, conditions=None, aggregate=None, includes=None):
+def construct_icat_query(
+    client, entity_name, conditions=None, aggregate=None, includes=None
+):
     """
     Create a Query object within Python ICAT 
 
@@ -96,9 +108,17 @@ def construct_icat_query(client, entity_name, conditions=None, aggregate=None, i
     """
 
     try:
-        query = Query(client, entity_name, conditions=conditions, aggregate=aggregate, includes=includes)
+        query = Query(
+            client,
+            entity_name,
+            conditions=conditions,
+            aggregate=aggregate,
+            includes=includes,
+        )
     except ValueError:
-        raise PythonICATError(f"An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument")
+        raise PythonICATError(
+            f"An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument"
+        )
 
     return query
 
@@ -168,7 +188,9 @@ def get_python_icat_entity_name(client, database_table_name):
 
     # Raise a 400 if a valid entity cannot be found
     if python_icat_entity_name is None:
-        raise BadRequestError(f"Bad request made, cannot find {database_table_name} entity within Python ICAT")
+        raise BadRequestError(
+            f"Bad request made, cannot find {database_table_name} entity within Python ICAT"
+        )
 
     return python_icat_entity_name
 
@@ -217,7 +239,9 @@ def str_to_date_object(icat_attribute, data):
         try:
             data = datetime.strptime(data, accepted_date_format)
         except ValueError:
-            raise BadRequestError(f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API")
+            raise BadRequestError(
+                f"Bad request made, the date entered is not in the correct format. Use the {accepted_date_format} format to submit dates to the API"
+            )
 
     return data
 
@@ -236,14 +260,20 @@ def update_attributes(object, dictionary):
     for key in dictionary:
         try:
             original_data_attribute = getattr(object, key)
-            dictionary[key] = str_to_date_object(original_data_attribute, dictionary[key])
+            dictionary[key] = str_to_date_object(
+                original_data_attribute, dictionary[key]
+            )
         except AttributeError:
-            raise BadRequestError(f"Bad request made, cannot find attribute '{key}' within the {object.BeanName} entity")
+            raise BadRequestError(
+                f"Bad request made, cannot find attribute '{key}' within the {object.BeanName} entity"
+            )
 
         try:
             setattr(object, key, dictionary[key])
         except AttributeError:
-            raise BadRequestError(f"Bad request made, cannot modify attribute '{key}' within the {object.BeanName} entity")
+            raise BadRequestError(
+                f"Bad request made, cannot modify attribute '{key}' within the {object.BeanName} entity"
+            )
 
     object.update()
 
@@ -267,12 +297,16 @@ def get_entity_by_id(client, table_name, id, return_json_formattable_data):
     """
 
     # Set query condition for the selected ID
-    id_condition = create_condition('id', '=', [id])
+    id_condition = create_condition("id", "=", [id])
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
-    id_query = construct_icat_query(client, selected_entity_name, conditions=id_condition, includes="1")
-    entity_by_id_data = execute_icat_query(client, id_query, return_json_formattable_data)
+    id_query = construct_icat_query(
+        client, selected_entity_name, conditions=id_condition, includes="1"
+    )
+    entity_by_id_data = execute_icat_query(
+        client, id_query, return_json_formattable_data
+    )
 
     if entity_by_id_data == []:
         # Cannot find any data matching the given ID
@@ -314,7 +348,7 @@ def update_entity_by_id(client, table_name, id, new_data):
 
     entity_id_data = get_entity_by_id(client, table_name, id, False)
     # There will only ever be one record associated with a single ID - if a record with the
-    # specified ID cannot be found, it'll be picked up by the MissingRecordError in 
+    # specified ID cannot be found, it'll be picked up by the MissingRecordError in
     # get_entity_by_id()
     update_attributes(entity_id_data[0], new_data)
 
@@ -329,7 +363,7 @@ def get_entity_with_filters(client, table_name, filters):
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
     filter_handler.apply_filters(query)
-    
+
     data = execute_icat_query(client, query, True)
 
     if data == []:
