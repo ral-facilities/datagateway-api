@@ -159,7 +159,9 @@ def execute_icat_query(client, query, return_json_formattable=False):
                 # Convert datetime objects to strings so they can be JSON serialisable
                 if isinstance(value, datetime):
                     # Remove timezone data which isn't utilised in ICAT
-                    dict_result[key] = value.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
+                    dict_result[key] = value.replace(tzinfo=None).strftime(
+                        Constants.ACCEPTED_DATE_FORMAT
+                    )
 
             data.append(dict_result)
         return data
@@ -333,7 +335,7 @@ def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
     if not entity_by_id_data:
         # Cannot find any data matching the given ID
         raise MissingRecordError("No result found")
-    else: 
+    else:
         return entity_by_id_data[0]
 
 

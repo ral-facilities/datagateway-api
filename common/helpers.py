@@ -100,5 +100,5 @@ def get_filters_from_query_string():
                     QueryFilterFactory.get_query_filter({arg: json.loads(value)})
                 )
         return filters
-    except:
-        raise FilterError()
+    except Exception as e:
+        raise FilterError(e)

@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+import logging
+
+log = logging.getLogger()
 
 
 class QueryFilter(ABC):
@@ -16,23 +19,31 @@ class WhereFilter(QueryFilter):
     precedence = 1
 
     def __init__(self, field, value, operation):
-        self.field = field
+        self.field = None
         self.included_field = None
         self.included_included_field = None
-        self._set_filter_fields()
+        self._extract_filter_fields(field)
+
         self.value = value
         self.operation = operation
-        # super().__init__()
 
-    def _set_filter_fields(self):
-        if self.field.count(".") == 1:
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
+    def _extract_filter_fields(self, field):
+        fields = field.split(".")
+        include_depth = len(fields)
 
-        if self.field.count(".") == 2:
-            self.included_included_field = self.field.split(".")[2]
-            self.included_field = self.field.split(".")[1]
-            self.field = self.field.split(".")[0]
+        log.debug("Fields: %s, Include Depth: %d", fields, include_depth)
+
+        if include_depth == 1:
+            self.field = fields[0]
+        elif include_depth == 2:
+            self.field = fields[0]
+            self.included_field = fields[1]
+        elif include_depth == 3:
+            self.field = fields[0]
+            self.included_field = fields[1]
+            self.included_included_field = fields[2]
+        else:
+            raise ValueError(f"Maximum include depth exceeded. {field}'s depth > 3")
 
 
 class DistinctFieldFilter(QueryFilter):

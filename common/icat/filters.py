@@ -35,14 +35,14 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "in":
             where_filter = create_condition(self.field, "in", tuple(self.value))
         else:
-            raise FilterError(
-                f"Bad operation given to where filter: {self.operation}"
-            )
+            raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
         try:
             query.addConditions(where_filter)
         except ValueError:
-            raise FilterError()
+            raise FilterError(
+                "Something went wrong when adding WHERE filter to ICAT query"
+            )
 
 
 class PythonICATDistinctFieldFilter(DistinctFieldFilter):
