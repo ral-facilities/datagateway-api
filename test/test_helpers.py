@@ -2,12 +2,29 @@ from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
 
-from common.database.helpers import delete_row_by_id, insert_row_into_table, LimitFilter, DistinctFieldFilter, \
-    IncludeFilter, SkipFilter, WhereFilter, OrderFilter
-from common.exceptions import MissingRecordError, FilterError, BadRequestError, MissingCredentialsError, \
-    AuthenticationError
-from common.helpers import is_valid_json, queries_records, get_session_id_from_auth_header, \
-    get_filters_from_query_string
+from common.database.helpers import (
+    delete_row_by_id,
+    insert_row_into_table,
+    LimitFilter,
+    DistinctFieldFilter,
+    IncludeFilter,
+    SkipFilter,
+    WhereFilter,
+    OrderFilter,
+)
+from common.exceptions import (
+    MissingRecordError,
+    FilterError,
+    BadRequestError,
+    MissingCredentialsError,
+    AuthenticationError,
+)
+from common.helpers import (
+    is_valid_json,
+    queries_records,
+    get_session_id_from_auth_header,
+    get_filters_from_query_string,
+)
 from common.models.db_models import SESSION
 from test.test_base import FlaskAppTest
 
@@ -55,16 +72,26 @@ class TestRequires_session_id(FlaskAppTest):
         self.assertEqual(401, self.app.get("/datafiles").status_code)
 
     def test_invalid_credentials(self):
-        self.assertEqual(403, self.app.get(
-            "/datafiles", headers=self.invalid_credentials_header).status_code)
+        self.assertEqual(
+            403,
+            self.app.get(
+                "/datafiles", headers=self.invalid_credentials_header
+            ).status_code,
+        )
 
     def test_bad_credentials(self):
-        self.assertEqual(403, self.app.get(
-            "/datafiles", headers=self.bad_credentials_header).status_code)
+        self.assertEqual(
+            403,
+            self.app.get("/datafiles", headers=self.bad_credentials_header).status_code,
+        )
 
     def test_good_credentials(self):
-        self.assertEqual(200, self.app.get("/datafiles?limit=0",
-                                           headers=self.good_credentials_header).status_code)
+        self.assertEqual(
+            200,
+            self.app.get(
+                "/datafiles?limit=0", headers=self.good_credentials_header
+            ).status_code,
+        )
 
 
 class TestQueries_records(TestCase):
@@ -135,18 +162,15 @@ class TestQueries_records(TestCase):
 
 
 class TestGet_session_id_from_auth_header(FlaskAppTest):
-
     def test_no_session_in_header(self):
         with self.app:
             self.app.get("/")
-            self.assertRaises(MissingCredentialsError,
-                              get_session_id_from_auth_header)
+            self.assertRaises(MissingCredentialsError, get_session_id_from_auth_header)
 
     def test_with_bad_header(self):
         with self.app:
             self.app.get("/", headers={"Authorization": "test"})
-            self.assertRaises(AuthenticationError,
-                              get_session_id_from_auth_header)
+            self.assertRaises(AuthenticationError, get_session_id_from_auth_header)
 
     def test_with_good_header(self):
         with self.app:
@@ -162,7 +186,7 @@ class TestGet_filters_from_query_string(FlaskAppTest):
 
     def test_bad_filter(self):
         with self.app:
-            self.app.get("/?test=\"test\"")
+            self.app.get('/?test="test"')
             self.assertRaises(FilterError, get_filters_from_query_string)
 
     def test_limit_filter(self):
@@ -170,54 +194,66 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get("/?limit=10")
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters")
-            self.assertIs(LimitFilter, type(
-                filters[0]), msg="Incorrect type of filter")
+                1, len(filters), msg="Returned incorrect number of filters"
+            )
+            self.assertIs(LimitFilter, type(filters[0]), msg="Incorrect type of filter")
 
     def test_order_filter(self):
         with self.app:
-            self.app.get("/?order=\"ID DESC\"")
+            self.app.get('/?order="ID DESC"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters")
-            self.assertIs(OrderFilter, type(
-                filters[0]), msg="Incorrect type of filter returned")
+                1, len(filters), msg="Returned incorrect number of filters"
+            )
+            self.assertIs(
+                OrderFilter, type(filters[0]), msg="Incorrect type of filter returned"
+            )
 
     def test_where_filter(self):
         with self.app:
             self.app.get('/?where={"ID":{"eq":3}}')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters")
-            self.assertIs(WhereFilter, type(
-                filters[0]), msg="Incorrect type of filter returned")
+                1, len(filters), msg="Returned incorrect number of filters"
+            )
+            self.assertIs(
+                WhereFilter, type(filters[0]), msg="Incorrect type of filter returned"
+            )
 
     def test_skip_filter(self):
         with self.app:
-            self.app.get('/?skip=10')
+            self.app.get("/?skip=10")
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters")
-            self.assertIs(SkipFilter, type(
-                filters[0]), msg="Incorrect type of filter returned")
+                1, len(filters), msg="Returned incorrect number of filters"
+            )
+            self.assertIs(
+                SkipFilter, type(filters[0]), msg="Incorrect type of filter returned"
+            )
 
     def test_include_filter(self):
         with self.app:
-            self.app.get("/?include=\"TEST\"")
+            self.app.get('/?include="TEST"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned")
-            self.assertIs(IncludeFilter, type(
-                filters[0]), msg="Incorrect type of filter returned")
+                1, len(filters), msg="Incorrect number of filters returned"
+            )
+            self.assertIs(
+                IncludeFilter, type(filters[0]), msg="Incorrect type of filter returned"
+            )
 
     def test_distinct_filter(self):
         with self.app:
-            self.app.get("/?distinct=\"ID\"")
+            self.app.get('/?distinct="ID"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned")
-            self.assertIs(DistinctFieldFilter, type(
-                filters[0]), msg="Incorrect type of filter returned")
+                1, len(filters), msg="Incorrect number of filters returned"
+            )
+            self.assertIs(
+                DistinctFieldFilter,
+                type(filters[0]),
+                msg="Incorrect type of filter returned",
+            )
 
     def test_multiple_filters(self):
         with self.app:

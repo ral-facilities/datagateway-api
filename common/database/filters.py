@@ -1,6 +1,13 @@
-from common.filters import WhereFilter, DistinctFieldFilter, OrderFilter, SkipFilter, LimitFilter, \
-    IncludeFilter
+from common.filters import (
+    WhereFilter,
+    DistinctFieldFilter,
+    OrderFilter,
+    SkipFilter,
+    LimitFilter,
+    IncludeFilter,
+)
 from common.exceptions import FilterError
+
 
 class DatabaseWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
@@ -15,10 +22,10 @@ class DatabaseWhereFilter(WhereFilter):
         if self.included_included_field:
             included_table = getattr(db_models, self.field)
             included_included_table = getattr(db_models, self.included_field)
-            query.base_query = query.base_query.join(
-                included_table).join(included_included_table)
-            field = getattr(included_included_table,
-                            self.included_included_field)
+            query.base_query = query.base_query.join(included_table).join(
+                included_included_table
+            )
+            field = getattr(included_included_table, self.included_included_field)
 
         elif self.included_field:
             included_table = getattr(db_models, self.field)
@@ -42,7 +49,8 @@ class DatabaseWhereFilter(WhereFilter):
             query.base_query = query.base_query.filter(field.in_(self.value))
         else:
             raise FilterError(
-                f" Bad operation given to where filter. operation: {self.operation}")
+                f" Bad operation given to where filter. operation: {self.operation}"
+            )
 
 
 class DatabaseDistinctFieldFilter(DistinctFieldFilter):
@@ -52,8 +60,7 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         query.is_distinct_fields_query = True
         try:
-            self.fields = [getattr(query.table, field)
-                           for field in self.fields]
+            self.fields = [getattr(query.table, field) for field in self.fields]
         except AttributeError:
             raise FilterError("Bad field requested")
         query.base_query = query.session.query(*self.fields).distinct()
@@ -65,11 +72,9 @@ class DatabaseOrderFilter(OrderFilter):
 
     def apply_filter(self, query):
         if self.direction.upper() == "ASC":
-            query.base_query = query.base_query.order_by(
-                asc(self.field.upper()))
+            query.base_query = query.base_query.order_by(asc(self.field.upper()))
         elif self.direction.upper() == "DESC":
-            query.base_query = query.base_query.order_by(
-                desc(self.field.upper()))
+            query.base_query = query.base_query.order_by(desc(self.field.upper()))
         else:
             raise FilterError(f" Bad filter: {self.direction}")
 

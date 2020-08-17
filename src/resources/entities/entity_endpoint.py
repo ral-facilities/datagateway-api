@@ -1,9 +1,20 @@
 from flask import request
 from flask_restful import Resource
 
-from common.database.helpers import get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, \
-    delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row
-from common.helpers import get_session_id_from_auth_header, get_filters_from_query_string
+from common.database.helpers import (
+    get_rows_by_filter,
+    create_rows_from_json,
+    patch_entities,
+    get_row_by_id,
+    delete_row_by_id,
+    update_row_from_id,
+    get_filtered_row_count,
+    get_first_filtered_row,
+)
+from common.helpers import (
+    get_session_id_from_auth_header,
+    get_filters_from_query_string,
+)
 from common.backends import backend
 
 
@@ -12,13 +23,22 @@ def get_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
+    
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated endpoint class
     """
+
     class Endpoint(Resource):
         def get(self):
-            return backend.get_with_filters(get_session_id_from_auth_header(), table, get_filters_from_query_string()), 200
+            return (
+                backend.get_with_filters(
+                    get_session_id_from_auth_header(),
+                    table,
+                    get_filters_from_query_string(),
+                ),
+                200,
+            )
 
         get.__doc__ = f"""
             ---
@@ -53,7 +73,10 @@ def get_endpoint(name, table):
             """
 
         def post(self):
-            return backend.create(get_session_id_from_auth_header(), table, request.json), 200
+            return (
+                backend.create(get_session_id_from_auth_header(), table, request.json),
+                200,
+            )
 
         post.__doc__ = f"""
             ---
@@ -94,7 +117,17 @@ def get_endpoint(name, table):
             """
 
         def patch(self):
-            return list(map(lambda x: x.to_dict(), backend.update(get_session_id_from_auth_header(), table, request.json))), 200
+            return (
+                list(
+                    map(
+                        lambda x: x.to_dict(),
+                        backend.update(
+                            get_session_id_from_auth_header(), table, request.json
+                        ),
+                    )
+                ),
+                200,
+            )
 
         patch.__doc__ = f"""
             ---
@@ -142,15 +175,19 @@ def get_id_endpoint(name, table):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id>")
+    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated id endpoint class
     """
-    class EndpointWithID(Resource):
 
+    class EndpointWithID(Resource):
         def get(self, id_):
-            return backend.get_with_id(get_session_id_from_auth_header(), table, id_), 200
+            return (
+                backend.get_with_id(get_session_id_from_auth_header(), table, id_),
+                200,
+            )
 
         get.__doc__ = f"""
             ---
@@ -183,8 +220,7 @@ def get_id_endpoint(name, table):
             """
 
         def delete(self, id_):
-            backend.delete_with_id(
-                get_session_id_from_auth_header(), table, id_)
+            backend.delete_with_id(get_session_id_from_auth_header(), table, id_)
             return "", 204
 
         delete.__doc__ = f"""
@@ -264,15 +300,21 @@ def get_count_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated count endpoint class
     """
-    class CountEndpoint(Resource):
 
+    class CountEndpoint(Resource):
         def get(self):
             filters = get_filters_from_query_string()
-            return backend.count_with_filters(get_session_id_from_auth_header(), table, filters), 200
+            return (
+                backend.count_with_filters(
+                    get_session_id_from_auth_header(), table, filters
+                ),
+                200,
+            )
 
         get.__doc__ = f"""
             ---
@@ -310,15 +352,21 @@ def get_find_one_endpoint(name, table):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
+
     :param name: The name of the entity
     :param table: The table the endpoint will use in queries
     :return: The generated findOne endpoint class
     """
-    class FindOneEndpoint(Resource):
 
+    class FindOneEndpoint(Resource):
         def get(self):
             filters = get_filters_from_query_string()
-            return backend.get_one_with_filters(get_session_id_from_auth_header(), table, filters), 200
+            return (
+                backend.get_one_with_filters(
+                    get_session_id_from_auth_header(), table, filters
+                ),
+                200,
+            )
 
         get.__doc__ = f"""
             ---

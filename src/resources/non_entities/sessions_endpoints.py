@@ -4,7 +4,11 @@ import logging
 from flask import request
 from flask_restful import Resource, reqparse
 
-from common.database.helpers import insert_row_into_table, delete_row_by_id, get_row_by_id
+from common.database.helpers import (
+    insert_row_into_table,
+    delete_row_by_id,
+    get_row_by_id,
+)
 from common.helpers import get_session_id_from_auth_header
 from common.models.db_models import SESSION
 from common.backends import backend
@@ -12,8 +16,8 @@ from common.exceptions import AuthenticationError
 
 log = logging.getLogger()
 
-class Sessions(Resource):
 
+class Sessions(Resource):
     def post(self):
         """
         Generates a sessionID if the user has correct credentials
@@ -56,7 +60,9 @@ class Sessions(Resource):
           403: 
              description: Forbidden. User credentials were invalid
         """
-        if not (request.data and "username" in request.json and "password" in request.json):
+        if not (
+            request.data and "username" in request.json and "password" in request.json
+        ):
             return "Bad request", 400
         # If no mechanism is present in request body, default to simple
         if not ("mechanism" in request.json):

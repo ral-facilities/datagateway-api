@@ -4,7 +4,6 @@ from pathlib import Path
 
 
 class Config(object):
-
     def __init__(self):
         config_path = Path(__file__).parent.parent / "config.json"
         with open(config_path) as target:
@@ -35,7 +34,7 @@ class Config(object):
             return self.config["icat_check_cert"]
         except:
             # This could be set to true if there's no value, and log a warning
-            # that no value has been found from the config - save app from 
+            # that no value has been found from the config - save app from
             # exiting
             sys.exit("Missing config value, icat_check_cert")
 

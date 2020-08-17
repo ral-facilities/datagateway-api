@@ -6,33 +6,61 @@ from functools import wraps
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import ApiError, AuthenticationError, MissingRecordError, FilterError, \
-    BadRequestError, MultipleIncludeError
+from common.exceptions import (
+    ApiError,
+    AuthenticationError,
+    MissingRecordError,
+    FilterError,
+    BadRequestError,
+    MultipleIncludeError,
+)
 from common.models import db_models
-from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
-    INVESTIGATIONINSTRUMENT, FACILITY, SESSION
+from common.models.db_models import (
+    INVESTIGATIONUSER,
+    INVESTIGATION,
+    INSTRUMENT,
+    FACILITYCYCLE,
+    INVESTIGATIONINSTRUMENT,
+    FACILITY,
+    SESSION,
+)
 from common.session_manager import session_manager
 from common.filters import FilterOrderHandler
 from common.config import config
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
-    from common.database.filters import DatabaseWhereFilter as WhereFilter, DatabaseDistinctFieldFilter as DistinctFieldFilter, \
-        DatabaseOrderFilter as OrderFilter, DatabaseSkipFilter as SkipFilter, DatabaseLimitFilter as LimitFilter, \
-        DatabaseIncludeFilter as IncludeFilter
+    from common.database.filters import (
+        DatabaseWhereFilter as WhereFilter,
+        DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseOrderFilter as OrderFilter,
+        DatabaseSkipFilter as SkipFilter,
+        DatabaseLimitFilter as LimitFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+    )
 elif backend_type == "python_icat":
-    from common.icat.filters import PythonICATWhereFilter as WhereFilter, PythonICATDistinctFieldFilter as DistinctFieldFilter, \
-        PythonICATOrderFilter as OrderFilter, PythonICATSkipFilter as SkipFilter, PythonICATLimitFilter as LimitFilter, \
-        PythonICATIncludeFilter as IncludeFilter
+    from common.icat.filters import (
+        PythonICATWhereFilter as WhereFilter,
+        PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATOrderFilter as OrderFilter,
+        PythonICATSkipFilter as SkipFilter,
+        PythonICATLimitFilter as LimitFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+    )
 else:
-    raise ApiError("Cannot select which implementation of filters to import, check the config file has a valid backend type")
+    raise ApiError(
+        "Cannot select which implementation of filters to import, check the config file"
+        " has a valid backend type"
+    )
 
 log = logging.getLogger()
 
+
 def requires_session_id(method):
     """
-    Decorator for database backend methods that makes sure a valid session_id is provided
-    It expects that session_id is the second argument supplied to the function
+    Decorator for database backend methods that makes sure a valid session_id is
+    provided. It expects that session_id is the second argument supplied to the function
+
     :param method: The method for the backend operation
     :raises AuthenticationError, if a valid session_id is not provided with the request
     """
@@ -41,8 +69,7 @@ def requires_session_id(method):
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
         session = session_manager.get_icat_db_session()
-        query = session.query(SESSION).filter(
-            SESSION.ID == args[1]).first()
+        query = session.query(SESSION).filter(SESSION.ID == args[1]).first()
         if query is not None:
             log.info(" Closing DB session")
             session.close()
@@ -59,9 +86,11 @@ def requires_session_id(method):
 
 class Query(ABC):
     """
-    The base query class that all other queries extend from. This defines the enter and exit methods, used to handle
-    sessions. It is expected that all queries would be used with the 'with' keyword in most cases for this reason.
+    The base query class that all other queries extend from. This defines the enter and
+    exit methods, used to handle sessions. It is expected that all queries would be used
+    with the 'with' keyword in most cases for this reason.
     """
+
     @abstractmethod
     def __init__(self, table):
         self.session = session_manager.get_icat_db_session()
@@ -88,7 +117,6 @@ class Query(ABC):
 
 
 class CountQuery(Query):
-
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
@@ -104,7 +132,6 @@ class CountQuery(Query):
 
 
 class ReadQuery(Query):
-
     def __init__(self, table):
         super().__init__(table)
         self.include_related_entities = False
@@ -130,14 +157,15 @@ class ReadQuery(Query):
 
 
 class CreateQuery(Query):
-
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
         self.inserted_row = None
 
     def execute_query(self):
-        """Determines if the row is a row object or dictionary then commits it to the table"""
+        """
+        Determines if the row is a row object or dictionary then commits it to the table
+        """
         if type(self.row) is not dict:
             record = self.row
         else:
@@ -154,7 +182,6 @@ class CreateQuery(Query):
 
 
 class UpdateQuery(Query):
-
     def __init__(self, table, row, new_values):
         super().__init__(table)
         self.row = row
@@ -168,7 +195,6 @@ class UpdateQuery(Query):
 
 
 class DeleteQuery(Query):
-
     def __init__(self, table, row):
         super().__init__(table)
         self.row = row
@@ -185,10 +211,10 @@ class QueryFilterFactory(object):
         """
         Given a filter return a matching Query filter object
 
-        This factory is not in common.filters so the created filter can be for the correct backend.
-        Moving the factory into that file would mean the filters would be based off the abstract
-        classes (because they're in the same file) which won't enable filters to be unique to the 
-        backend
+        This factory is not in common.filters so the created filter can be for the
+        correct backend. Moving the factory into that file would mean the filters would
+        be based off the abstract classes (because they're in the same file) which won't
+        enable filters to be unique to the backend
 
         :param filter: dict - The filter to create the QueryFilter for
         :return: The QueryFilter object created
@@ -239,8 +265,10 @@ def create_row_from_json(table, data):
 
 def create_rows_from_json(table, data):
     """
-    Given a List containing dictionary representations of entities, or a dictionary representation of an entity, insert
-    the entities into the table and return the created entities
+    Given a List containing dictionary representations of entities, or a dictionary
+    representation of an entity, insert the entities into the table and return the
+    created entities
+
     :param table: The table to insert the entities in
     :param data: The entities to be inserted
     :return: The inserted entities
@@ -252,7 +280,9 @@ def create_rows_from_json(table, data):
 
 def get_row_by_id(table, id_):
     """
-    Gets the row matching the given ID from the given table, raises MissingRecordError if it can not be found
+    Gets the row matching the given ID from the given table, raises MissingRecordError
+    if it can not be found
+
     :param table: the table to be searched
     :param id_: the id of the record to find
     :return: the record retrieved
@@ -266,7 +296,9 @@ def get_row_by_id(table, id_):
 
 def delete_row_by_id(table, id_):
     """
-    Deletes the row matching the given ID from the given table, raises MissingRecordError if it can not be found
+    Deletes the row matching the given ID from the given table, raises
+    MissingRecordError if it can not be found
+
     :param table: the table to be searched
     :param id_: the id of the record to delete
     """
@@ -279,6 +311,7 @@ def delete_row_by_id(table, id_):
 def update_row_from_id(table, id_, new_values):
     """
     Updates a record in a table
+
     :param table: The table the record is in
     :param id_: The id of the record
     :param new_values: A JSON string containing what columns are to be updated
@@ -290,7 +323,9 @@ def update_row_from_id(table, id_, new_values):
 
 def get_filtered_read_query_results(filter_handler, filters, query):
     """
-    Given a filter handler, list of filters and a query. Apply the filters and execute the query
+    Given a filter handler, list of filters and a query. Apply the filters and execute
+    the query
+
     :param filter_handler: The filter handler to apply the filters
     :param filters: The filters to be applied
     :param query: The query for the filters to be applied to
@@ -308,8 +343,9 @@ def get_filtered_read_query_results(filter_handler, filters, query):
 
 def _get_results_with_include(filters, results):
     """
-    Given a list of entities and a list of filters, use the include filter to nest the included entities requested in
-    the include filter given
+    Given a list of entities and a list of filters, use the include filter to nest the
+    included entities requested in the include filter given
+
     :param filters: The list of filters
     :param results: The list of entities
     :return: A list of nested dictionaries representing the entity results
@@ -321,8 +357,9 @@ def _get_results_with_include(filters, results):
 
 def _get_distinct_fields_as_dicts(results):
     """
-    Given a list of column results return a list of dictionaries where each column name is the key and the column value
-    is the dictionary key value
+    Given a list of column results return a list of dictionaries where each column name
+    is the key and the column value is the dictionary key value
+
     :param results: A list of sql alchemy result objects
     :return: A list of dictionary representations of the sqlalchemy result objects
     """
@@ -335,7 +372,9 @@ def _get_distinct_fields_as_dicts(results):
 
 def get_rows_by_filter(table, filters):
     """
-    Given a list of filters supplied in json format, returns entities that match the filters from the given table
+    Given a list of filters supplied in json format, returns entities that match the
+    filters from the given table
+
     :param table: The table to checked
     :param filters: The list of filters to be applied
     :return: A list of the rows returned in dictionary form
@@ -374,7 +413,9 @@ def get_filtered_row_count(table, filters):
 
 def patch_entities(table, json_list):
     """
-    Update one or more rows in the given table, from the given list containing json. Each entity must contain its ID
+    Update one or more rows in the given table, from the given list containing json.
+    Each entity must contain its ID
+
     :param table: The table of the entities
     :param json_list: the list of updated values or a dictionary
     :return: The list of updated rows.
@@ -404,21 +445,24 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(FACILITY.INVESTIGATION) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(FACILITYCYCLE.FACILITY)
+            .join(FACILITY.INSTRUMENT)
+            .join(FACILITY.INVESTIGATION)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
 def get_facility_cycles_for_instrument(instrument_id, filters):
     """
-    Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+    Given an instrument_id get facility cycles where the instrument has investigations
+    that occur within that cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: A list of facility cycle entities
@@ -429,26 +473,27 @@ def get_facility_cycles_for_instrument(instrument_id, filters):
 
 
 class InstrumentFacilityCyclesCountQuery(CountQuery):
-
     def __init__(self, instrument_id):
         super().__init__(FACILITYCYCLE)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query\
-            .join(FACILITYCYCLE.FACILITY) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(FACILITY.INVESTIGATION) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(FACILITYCYCLE.FACILITY)
+            .join(FACILITY.INSTRUMENT)
+            .join(FACILITY.INVESTIGATION)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
 def get_facility_cycles_for_instrument_count(instrument_id, filters):
     """
-    Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
-    that cycle
+    Given an instrument_id get the facility cycles count where the instrument has
+    investigations that occur within that cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :return: The count of the facility cycles
@@ -464,29 +509,36 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(INVESTIGATION.FACILITY) \
-            .join(FACILITY.FACILITYCYCLE) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(INVESTIGATION.FACILITY)
+            .join(FACILITY.FACILITYCYCLE)
+            .join(FACILITY.INSTRUMENT)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(FACILITYCYCLE.ID == facility_cycle_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
-def get_investigations_for_instrument_in_facility_cycle(instrument_id, facility_cycle_id, filters):
+def get_investigations_for_instrument_in_facility_cycle(
+    instrument_id, facility_cycle_id, filters
+):
     """
-    Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+    Given an instrument id and facility cycle id, get investigations that use the given
+    instrument in the given cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :param facility_cycle_id:  the ID of the facility cycle
     :return: The investigations
     """
     filter_handler = FilterOrderHandler()
-    with InstrumentFacilityCycleInvestigationsQuery(instrument_id, facility_cycle_id) as query:
+    with InstrumentFacilityCycleInvestigationsQuery(
+        instrument_id, facility_cycle_id
+    ) as query:
         return get_filtered_read_query_results(filter_handler, filters, query)
 
 
@@ -494,29 +546,35 @@ class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
     def __init__(self, instrument_id, facility_cycle_id):
         super().__init__(INVESTIGATION)
         investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = self.base_query \
-            .join(INVESTIGATION.FACILITY) \
-            .join(FACILITY.FACILITYCYCLE) \
-            .join(FACILITY.INSTRUMENT) \
-            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT) \
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT) \
-            .filter(INSTRUMENT.ID == instrument_id) \
-            .filter(FACILITYCYCLE.ID == facility_cycle_id) \
-            .filter(investigation_instrument.ID == INSTRUMENT.ID) \
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE) \
+        self.base_query = (
+            self.base_query.join(INVESTIGATION.FACILITY)
+            .join(FACILITY.FACILITYCYCLE)
+            .join(FACILITY.INSTRUMENT)
+            .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
+            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
+            .filter(INSTRUMENT.ID == instrument_id)
+            .filter(FACILITYCYCLE.ID == facility_cycle_id)
+            .filter(investigation_instrument.ID == INSTRUMENT.ID)
+            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
             .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+        )
 
 
-def get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facility_cycle_id, filters):
+def get_investigations_for_instrument_in_facility_cycle_count(
+    instrument_id, facility_cycle_id, filters
+):
     """
-    Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
-    the given cycle
+    Given an instrument id and facility cycle id, get the count of the investigations
+    that use the given instrument in the given cycle
+
     :param filters: The filters to be applied to the query
     :param instrument_id: The id of the instrument
     :param facility_cycle_id:  the ID of the facility cycle
     :return: The investigations count
     """
-    with InstrumentFacilityCycleInvestigationsCountQuery(instrument_id, facility_cycle_id) as query:
+    with InstrumentFacilityCycleInvestigationsCountQuery(
+        instrument_id, facility_cycle_id
+    ) as query:
         filter_handler = FilterOrderHandler()
         filter_handler.add_filters(filters)
         filter_handler.apply_filters(query)
