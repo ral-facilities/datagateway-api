@@ -18,8 +18,12 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = create_condition(self.field, '=', self.value)
         elif self.operation == "like":
             where_filter = create_condition(self.field, 'like', self.value)
+        elif self.operation == "lt":
+            where_filter = create_condition(self.field, '<', self.value)
         elif self.operation == "lte":
             where_filter = create_condition(self.field, '<=', self.value)
+        elif self.operation == "gt":
+            where_filter = create_condition(self.field, '>', self.value)
         elif self.operation == "gte":
             where_filter = create_condition(self.field, '>=', self.value)
         elif self.operation == "in":

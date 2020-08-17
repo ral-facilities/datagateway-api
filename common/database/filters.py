@@ -9,7 +9,7 @@ class DatabaseWhereFilter(WhereFilter):
         try:
             field = getattr(query.table, self.field)
         except AttributeError:
-            raise BadFilterError(f"Bad  WhereFilter requested")
+            raise BadFilterError(f"Bad WhereFilter requested")
 
         if self.included_included_field:
             included_table = getattr(db_models, self.field)
@@ -29,8 +29,12 @@ class DatabaseWhereFilter(WhereFilter):
         elif self.operation == "like":
             query.base_query = query.base_query.filter(
                 field.like(f"%{self.value}%"))
+        elif self.operation == "lt":
+            query.base_query = query.base_query.filter(field < self.value)
         elif self.operation == "lte":
             query.base_query = query.base_query.filter(field <= self.value)
+        elif self.operation == "gt":
+            query.base_query = query.base_query.filter(field > self.value)
         elif self.operation == "gte":
             query.base_query = query.base_query.filter(field >= self.value)
         elif self.operation == "in":
