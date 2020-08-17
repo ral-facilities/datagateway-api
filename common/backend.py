@@ -44,7 +44,9 @@ class Backend(ABC):
     @abstractmethod
     def get_with_filters(self, session_id, entity_type, filters):
         """
-        Given a list of filters supplied in json format, returns entities that match the filters for the given entity type
+        Given a list of filters supplied in json format, returns entities that match the
+        filters for the given entity type
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param filters: The list of filters to be applied
@@ -55,7 +57,9 @@ class Backend(ABC):
     @abstractmethod
     def create(self, session_id, entity_type, data):
         """
-        Create one or more entities, from the given list containing json. Each entity must not contain its ID
+        Create one or more entities, from the given list containing json. Each entity
+        must not contain its ID
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param data: The entities to be created
@@ -66,7 +70,9 @@ class Backend(ABC):
     @abstractmethod
     def update(self, session_id, entity_type, data):
         """
-        Update one or more entities, from the given list containing json. Each entity must contain its ID
+        Update one or more entities, from the given list containing json. Each entity
+        must contain its ID
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param data: the list of updated values or a dictionary
@@ -77,7 +83,8 @@ class Backend(ABC):
     @abstractmethod
     def get_one_with_filters(self, session_id, entity_type, filters):
         """
-        returns the first entity that matches a given filter, for a given entity type
+        Returns the first entity that matches a given filter, for a given entity type
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param filters: the filter to be applied to the query
@@ -88,7 +95,9 @@ class Backend(ABC):
     @abstractmethod
     def count_with_filters(self, session_id, entity_type, filters):
         """
-        returns the count of the entities that match a given filter for a given entity type
+        Returns the count of the entities that match a given filter for a given entity
+        type
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param filters: the filters to be applied to the query
@@ -100,6 +109,7 @@ class Backend(ABC):
     def get_with_id(self, session_id, entity_type, id_):
         """
         Gets the entity matching the given ID for the given entity type
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param id_: the id of the record to find
@@ -111,6 +121,7 @@ class Backend(ABC):
     def delete_with_id(self, session_id, entity_type, id_):
         """
         Deletes the row matching the given ID for the given entity type
+
         :param session_id: The session id of the requesting user
         :param table: the table to be searched
         :param id_: the id of the record to delete
@@ -121,6 +132,7 @@ class Backend(ABC):
     def update_with_id(self, session_id, entity_type, id_, data):
         """
         Updates the row matching the given ID for the given entity type
+
         :param session_id: The session id of the requesting user
         :param entity_type: The type of entity
         :param id_: the id of the record to update
@@ -130,9 +142,13 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def get_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         """
-        Given an instrument_id get facility cycles where the instrument has investigations that occur within that cycle
+        Given an instrument_id get facility cycles where the instrument has
+        investigations that occur within that cycle
+
         :param session_id: The session id of the requesting user
         :param filters: The filters to be applied to the query
         :param instrument_id: The id of the instrument
@@ -141,10 +157,13 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def count_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         """
-        Given an instrument_id get the facility cycles count where the instrument has investigations that occur within
-        that cycle
+        Given an instrument_id get the facility cycles count where the instrument has
+        investigations that occur within that cycle
+
         :param session_id: The session id of the requesting user
         :param filters: The filters to be applied to the query
         :param instrument_id: The id of the instrument
@@ -153,9 +172,13 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycle_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def get_instrument_facilitycycle_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         """
-        Given an instrument id and facility cycle id, get investigations that use the given instrument in the given cycle
+        Given an instrument id and facility cycle id, get investigations that use the
+        given instrument in the given cycle
+
         :param session_id: The session id of the requesting user
         :param filters: The filters to be applied to the query
         :param instrument_id: The id of the instrument
@@ -165,10 +188,13 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def count_instrument_facilitycycles_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         """
-        Given an instrument id and facility cycle id, get the count of the investigations that use the given instrument in
-        the given cycle
+        Given an instrument id and facility cycle id, get the count of the
+        investigations that use the given instrument in the given cycle
+        
         :param session_id: The session id of the requesting user
         :param filters: The filters to be applied to the query
         :param instrument_id: The id of the instrument

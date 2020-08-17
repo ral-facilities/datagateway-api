@@ -1,7 +1,13 @@
 import logging
 
-from common.filters import WhereFilter, DistinctFieldFilter, OrderFilter, SkipFilter, LimitFilter, \
-    IncludeFilter
+from common.filters import (
+    WhereFilter,
+    DistinctFieldFilter,
+    OrderFilter,
+    SkipFilter,
+    LimitFilter,
+    IncludeFilter,
+)
 from common.exceptions import BadFilterError
 from common.icat.helpers import create_condition
 
@@ -13,19 +19,21 @@ class PythonICATWhereFilter(WhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
-        
+
         if self.operation == "eq":
-            where_filter = create_condition(self.field, '=', self.value)
+            where_filter = create_condition(self.field, "=", self.value)
         elif self.operation == "like":
-            where_filter = create_condition(self.field, 'like', self.value)
+            where_filter = create_condition(self.field, "like", self.value)
         elif self.operation == "lte":
-            where_filter = create_condition(self.field, '<=', self.value)
+            where_filter = create_condition(self.field, "<=", self.value)
         elif self.operation == "gte":
-            where_filter = create_condition(self.field, '>=', self.value)
+            where_filter = create_condition(self.field, ">=", self.value)
         elif self.operation == "in":
-            where_filter = create_condition(self.field, 'in', tuple(self.value))
+            where_filter = create_condition(self.field, "in", tuple(self.value))
         else:
-            raise BadFilterError(f"Bad operation given to where filter: {self.operation}")
+            raise BadFilterError(
+                f"Bad operation given to where filter: {self.operation}"
+            )
 
         try:
             query.addConditions(where_filter)

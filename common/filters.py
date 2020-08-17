@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class QueryFilter(ABC):
     @property
     @abstractmethod
@@ -21,7 +22,7 @@ class WhereFilter(QueryFilter):
         self._set_filter_fields()
         self.value = value
         self.operation = operation
-        #super().__init__()
+        # super().__init__()
 
     def _set_filter_fields(self):
         if self.field.count(".") == 1:
@@ -33,12 +34,14 @@ class WhereFilter(QueryFilter):
             self.included_field = self.field.split(".")[1]
             self.field = self.field.split(".")[0]
 
+
 class DistinctFieldFilter(QueryFilter):
     precedence = 0
 
     def __init__(self, fields):
         # This allows single string distinct filters
         self.fields = fields if type(fields) is list else [fields]
+
 
 class OrderFilter(QueryFilter):
     precedence = 2
@@ -47,17 +50,20 @@ class OrderFilter(QueryFilter):
         self.field = field
         self.direction = direction
 
+
 class SkipFilter(QueryFilter):
     precedence = 3
 
     def __init__(self, skip_value):
         self.skip_value = skip_value
 
+
 class LimitFilter(QueryFilter):
     precedence = 4
 
     def __init__(self, limit_value):
         self.limit_value = limit_value
+
 
 class IncludeFilter(QueryFilter):
     precedence = 5
@@ -68,7 +74,8 @@ class IncludeFilter(QueryFilter):
 
 class FilterOrderHandler(object):
     """
-    The FilterOrderHandler takes in filters, sorts them according to the order of operations, then applies them.
+    The FilterOrderHandler takes in filters, sorts them according to the order of
+    operations, then applies them.
     """
 
     def __init__(self):
