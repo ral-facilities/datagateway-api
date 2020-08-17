@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from common.database.helpers import delete_row_by_id, insert_row_into_table, LimitFilter, DistinctFieldFilter, \
     IncludeFilter, SkipFilter, WhereFilter, OrderFilter
-from common.exceptions import MissingRecordError, BadFilterError, BadRequestError, MissingCredentialsError, \
+from common.exceptions import MissingRecordError, FilterError, BadRequestError, MissingCredentialsError, \
     AuthenticationError
 from common.helpers import is_valid_json, queries_records, get_session_id_from_auth_header, \
     get_filters_from_query_string
@@ -81,9 +81,9 @@ class TestQueries_records(TestCase):
     def test_bad_filter_error(self):
         @queries_records
         def raise_bad_filter_error():
-            raise BadFilterError()
+            raise FilterError()
 
-        with self.assertRaises(BadFilterError) as ctx:
+        with self.assertRaises(FilterError) as ctx:
             raise_bad_filter_error()
 
         self.assertEqual("Invalid filter requested", str(ctx.exception))
@@ -163,7 +163,7 @@ class TestGet_filters_from_query_string(FlaskAppTest):
     def test_bad_filter(self):
         with self.app:
             self.app.get("/?test=\"test\"")
-            self.assertRaises(BadFilterError, get_filters_from_query_string)
+            self.assertRaises(FilterError, get_filters_from_query_string)
 
     def test_limit_filter(self):
         with self.app:

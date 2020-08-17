@@ -2,7 +2,7 @@ import logging
 
 from common.filters import WhereFilter, DistinctFieldFilter, OrderFilter, SkipFilter, LimitFilter, \
     IncludeFilter
-from common.exceptions import BadFilterError
+from common.exceptions import FilterError
 from common.icat.helpers import create_condition
 
 log = logging.getLogger()
@@ -29,12 +29,12 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "in":
             where_filter = create_condition(self.field, 'in', tuple(self.value))
         else:
-            raise BadFilterError(f"Bad operation given to where filter: {self.operation}")
+            raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
         try:
             query.addConditions(where_filter)
         except ValueError:
-            raise BadFilterError()
+            raise FilterError()
 
 
 class PythonICATDistinctFieldFilter(DistinctFieldFilter):

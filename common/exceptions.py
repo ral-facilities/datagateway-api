@@ -11,13 +11,13 @@ class MissingRecordError(ApiError):
         self.status_code = 404
 
 
-class BadFilterError(ApiError):
+class FilterError(ApiError):
     def __init__(self, msg='Invalid filter requested', *args, **kwargs):
         super().__init__(msg, *args, **kwargs)
         self.status_code = 400
 
 
-class MultipleIncludeError(BadFilterError):
+class MultipleIncludeError(FilterError):
     def __init__(self, msg='Bad request, only one include filter may be given per request', *args, **kwargs):
         super().__init__(msg, *args, **kwargs)
         self.status_code = 400

@@ -7,7 +7,7 @@ from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
 from common.database.helpers import QueryFilterFactory
-from common.exceptions import ApiError, AuthenticationError, BadFilterError, BadRequestError, MissingCredentialsError, MissingRecordError, MultipleIncludeError
+from common.exceptions import ApiError, AuthenticationError, FilterError, BadRequestError, MissingCredentialsError, MissingRecordError, MultipleIncludeError
 
 log = logging.getLogger()
 
@@ -88,4 +88,4 @@ def get_filters_from_query_string():
                     {arg: json.loads(value)}))
         return filters
     except:
-        raise BadFilterError()
+        raise FilterError()

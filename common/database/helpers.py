@@ -6,7 +6,7 @@ from functools import wraps
 from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
-from common.exceptions import ApiError, AuthenticationError, MissingRecordError, BadFilterError, \
+from common.exceptions import ApiError, AuthenticationError, MissingRecordError, FilterError, \
     BadRequestError, MultipleIncludeError
 from common.models import db_models
 from common.models.db_models import INVESTIGATIONUSER, INVESTIGATION, INSTRUMENT, FACILITYCYCLE, \
@@ -212,7 +212,7 @@ class QueryFilterFactory(object):
         elif filter_name == "distinct":
             return DistinctFieldFilter(filter["distinct"])
         else:
-            raise BadFilterError(f" Bad filter: {filter}")
+            raise FilterError(f" Bad filter: {filter}")
 
 
 def insert_row_into_table(table, row):

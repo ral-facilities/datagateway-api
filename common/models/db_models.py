@@ -9,7 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
-from common.exceptions import BadFilterError, DatabaseError
+from common.exceptions import FilterError, DatabaseError
 
 Base = declarative_base()
 
@@ -86,7 +86,7 @@ class EntityHelper(object):
                 elif type(include) is dict:
                     self._nest_dictionary_include(dictionary, include)
         except TypeError:
-            raise BadFilterError(
+            raise FilterError(
                 f" Bad include relations provided: {includes}")
         return dictionary
 
@@ -136,7 +136,7 @@ class EntityHelper(object):
         try:
             return getattr(self, entity)
         except AttributeError:
-            raise BadFilterError(f" No related entity: {entity}")
+            raise FilterError(f" No related entity: {entity}")
 
     def update_from_dict(self, dictionary):
         """

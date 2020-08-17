@@ -1,5 +1,6 @@
 from common.filters import WhereFilter, DistinctFieldFilter, OrderFilter, SkipFilter, LimitFilter, \
     IncludeFilter
+from common.exceptions import FilterError
 
 class DatabaseWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
@@ -9,7 +10,7 @@ class DatabaseWhereFilter(WhereFilter):
         try:
             field = getattr(query.table, self.field)
         except AttributeError:
-            raise BadFilterError(f"Bad WhereFilter requested")
+            raise FilterError(f"Unknown attribute {self.field} on table {query.table.__name__}")
 
         if self.included_included_field:
             included_table = getattr(db_models, self.field)
@@ -40,7 +41,7 @@ class DatabaseWhereFilter(WhereFilter):
         elif self.operation == "in":
             query.base_query = query.base_query.filter(field.in_(self.value))
         else:
-            raise BadFilterError(
+            raise FilterError(
                 f" Bad operation given to where filter. operation: {self.operation}")
 
 
@@ -54,7 +55,7 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter):
             self.fields = [getattr(query.table, field)
                            for field in self.fields]
         except AttributeError:
-            raise BadFilterError("Bad field requested")
+            raise FilterError("Bad field requested")
         query.base_query = query.session.query(*self.fields).distinct()
 
 
@@ -70,7 +71,7 @@ class DatabaseOrderFilter(OrderFilter):
             query.base_query = query.base_query.order_by(
                 desc(self.field.upper()))
         else:
-            raise BadFilterError(f" Bad filter: {self.direction}")
+            raise FilterError(f" Bad filter: {self.direction}")
 
 
 class DatabaseSkipFilter(SkipFilter):
