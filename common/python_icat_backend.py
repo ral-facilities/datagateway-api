@@ -11,6 +11,10 @@ from common.python_icat_helpers import (
     logout_icat_client,
     refresh_client_session,
     create_client,
+    get_entity_by_id,
+    update_entity_by_id,
+    delete_entity_by_id,
+    get_entity_with_filters,
 )
 from common.config import config
 from common.exceptions import AuthenticationError
@@ -73,6 +77,7 @@ class PythonICATBackend(Backend):
             client = kwargs["client"]
         else:
             client = create_client()
+        return get_entity_with_filters(client, table.__name__, filters)
 
     @requires_session_id
     @queries_records
@@ -108,27 +113,31 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, table, id, **kwargs):
+    def get_with_id(self, session_id, table, id_, **kwargs):
         if kwargs["client"]:
             client = kwargs["client"]
         else:
             client = create_client()
+        return get_entity_by_id(client, table.__name__, id_, True)
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, table, id, **kwargs):
+    def delete_with_id(self, session_id, table, id_, **kwargs):
         if kwargs["client"]:
             client = kwargs["client"]
         else:
             client = create_client()
+        return delete_entity_by_id(client, table.__name__, id_)
+
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, table, id, data, **kwargs):
+    def update_with_id(self, session_id, table, id_, data, **kwargs):
         if kwargs["client"]:
             client = kwargs["client"]
         else:
             client = create_client()
+        return update_entity_by_id(client, table.__name__, id_, data)
 
     @requires_session_id
     @queries_records

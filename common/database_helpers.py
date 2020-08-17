@@ -68,7 +68,7 @@ class Query(ABC):
         """
         Commits all changes to the database and closes the session
         """
-        log.info(f" Commiting changes to {self.table}")
+        log.info(" Committing changes to %s", self.table)
         self.session.commit()
 
 
@@ -146,7 +146,7 @@ class UpdateQuery(Query):
         self.new_values = new_values
 
     def execute_query(self):
-        log.info(f" Updating row in {self.table}")
+        log.info(" Updating row in %s", self.table)
         self.row.update_from_dict(self.new_values)
         self.session.add(self.row)
         self.commit_changes()
@@ -159,7 +159,7 @@ class DeleteQuery(Query):
         self.row = row
 
     def execute_query(self):
-        log.info(f" Deleting row {self.row} from {self.table.__tablename__}")
+        log.info(" Deleting row %s from %s", self.row, self.table.__tablename__)
         self.session.delete(self.row)
         self.commit_changes()
 
@@ -394,40 +394,40 @@ def create_rows_from_json(table, data):
     return create_row_from_json(table, data)
 
 
-def get_row_by_id(table, id):
+def get_row_by_id(table, id_):
     """
     Gets the row matching the given ID from the given table, raises MissingRecordError if it can not be found
     :param table: the table to be searched
-    :param id: the id of the record to find
+    :param id_: the id of the record to find
     :return: the record retrieved
     """
     with ReadQuery(table) as read_query:
-        log.info(f" Querying {table.__tablename__} for record with ID: {id}")
-        where_filter = WhereFilter("ID", id, "eq")
+        log.info(" Querying %s for record with ID: %d", table.__tablename__, id_)
+        where_filter = WhereFilter("ID", id_, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
 
 
-def delete_row_by_id(table, id):
+def delete_row_by_id(table, id_):
     """
     Deletes the row matching the given ID from the given table, raises MissingRecordError if it can not be found
     :param table: the table to be searched
-    :param id: the id of the record to delete
+    :param id_: the id of the record to delete
     """
-    log.info(f" Deleting row from {table.__tablename__} with ID: {id}")
-    row = get_row_by_id(table, id)
+    log.info(" Deleting row from %s with ID: %d", table.__tablename__, id_)
+    row = get_row_by_id(table, id_)
     with DeleteQuery(table, row) as delete_query:
         delete_query.execute_query()
 
 
-def update_row_from_id(table, id, new_values):
+def update_row_from_id(table, id_, new_values):
     """
     Updates a record in a table
     :param table: The table the record is in
-    :param id: The id of the record
+    :param id_: The id of the record
     :param new_values: A JSON string containing what columns are to be updated
     """
-    row = get_row_by_id(table, id)
+    row = get_row_by_id(table, id_)
     with UpdateQuery(table, row, new_values) as update_query:
         update_query.execute_query()
 
@@ -496,7 +496,7 @@ def get_first_filtered_row(table, filters):
     :param filters: the filter to be applied to the query
     :return: the first row matching the filter
     """
-    log.info(f" Getting first filtered row for {table.__tablename__}")
+    log.info(" Getting first filtered row for %s", table.__tablename__)
     return get_rows_by_filter(table, filters)[0]
 
 
@@ -508,7 +508,7 @@ def get_filtered_row_count(table, filters):
     :return: int: the count of the rows
     """
 
-    log.info(f" getting count for {table.__tablename__}")
+    log.info(" getting count for %s", table.__tablename__)
     with CountQuery(table) as count_query:
         filter_handler = FilterOrderHandler()
         filter_handler.add_filters(filters)
@@ -523,7 +523,7 @@ def patch_entities(table, json_list):
     :param json_list: the list of updated values or a dictionary
     :return: The list of updated rows.
     """
-    log.info(f" Patching entities in {table.__tablename__}")
+    log.info(" Patching entities in %s", table.__tablename__)
     results = []
     if type(json_list) is dict:
         for key in json_list:
