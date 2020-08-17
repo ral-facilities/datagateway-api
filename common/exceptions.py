@@ -45,3 +45,9 @@ class DatabaseError(ApiError):
     def __init__(self, msg='Database error', *args, **kwargs):
         super().__init__(msg, *args, **kwargs)
         self.status_code = 500
+
+
+class PythonICATError(ApiError):
+    def __init__(self, msg='Python ICAT error', *args, **kwargs):
+        super().__init__(msg, *args, **kwargs)
+        self.status_code = 500

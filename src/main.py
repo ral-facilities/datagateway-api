@@ -57,7 +57,7 @@ for entity_name in endpoints:
     get_id_endpoint_resource = get_id_endpoint(
         entity_name, endpoints[entity_name])
     api.add_resource(get_id_endpoint_resource,
-                     f"/{entity_name.lower()}/<int:id>")
+                     f"/{entity_name.lower()}/<int:id_>")
     spec.path(resource=get_id_endpoint_resource, api=api)
 
     get_count_endpoint_resource = get_count_endpoint(
