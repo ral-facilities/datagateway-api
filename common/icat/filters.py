@@ -54,10 +54,22 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
 
 class PythonICATOrderFilter(OrderFilter):
     def __init__(self, field, direction):
-        super().__init__(field, direction)
+        # Python ICAT doesn't automatically uppercase the direction, errors otherwise
+        super().__init__(field, direction.upper())
 
     def apply_filter(self, query):
-        pass
+        result_order = [(self.field, self.direction)]
+        log.debug("Result Order: %s", result_order)
+
+        try:
+            log.info("Adding order filter")
+            query.setOrder(PythonICATOrderFilter.result_order)
+        except ValueError:
+            raise FilterError(
+                "Order Filter Error: Either an invalid attribute(s) or attribute(s)"
+                " contains 1-many relationship"
+            )
+
 
 
 class PythonICATSkipFilter(SkipFilter):
