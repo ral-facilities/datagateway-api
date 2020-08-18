@@ -9,7 +9,6 @@ from common.filters import (
     IncludeFilter,
 )
 from common.exceptions import FilterError
-from common.icat.helpers import create_condition
 
 log = logging.getLogger()
 
@@ -19,29 +18,55 @@ class PythonICATWhereFilter(WhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
+        log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
-            where_filter = create_condition(self.field, "=", self.value)
+            where_filter = self.create_condition(self.field, "=", self.value)
         elif self.operation == "like":
-            where_filter = create_condition(self.field, "like", self.value)
+            where_filter = self.create_condition(self.field, "like", self.value)
         elif self.operation == "lt":
-            where_filter = create_condition(self.field, "<", self.value)
+            where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
-            where_filter = create_condition(self.field, "<=", self.value)
+            where_filter = self.create_condition(self.field, "<=", self.value)
         elif self.operation == "gt":
-            where_filter = create_condition(self.field, ">", self.value)
+            where_filter = self.create_condition(self.field, ">", self.value)
         elif self.operation == "gte":
-            where_filter = create_condition(self.field, ">=", self.value)
+            where_filter = self.create_condition(self.field, ">=", self.value)
         elif self.operation == "in":
-            where_filter = create_condition(self.field, "in", tuple(self.value))
+            where_filter = self.create_condition(self.field, "in", tuple(self.value))
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
+        log.debug("ICAT Where Filter: %s", where_filter)
         try:
+            log.info("Adding ICAT where filter to query")
             query.addConditions(where_filter)
         except ValueError:
             raise FilterError(
                 "Something went wrong when adding WHERE filter to ICAT query"
             )
+
+    @staticmethod
+    def create_condition(attribute_name, operator, value):
+        """
+        Construct and return a Python dictionary containing conditions to be used in a
+        Query object
+
+        :param attribute_name: Attribute name to search
+        :type attribute_name: :class:`str`
+        :param operator: Operator to use when filtering the data
+        :type operator: :class:`str`
+        :param value: What ICAT will use to filter the data
+        :type value: :class:`str` or :class:`tuple` (when using an IN expression)
+        :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT
+            Query object
+        """
+
+        conditions = {}
+        # Removing quote marks when doing conditions with IN expressions
+        jpql_value = f"{value}" if isinstance(value, tuple) else f"'{value}'"
+        conditions[attribute_name] = f"{operator} {jpql_value}"
+
+        return conditions
 
 
 class PythonICATDistinctFieldFilter(DistinctFieldFilter):

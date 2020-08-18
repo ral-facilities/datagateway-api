@@ -12,6 +12,7 @@ from common.exceptions import (
 )
 from common.filter_order_handler import FilterOrderHandler
 from common.constants import Constants
+from common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
 
 
 log = logging.getLogger()
@@ -206,29 +207,6 @@ def get_python_icat_entity_name(client, database_table_name):
     return python_icat_entity_name
 
 
-def create_condition(attribute_name, operator, value):
-    """
-    Construct and return a Python dictionary containing conditions to be used in a
-    Query object
-
-    :param attribute_name: Attribute name to search
-    :type attribute_name: :class:`str`
-    :param operator: Operator to use when filtering the data
-    :type operator: :class:`str`
-    :param value: What ICAT will use to filter the data
-    :type value: :class:`str` or :class:`tuple` (when using an IN expression)
-    :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT Query
-        object
-    """
-
-    conditions = {}
-    # Removing quote marks when doing conditions with IN expressions
-    jpql_value = f"{value}" if isinstance(value, tuple) else f"'{value}'"
-    conditions[attribute_name] = f"{operator} {jpql_value}"
-
-    return conditions
-
-
 def str_to_datetime_object(icat_attribute, data):
     """
     Where data is stored as dates in ICAT (which this function determines), convert 
@@ -321,7 +299,7 @@ def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
     """
 
     # Set query condition for the selected ID
-    id_condition = create_condition("id", "=", id_)
+    id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
 
