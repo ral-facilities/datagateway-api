@@ -3,7 +3,6 @@ import logging
 from abc import ABC, abstractmethod
 from functools import wraps
 
-from sqlalchemy import asc, desc
 from sqlalchemy.orm import aliased
 
 from common.exceptions import (
