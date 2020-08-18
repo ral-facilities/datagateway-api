@@ -19,7 +19,6 @@ class PythonICATWhereFilter(WhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
-
         if self.operation == "eq":
             where_filter = create_condition(self.field, "=", self.value)
         elif self.operation == "like":

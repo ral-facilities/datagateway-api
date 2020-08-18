@@ -10,7 +10,7 @@ from common.exceptions import (
     MissingRecordError,
     PythonICATError,
 )
-from common.filters import FilterOrderHandler
+from common.filter_order_handler import FilterOrderHandler
 from common.constants import Constants
 
 

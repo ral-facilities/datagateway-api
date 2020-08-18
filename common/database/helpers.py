@@ -24,7 +24,7 @@ from common.models.db_models import (
     SESSION,
 )
 from common.session_manager import session_manager
-from common.filters import FilterOrderHandler
+from common.filter_order_handler import FilterOrderHandler
 from common.config import config
 
 backend_type = config.get_backend_type()
