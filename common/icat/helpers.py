@@ -12,7 +12,7 @@ from common.exceptions import (
 )
 from common.filter_order_handler import FilterOrderHandler
 from common.constants import Constants
-from common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
+from common.icat.filters import PythonICATOrderFilter, PythonICATWhereFilter
 
 
 log = logging.getLogger()
@@ -360,10 +360,15 @@ def update_entity_by_id(client, table_name, id_, new_data):
 
 
 def get_entity_with_filters(client, table_name, filters):
+    """
+    TODO - Add docstring
+    """
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     query = construct_icat_query(client, selected_entity_name)
+
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
+    manage_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query)
 
     data = execute_icat_query(client, query, True)
@@ -372,3 +377,11 @@ def get_entity_with_filters(client, table_name, filters):
         raise MissingRecordError("No results found")
     else:
         return data
+
+
+def manage_order_filters(filters):
+    """
+    TODO - Add docstring
+    """
+    if any(isinstance(filter, PythonICATOrderFilter) for filter in filters):
+        PythonICATOrderFilter.result_order = []

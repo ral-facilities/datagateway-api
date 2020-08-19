@@ -22,14 +22,10 @@ class FilterOrderHandler(object):
     def apply_filters(self, query):
         """
         Given a query apply the filters the handler has in the correct order.
+
         :param query: The query to have filters applied to
         """
         self.sort_filters()
-        
-        """
-        if any(isinstance(filter, PythonICATOrderFilter) for filter in self.filters):
-            PythonICATOrderFilter.result_order = []
-        """
 
         for filter in self.filters:
             filter.apply_filter(query)
