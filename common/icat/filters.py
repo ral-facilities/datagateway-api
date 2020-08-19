@@ -78,6 +78,7 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
 
 
 class PythonICATOrderFilter(OrderFilter):
+    # Used to append the order tuples across all filters in a single request
     result_order = []
 
     def __init__(self, field, direction):
