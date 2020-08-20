@@ -13,6 +13,9 @@ class FilterOrderHandler(object):
     def add_filters(self, filters):
         self.filters.extend(filters)
 
+    def remove_filter(self, filter):
+        self.filters.remove(filter)
+
     def sort_filters(self):
         """
         Sorts the filters according to the order of operations

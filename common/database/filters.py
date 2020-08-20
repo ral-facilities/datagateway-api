@@ -10,6 +10,7 @@ from common.exceptions import FilterError
 
 from sqlalchemy import asc, desc
 
+
 class DatabaseWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
         super().__init__(field, value, operation)
