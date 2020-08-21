@@ -370,7 +370,6 @@ def get_entity_with_filters(client, table_name, filters):
     filter_handler.add_filters(filters)
     merge_limit_skip_filters(filter_handler)
     filter_handler.apply_filters(query)
-    
 
     data = execute_icat_query(client, query, True)
 
