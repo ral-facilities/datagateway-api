@@ -9,6 +9,7 @@ from common.filters import (
     IncludeFilter,
 )
 from common.exceptions import FilterError
+from common.config import config
 
 log = logging.getLogger()
 
@@ -101,7 +102,8 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_set_limit(query, self.skip_value, False)
+        icat_properties = config.get_icat_properties()
+        icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 
 class PythonICATLimitFilter(LimitFilter):
@@ -119,10 +121,10 @@ def icat_set_limit(query, skip_number, limit_number):
 
     :param query: ICAT Query object to execute within Python ICAT
     :type query: :class:`icat.query.Query`
-    :param skip_number:
+    :param skip_number: Number of results to skip
     :type skip_number: :class:`int`
-    :param limit_number:
-    :type limit_number: :class:`int
+    :param limit_number: Number of results to limit in the query
+    :type limit_number: :class:`int`
     :raises FilterError: If the tuple is not of two elements, or the elements aren't of
         the valid type
     """
