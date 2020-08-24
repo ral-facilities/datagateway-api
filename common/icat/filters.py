@@ -75,7 +75,13 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
         super().__init__(fields)
 
     def apply_filter(self, query):
-        pass
+        try:
+            log.info("Adding ICAT distinct filter to ICAT query")
+            log.debug(f"Self fields: {self.fields}")
+            query.setAttribute(self.fields[0])
+
+        except ValueError as e:
+            raise FilterError(e)
 
 
 class PythonICATOrderFilter(OrderFilter):

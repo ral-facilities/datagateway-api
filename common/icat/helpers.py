@@ -156,7 +156,11 @@ def execute_icat_query(client, query, return_json_formattable=False):
     except ICATValidationError as e:
         raise PythonICATError(e)
 
-    if return_json_formattable:
+    # When a distinct filter is applied to the query, ignore `return_json_formattable`
+    # flag and deal with the data differently
+    if query.attribute is not None:
+        return query_result
+    elif return_json_formattable:
         data = []
         for result in query_result:
             dict_result = result.as_dict()
