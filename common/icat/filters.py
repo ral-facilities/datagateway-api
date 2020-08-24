@@ -78,7 +78,9 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
             log.debug(f"Self fields: {self.fields}")
+
             query.setAttribute(self.fields[0])
+            query.setAggregate("DISTINCT")
 
         except ValueError as e:
             raise FilterError(e)
