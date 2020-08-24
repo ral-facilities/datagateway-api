@@ -158,8 +158,29 @@ def execute_icat_query(client, query, return_json_formattable=False):
 
     # When a distinct filter is applied to the query, ignore `return_json_formattable`
     # flag and deal with the data differently
-    if query.attribute is not None:
-        return query_result
+    if query.aggregate == "DISTINCT":
+        data = []
+        log.debug(f"Conditions: {query.conditions}")
+
+        # TODO - The keys need to be checked to ensure they're != null
+        attribute_names = query.conditions.keys()
+        log.debug(f"Attribute Names: {attribute_names}")
+
+        # For each condition, extract the attribute names and compile them into a list
+        # TODO - Are attributes listed in alphabetical order? Which order should these
+        # attribute names be put into?
+
+        for result in query_result:
+            dict_result = result.as_dict()
+            
+            for key, value in dict_result.items():
+                if key in attribute_names:
+                    distinct_result[key] = value
+            
+            data.append(distinct_result)
+
+        return data
+
     elif return_json_formattable:
         data = []
         for result in query_result:
