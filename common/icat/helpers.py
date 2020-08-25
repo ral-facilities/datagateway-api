@@ -156,35 +156,28 @@ def execute_icat_query(client, query, return_json_formattable=False):
     except ICATValidationError as e:
         raise PythonICATError(e)
 
-    # When a distinct filter is applied to the query, ignore `return_json_formattable`
-    # flag and deal with the data differently
     if query.aggregate == "DISTINCT":
+        distinct_filter_flag = True
+        # Check query's conditions for the ones created by the distinct filter
+        attribute_names = []
+        log.debug("Query conditions: %s", query.conditions)
+        for key, value in query.conditions.items():
+            # TODO - Consider that value might be a list, rather than a string value
+            if value == "!= null":
+                attribute_names.append(key)
+        log.debug(
+            "Attribute names used in the distinct filter, as captured by the"
+            " query's conditions %s", attribute_names
+        )
+    else:
+        distinct_filter_flag = False
+
+    if return_json_formattable:
         data = []
-        log.debug(f"Conditions: {query.conditions}")
-
-        # For each condition, extract the attribute names and compile them into a list
-        # TODO - The keys need to be checked to ensure they're != null
-        attribute_names = query.conditions.keys()
-        log.debug(f"Attribute Names: {attribute_names}")
-
-        # Extract the data of the fields used in the distinct filter and return it as a
-        # response
         for result in query_result:
+            dict_result = result.as_dict()
             distinct_result = {}
-            dict_result = result.as_dict()
 
-            for key, value in dict_result.items():
-                if key in attribute_names:
-                    distinct_result[key] = value
-
-            data.append(distinct_result)
-
-        return data
-
-    elif return_json_formattable:
-        data = []
-        for result in query_result:
-            dict_result = result.as_dict()
             for key, value in dict_result.items():
                 # Convert datetime objects to strings so they can be JSON serialisable
                 if isinstance(value, datetime):
@@ -193,7 +186,17 @@ def execute_icat_query(client, query, return_json_formattable=False):
                         Constants.ACCEPTED_DATE_FORMAT
                     )
 
-            data.append(dict_result)
+                if distinct_filter_flag:
+                    # Add only the required data as per request's distinct filter fields
+                    if key in attribute_names:
+                        distinct_result[key] = value
+
+            # Add to the response's data depending on whether request has a distinct
+            # filter
+            if distinct_filter_flag:
+                data.append(distinct_result)
+            else:
+                data.append(dict_result)
         return data
     else:
         return query_result
