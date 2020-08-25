@@ -162,21 +162,21 @@ def execute_icat_query(client, query, return_json_formattable=False):
         data = []
         log.debug(f"Conditions: {query.conditions}")
 
+        # For each condition, extract the attribute names and compile them into a list
         # TODO - The keys need to be checked to ensure they're != null
         attribute_names = query.conditions.keys()
         log.debug(f"Attribute Names: {attribute_names}")
 
-        # For each condition, extract the attribute names and compile them into a list
-        # TODO - Are attributes listed in alphabetical order? Which order should these
-        # attribute names be put into?
-
+        # Extract the data of the fields used in the distinct filter and return it as a
+        # response
         for result in query_result:
+            distinct_result = {}
             dict_result = result.as_dict()
-            
+
             for key, value in dict_result.items():
                 if key in attribute_names:
                     distinct_result[key] = value
-            
+
             data.append(distinct_result)
 
         return data
