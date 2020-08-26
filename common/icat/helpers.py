@@ -378,7 +378,7 @@ def get_entity_with_filters(client, table_name, filters):
 
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
-    manage_order_filters(filter_handler.filters)
+    clear_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query)
 
     data = execute_icat_query(client, query, True)
@@ -389,7 +389,7 @@ def get_entity_with_filters(client, table_name, filters):
         return data
 
 
-def manage_order_filters(filters):
+def clear_order_filters(filters):
     """
     Checks if any order filters have been added to the request and resets the variable
     used to manage which attribute(s) to use for sorting results.
