@@ -93,113 +93,120 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def construct_icat_query(
-    client, entity_name, conditions=None, aggregate=None, includes=None
-):
-    """
-    Create a Query object within Python ICAT 
+class icat_query:
+    def __init__(
+        self, client, entity_name, conditions=None, aggregate=None, includes=None
+    ):
+        """
+        Create a Query object within Python ICAT 
 
-    :param client: ICAT client containing an authenticated user
-    :type client: :class:`icat.client.Client`
-    :param entity_name: Name of the entity to get data from
-    :type entity_name: :class:`suds.sax.text.Text`
-    :param conditions: Constraints used when an entity is queried
-    :type conditions: :class:`dict`
-    :param aggregate: Name of the aggregate function to apply. Operations such as
-        counting the number of records. See `icat.query.setAggregate` for valid values.
-    :type aggregate: :class:`str`
-    :param includes: List of related entity names to add to the query so related
-        entities (and their data) can be returned with the query result
-    :type includes: :class:`str` or iterable of :class:`str`
-    :return: Query object from Python ICAT
-    :raises PythonICATError: If a ValueError is raised when creating a Query(), 500 will
-        be returned as a response
-    """
+        :param client: ICAT client containing an authenticated user
+        :type client: :class:`icat.client.Client`
+        :param entity_name: Name of the entity to get data from
+        :type entity_name: :class:`suds.sax.text.Text`
+        :param conditions: Constraints used when an entity is queried
+        :type conditions: :class:`dict`
+        :param aggregate: Name of the aggregate function to apply. Operations such as
+            counting the number of records. See `icat.query.setAggregate` for valid
+            values.
+        :type aggregate: :class:`str`
+        :param includes: List of related entity names to add to the query so related
+            entities (and their data) can be returned with the query result
+        :type includes: :class:`str` or iterable of :class:`str`
+        :return: Query object from Python ICAT
+        :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
+            will be returned as a response
+        """
 
-    try:
-        query = Query(
-            client,
-            entity_name,
-            conditions=conditions,
-            aggregate=aggregate,
-            includes=includes,
-        )
-    except ValueError:
-        raise PythonICATError(
-            "An issue has occurred while creating a Python ICAT Query object,"
-            " suggesting an invalid argument"
-        )
+        try:
+            self.query = Query(
+                client,
+                entity_name,
+                conditions=conditions,
+                aggregate=aggregate,
+                includes=includes,
+            )
+        except ValueError:
+            raise PythonICATError(
+                "An issue has occurred while creating a Python ICAT Query object,"
+                " suggesting an invalid argument"
+            )
 
-    return query
+    def execute_query(self, client, return_json_formattable=False):
+        """
+        Execute a previously created ICAT Query object and return in the format
+        specified by the return_json_formattable flag
 
+        :param client: ICAT client containing an authenticated user
+        :type client: :class:`icat.client.Client`
+        :param return_json_formattable: Flag to determine whether the data from the 
+            query should be returned as a list of data ready to be converted straight to
+            JSON (i.e. if the data will be used as a response for an API call) or
+            whether to leave the data in a Python ICAT format (i.e. if it's going to be
+            manipulated at some point)
+        :type return_json_formattable_data: :class:`bool`
+        :return: Data (of type list) from the executed query
+        """
 
-def execute_icat_query(client, query, return_json_formattable=False):
-    """
-    Execute a previously created ICAT Query object and return in the format specified
-    by the return_json_formattable flag
+        try:
+            query_result = client.search(self.query)
+        except ICATValidationError as e:
+            raise PythonICATError(e)
 
-    :param client: ICAT client containing an authenticated user
-    :type client: :class:`icat.client.Client`
-    :param query: ICAT Query object to execute within Python ICAT
-    :type query: :class:`icat.query.Query`
-    :param return_json_formattable: Flag to determine whether the data from the query
-        should be returned as a list of data ready to be converted straight to JSON 
-        (i.e. if the data will be used as a response for an API call) or whether to
-        leave the data in a Python ICAT format (i.e. if it's going to be manipulated at
-        some point)
-    :type return_json_formattable_data: :class:`bool`
-    :return: Data (of type list) from the executed query
-    """
+        if self.query.aggregate == "DISTINCT":
+            distinct_filter_flag = True
+            # Check query's conditions for the ones created by the distinct filter
+            attribute_names = []
+            log.debug("Query conditions: %s", self.query.conditions)
+            for key, value in self.query.conditions.items():
+                # TODO - Consider that value might be a list, rather than a string value
+                if isinstance(value, list):
+                    for sub_value in value:
+                        pass
 
-    try:
-        query_result = client.search(query)
-    except ICATValidationError as e:
-        raise PythonICATError(e)
+                # TODO - Does "!= null" need to be added as a constant? How can it be used
+                # in the distinct filter side of things?
+                if value == "!= null":
+                    attribute_names.append(key)
+            log.debug(
+                "Attribute names used in the distinct filter, as captured by the"
+                " query's conditions %s",
+                attribute_names,
+            )
+        else:
+            distinct_filter_flag = False
 
-    if query.aggregate == "DISTINCT":
-        distinct_filter_flag = True
-        # Check query's conditions for the ones created by the distinct filter
-        attribute_names = []
-        log.debug("Query conditions: %s", query.conditions)
-        for key, value in query.conditions.items():
-            # TODO - Consider that value might be a list, rather than a string value
-            if value == "!= null":
-                attribute_names.append(key)
-        log.debug(
-            "Attribute names used in the distinct filter, as captured by the"
-            " query's conditions %s", attribute_names
-        )
-    else:
-        distinct_filter_flag = False
+        if return_json_formattable:
+            data = []
+            for result in query_result:
+                dict_result = result.as_dict()
+                distinct_result = {}
 
-    if return_json_formattable:
-        data = []
-        for result in query_result:
-            dict_result = result.as_dict()
-            distinct_result = {}
+                for key, value in dict_result.items():
+                    # TODO - Test that dates are converted when using distinct filters
+                    # Convert datetime objects to strings so they can be JSON
+                    # serialisable
+                    if isinstance(value, datetime):
+                        # Remove timezone data which isn't utilised in ICAT
+                        dict_result[key] = value.replace(tzinfo=None).strftime(
+                            Constants.ACCEPTED_DATE_FORMAT
+                        )
 
-            for key, value in dict_result.items():
-                # Convert datetime objects to strings so they can be JSON serialisable
-                if isinstance(value, datetime):
-                    # Remove timezone data which isn't utilised in ICAT
-                    dict_result[key] = value.replace(tzinfo=None).strftime(
-                        Constants.ACCEPTED_DATE_FORMAT
-                    )
+                    if distinct_filter_flag:
+                        # Add only the required data as per request's distinct filter
+                        # fields
+                        if key in attribute_names:
+                            distinct_result[key] = value
 
+                # Add to the response's data depending on whether request has a distinct
+                # filter
                 if distinct_filter_flag:
-                    # Add only the required data as per request's distinct filter fields
-                    if key in attribute_names:
-                        distinct_result[key] = value
-
-            # Add to the response's data depending on whether request has a distinct
-            # filter
-            if distinct_filter_flag:
-                data.append(distinct_result)
-            else:
-                data.append(dict_result)
-        return data
-    else:
-        return query_result
+                    data.append(distinct_result)
+                else:
+                    data.append(dict_result)
+            return data
+        else:
+            return query_result
 
 
 def get_python_icat_entity_name(client, database_table_name):
@@ -330,17 +337,14 @@ def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
     :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
 
+    selected_entity_name = get_python_icat_entity_name(client, table_name)
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
-    selected_entity_name = get_python_icat_entity_name(client, table_name)
-
-    id_query = construct_icat_query(
+    id_query = icat_query(
         client, selected_entity_name, conditions=id_condition, includes="1"
     )
-    entity_by_id_data = execute_icat_query(
-        client, id_query, return_json_formattable_data
-    )
+    entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
     if not entity_by_id_data:
         # Cannot find any data matching the given ID
@@ -393,13 +397,14 @@ def update_entity_by_id(client, table_name, id_, new_data):
 
 def get_entity_with_filters(client, table_name, filters):
     selected_entity_name = get_python_icat_entity_name(client, table_name)
-    query = construct_icat_query(client, selected_entity_name)
+    query = icat_query(client, selected_entity_name)
+
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
     merge_limit_skip_filters(filter_handler)
-    filter_handler.apply_filters(query)
+    filter_handler.apply_filters(query.query)
 
-    data = execute_icat_query(client, query, True)
+    data = query.execute_query(client, True)
 
     if not data:
         raise MissingRecordError("No results found")
