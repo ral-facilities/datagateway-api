@@ -181,21 +181,22 @@ class icat_query:
                 dict_result = result.as_dict()
                 distinct_result = {}
 
-                for key, value in dict_result.items():
-                    # TODO - Test that dates are converted when using distinct filters
+                for key in dict_result:
                     # Convert datetime objects to strings so they can be JSON
                     # serialisable
-                    if isinstance(value, datetime):
+                    if isinstance(dict_result[key], datetime):
                         # Remove timezone data which isn't utilised in ICAT
-                        dict_result[key] = value.replace(tzinfo=None).strftime(
-                            Constants.ACCEPTED_DATE_FORMAT
+                        dict_result[key] = (
+                            dict_result[key]
+                            .replace(tzinfo=None)
+                            .strftime(Constants.ACCEPTED_DATE_FORMAT)
                         )
 
                     if distinct_filter_flag:
                         # Add only the required data as per request's distinct filter
                         # fields
                         if key in self.attribute_names:
-                            distinct_result[key] = value
+                            distinct_result[key] = dict_result[key]
 
                 # Add to the response's data depending on whether request has a distinct
                 # filter
