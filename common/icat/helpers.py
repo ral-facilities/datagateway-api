@@ -16,6 +16,7 @@ from common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
     PythonICATSkipFilter,
+    PythonICATOrderFilter,
 )
 
 
@@ -364,11 +365,26 @@ def update_entity_by_id(client, table_name, id_, new_data):
 
 
 def get_entity_with_filters(client, table_name, filters):
+    """
+    Gets all the records of a given entity, based on the filters provided in the request
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: :class:`str`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The list of records of the given entity, using the filters to restrict the
+        result of the query
+    """
+
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     query = construct_icat_query(client, selected_entity_name)
+
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
     merge_limit_skip_filters(filter_handler)
+    clear_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query)
 
     data = execute_icat_query(client, query, True)
@@ -408,3 +424,19 @@ def merge_limit_skip_filters(filter_handler):
             log.info("Removing skip filter from list of filters")
             filter_handler.remove_filter(skip_filter)
             log.debug("Filters: %s", filter_handler.filters)
+
+
+def clear_order_filters(filters):
+    """
+    Checks if any order filters have been added to the request and resets the variable
+    used to manage which attribute(s) to use for sorting results.
+    
+    A reset is required because Python ICAT overwrites (as opposed to appending to it)
+    the query's order list every time one is added to the query.
+
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    """
+
+    if any(isinstance(filter, PythonICATOrderFilter) for filter in filters):
+        PythonICATOrderFilter.result_order = []

@@ -25,6 +25,7 @@ class FilterOrderHandler(object):
     def apply_filters(self, query):
         """
         Given a query apply the filters the handler has in the correct order.
+
         :param query: The query to have filters applied to
         """
         self.sort_filters()
