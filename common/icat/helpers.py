@@ -156,22 +156,21 @@ class icat_query:
         if self.query.aggregate == "DISTINCT":
             distinct_filter_flag = True
             # Check query's conditions for the ones created by the distinct filter
-            attribute_names = []
+            self.attribute_names = []
             log.debug("Query conditions: %s", self.query.conditions)
+
             for key, value in self.query.conditions.items():
-                # TODO - Consider that value might be a list, rather than a string value
+                # Value can be a list if there's multiple WHERE filters for the same
+                # attribute name within an ICAT query
                 if isinstance(value, list):
                     for sub_value in value:
-                        pass
-
-                # TODO - Does "!= null" need to be added as a constant? How can it be used
-                # in the distinct filter side of things?
-                if value == "!= null":
-                    attribute_names.append(key)
+                        self.check_attribute_name_for_distinct(key, sub_value)
+                elif isinstance(value, str):
+                    self.check_attribute_name_for_distinct(key, value)
             log.debug(
                 "Attribute names used in the distinct filter, as captured by the"
                 " query's conditions %s",
-                attribute_names,
+                self.attribute_names,
             )
         else:
             distinct_filter_flag = False
@@ -195,7 +194,7 @@ class icat_query:
                     if distinct_filter_flag:
                         # Add only the required data as per request's distinct filter
                         # fields
-                        if key in attribute_names:
+                        if key in self.attribute_names:
                             distinct_result[key] = value
 
                 # Add to the response's data depending on whether request has a distinct
@@ -207,6 +206,21 @@ class icat_query:
             return data
         else:
             return query_result
+
+    def check_attribute_name_for_distinct(self, key, value):
+        """
+        Check the attribute name to see if its associated value is used to signify the
+        attribute is requested in a distinct filter and if so, append it to the list of
+        attribute names
+
+        :param key: Name of an attribute
+        :type key: :class:`str`
+        :param value: Expression that should be applied to the associated attribute
+            e.g. "= 'Metadata'"
+        :type value: :class:`str`
+        """
+        if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
+            self.attribute_names.append(key)
 
 
 def get_python_icat_entity_name(client, database_table_name):
