@@ -35,7 +35,11 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "gte":
             where_filter = self.create_condition(self.field, ">=", self.value)
         elif self.operation == "in":
-            where_filter = self.create_condition(self.field, "in", tuple(self.value))
+            # Convert self.value into a string with brackets equivalent to tuple format.
+            # Cannot convert straight to tuple as single element tuples contain a 
+            # trailing comma which Python ICAT/JPQL doesn't accept
+            self.value = str(self.value).replace("[", "(").replace("]", ")")
+            where_filter = self.create_condition(self.field, "in", self.value)
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
@@ -65,9 +69,10 @@ class PythonICATWhereFilter(WhereFilter):
         """
 
         conditions = {}
-        # Removing quote marks when doing conditions with IN expressions
+        # Removing quote marks when doing conditions with IN expressions or when a
+        # distinct filter is used in a request
         jpql_value = (
-            f"{value}" if isinstance(value, tuple) or operator == "!=" else f"'{value}'"
+            f"{value}" if operator == "in" or operator == "!=" else f"'{value}'"
         )
         conditions[attribute_name] = f"{operator} {jpql_value}"
         log.debug("Conditions in ICAT where filter, %s", conditions)
