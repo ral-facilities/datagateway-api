@@ -170,19 +170,33 @@ class PythonICATIncludeFilter(IncludeFilter):
         if isinstance(field, str):
             self.included_filters.append(field)
         elif isinstance(field, dict):
-            for item in field.items():
-                # If key and value are both strings, join them together
-                # Else, 
-                log.debug(f"Item: {item}, Type: {type(item)}")
-                self.included_filters.append(".".join(item))
+            for key, value in field.items():
+                if not isinstance(key, str):
+                    raise FilterError(
+                        "Include Filter: Dictionary key should only be a string, not"
+                        " any other type"
+                    )
+
+                if isinstance(value, str):
+                    self.included_filters.append(".".join((key, value)))
+                elif isinstance(value, list):
+                    # key.value1, key.value2, key.value3 etc.
+                    pass
+                elif isinstance(value, dict):
+                    # key.value_key.value_value
+                    pass
+                else:
+                    raise FilterError(
+                        "Include Filter: Inner field type (inside dictionary) not"
+                        " recognised, cannot interpret input"
+                    )
         elif isinstance(field, list):
             for element in field:
                 self._extract_filter_fields(element) 
-        elif isinstance(field, tuple):
-            # Assuming that if `field` is a tuple, it must have come from a dictionary
-            pass
-            # Need to inspect each element
-            # Deal with just a list, and a list of str from dict values
+        else:
+            raise FilterError(
+                "Include Filter: Field type not recognised, cannot interpret input"
+            )
 
     def apply_filter(self, query):
         log.debug(
