@@ -162,10 +162,17 @@ class PythonICATIncludeFilter(IncludeFilter):
         super().__init__(included_filters)
         # TODO - Adapt JSON input from request to Python ICAT
         # Might end up removing the super constructor call
+        #self.included_filters = included_filters["include"]
 
         # Included entities must be in a list
         if isinstance(self.included_filters, str):
             self.included_filters = [self.included_filters]
+        elif isinstance(self.included_filters, dict):
+            self.included_filters = []
+            for item in included_filters["include"].items():
+                self.included_filters.append(".".join(item))
+            
+        
 
         # TODO - When a dictionary is used in self.included_filters
 
