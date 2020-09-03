@@ -151,6 +151,7 @@ class icat_query:
 
         try:
             query_result = client.search(self.query)
+            log.debug("Query Result: %s", query_result)
         except ICATValidationError as e:
             raise PythonICATError(e)
 
@@ -182,7 +183,41 @@ class icat_query:
                 dict_result = result.as_dict()
                 distinct_result = {}
 
+                log.debug(f"Result: {result}")
+                log.debug(f"Dict Result: {dict_result}")
+
+                log.debug(
+                    f"Includes: {self.query.includes},"
+                    f" Type: {type(self.query.includes)}"
+                )
+
+                for entity_name in self.query.includes:
+                    included_data = getattr(result, entity_name)
+                    dict_result[entity_name] = []
+
+                    for included_result in included_data:
+                        # TODO - Test that there can be >1 element in this
+                        dict_result[entity_name].append(included_result.as_dict())
+
                 for key in dict_result:
+                    log.debug(f"Key: {key}, Type: {type(key)}")
+
+                    if isinstance(dict_result[key], list):
+                        for included_result in range(len(dict_result[key])):
+                            for inner_key in dict_result[key][included_result]:
+                                log.debug(f"Inner Key: {inner_key}")
+                                # TODO - Remove duplication
+                                if isinstance(
+                                    dict_result[key][included_result][inner_key],
+                                    datetime,
+                                ):
+                                    # Remove timezone data which isn't utilised in ICAT
+                                    dict_result[key][included_result][inner_key] = (
+                                        dict_result[key][included_result][inner_key]
+                                        .replace(tzinfo=None)
+                                        .strftime(Constants.ACCEPTED_DATE_FORMAT)
+                                    )
+
                     # Convert datetime objects to strings so they can be JSON
                     # serialisable
                     if isinstance(dict_result[key], datetime):
@@ -223,6 +258,9 @@ class icat_query:
         """
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             self.attribute_names.append(key)
+
+    def make_date_json_serialisable(self, data_dict, more_params_needed):
+        pass
 
 
 def get_python_icat_entity_name(client, database_table_name):

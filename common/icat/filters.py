@@ -36,7 +36,7 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, ">=", self.value)
         elif self.operation == "in":
             # Convert self.value into a string with brackets equivalent to tuple format.
-            # Cannot convert straight to tuple as single element tuples contain a 
+            # Cannot convert straight to tuple as single element tuples contain a
             # trailing comma which Python ICAT/JPQL doesn't accept
             self.value = str(self.value).replace("[", "(").replace("]", ")")
             where_filter = self.create_condition(self.field, "in", self.value)
@@ -160,6 +160,22 @@ def icat_set_limit(query, skip_number, limit_number):
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
         super().__init__(included_filters)
+        # TODO - Adapt JSON input from request to Python ICAT
+        # Might end up removing the super constructor call
+
+        # Included entities must be in a list
+        if isinstance(self.included_filters, str):
+            self.included_filters = [self.included_filters]
+
+        # TODO - When a dictionary is used in self.included_filters
 
     def apply_filter(self, query):
-        pass
+        log.debug(
+            f"Included filters: {self.included_filters}, Type: {type(self.included_filters)}"
+        )
+
+        try:
+            pass
+            query.addIncludes(self.included_filters)
+        except ValueError as e:
+            raise FilterError(e)
