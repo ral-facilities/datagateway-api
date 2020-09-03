@@ -159,26 +159,35 @@ def icat_set_limit(query, skip_number, limit_number):
 
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
-        super().__init__(included_filters)
         # TODO - Adapt JSON input from request to Python ICAT
-        # Might end up removing the super constructor call
-        #self.included_filters = included_filters["include"]
+        self.included_filters = []
+        self._extract_filter_fields(included_filters["include"])
 
-        # Included entities must be in a list
-        if isinstance(self.included_filters, str):
-            self.included_filters = [self.included_filters]
-        elif isinstance(self.included_filters, dict):
-            self.included_filters = []
-            for item in included_filters["include"].items():
+    def _extract_filter_fields(self, field):
+        """
+        TODO - Add docstring
+        """
+        if isinstance(field, str):
+            self.included_filters.append(field)
+        elif isinstance(field, dict):
+            for item in field.items():
+                # If key and value are both strings, join them together
+                # Else, 
+                log.debug(f"Item: {item}, Type: {type(item)}")
                 self.included_filters.append(".".join(item))
-            
-        
-
-        # TODO - When a dictionary is used in self.included_filters
+        elif isinstance(field, list):
+            for element in field:
+                self._extract_filter_fields(element) 
+        elif isinstance(field, tuple):
+            # Assuming that if `field` is a tuple, it must have come from a dictionary
+            pass
+            # Need to inspect each element
+            # Deal with just a list, and a list of str from dict values
 
     def apply_filter(self, query):
         log.debug(
-            f"Included filters: {self.included_filters}, Type: {type(self.included_filters)}"
+            f"Included filters: {self.included_filters},"
+            f" Type: {type(self.included_filters)}"
         )
 
         try:
