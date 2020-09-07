@@ -159,13 +159,23 @@ def icat_set_limit(query, skip_number, limit_number):
 
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
-        # TODO - Adapt JSON input from request to Python ICAT
         self.included_filters = []
         self._extract_filter_fields(included_filters["include"])
 
     def _extract_filter_fields(self, field):
         """
-        TODO - Add docstring
+        Using recursion, go through the fields and add them to the filter's instance.
+        This means that lists within dictionaries, dictionaries within dictionaries are
+        supported. Where dictionaries are involved, '.' are used to join the fields
+        together
+
+        Some (but not all) fields require the plural to be accepted in the include of a
+        Python ICAT query - e.g. 'userGroups' is valid (plural required), but 'dataset'
+        is also valid (plural not required). The dictionary `substnames` in Python
+        ICAT's query.py gives a good overview of which need to be plural.
+
+        :param field: Which field(s) should be included in the ICAT query
+        :type field: :class:`str` or :class:`list` or :class:`dict`
         """
         if isinstance(field, str):
             self.included_filters.append(field)
@@ -178,13 +188,23 @@ class PythonICATIncludeFilter(IncludeFilter):
                     )
 
                 if isinstance(value, str):
-                    self.included_filters.append(".".join((key, value)))
+                    self._extract_filter_fields(".".join((key, value)))
                 elif isinstance(value, list):
-                    # key.value1, key.value2, key.value3 etc.
-                    pass
+                    for element in value:
+                        # Will end up as: key.element1, key.element2, key.element3 etc.
+                        self._extract_filter_fields(".".join((key, element)))
                 elif isinstance(value, dict):
-                    # key.value_key.value_value
-                    pass
+                    for inner_key, inner_value in value.items():
+                        if not isinstance(inner_key, str):
+                            raise FilterError(
+                                "Include Filter: Dictionary key should only be a string"
+                                ", not any other type"
+                            )
+
+                        # Will end up as: key.inner_key.inner_value
+                        self._extract_filter_fields(
+                            {".".join((key, inner_key)): inner_value}
+                        )
                 else:
                     raise FilterError(
                         "Include Filter: Inner field type (inside dictionary) not"
@@ -192,7 +212,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                     )
         elif isinstance(field, list):
             for element in field:
-                self._extract_filter_fields(element) 
+                self._extract_filter_fields(element)
         else:
             raise FilterError(
                 "Include Filter: Field type not recognised, cannot interpret input"
