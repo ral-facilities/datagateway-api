@@ -150,6 +150,7 @@ class icat_query:
         """
 
         try:
+            # Going to Python ICAT to perform the query
             query_result = client.search(self.query)
             log.debug("Query Result: %s", query_result)
         except ICATValidationError as e:
@@ -179,29 +180,39 @@ class icat_query:
 
         if return_json_formattable:
             data = []
+
+            # Split up self.query.includes into individual fields (some are separated by
+            # dots for Python ICAT)
+            # TODO - Test this all works without include filter
+            included_entities = []
+            for include in self.query.includes:
+                split_include = include.split(".")
+                included_entities.extend(split_include)
+
             for result in query_result:
+                # Converting each row/result into its dictionary form
                 dict_result = result.as_dict()
+                # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
 
                 log.debug(f"Result: {result}")
                 log.debug(f"Dict Result: {dict_result}")
 
-                log.debug(
-                    f"Includes: {self.query.includes},"
-                    f" Type: {type(self.query.includes)}"
-                )
-
-                for entity_name in self.query.includes:
+                # Adding data from the included data to `dict_result` which stores the
+                # query result in dictionary form
+                for entity_name in included_entities:
+                    log.debug(f"Entity Name: {entity_name}, Type: {type(entity_name)}")
                     included_data = getattr(result, entity_name)
                     dict_result[entity_name] = []
+                    log.debug(f"Included Data: {included_data}, Type: {type(included_data)}")
 
                     for included_result in included_data:
                         # TODO - Test that there can be >1 element in this
                         dict_result[entity_name].append(included_result.as_dict())
 
+                # Data is prepared to be used as JSON - e.g. dates are converted to a
+                # specific format
                 for key in dict_result:
-                    log.debug(f"Key: {key}, Type: {type(key)}")
-
                     if isinstance(dict_result[key], list):
                         for included_result in range(len(dict_result[key])):
                             for inner_key in dict_result[key][included_result]:
@@ -242,6 +253,7 @@ class icat_query:
                     data.append(dict_result)
             return data
         else:
+            # Return data as Python ICAT returned the query
             return query_result
 
     def check_attribute_name_for_distinct(self, key, value):
