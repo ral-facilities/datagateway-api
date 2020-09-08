@@ -1,7 +1,9 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
+from collections.abc import Iterable
 
+from icat.entity import EntityList
 from icat.query import Query
 from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import (
@@ -184,10 +186,6 @@ class icat_query:
             # Split up self.query.includes into individual fields (some are separated by
             # dots for Python ICAT)
             # TODO - Test this all works without include filter
-            included_entities = []
-            for include in self.query.includes:
-                split_include = include.split(".")
-                included_entities.extend(split_include)
 
             for result in query_result:
                 # Converting each row/result into its dictionary form
@@ -195,20 +193,22 @@ class icat_query:
                 # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
 
-                log.debug(f"Result: {result}")
+                log.debug(f"Result: {result}, Type: {type(result)}, Dir: {dir(result)}")
                 log.debug(f"Dict Result: {dict_result}")
 
                 # Adding data from the included data to `dict_result` which stores the
                 # query result in dictionary form
-                for entity_name in included_entities:
-                    log.debug(f"Entity Name: {entity_name}, Type: {type(entity_name)}")
-                    included_data = getattr(result, entity_name)
-                    dict_result[entity_name] = []
-                    log.debug(f"Included Data: {included_data}, Type: {type(included_data)}")
+                for entity_name in self.query.includes:
 
-                    for included_result in included_data:
-                        # TODO - Test that there can be >1 element in this
-                        dict_result[entity_name].append(included_result.as_dict())
+                    # TODO - Rename that variable
+                    # split_entities_element = split_entities.pop(0)
+
+                    # TODO - Remember this style of name is used elsewhere
+                    # TODO - Test how the split works when there's no dot
+                    split_entities = entity_name.split(".")
+                    log.debug(f"Split entities: {split_entities}")
+
+                    self.add_included_data(result, dict_result, split_entities)
 
                 # Data is prepared to be used as JSON - e.g. dates are converted to a
                 # specific format
@@ -253,7 +253,7 @@ class icat_query:
                     data.append(dict_result)
             return data
         else:
-            # Return data as Python ICAT returned the query
+            # Return data exactly as Python ICAT returned the query
             return query_result
 
     def check_attribute_name_for_distinct(self, key, value):
@@ -272,7 +272,57 @@ class icat_query:
             self.attribute_names.append(key)
 
     def make_date_json_serialisable(self, data_dict, more_params_needed):
+        """
+        TODO - Add docstring and use this
+        """
         pass
+
+    def add_included_data(self, icat_result, dict_result, split_entities):
+        """
+        TODO - Add docstring
+        """
+        # split_entities = entity_name.split(".")
+        split_entity = split_entities.pop(0)
+        log.debug(f"Split entity: {split_entity}")
+
+        if isinstance(icat_result, EntityList):
+            # Iterate/unpack the list, would there ever be more than one item in
+            # EntityList
+            log.debug(f"Entity List: {icat_result}, Type: {type(icat_result)}")
+            log.debug(f"DIR: {dir(icat_result)}")
+            log.debug(f"Length: {len(icat_result)}")
+
+            for entity in icat_result:
+                # TODO - Be aware this will overwrite
+                icat_data = self.second_include_funct(entity, dict_result, split_entity)
+        else:
+            log.debug(f"NO ENTITYLIST")
+            icat_data = self.second_include_funct(
+                icat_result, dict_result, split_entity
+            )
+
+        if len(split_entities) > 0:
+            # Recursion time
+            log.debug("RECURSION")
+            self.add_included_data(icat_data, dict_result, split_entities)
+
+    def second_include_funct(self, icat_entity, dict_result, entity_name):
+        included_data = getattr(icat_entity, entity_name)
+        log.debug(
+            f"Included Data: {included_data}, Type: {type(included_data)}, Dir: {dir(included_data)}"
+        )
+        dict_result[entity_name] = []
+
+        if isinstance(included_data, Iterable):
+            for included_result in included_data:
+                # TODO - Test that there can be >1 element in this
+                log.debug(f"Included Result: {included_result.as_dict()}")
+                dict_result[entity_name].append(included_result.as_dict())
+        else:
+            log.debug(f"Included DATA: {included_data.as_dict()}")
+            dict_result[entity_name].append(included_data.as_dict())
+
+        return included_data
 
 
 def get_python_icat_entity_name(client, database_table_name):
