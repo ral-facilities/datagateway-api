@@ -193,8 +193,8 @@ class icat_query:
                 # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
 
-                log.debug(f"Result: {result}, Type: {type(result)}, Dir: {dir(result)}")
-                log.debug(f"Dict Result: {dict_result}")
+                #log.debug(f"Result: {result}, Type: {type(result)}, Dir: {dir(result)}")
+                #log.debug(f"Dict Result: {dict_result}")
 
                 # Adding data from the included data to `dict_result` which stores the
                 # query result in dictionary form
@@ -204,19 +204,24 @@ class icat_query:
                     # split_entities_element = split_entities.pop(0)
 
                     # TODO - Remember this style of name is used elsewhere
-                    # TODO - Test how the split works when there's no dot
                     split_entities = entity_name.split(".")
                     log.debug(f"Split entities: {split_entities}")
 
-                    self.add_included_data(result, dict_result, split_entities)
+                    #self.add_included_data(result, dict_result, split_entities)
+                    #included_entity_data = self.add_included_data(result, dict_result, split_entities)
+                    #dict_result[entity_name].append(included_entity_data)
+
+                    self.get_included_data(result, dict_result, split_entities)
+                    log.debug(f"dict result: {dict_result}")
 
                 # Data is prepared to be used as JSON - e.g. dates are converted to a
                 # specific format
-                for key in dict_result:
+                for key, value in dict_result.items():
+                    #make_date_json_serialisable()
                     if isinstance(dict_result[key], list):
                         for included_result in range(len(dict_result[key])):
                             for inner_key in dict_result[key][included_result]:
-                                log.debug(f"Inner Key: {inner_key}")
+                                #log.debug(f"Inner Key: {inner_key}")
                                 # TODO - Remove duplication
                                 if isinstance(
                                     dict_result[key][included_result][inner_key],
@@ -271,58 +276,39 @@ class icat_query:
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             self.attribute_names.append(key)
 
-    def make_date_json_serialisable(self, data_dict, more_params_needed):
+    def make_date_json_serialisable(self, key, value):
         """
         TODO - Add docstring and use this
         """
-        pass
+        if isinstance(value, list):
+            for inner_value in value:
+                self.make_date_json_serialisable(key, inner_value)
 
-    def add_included_data(self, icat_result, dict_result, split_entities):
-        """
-        TODO - Add docstring
-        """
-        # split_entities = entity_name.split(".")
+        
+
+
+    def get_included_data(self, icat_data, dictionary_data, split_entities):
         split_entity = split_entities.pop(0)
-        log.debug(f"Split entity: {split_entity}")
+        extracted_data = getattr(icat_data, split_entity)
+        log.debug(f"Extracted data: {extracted_data}, Type: {type(extracted_data)}")
 
-        if isinstance(icat_result, EntityList):
-            # Iterate/unpack the list, would there ever be more than one item in
-            # EntityList
-            log.debug(f"Entity List: {icat_result}, Type: {type(icat_result)}")
-            log.debug(f"DIR: {dir(icat_result)}")
-            log.debug(f"Length: {len(icat_result)}")
 
-            for entity in icat_result:
-                # TODO - Be aware this will overwrite
-                icat_data = self.second_include_funct(entity, dict_result, split_entity)
-        else:
-            log.debug(f"NO ENTITYLIST")
-            icat_data = self.second_include_funct(
-                icat_result, dict_result, split_entity
-            )
+        dictionary_data[split_entity] = []
+        extracted_data_i = None
+        for i in extracted_data:
+            extracted_data_i = i
+            dictionary_data[split_entity].append(i.as_dict())
 
         if len(split_entities) > 0:
-            # Recursion time
-            log.debug("RECURSION")
-            self.add_included_data(icat_data, dict_result, split_entities)
+            split_entity_1 = split_entities.pop(0)
+            extracted_data_1 = getattr(extracted_data_i, split_entity_1)
+            log.debug(f"Extracted data1 : {extracted_data_1}, Type: {type(extracted_data_1)}")
+            dictionary_data[split_entity][0][split_entity_1] = []
+            dictionary_data[split_entity][0][split_entity_1].append(extracted_data_1.as_dict())
 
-    def second_include_funct(self, icat_entity, dict_result, entity_name):
-        included_data = getattr(icat_entity, entity_name)
-        log.debug(
-            f"Included Data: {included_data}, Type: {type(included_data)}, Dir: {dir(included_data)}"
-        )
-        dict_result[entity_name] = []
 
-        if isinstance(included_data, Iterable):
-            for included_result in included_data:
-                # TODO - Test that there can be >1 element in this
-                log.debug(f"Included Result: {included_result.as_dict()}")
-                dict_result[entity_name].append(included_result.as_dict())
-        else:
-            log.debug(f"Included DATA: {included_data.as_dict()}")
-            dict_result[entity_name].append(included_data.as_dict())
 
-        return included_data
+
 
 
 def get_python_icat_entity_name(client, database_table_name):
