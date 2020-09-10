@@ -230,47 +230,73 @@ class icat_query:
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             self.attribute_names.append(key)
 
-    def make_date_json_serialisable(self, key, value):
+    def datetime_object_to_str(self, date_obj):
         """
-        TODO - Add docstring and use this
+        Convert a datetime object to a string so it can be outputted in JSON
+
+        There's currently no reason to make this function static, but it could be useful
+        in the future if a use case required this functionality.
+
+        :param date_obj: Datetime object from data from an ICAT entity
+        :type date_obj: :class:`datetime.datetime`
+        :return: Datetime (of type string) in the agreed format
         """
-        if isinstance(value, list):
-            for inner_value in value:
-                self.make_date_json_serialisable(key, inner_value)
+        return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
 
     def entity_to_dict(self, entity, includes):
         """
-        TODO - Add docstring
-        Return a dict with the object's attributes.
+        This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
+        to use set operators to create a version of the entity as a dictionary
+
+        Most of this function is dedicated to recursing over included fields from a
+        query, since this is functionality isn't part of Python ICAT's `as_dict()`. This
+        function can be used when there are no include filters in the query/request
+        however.
+
+        :param entity: Python ICAT entity from an ICAT query
+        :type entity: :class:`icat.entities.ENTITY` (implementation of
+            :class:`icat.entity.Entity`) or :class:`icat.entity.EntityList`
+        :param includes: Set of fields that have been included in the ICAT query. Where
+            fields have a chain of relationships, they're a single element string
+            separated by dots
+        :type includes: :class:`set`
+        :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
+        log.info("Converting entity (%s) to dictionary format", type(entity))
         d = {}
 
         # Split up the fields separated by dots and flatten the resulting lists
-        flat_includes = [m for n in (x.split(".") for x in includes) for m in n]
-        # Expand on Python ICAT's implementation of `Entity.as_dict()` to use set operators
+        flat_includes = [m for n in (field.split(".") for field in includes) for m in n]
+
+        # Verifying that `flat_includes` only has fields which are related to the entity
         include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
-        for a in entity.InstAttr | entity.MetaAttr | include_set:
-            if a in flat_includes:
-                target = getattr(entity, a)
+        for key in entity.InstAttr | entity.MetaAttr | include_set:
+            if key in flat_includes:
+                target = getattr(entity, key)
+                # Copy and remove don't return values so must be done separately
                 includes_copy = flat_includes.copy()
-                includes_copy.remove(a)
+                try:
+                    includes_copy.remove(key)
+                except ValueError:
+                    log.warning(
+                        "Key couldn't be found to remove from include list, this could"
+                        " cause an issue further on in the request"
+                    )
                 if isinstance(target, Entity):
-                    a_dict = self.entity_to_dict(target, includes_copy)
-                    d[a] = a_dict
+                    d[key] = self.entity_to_dict(target, includes_copy)
+                # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
-                    d[a] = []
+                    d[key] = []
                     for e in target:
-                        a_dict = self.entity_to_dict(e, includes_copy)
-                        d[a].append(a_dict)
+                        d[key].append(self.entity_to_dict(e, includes_copy))
+            # Add actual piece of data to the dictionary
             else:
-                entity_data = getattr(entity, a)
+                entity_data = getattr(entity, key)
                 # Convert datetime objects to strings ready to be outputted as JSON
                 if isinstance(entity_data, datetime):
                     # Remove timezone data which isn't utilised in ICAT
-                    entity_data = entity_data.replace(tzinfo=None).strftime(
-                        Constants.ACCEPTED_DATE_FORMAT
-                    )
-                d[a] = entity_data
+                    entity_data = self.datetime_object_to_str(entity_data)
+                d[key] = entity_data
         return d
 
 
@@ -349,7 +375,8 @@ def update_attributes(old_entity, new_entity):
     Python ICAT
 
     :param old_entity: An existing entity record from Python ICAT
-    :type object: :class:`icat.entities.ENTITY`
+    :type object: :class:`icat.entities.ENTITY` (implementation of
+        :class:`icat.entity.Entity`)
     :param new_entity: Dictionary containing the new data to be modified
     :type new_entity: :class:`dict`
     :raises BadRequestError: If the attribute cannot be found, or if it cannot be edited
