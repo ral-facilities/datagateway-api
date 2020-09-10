@@ -160,6 +160,7 @@ def icat_set_limit(query, skip_number, limit_number):
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
         self.included_filters = []
+        log.info("Extracting fields for include filter")
         self._extract_filter_fields(included_filters["include"])
 
     def _extract_filter_fields(self, field):
@@ -219,13 +220,9 @@ class PythonICATIncludeFilter(IncludeFilter):
             )
 
     def apply_filter(self, query):
-        log.debug(
-            f"Included filters: {self.included_filters},"
-            f" Type: {type(self.included_filters)}"
-        )
+        log.info("Applying include filter, adding fields: %s", self.included_filters)
 
         try:
-            pass
             query.addIncludes(self.included_filters)
         except ValueError as e:
             raise FilterError(e)

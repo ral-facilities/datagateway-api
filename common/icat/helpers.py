@@ -122,6 +122,7 @@ class icat_query:
         """
 
         try:
+            log.info("Creating ICATQuery for entity: %s", entity_name)
             self.query = Query(
                 client,
                 entity_name,
@@ -152,17 +153,16 @@ class icat_query:
         """
 
         try:
-            # Going to Python ICAT to perform the query
+            log.debug("Executing ICAT query")
             query_result = client.search(self.query)
-            log.debug("Query Result: %s", query_result)
         except ICATValidationError as e:
             raise PythonICATError(e)
 
         if self.query.aggregate == "DISTINCT":
+            log.info("Extracting the distinct fields from query's conditions")
             distinct_filter_flag = True
             # Check query's conditions for the ones created by the distinct filter
             self.attribute_names = []
-            log.debug("Query conditions: %s", self.query.conditions)
 
             for key, value in self.query.conditions.items():
                 # Value can be a list if there's multiple WHERE filters for the same
@@ -181,21 +181,12 @@ class icat_query:
             distinct_filter_flag = False
 
         if return_json_formattable:
+            log.info("Query results will be returned in a JSON format")
             data = []
 
-            # TODO - Test this all works without include filter
             for result in query_result:
-                # TODO - Put this in the docstring
-                # Converting each row/result into its dictionary form if include filter
-                # not used - `______` will do this if include filter(s) are used in the
-                # request - Python ICAT's `as_dict()` doesn't do included fields but is
-                # a simpler function so only used when needed
-                dict_result = {} if self.query.includes else result.as_dict()
-                # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
-
-                if self.query.includes:
-                    dict_result = self.entity_to_dict(result, self.query.includes)
+                dict_result = self.entity_to_dict(result, self.query.includes)
 
                 for key, value in dict_result.items():
                     if distinct_filter_flag:
@@ -204,15 +195,13 @@ class icat_query:
                         if key in self.attribute_names:
                             distinct_result[key] = dict_result[key]
 
-                # Add to the response's data depending on whether request has a distinct
-                # filter
                 if distinct_filter_flag:
                     data.append(distinct_result)
                 else:
                     data.append(dict_result)
             return data
         else:
-            # Return data exactly as Python ICAT returned the query
+            log.info("Query results will be returned as ICAT entities")
             return query_result
 
     def check_attribute_name_for_distinct(self, key, value):
