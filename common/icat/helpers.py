@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 from collections.abc import Iterable
 
-from icat.entity import EntityList
+from icat.entity import Entity, EntityList
 from icat.query import Query
 from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import (
@@ -183,36 +183,23 @@ class icat_query:
         if return_json_formattable:
             data = []
 
-            # Split up self.query.includes into individual fields (some are separated by
-            # dots for Python ICAT)
             # TODO - Test this all works without include filter
-
             for result in query_result:
-                # Converting each row/result into its dictionary form
-                dict_result = result.as_dict()
+                # TODO - Put this in the docstring
+                # Converting each row/result into its dictionary form if include filter
+                # not used - `______` will do this if include filter(s) are used in the
+                # request - Python ICAT's `as_dict()` doesn't do included fields but is
+                # a simpler function so only used when needed
+                dict_result = {} if self.query.includes else result.as_dict()
                 # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
 
-                #log.debug(f"Result: {result}, Type: {type(result)}, Dir: {dir(result)}")
-                #log.debug(f"Dict Result: {dict_result}")
+                log.debug(f"Dict Result: {dict_result}, Type: {type(dict_result)}")
 
                 # Adding data from the included data to `dict_result` which stores the
                 # query result in dictionary form
-                for entity_name in self.query.includes:
-
-                    # TODO - Rename that variable
-                    # split_entities_element = split_entities.pop(0)
-
-                    # TODO - Remember this style of name is used elsewhere
-                    split_entities = entity_name.split(".")
-                    log.debug(f"Split entities: {split_entities}")
-
-                    #self.add_included_data(result, dict_result, split_entities)
-                    #included_entity_data = self.add_included_data(result, dict_result, split_entities)
-                    #dict_result[entity_name].append(included_entity_data)
-
-                    self.get_included_data(result, dict_result, split_entities)
-                    log.debug(f"dict result: {dict_result}")
+                if self.query.includes:
+                    dict_result = self.entity_to_dict(result, self.query.includes)
 
                 # Data is prepared to be used as JSON - e.g. dates are converted to a
                 # specific format
@@ -256,6 +243,7 @@ class icat_query:
                     data.append(distinct_result)
                 else:
                     data.append(dict_result)
+            log.debug(f"finished data: {data}")
             return data
         else:
             # Return data exactly as Python ICAT returned the query
@@ -284,31 +272,36 @@ class icat_query:
             for inner_value in value:
                 self.make_date_json_serialisable(key, inner_value)
 
-        
+    def entity_to_dict(self, entity, includes):
+        """
+        TODO - Add docstring
+        Return a dict with the object's attributes.
+        """
+        # Split up the fields separated by dots and flatten the resulting lists
+        flat_includes = [m for n in (x.split('.') for x in includes) for m in n]
 
-
-    def get_included_data(self, icat_data, dictionary_data, split_entities):
-        split_entity = split_entities.pop(0)
-        extracted_data = getattr(icat_data, split_entity)
-        log.debug(f"Extracted data: {extracted_data}, Type: {type(extracted_data)}")
-
-
-        dictionary_data[split_entity] = []
-        extracted_data_i = None
-        for i in extracted_data:
-            extracted_data_i = i
-            dictionary_data[split_entity].append(i.as_dict())
-
-        if len(split_entities) > 0:
-            split_entity_1 = split_entities.pop(0)
-            extracted_data_1 = getattr(extracted_data_i, split_entity_1)
-            log.debug(f"Extracted data1 : {extracted_data_1}, Type: {type(extracted_data_1)}")
-            dictionary_data[split_entity][0][split_entity_1] = []
-            dictionary_data[split_entity][0][split_entity_1].append(extracted_data_1.as_dict())
-
-
-
-
+        d = {}
+        print(f"Includes: {includes}")
+        print(f"Includes: {flat_includes}")
+        # Expand on Python ICAT's implementation of `Entity.as_dict()` to use set operators
+        include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
+        print(f"Include set: {include_set}")
+        for a in entity.InstAttr | entity.MetaAttr | include_set:
+            if a in flat_includes:
+                target = getattr(entity, a)
+                includes_copy = flat_includes.copy()
+                includes_copy.remove(a)
+                if isinstance(target, Entity):
+                    a_dict = self.entity_to_dict(target, includes_copy)
+                    d[a] = a_dict
+                elif isinstance(target, EntityList):
+                    d[a] = []
+                    for e in target:
+                        a_dict = self.entity_to_dict(e, includes_copy)
+                        d[a].append(a_dict)
+            else:
+                d[a] = getattr(entity, a)
+        return d
 
 
 def get_python_icat_entity_name(client, database_table_name):
