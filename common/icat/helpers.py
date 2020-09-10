@@ -194,43 +194,10 @@ class icat_query:
                 # Creating dictionary to store distinct fields for use later on
                 distinct_result = {}
 
-                log.debug(f"Dict Result: {dict_result}, Type: {type(dict_result)}")
-
-                # Adding data from the included data to `dict_result` which stores the
-                # query result in dictionary form
                 if self.query.includes:
                     dict_result = self.entity_to_dict(result, self.query.includes)
 
-                # Data is prepared to be used as JSON - e.g. dates are converted to a
-                # specific format
                 for key, value in dict_result.items():
-                    #make_date_json_serialisable()
-                    if isinstance(dict_result[key], list):
-                        for included_result in range(len(dict_result[key])):
-                            for inner_key in dict_result[key][included_result]:
-                                #log.debug(f"Inner Key: {inner_key}")
-                                # TODO - Remove duplication
-                                if isinstance(
-                                    dict_result[key][included_result][inner_key],
-                                    datetime,
-                                ):
-                                    # Remove timezone data which isn't utilised in ICAT
-                                    dict_result[key][included_result][inner_key] = (
-                                        dict_result[key][included_result][inner_key]
-                                        .replace(tzinfo=None)
-                                        .strftime(Constants.ACCEPTED_DATE_FORMAT)
-                                    )
-
-                    # Convert datetime objects to strings so they can be JSON
-                    # serialisable
-                    if isinstance(dict_result[key], datetime):
-                        # Remove timezone data which isn't utilised in ICAT
-                        dict_result[key] = (
-                            dict_result[key]
-                            .replace(tzinfo=None)
-                            .strftime(Constants.ACCEPTED_DATE_FORMAT)
-                        )
-
                     if distinct_filter_flag:
                         # Add only the required data as per request's distinct filter
                         # fields
@@ -243,7 +210,6 @@ class icat_query:
                     data.append(distinct_result)
                 else:
                     data.append(dict_result)
-            log.debug(f"finished data: {data}")
             return data
         else:
             # Return data exactly as Python ICAT returned the query
@@ -277,15 +243,12 @@ class icat_query:
         TODO - Add docstring
         Return a dict with the object's attributes.
         """
-        # Split up the fields separated by dots and flatten the resulting lists
-        flat_includes = [m for n in (x.split('.') for x in includes) for m in n]
-
         d = {}
-        print(f"Includes: {includes}")
-        print(f"Includes: {flat_includes}")
+
+        # Split up the fields separated by dots and flatten the resulting lists
+        flat_includes = [m for n in (x.split(".") for x in includes) for m in n]
         # Expand on Python ICAT's implementation of `Entity.as_dict()` to use set operators
         include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
-        print(f"Include set: {include_set}")
         for a in entity.InstAttr | entity.MetaAttr | include_set:
             if a in flat_includes:
                 target = getattr(entity, a)
@@ -300,7 +263,14 @@ class icat_query:
                         a_dict = self.entity_to_dict(e, includes_copy)
                         d[a].append(a_dict)
             else:
-                d[a] = getattr(entity, a)
+                entity_data = getattr(entity, a)
+                # Convert datetime objects to strings ready to be outputted as JSON
+                if isinstance(entity_data, datetime):
+                    # Remove timezone data which isn't utilised in ICAT
+                    entity_data = entity_data.replace(tzinfo=None).strftime(
+                        Constants.ACCEPTED_DATE_FORMAT
+                    )
+                d[a] = entity_data
         return d
 
 
