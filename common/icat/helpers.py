@@ -150,6 +150,7 @@ class icat_query:
             manipulated at some point)
         :type return_json_formattable_data: :class:`bool`
         :return: Data (of type list) from the executed query
+        :raises PythonICATError: If an error occurs during query execution
         """
 
         try:
@@ -251,7 +252,6 @@ class icat_query:
         :type includes: :class:`set`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
-        log.info("Converting entity (%s) to dictionary format", type(entity))
         d = {}
 
         # Split up the fields separated by dots and flatten the resulting lists
