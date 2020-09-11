@@ -1,7 +1,6 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
-from collections.abc import Iterable
 
 from icat.entity import Entity, EntityList
 from icat.query import Query
