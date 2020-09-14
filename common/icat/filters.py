@@ -17,6 +17,7 @@ log = logging.getLogger()
 class PythonICATWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
         super().__init__(field, value, operation)
+        self.field = field
 
     def apply_filter(self, query):
         log.info("Creating condition for ICAT where filter")

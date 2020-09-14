@@ -21,11 +21,9 @@ class WhereFilter(QueryFilter):
     precedence = 1
 
     def __init__(self, field, value, operation):
+        # The field is set to None as a precaution but this should be set by the 
+        # individual backend since backends deal with this data differently
         self.field = None
-        self.included_field = None
-        self.included_included_field = None
-        self._extract_filter_fields(field)
-
         self.value = value
         self.operation = operation
 
@@ -35,24 +33,6 @@ class WhereFilter(QueryFilter):
                     "When using the 'in' operation for a WHERE filter, the values must"
                     " be in a list format e.g. [1, 2, 3]"
                 )
-
-    def _extract_filter_fields(self, field):
-        fields = field.split(".")
-        include_depth = len(fields)
-
-        log.debug("Fields: %s, Include Depth: %d", fields, include_depth)
-
-        if include_depth == 1:
-            self.field = fields[0]
-        elif include_depth == 2:
-            self.field = fields[0]
-            self.included_field = fields[1]
-        elif include_depth == 3:
-            self.field = fields[0]
-            self.included_field = fields[1]
-            self.included_included_field = fields[2]
-        else:
-            raise ValueError(f"Maximum include depth exceeded. {field}'s depth > 3")
 
 
 class DistinctFieldFilter(QueryFilter):
