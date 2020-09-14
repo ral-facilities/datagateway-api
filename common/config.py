@@ -81,7 +81,6 @@ class Config(object):
         properties_url = f"{config.get_icat_url()}/icat/properties"
         r = requests.request("GET", properties_url, verify=config.get_icat_check_cert())
         icat_properties = r.json()
-        log.debug("ICAT Properties: %s", icat_properties)
 
         return icat_properties
 
