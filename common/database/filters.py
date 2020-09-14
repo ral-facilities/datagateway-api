@@ -14,6 +14,7 @@ import logging
 
 log = logging.getLogger()
 
+
 class DatabaseWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
         super().__init__(field, value, operation)
@@ -24,7 +25,10 @@ class DatabaseWhereFilter(WhereFilter):
 
     def _extract_filter_fields(self, field):
         """
-        TODO - Add docstring
+        Extract the related fields names and put them into separate variables
+
+        :param field: ICAT field names, separated by dots
+        :type field: :class:`str`
         """
 
         fields = field.split(".")
@@ -43,7 +47,6 @@ class DatabaseWhereFilter(WhereFilter):
             self.included_included_field = fields[2]
         else:
             raise ValueError(f"Maximum include depth exceeded. {field}'s depth > 3")
-
 
     def apply_filter(self, query):
         try:
