@@ -232,7 +232,7 @@ class icat_query:
         """
         return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
 
-    def entity_to_dict(self, entity, includes):
+    def entity_to_dict(self, entity, includes, distinct_fields=None):
         """
         This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
         to use set operators to create a version of the entity as a dictionary
@@ -256,6 +256,17 @@ class icat_query:
         # Split up the fields separated by dots and flatten the resulting lists
         flat_includes = [m for n in (field.split(".") for field in includes) for m in n]
 
+        # Mapping which entities have distinct fields
+        distinct_field_dict = {}
+        for field in distinct_fields:
+            split_fields = field.split(".")
+            try:
+                distinct_field_dict[split_fields[-2]]
+            except KeyError:
+                distinct_field_dict[split_fields[-2]] = []
+
+            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
+
         # Verifying that `flat_includes` only has fields which are related to the entity
         include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
@@ -271,12 +282,12 @@ class icat_query:
                         " cause an issue further on in the request"
                     )
                 if isinstance(target, Entity):
-                    d[key] = self.entity_to_dict(target, includes_copy)
+                    d[key] = self.entity_to_dict(target, includes_copy, distinct_fields)
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        d[key].append(self.entity_to_dict(e, includes_copy))
+                        d[key].append(self.entity_to_dict(e, includes_copy, distinct_fields))
             # Add actual piece of data to the dictionary
             else:
                 entity_data = getattr(entity, key)
