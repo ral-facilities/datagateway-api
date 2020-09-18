@@ -12,7 +12,12 @@ from common.exceptions import (
 )
 from common.filter_order_handler import FilterOrderHandler
 from common.constants import Constants
-from common.icat.filters import PythonICATOrderFilter, PythonICATWhereFilter
+from common.icat.filters import (
+    PythonICATLimitFilter,
+    PythonICATWhereFilter,
+    PythonICATSkipFilter,
+    PythonICATOrderFilter,
+)
 
 
 log = logging.getLogger()
@@ -378,6 +383,7 @@ def get_entity_with_filters(client, table_name, filters):
 
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
+    merge_limit_skip_filters(filter_handler)
     clear_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query)
 
@@ -387,6 +393,37 @@ def get_entity_with_filters(client, table_name, filters):
         raise MissingRecordError("No results found")
     else:
         return data
+
+
+def merge_limit_skip_filters(filter_handler):
+    """
+    When there are both limit and skip filters in a request, merge them into the limit
+    filter and remove the skip filter from `filter_handler`
+
+    :param filter_handler: The filter handler to apply the filters
+    :param filters: The filters to be applied
+    """
+
+    if any(
+        isinstance(filter, PythonICATSkipFilter) for filter in filter_handler.filters
+    ) and any(
+        isinstance(filter, PythonICATLimitFilter) for filter in filter_handler.filters
+    ):
+        # Merge skip and limit filter into a single limit filter
+        for filter in filter_handler.filters:
+            if isinstance(filter, PythonICATSkipFilter):
+                skip_filter = filter
+                request_skip_value = filter.skip_value
+
+            if isinstance(filter, PythonICATLimitFilter):
+                limit_filter = filter
+
+        if skip_filter and limit_filter:
+            log.info("Merging skip filter with limit filter")
+            limit_filter.skip_value = skip_filter.skip_value
+            log.info("Removing skip filter from list of filters")
+            filter_handler.remove_filter(skip_filter)
+            log.debug("Filters: %s", filter_handler.filters)
 
 
 def clear_order_filters(filters):

@@ -9,6 +9,8 @@ from common.filters import (
     IncludeFilter,
 )
 from common.exceptions import FilterError
+from common.config import config
+from common.constants import Constants
 
 log = logging.getLogger()
 
@@ -103,15 +105,37 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        pass
+        icat_properties = Constants.ICAT_PROPERTIES
+        icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 
 class PythonICATLimitFilter(LimitFilter):
     def __init__(self, limit_value):
         super().__init__(limit_value)
+        self.skip_value = 0
 
     def apply_filter(self, query):
-        pass
+        icat_set_limit(query, self.skip_value, self.limit_value)
+
+
+def icat_set_limit(query, skip_number, limit_number):
+    """
+    Add limit (utilising skip and count) to an ICAT query
+
+    :param query: ICAT Query object to execute within Python ICAT
+    :type query: :class:`icat.query.Query`
+    :param skip_number: Number of results to skip
+    :type skip_number: :class:`int`
+    :param limit_number: Number of results to limit in the query
+    :type limit_number: :class:`int`
+    :raises FilterError: If the tuple is not of two elements, or the elements aren't of
+        the valid type
+    """
+    try:
+        query.setLimit((skip_number, limit_number))
+    except TypeError as e:
+        # Not a two element tuple as managed by Python ICAT's setLimit()
+        raise FilterError(e)
 
 
 class PythonICATIncludeFilter(IncludeFilter):

@@ -1,6 +1,10 @@
 import json
 import sys
 from pathlib import Path
+import requests
+import logging
+
+log = logging.getLogger()
 
 
 class Config(object):
@@ -67,6 +71,18 @@ class Config(object):
             return self.config["port"]
         except:
             sys.exit("Missing config value, port")
+
+    def get_icat_properties(self):
+        """
+        ICAT properties can be retrieved using Python ICAT's client object, however this
+        requires the client object to be authenticated which may not always be the case
+        when requesting these properties, hence a HTTP request is sent as an alternative
+        """
+        properties_url = f"{config.get_icat_url()}/icat/properties"
+        r = requests.request("GET", properties_url, verify=config.get_icat_check_cert())
+        icat_properties = r.json()
+
+        return icat_properties
 
 
 config = Config()
