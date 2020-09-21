@@ -160,8 +160,10 @@ class icat_query:
 
         if self.query.aggregate == "DISTINCT":
             log.info("Extracting the distinct fields from query's conditions")
+            # TODO - Check if this flag still serves purpose
             distinct_filter_flag = True
             # Check query's conditions for the ones created by the distinct filter
+            # TODO - Convert this from an instance variable to a normal one
             self.attribute_names = []
 
             for key, value in self.query.conditions.items():
@@ -172,6 +174,10 @@ class icat_query:
                         self.check_attribute_name_for_distinct(key, sub_value)
                 elif isinstance(value, str):
                     self.check_attribute_name_for_distinct(key, value)
+
+            mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
+                self.attribute_names
+            )
             log.debug(
                 "Attribute names used in the distinct filter, as captured by the"
                 " query's conditions %s",
@@ -186,7 +192,9 @@ class icat_query:
 
             for result in query_result:
                 distinct_result = {}
-                dict_result = self.entity_to_dict(result, self.query.includes)
+                dict_result = self.entity_to_dict(
+                    result, self.query.includes, mapped_distinct_fields
+                )
 
                 for key, value in dict_result.items():
                     if distinct_filter_flag:
@@ -251,21 +259,11 @@ class icat_query:
         :type includes: :class:`set`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
+        log.debug("Top of entity_to_dict()")
         d = {}
 
         # Split up the fields separated by dots and flatten the resulting lists
         flat_includes = [m for n in (field.split(".") for field in includes) for m in n]
-
-        # Mapping which entities have distinct fields
-        distinct_field_dict = {}
-        for field in distinct_fields:
-            split_fields = field.split(".")
-            try:
-                distinct_field_dict[split_fields[-2]]
-            except KeyError:
-                distinct_field_dict[split_fields[-2]] = []
-
-            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
 
         # Verifying that `flat_includes` only has fields which are related to the entity
         include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
@@ -287,7 +285,9 @@ class icat_query:
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        d[key].append(self.entity_to_dict(e, includes_copy, distinct_fields))
+                        d[key].append(
+                            self.entity_to_dict(e, includes_copy, distinct_fields)
+                        )
             # Add actual piece of data to the dictionary
             else:
                 entity_data = getattr(entity, key)
@@ -297,6 +297,36 @@ class icat_query:
                     entity_data = self.datetime_object_to_str(entity_data)
                 d[key] = entity_data
         return d
+
+    def map_distinct_attributes_to_entity_names(self, distinct_fields):
+        """
+        This function looks at a list of dot-separated fields and maps them to which
+        entity they belong to
+
+        TODO - Add docstring
+
+        TODO - Explain concept of base in docstring and why that key is always added
+        """
+
+        # Mapping which entities have distinct fields
+        distinct_field_dict = {}
+        distinct_field_dict["base"] = []
+
+        for field in distinct_fields:
+            split_fields = field.split(".")
+            if len(split_fields) == 1:
+                # Conventional list assignment causes IndexError because -2 is out of range
+                # of a list with a single element
+                split_fields.insert(-2, "base")
+
+            try:
+                distinct_field_dict[split_fields[-2]]
+            except KeyError:
+                distinct_field_dict[split_fields[-2]] = []
+
+            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
+
+        return distinct_field_dict
 
 
 def get_python_icat_entity_name(client, database_table_name):
