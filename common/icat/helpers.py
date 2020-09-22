@@ -302,9 +302,23 @@ class icat_query:
         This function looks at a list of dot-separated fields and maps them to which
         entity they belong to
 
-        TODO - Add docstring
+        The result of this function will be a dictionary that has a data structure
+        similar to the example below. The values assigned to the 'base' key are the 
+        fields that belong to the entity the request is being sent to (e.g. the base
+        values of `/users` would be fields belonging to the User entity).
 
-        TODO - Explain concept of base in docstring and why that key is always added
+        For distinct fields that are part of included entities (e.g. userGroups.id), it
+        is assumed that the relevant entities has been specified in an include filter.
+        This is checked, but only a warning is logged, 
+
+        Example return value: 
+        `{'base': ['id', 'modTime'], 'userGroups': ['id', 'fullName'],
+         'investigationUser': ['id', 'role']}`
+
+        :param distinct_fields: List of fields that should be distinctive in the request
+            response, as per the distinct filters in the request
+        :type distinct_fields: :class:`list`
+        :return: Dictionary of fields, where the key denotes which entity they belong to
         """
 
         # Mapping which entities have distinct fields
@@ -313,11 +327,15 @@ class icat_query:
 
         for field in distinct_fields:
             split_fields = field.split(".")
+            # Single element list means the field belongs to the entity which the
+            # request has been sent to
             if len(split_fields) == 1:
                 # Conventional list assignment causes IndexError because -2 is out of
                 # range of a list with a single element
                 split_fields.insert(-2, "base")
 
+            # If a key doesn't exist in the dictionary, create it and assign an empty
+            # list to it
             try:
                 distinct_field_dict[split_fields[-2]]
             except KeyError:
@@ -329,7 +347,20 @@ class icat_query:
 
     def prepare_distinct_fields_for_recursion(self, entity_name, distinct_fields):
         """
-        TODO - Add docstring
+        Copy `distinct_fields` and move the data held in `entity_name` portion of the
+        dictionary to the "base" section of the dictionary. This function is called in
+        preparation for recursive calls occurring in entity_to_dict()
+        
+        See map_distinct_attribute_to_entity_names() for an explanation regarding
+        `distinct_fields` and its data structure
+
+        :param entity_name: Name of the Python ICAT entity
+        :type entity_name: :class:`str`
+        :param distinct_fields: Names of fields in Python ICAT which should be outputted
+            in the response, separated by which entities they belong to as the keys
+        :type distinct_fields: :class:`dict`
+        :return: A copy of `distinct_fields`, with the data from the entity name put
+            into the base portion of the dictionary
         """
 
         distinct_fields_copy = distinct_fields.copy()
