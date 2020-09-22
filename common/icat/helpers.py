@@ -160,8 +160,6 @@ class icat_query:
 
         if self.query.aggregate == "DISTINCT":
             log.info("Extracting the distinct fields from query's conditions")
-            # TODO - Check if this flag still serves purpose
-            distinct_filter_flag = True
             # Check query's conditions for the ones created by the distinct filter
             # TODO - Convert this from an instance variable to a normal one
             self.attribute_names = []
@@ -179,34 +177,20 @@ class icat_query:
                 self.attribute_names
             )
             log.debug(
-                "Attribute names used in the distinct filter, as captured by the"
-                " query's conditions %s",
-                self.attribute_names,
+                "Attribute names used in the distinct filter, mapped to the entity they"
+                " are a part of: %s",
+                mapped_distinct_fields,
             )
-        else:
-            distinct_filter_flag = False
 
         if return_json_formattable:
             log.info("Query results will be returned in a JSON format")
             data = []
 
             for result in query_result:
-                distinct_result = {}
                 dict_result = self.entity_to_dict(
                     result, self.query.includes, mapped_distinct_fields
                 )
-
-                for key, value in dict_result.items():
-                    if distinct_filter_flag:
-                        # Add only the required data as per request's distinct filter
-                        # fields
-                        if key in self.attribute_names:
-                            distinct_result[key] = dict_result[key]
-
-                if distinct_filter_flag:
-                    data.append(distinct_result)
-                else:
-                    data.append(dict_result)
+                data.append(dict_result)
             return data
         else:
             log.info("Query results will be returned as ICAT entities")
@@ -259,7 +243,7 @@ class icat_query:
         :type includes: :class:`set`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
-        log.debug("Top of entity_to_dict()")
+
         d = {}
 
         # Split up the fields separated by dots and flatten the resulting lists
@@ -271,6 +255,7 @@ class icat_query:
             if key in flat_includes:
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
+                # TODO - Why are we copying this?
                 includes_copy = flat_includes.copy()
                 try:
                     includes_copy.remove(key)
@@ -280,22 +265,37 @@ class icat_query:
                         " cause an issue further on in the request"
                     )
                 if isinstance(target, Entity):
-                    d[key] = self.entity_to_dict(target, includes_copy, distinct_fields)
+                    recurse_distinct_fields = distinct_fields.copy()
+
+                    if key in recurse_distinct_fields.keys():
+                        # TODO - Add a comment about moving target entity fields to base
+                        recurse_distinct_fields["base"] = recurse_distinct_fields[key]
+
+                    d[key] = self.entity_to_dict(target, includes_copy, recurse_distinct_fields)
+
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        d[key].append(
-                            self.entity_to_dict(e, includes_copy, distinct_fields)
-                        )
+                        recurse_distinct_fields = distinct_fields.copy()
+                        if key in recurse_distinct_fields.keys():
+                            # TODO - Add a comment about moving target entity fields to base
+                            recurse_distinct_fields["base"] = recurse_distinct_fields[key]
+
+                        d[key].append(self.entity_to_dict(e, includes_copy, recurse_distinct_fields))
             # Add actual piece of data to the dictionary
             else:
-                entity_data = getattr(entity, key)
-                # Convert datetime objects to strings ready to be outputted as JSON
-                if isinstance(entity_data, datetime):
-                    # Remove timezone data which isn't utilised in ICAT
-                    entity_data = self.datetime_object_to_str(entity_data)
-                d[key] = entity_data
+                entity_data = None
+
+                if distinct_fields is None or key in distinct_fields["base"]:
+                    entity_data = getattr(entity, key)
+                    # Convert datetime objects to strings ready to be outputted as JSON
+                    if isinstance(entity_data, datetime):
+                        # Remove timezone data which isn't utilised in ICAT
+                        # TODO - Put this back
+                        entity_data = self.datetime_object_to_str(entity_data)
+
+                    d[key] = entity_data
         return d
 
     def map_distinct_attributes_to_entity_names(self, distinct_fields):
