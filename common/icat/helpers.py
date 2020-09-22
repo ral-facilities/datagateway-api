@@ -265,24 +265,23 @@ class icat_query:
                         " cause an issue further on in the request"
                     )
                 if isinstance(target, Entity):
-                    recurse_distinct_fields = distinct_fields.copy()
-
-                    if key in recurse_distinct_fields.keys():
-                        # TODO - Add a comment about moving target entity fields to base
-                        recurse_distinct_fields["base"] = recurse_distinct_fields[key]
-
-                    d[key] = self.entity_to_dict(target, includes_copy, recurse_distinct_fields)
+                    distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                        key, distinct_fields
+                    )
+                    d[key] = self.entity_to_dict(
+                        target, includes_copy, distinct_fields_copy
+                    )
 
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        recurse_distinct_fields = distinct_fields.copy()
-                        if key in recurse_distinct_fields.keys():
-                            # TODO - Add a comment about moving target entity fields to base
-                            recurse_distinct_fields["base"] = recurse_distinct_fields[key]
-
-                        d[key].append(self.entity_to_dict(e, includes_copy, recurse_distinct_fields))
+                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                            key, distinct_fields
+                        )
+                        d[key].append(
+                            self.entity_to_dict(e, includes_copy, distinct_fields_copy)
+                        )
             # Add actual piece of data to the dictionary
             else:
                 entity_data = None
@@ -315,8 +314,8 @@ class icat_query:
         for field in distinct_fields:
             split_fields = field.split(".")
             if len(split_fields) == 1:
-                # Conventional list assignment causes IndexError because -2 is out of range
-                # of a list with a single element
+                # Conventional list assignment causes IndexError because -2 is out of
+                # range of a list with a single element
                 split_fields.insert(-2, "base")
 
             try:
@@ -327,6 +326,17 @@ class icat_query:
             distinct_field_dict[split_fields[-2]].append(split_fields[-1])
 
         return distinct_field_dict
+
+    def prepare_distinct_fields_for_recursion(self, entity_name, distinct_fields):
+        """
+        TODO - Add docstring
+        """
+
+        distinct_fields_copy = distinct_fields.copy()
+        if entity_name in distinct_fields_copy.keys():
+            distinct_fields_copy["base"] = distinct_fields_copy[entity_name]
+
+        return distinct_fields_copy
 
 
 def get_python_icat_entity_name(client, database_table_name):
