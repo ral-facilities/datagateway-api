@@ -8,6 +8,7 @@ from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
+    FilterError,
     MissingRecordError,
     PythonICATError,
 )
@@ -307,13 +308,16 @@ class icat_query:
         fields that belong to the entity the request is being sent to (e.g. the base
         values of `/users` would be fields belonging to the User entity).
 
-        For distinct fields that are part of included entities (e.g. userGroups.id), it
-        is assumed that the relevant entities has been specified in an include filter.
-        This is checked, but only a warning is logged, 
-
         Example return value: 
         `{'base': ['id', 'modTime'], 'userGroups': ['id', 'fullName'],
          'investigationUser': ['id', 'role']}`
+
+        For distinct fields that are part of included entities (e.g. userGroups.id), it
+        is assumed that the relevant entities have been specified in an include filter.
+        This is checked, and a suitable exception is thrown. Without this, the query
+        would execute, and the user would get a 200 response, but they wouldn't receive
+        the data they're expecting, hence it's more sensible to raise a 400 to alert
+        them to their probable mistake, rather than to just log a warning.
 
         :param distinct_fields: List of fields that should be distinctive in the request
             response, as per the distinct filters in the request
@@ -340,6 +344,19 @@ class icat_query:
                 distinct_field_dict[split_fields[-2]]
             except KeyError:
                 distinct_field_dict[split_fields[-2]] = []
+
+        # Search through entity names that have distinct fields for the request and
+        # ensure these same entity names are in the query's includes
+        distinct_entities = list(distinct_field_dict.keys())
+        distinct_entities.remove("base")
+        for entity in distinct_entities:
+            if entity not in self.query.includes:
+                raise FilterError(
+                    "A distinct field that has a relationship with another entity does"
+                    " not have the included entity within an include filter in this"
+                    " request. Please add all related entities which are required for"
+                    " the fields in the distinct filter distinct to an include filter."
+                )
 
             distinct_field_dict[split_fields[-2]].append(split_fields[-1])
 
