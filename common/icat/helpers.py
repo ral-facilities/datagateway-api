@@ -159,23 +159,14 @@ class icat_query:
         except ICATValidationError as e:
             raise PythonICATError(e)
 
+        flat_query_includes = self.flatten_query_included_fields(self.query.includes)
+
         if self.query.aggregate == "DISTINCT":
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
-            # TODO - Convert this from an instance variable to a normal one
-            self.attribute_names = []
-
-            for key, value in self.query.conditions.items():
-                # Value can be a list if there's multiple WHERE filters for the same
-                # attribute name within an ICAT query
-                if isinstance(value, list):
-                    for sub_value in value:
-                        self.check_attribute_name_for_distinct(key, sub_value)
-                elif isinstance(value, str):
-                    self.check_attribute_name_for_distinct(key, value)
-
+            distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
             mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
-                self.attribute_names
+                distinct_attributes, flat_query_includes
             )
             log.debug(
                 "Attribute names used in the distinct filter, mapped to the entity they"
@@ -189,7 +180,7 @@ class icat_query:
 
             for result in query_result:
                 dict_result = self.entity_to_dict(
-                    result, self.query.includes, mapped_distinct_fields
+                    result, flat_query_includes, mapped_distinct_fields
                 )
                 data.append(dict_result)
             return data
@@ -197,7 +188,22 @@ class icat_query:
             log.info("Query results will be returned as ICAT entities")
             return query_result
 
-    def check_attribute_name_for_distinct(self, key, value):
+    def iterate_query_conditions_for_distinctiveness(self):
+        distinct_attributes = []
+        for attribute_name, where_statement in self.query.conditions.items():
+            if isinstance(where_statement, list):
+                for sub_value in where_statement:
+                    self.check_attribute_name_for_distinct(
+                        distinct_attributes, attribute_name, sub_value
+                    )
+            elif isinstance(where_statement, str):
+                self.check_attribute_name_for_distinct(
+                    distinct_attributes, attribute_name, where_statement
+                )
+
+        return distinct_attributes
+
+    def check_attribute_name_for_distinct(self, attribute_list, key, value):
         """
         Check the attribute name to see if its associated value is used to signify the
         attribute is requested in a distinct filter and if so, append it to the list of
@@ -210,7 +216,7 @@ class icat_query:
         :type value: :class:`str`
         """
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
-            self.attribute_names.append(key)
+            attribute_list.append(key)
 
     def datetime_object_to_str(self, date_obj):
         """
@@ -238,26 +244,23 @@ class icat_query:
         :param entity: Python ICAT entity from an ICAT query
         :type entity: :class:`icat.entities.ENTITY` (implementation of
             :class:`icat.entity.Entity`) or :class:`icat.entity.EntityList`
-        :param includes: Set of fields that have been included in the ICAT query. Where
-            fields have a chain of relationships, they're a single element string
-            separated by dots
-        :type includes: :class:`set`
+        :param includes: List of fields that have been included in the ICAT query. It is
+            assumed each element has been checked for multiple fields separated by dots,
+            split them accordingly and flattened the resulting list. Note: 
+            ICATQuery.flatten_query_included_fields performs this functionality.
+        :type includes: :class:`list`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
 
         d = {}
 
-        # Split up the fields separated by dots and flatten the resulting lists
-        flat_includes = [m for n in (field.split(".") for field in includes) for m in n]
-
-        # Verifying that `flat_includes` only has fields which are related to the entity
-        include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
+        # Verifying that `includes` only has fields which are related to the entity
+        include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
-            if key in flat_includes:
+            if key in includes:
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
-                # TODO - Why are we copying this?
-                includes_copy = flat_includes.copy()
+                includes_copy = includes.copy()
                 try:
                     includes_copy.remove(key)
                 except ValueError:
@@ -292,13 +295,12 @@ class icat_query:
                     # Convert datetime objects to strings ready to be outputted as JSON
                     if isinstance(entity_data, datetime):
                         # Remove timezone data which isn't utilised in ICAT
-                        # TODO - Put this back
                         entity_data = self.datetime_object_to_str(entity_data)
 
                     d[key] = entity_data
         return d
 
-    def map_distinct_attributes_to_entity_names(self, distinct_fields):
+    def map_distinct_attributes_to_entity_names(self, distinct_fields, included_fields):
         """
         This function looks at a list of dot-separated fields and maps them to which
         entity they belong to
@@ -322,6 +324,11 @@ class icat_query:
         :param distinct_fields: List of fields that should be distinctive in the request
             response, as per the distinct filters in the request
         :type distinct_fields: :class:`list`
+        :param included_fields: List of fields that have been included in the ICAT
+            query. It is assumed each element has been checked for multiple fields
+            separated by dots, split them accordingly and flattened the resulting list.
+            Note: ICATQuery.flatten_query_included_fields performs this functionality.
+        :type included_fields: :class:`list`
         :return: Dictionary of fields, where the key denotes which entity they belong to
         """
 
@@ -345,20 +352,22 @@ class icat_query:
             except KeyError:
                 distinct_field_dict[split_fields[-2]] = []
 
-        # Search through entity names that have distinct fields for the request and
-        # ensure these same entity names are in the query's includes
+            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
+
+        # Remove "base" key as this isn't a valid entity name in Python ICAT
         distinct_entities = list(distinct_field_dict.keys())
         distinct_entities.remove("base")
+
+        # Search through entity names that have distinct fields for the request and
+        # ensure these same entity names are in the query's includes
         for entity in distinct_entities:
-            if entity not in self.query.includes:
+            if entity not in included_fields:
                 raise FilterError(
                     "A distinct field that has a relationship with another entity does"
                     " not have the included entity within an include filter in this"
                     " request. Please add all related entities which are required for"
                     " the fields in the distinct filter distinct to an include filter."
                 )
-
-            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
 
         return distinct_field_dict
 
@@ -385,6 +394,21 @@ class icat_query:
             distinct_fields_copy["base"] = distinct_fields_copy[entity_name]
 
         return distinct_fields_copy
+
+    def flatten_query_included_fields(self, includes):
+        """
+        This will take the set of fields included in an ICAT query, split up the fields
+        separated by dots, and flatten the resulting list
+
+        :param includes: Set of fields that have been included in the ICAT query. Where
+            fields have a chain of relationships, they're a single element string
+            separated by dots
+        :type includes: :class:`set`
+        :return: Flattened list containing all the fields that have been included in the
+            ICAT query
+        """
+
+        return [m for n in (field.split(".") for field in includes) for m in n]
 
 
 def get_python_icat_entity_name(client, database_table_name):
