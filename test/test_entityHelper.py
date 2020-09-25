@@ -45,7 +45,7 @@ class TestEntityHelper(TestCase):
             "CREATE_ID": "test create id",
             "MOD_ID": "test mod id",
             "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(datetime.datetime(2000, 1, 1))
+            "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
         }
         self.assertEqual(expected_dict, self.datafile.to_dict())
 
@@ -82,7 +82,7 @@ class TestEntityHelper(TestCase):
                 "STARTDATE": None,
                 "SAMPLE_ID": None,
                 "TYPE_ID": None,
-            }
+            },
         }
         self.assertEqual(expected_dict, self.datafile.to_nested_dict("DATASET"))
         expected_dict = {
@@ -132,11 +132,13 @@ class TestEntityHelper(TestCase):
                     "TITLE": None,
                     "VISIT_ID": None,
                     "FACILITY_ID": None,
-                    "TYPE_ID": None
-                }
-            }
+                    "TYPE_ID": None,
+                },
+            },
         }
-        self.assertEqual(expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"}))
+        self.assertEqual(
+            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"})
+        )
 
     def test_get_related_entity(self):
         self.assertEqual(self.dataset, self.datafile.get_related_entity("DATASET"))
@@ -158,7 +160,7 @@ class TestEntityHelper(TestCase):
             "CREATE_ID": "test create id",
             "MOD_ID": "test mod id",
             "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(datetime.datetime(2000, 1, 1))
+            "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
         }
         datafile.update_from_dict(dictionary)
         self.assertEqual(dictionary, datafile.to_dict())

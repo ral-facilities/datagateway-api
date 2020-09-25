@@ -1,5 +1,5 @@
-from common.database_backend import DatabaseBackend
-from common.python_icat_backend import PythonICATBackend
+from common.database.backend import DatabaseBackend
+from common.icat.backend import PythonICATBackend
 from common.backend import Backend
 from common.config import config
 import sys
@@ -11,6 +11,5 @@ if backend_type == "db":
 elif backend_type == "python_icat":
     backend = PythonICATBackend()
 else:
-    sys.exit(
-        f"Invalid config value '{backend_type}' for config option backend")
+    sys.exit(f"Invalid config value '{backend_type}' for config option backend")
     backend = Backend()

@@ -5,7 +5,7 @@ from icat.exception import ICATSessionError
 
 from common.backend import Backend
 from common.helpers import queries_records
-from common.python_icat_helpers import (
+from common.icat.helpers import (
     requires_session_id,
     get_session_details_helper,
     logout_icat_client,
@@ -16,6 +16,7 @@ from common.python_icat_helpers import (
     delete_entity_by_id,
     get_entity_with_filters,
 )
+
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION
@@ -91,13 +92,13 @@ class PythonICATBackend(Backend):
     @queries_records
     def get_with_id(self, session_id, table, id_, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return get_entity_by_id(client, table.__name__, id_, True)
 
     @requires_session_id
     @queries_records
     def delete_with_id(self, session_id, table, id_, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
         return delete_entity_by_id(client, table.__name__, id_)
-
 
     @requires_session_id
     @queries_records

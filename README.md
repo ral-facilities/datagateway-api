@@ -7,9 +7,9 @@ ICAT API to interface with the Data Gateway
   - [Requirements](#requirements)
   - [Setup and running the API](#setup-and-running-the-api)
   - [Project structure](#project-structure)
-      - [Main:](#main)
-      - [Endpoints:](#endpoints)
-      - [Mapped classes:](#mapped-classes)
+      - [Main](#main)
+      - [Endpoints](#endpoints)
+      - [Mapped classes](#mapped-classes)
       - [Querying and filtering](#querying-and-filtering)
       - [Swagger Generation](#generating-the-swagger-spec-openapiyaml)
       - [Authentication](#authentication)
@@ -26,7 +26,6 @@ The required python libraries:
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
    - [flask-restful](https://github.com/flask-restful/flask-restful/)  
    - [pymysql](https://pymysql.readthedocs.io/en/latest/)  
-   - [requests](https://2.python-requests.org/en/master/)
    - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
    - [pip-tools](https://github.com/jazzband/pip-tools) (For generating requirements.txt)
 
@@ -80,12 +79,18 @@ This is illustrated below.
 
 `````
 ─── datagateway-api
-    ├── common  
+    ├── common
+    │   ├── database
+    │   │   ├── backend.py
+    │   │   ├── filters.py
+    │   │   └── helpers.py
+    │   ├── icat
     │   ├── models
     │   │   └── db_models.py
+    │   ├── backends.py
     │   ├── constants.py
-    │   ├── database_helpers.py
     │   ├── exceptions.py
+    │   ├── filters.py
     │   └── helpers.py
     ├── src
     │   ├── resources
@@ -112,7 +117,7 @@ This is illustrated below.
     ├── logs.log
     └── config.json
  `````
-#### Main:
+#### Main
 `main.py` is where the flask_restful api is set up. This is where each endpoint resource class is generated and mapped 
 to an endpoint.
 
@@ -120,7 +125,7 @@ Example:
  `api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")`	   
    
 
-#### Endpoints:  
+#### Endpoints
 The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and 
 table_endpoints. The entities package contains `entities_map` which maps entity names to their sqlalchemy
 model. The `entity_endpoint` module contains the function that is used to generate endpoints at start up.
@@ -128,7 +133,7 @@ model. The `entity_endpoint` module contains the function that is used to genera
 session endpoint.
 
 
-#### Mapped classes:
+#### Mapped classes
 The classes mapped from the database are stored in `/common/models/db_models.py`. Each model was 
 automatically generated using sqlacodegen. A class `EntityHelper` is defined so that each model may
 inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities 
@@ -182,4 +187,10 @@ class DataCollectionDatasets(Resource):
 ## Running Tests
 To run the tests use `python -m unittest discover`
 
+## Linter
+When writing code for this repository, [Black](https://black.readthedocs.io/en/stable/)
+is used as the code linter/formatter to ensure the code is kept Pythonic. Installing
+the dev requirements will ensure this package is installed. This repository uses the
+default settings for Black; to use, execute the following command on the root directory of this repo:
 
+`black .`
