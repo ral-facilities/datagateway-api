@@ -5,32 +5,50 @@ from icat.exception import ICATSessionError
 
 from common.backend import Backend
 from common.helpers import queries_records
-from common.python_icat_helpers import requires_session_id, get_session_details_helper, logout_icat_client, \
-                                       refresh_client_session, get_entity_by_id, update_entity_by_id, \
-                                       delete_entity_by_id, get_entity_with_filters
+from common.icat.helpers import (
+    requires_session_id,
+    get_session_details_helper,
+    logout_icat_client,
+    refresh_client_session,
+    get_entity_by_id,
+    update_entity_by_id,
+    delete_entity_by_id,
+    get_entity_with_filters,
+)
+
 from common.config import config
 from common.exceptions import AuthenticationError
 from common.models.db_models import SESSION
 
 log = logging.getLogger()
 
+
 class PythonICATBackend(Backend):
     """
     Class that contains functions to access and modify data in an ICAT database directly
     """
-    
+
     def __init__(self):
-        # Client object is created here as well as in login() to avoid uncaught exceptions 
-        # where the object is None. This could happen where a user tries to use an endpoint before
-        # logging in. Also helps to give a bit of certainty to what's stored here
-        self.client = icat.client.Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
+        # Client object is created here as well as in login() to avoid uncaught
+        # exceptions where the object is None. This could happen where a user tries to
+        # use an endpoint before logging in. Also helps to give a bit of certainty to
+        # what's stored here
+        self.client = icat.client.Client(
+            config.get_icat_url(), checkCert=config.get_icat_check_cert()
+        )
 
     def login(self, credentials):
-        # Client object is re-created here so session IDs aren't overwritten in the database
-        self.client = icat.client.Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
+        # Client object is re-created here so session IDs aren't overwritten in the
+        # database
+        self.client = icat.client.Client(
+            config.get_icat_url(), checkCert=config.get_icat_check_cert()
+        )
 
         # Syntax for Python ICAT
-        login_details = {'username': credentials['username'], 'password': credentials['password']}
+        login_details = {
+            "username": credentials["username"],
+            "password": credentials["password"],
+        }
         try:
             session_id = self.client.login(credentials["mechanism"], login_details)
             return session_id
@@ -95,23 +113,31 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def get_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         pass
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def count_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         pass
-        #return get_facility_cycles_for_instrument_count(instrument_id, filters)
+        # return get_facility_cycles_for_instrument_count(instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycle_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def get_instrument_facilitycycle_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         pass
-        #return get_investigations_for_instrument_in_facility_cycle(instrument_id, facilitycycle_id, filters)
+        # return get_investigations_for_instrument_in_facility_cycle(instrument_id, facilitycycle_id, filters)
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
+    def count_instrument_facilitycycles_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
         pass
-        #return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)
+        # return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)

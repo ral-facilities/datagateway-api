@@ -1864,7 +1864,32 @@ paths:
       summary: Get Applications
       tags:
       - Applications
-  /applications/{id}:
+  /applications/{id_}:
+    delete:
+      description: Updates APPLICATION with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Applications by id
+      tags:
+      - Applications
     patch:
       description: Updates APPLICATION with the specified ID with details provided
         in the request body
@@ -1899,31 +1924,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Applications by id
-      tags:
-      - Applications
-    delete:
-      description: Updates APPLICATION with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Applications by id
       tags:
       - Applications
     get:
@@ -2115,7 +2115,32 @@ paths:
       summary: Get DataCollectionDatafiles
       tags:
       - DataCollectionDatafiles
-  /datacollectiondatafiles/{id}:
+  /datacollectiondatafiles/{id_}:
+    delete:
+      description: Updates DATACOLLECTIONDATAFILE with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DataCollectionDatafiles by id
+      tags:
+      - DataCollectionDatafiles
     patch:
       description: Updates DATACOLLECTIONDATAFILE with the specified ID with details
         provided in the request body
@@ -2150,31 +2175,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DataCollectionDatafiles by id
-      tags:
-      - DataCollectionDatafiles
-    delete:
-      description: Updates DATACOLLECTIONDATAFILE with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DataCollectionDatafiles by id
       tags:
       - DataCollectionDatafiles
     get:
@@ -2368,7 +2368,32 @@ paths:
       summary: Get DataCollectionDatasets
       tags:
       - DataCollectionDatasets
-  /datacollectiondatasets/{id}:
+  /datacollectiondatasets/{id_}:
+    delete:
+      description: Updates DATACOLLECTIONDATASET with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DataCollectionDatasets by id
+      tags:
+      - DataCollectionDatasets
     patch:
       description: Updates DATACOLLECTIONDATASET with the specified ID with details
         provided in the request body
@@ -2403,31 +2428,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DataCollectionDatasets by id
-      tags:
-      - DataCollectionDatasets
-    delete:
-      description: Updates DATACOLLECTIONDATASET with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DataCollectionDatasets by id
       tags:
       - DataCollectionDatasets
     get:
@@ -2622,7 +2622,32 @@ paths:
       summary: Get DataCollectionParameters
       tags:
       - DataCollectionParameters
-  /datacollectionparameters/{id}:
+  /datacollectionparameters/{id_}:
+    delete:
+      description: Updates DATACOLLECTIONPARAMETER with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DataCollectionParameters by id
+      tags:
+      - DataCollectionParameters
     patch:
       description: Updates DATACOLLECTIONPARAMETER with the specified ID with details
         provided in the request body
@@ -2657,31 +2682,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DataCollectionParameters by id
-      tags:
-      - DataCollectionParameters
-    delete:
-      description: Updates DATACOLLECTIONPARAMETER with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DataCollectionParameters by id
       tags:
       - DataCollectionParameters
     get:
@@ -2875,7 +2875,32 @@ paths:
       summary: Get DataCollections
       tags:
       - DataCollections
-  /datacollections/{id}:
+  /datacollections/{id_}:
+    delete:
+      description: Updates DATACOLLECTION with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DataCollections by id
+      tags:
+      - DataCollections
     patch:
       description: Updates DATACOLLECTION with the specified ID with details provided
         in the request body
@@ -2910,31 +2935,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DataCollections by id
-      tags:
-      - DataCollections
-    delete:
-      description: Updates DATACOLLECTION with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DataCollections by id
       tags:
       - DataCollections
     get:
@@ -3126,7 +3126,32 @@ paths:
       summary: Get DatafileFormats
       tags:
       - DatafileFormats
-  /datafileformats/{id}:
+  /datafileformats/{id_}:
+    delete:
+      description: Updates DATAFILEFORMAT with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DatafileFormats by id
+      tags:
+      - DatafileFormats
     patch:
       description: Updates DATAFILEFORMAT with the specified ID with details provided
         in the request body
@@ -3161,31 +3186,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DatafileFormats by id
-      tags:
-      - DatafileFormats
-    delete:
-      description: Updates DATAFILEFORMAT with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DatafileFormats by id
       tags:
       - DatafileFormats
     get:
@@ -3377,7 +3377,32 @@ paths:
       summary: Get DatafileParameters
       tags:
       - DatafileParameters
-  /datafileparameters/{id}:
+  /datafileparameters/{id_}:
+    delete:
+      description: Updates DATAFILEPARAMETER with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DatafileParameters by id
+      tags:
+      - DatafileParameters
     patch:
       description: Updates DATAFILEPARAMETER with the specified ID with details provided
         in the request body
@@ -3412,31 +3437,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DatafileParameters by id
-      tags:
-      - DatafileParameters
-    delete:
-      description: Updates DATAFILEPARAMETER with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DatafileParameters by id
       tags:
       - DatafileParameters
     get:
@@ -3629,7 +3629,32 @@ paths:
       summary: Get Datafiles
       tags:
       - Datafiles
-  /datafiles/{id}:
+  /datafiles/{id_}:
+    delete:
+      description: Updates DATAFILE with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Datafiles by id
+      tags:
+      - Datafiles
     patch:
       description: Updates DATAFILE with the specified ID with details provided in
         the request body
@@ -3664,31 +3689,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Datafiles by id
-      tags:
-      - Datafiles
-    delete:
-      description: Updates DATAFILE with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Datafiles by id
       tags:
       - Datafiles
     get:
@@ -3880,7 +3880,32 @@ paths:
       summary: Get DatasetParameters
       tags:
       - DatasetParameters
-  /datasetparameters/{id}:
+  /datasetparameters/{id_}:
+    delete:
+      description: Updates DATASETPARAMETER with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DatasetParameters by id
+      tags:
+      - DatasetParameters
     patch:
       description: Updates DATASETPARAMETER with the specified ID with details provided
         in the request body
@@ -3915,31 +3940,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DatasetParameters by id
-      tags:
-      - DatasetParameters
-    delete:
-      description: Updates DATASETPARAMETER with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DatasetParameters by id
       tags:
       - DatasetParameters
     get:
@@ -4132,7 +4132,32 @@ paths:
       summary: Get DatasetTypes
       tags:
       - DatasetTypes
-  /datasettypes/{id}:
+  /datasettypes/{id_}:
+    delete:
+      description: Updates DATASETTYPE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete DatasetTypes by id
+      tags:
+      - DatasetTypes
     patch:
       description: Updates DATASETTYPE with the specified ID with details provided
         in the request body
@@ -4167,31 +4192,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update DatasetTypes by id
-      tags:
-      - DatasetTypes
-    delete:
-      description: Updates DATASETTYPE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete DatasetTypes by id
       tags:
       - DatasetTypes
     get:
@@ -4383,7 +4383,32 @@ paths:
       summary: Get Datasets
       tags:
       - Datasets
-  /datasets/{id}:
+  /datasets/{id_}:
+    delete:
+      description: Updates DATASET with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Datasets by id
+      tags:
+      - Datasets
     patch:
       description: Updates DATASET with the specified ID with details provided in
         the request body
@@ -4418,31 +4443,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Datasets by id
-      tags:
-      - Datasets
-    delete:
-      description: Updates DATASET with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Datasets by id
       tags:
       - Datasets
     get:
@@ -4634,7 +4634,32 @@ paths:
       summary: Get Facilities
       tags:
       - Facilities
-  /facilities/{id}:
+  /facilities/{id_}:
+    delete:
+      description: Updates FACILITY with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Facilities by id
+      tags:
+      - Facilities
     patch:
       description: Updates FACILITY with the specified ID with details provided in
         the request body
@@ -4669,31 +4694,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Facilities by id
-      tags:
-      - Facilities
-    delete:
-      description: Updates FACILITY with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Facilities by id
       tags:
       - Facilities
     get:
@@ -4885,7 +4885,32 @@ paths:
       summary: Get FacilityCycles
       tags:
       - FacilityCycles
-  /facilitycycles/{id}:
+  /facilitycycles/{id_}:
+    delete:
+      description: Updates FACILITYCYCLE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete FacilityCycles by id
+      tags:
+      - FacilityCycles
     patch:
       description: Updates FACILITYCYCLE with the specified ID with details provided
         in the request body
@@ -4920,31 +4945,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update FacilityCycles by id
-      tags:
-      - FacilityCycles
-    delete:
-      description: Updates FACILITYCYCLE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete FacilityCycles by id
       tags:
       - FacilityCycles
     get:
@@ -5136,7 +5136,32 @@ paths:
       summary: Get Groupings
       tags:
       - Groupings
-  /groupings/{id}:
+  /groupings/{id_}:
+    delete:
+      description: Updates GROUPING with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Groupings by id
+      tags:
+      - Groupings
     patch:
       description: Updates GROUPING with the specified ID with details provided in
         the request body
@@ -5171,31 +5196,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Groupings by id
-      tags:
-      - Groupings
-    delete:
-      description: Updates GROUPING with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Groupings by id
       tags:
       - Groupings
     get:
@@ -5387,7 +5387,32 @@ paths:
       summary: Get InstrumentScientists
       tags:
       - InstrumentScientists
-  /instrumentscientists/{id}:
+  /instrumentscientists/{id_}:
+    delete:
+      description: Updates INSTRUMENTSCIENTIST with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InstrumentScientists by id
+      tags:
+      - InstrumentScientists
     patch:
       description: Updates INSTRUMENTSCIENTIST with the specified ID with details
         provided in the request body
@@ -5422,31 +5447,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InstrumentScientists by id
-      tags:
-      - InstrumentScientists
-    delete:
-      description: Updates INSTRUMENTSCIENTIST with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InstrumentScientists by id
       tags:
       - InstrumentScientists
     get:
@@ -5639,7 +5639,32 @@ paths:
       summary: Get Instruments
       tags:
       - Instruments
-  /instruments/{id}:
+  /instruments/{id_}:
+    delete:
+      description: Updates INSTRUMENT with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Instruments by id
+      tags:
+      - Instruments
     patch:
       description: Updates INSTRUMENT with the specified ID with details provided
         in the request body
@@ -5674,31 +5699,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Instruments by id
-      tags:
-      - Instruments
-    delete:
-      description: Updates INSTRUMENT with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Instruments by id
       tags:
       - Instruments
     get:
@@ -5890,7 +5890,32 @@ paths:
       summary: Get InvestigationGroups
       tags:
       - InvestigationGroups
-  /investigationgroups/{id}:
+  /investigationgroups/{id_}:
+    delete:
+      description: Updates INVESTIGATIONGROUP with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InvestigationGroups by id
+      tags:
+      - InvestigationGroups
     patch:
       description: Updates INVESTIGATIONGROUP with the specified ID with details provided
         in the request body
@@ -5925,31 +5950,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InvestigationGroups by id
-      tags:
-      - InvestigationGroups
-    delete:
-      description: Updates INVESTIGATIONGROUP with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InvestigationGroups by id
       tags:
       - InvestigationGroups
     get:
@@ -6143,7 +6143,32 @@ paths:
       summary: Get InvestigationInstruments
       tags:
       - InvestigationInstruments
-  /investigationinstruments/{id}:
+  /investigationinstruments/{id_}:
+    delete:
+      description: Updates INVESTIGATIONINSTRUMENT with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InvestigationInstruments by id
+      tags:
+      - InvestigationInstruments
     patch:
       description: Updates INVESTIGATIONINSTRUMENT with the specified ID with details
         provided in the request body
@@ -6178,31 +6203,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InvestigationInstruments by id
-      tags:
-      - InvestigationInstruments
-    delete:
-      description: Updates INVESTIGATIONINSTRUMENT with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InvestigationInstruments by id
       tags:
       - InvestigationInstruments
     get:
@@ -6396,7 +6396,32 @@ paths:
       summary: Get InvestigationParameters
       tags:
       - InvestigationParameters
-  /investigationparameters/{id}:
+  /investigationparameters/{id_}:
+    delete:
+      description: Updates INVESTIGATIONPARAMETER with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InvestigationParameters by id
+      tags:
+      - InvestigationParameters
     patch:
       description: Updates INVESTIGATIONPARAMETER with the specified ID with details
         provided in the request body
@@ -6431,31 +6456,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InvestigationParameters by id
-      tags:
-      - InvestigationParameters
-    delete:
-      description: Updates INVESTIGATIONPARAMETER with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InvestigationParameters by id
       tags:
       - InvestigationParameters
     get:
@@ -6649,7 +6649,32 @@ paths:
       summary: Get InvestigationTypes
       tags:
       - InvestigationTypes
-  /investigationtypes/{id}:
+  /investigationtypes/{id_}:
+    delete:
+      description: Updates INVESTIGATIONTYPE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InvestigationTypes by id
+      tags:
+      - InvestigationTypes
     patch:
       description: Updates INVESTIGATIONTYPE with the specified ID with details provided
         in the request body
@@ -6684,31 +6709,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InvestigationTypes by id
-      tags:
-      - InvestigationTypes
-    delete:
-      description: Updates INVESTIGATIONTYPE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InvestigationTypes by id
       tags:
       - InvestigationTypes
     get:
@@ -6901,7 +6901,32 @@ paths:
       summary: Get InvestigationUsers
       tags:
       - InvestigationUsers
-  /investigationusers/{id}:
+  /investigationusers/{id_}:
+    delete:
+      description: Updates INVESTIGATIONUSER with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete InvestigationUsers by id
+      tags:
+      - InvestigationUsers
     patch:
       description: Updates INVESTIGATIONUSER with the specified ID with details provided
         in the request body
@@ -6936,31 +6961,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update InvestigationUsers by id
-      tags:
-      - InvestigationUsers
-    delete:
-      description: Updates INVESTIGATIONUSER with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete InvestigationUsers by id
       tags:
       - InvestigationUsers
     get:
@@ -7153,7 +7153,32 @@ paths:
       summary: Get Investigations
       tags:
       - Investigations
-  /investigations/{id}:
+  /investigations/{id_}:
+    delete:
+      description: Updates INVESTIGATION with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Investigations by id
+      tags:
+      - Investigations
     patch:
       description: Updates INVESTIGATION with the specified ID with details provided
         in the request body
@@ -7188,31 +7213,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Investigations by id
-      tags:
-      - Investigations
-    delete:
-      description: Updates INVESTIGATION with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Investigations by id
       tags:
       - Investigations
     get:
@@ -7403,7 +7403,32 @@ paths:
       summary: Get Jobs
       tags:
       - Jobs
-  /jobs/{id}:
+  /jobs/{id_}:
+    delete:
+      description: Updates JOB with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Jobs by id
+      tags:
+      - Jobs
     patch:
       description: Updates JOB with the specified ID with details provided in the
         request body
@@ -7438,31 +7463,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Jobs by id
-      tags:
-      - Jobs
-    delete:
-      description: Updates JOB with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Jobs by id
       tags:
       - Jobs
     get:
@@ -7654,7 +7654,32 @@ paths:
       summary: Get Keywords
       tags:
       - Keywords
-  /keywords/{id}:
+  /keywords/{id_}:
+    delete:
+      description: Updates KEYWORD with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Keywords by id
+      tags:
+      - Keywords
     patch:
       description: Updates KEYWORD with the specified ID with details provided in
         the request body
@@ -7689,31 +7714,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Keywords by id
-      tags:
-      - Keywords
-    delete:
-      description: Updates KEYWORD with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Keywords by id
       tags:
       - Keywords
     get:
@@ -7905,7 +7905,32 @@ paths:
       summary: Get ParameterTypes
       tags:
       - ParameterTypes
-  /parametertypes/{id}:
+  /parametertypes/{id_}:
+    delete:
+      description: Updates PARAMETERTYPE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete ParameterTypes by id
+      tags:
+      - ParameterTypes
     patch:
       description: Updates PARAMETERTYPE with the specified ID with details provided
         in the request body
@@ -7940,31 +7965,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update ParameterTypes by id
-      tags:
-      - ParameterTypes
-    delete:
-      description: Updates PARAMETERTYPE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete ParameterTypes by id
       tags:
       - ParameterTypes
     get:
@@ -8156,7 +8156,32 @@ paths:
       summary: Get PermissibleStringValues
       tags:
       - PermissibleStringValues
-  /permissiblestringvalues/{id}:
+  /permissiblestringvalues/{id_}:
+    delete:
+      description: Updates PERMISSIBLESTRINGVALUE with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete PermissibleStringValues by id
+      tags:
+      - PermissibleStringValues
     patch:
       description: Updates PERMISSIBLESTRINGVALUE with the specified ID with details
         provided in the request body
@@ -8191,31 +8216,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update PermissibleStringValues by id
-      tags:
-      - PermissibleStringValues
-    delete:
-      description: Updates PERMISSIBLESTRINGVALUE with the specified ID with details
-        provided in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete PermissibleStringValues by id
       tags:
       - PermissibleStringValues
     get:
@@ -8409,7 +8409,32 @@ paths:
       summary: Get PublicSteps
       tags:
       - PublicSteps
-  /publicsteps/{id}:
+  /publicsteps/{id_}:
+    delete:
+      description: Updates PUBLICSTEP with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete PublicSteps by id
+      tags:
+      - PublicSteps
     patch:
       description: Updates PUBLICSTEP with the specified ID with details provided
         in the request body
@@ -8444,31 +8469,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update PublicSteps by id
-      tags:
-      - PublicSteps
-    delete:
-      description: Updates PUBLICSTEP with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete PublicSteps by id
       tags:
       - PublicSteps
     get:
@@ -8660,7 +8660,32 @@ paths:
       summary: Get Publications
       tags:
       - Publications
-  /publications/{id}:
+  /publications/{id_}:
+    delete:
+      description: Updates PUBLICATION with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Publications by id
+      tags:
+      - Publications
     patch:
       description: Updates PUBLICATION with the specified ID with details provided
         in the request body
@@ -8695,31 +8720,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Publications by id
-      tags:
-      - Publications
-    delete:
-      description: Updates PUBLICATION with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Publications by id
       tags:
       - Publications
     get:
@@ -8911,7 +8911,32 @@ paths:
       summary: Get RelatedDatafiles
       tags:
       - RelatedDatafiles
-  /relateddatafiles/{id}:
+  /relateddatafiles/{id_}:
+    delete:
+      description: Updates RELATEDDATAFILE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete RelatedDatafiles by id
+      tags:
+      - RelatedDatafiles
     patch:
       description: Updates RELATEDDATAFILE with the specified ID with details provided
         in the request body
@@ -8946,31 +8971,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update RelatedDatafiles by id
-      tags:
-      - RelatedDatafiles
-    delete:
-      description: Updates RELATEDDATAFILE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete RelatedDatafiles by id
       tags:
       - RelatedDatafiles
     get:
@@ -9162,7 +9162,32 @@ paths:
       summary: Get Rules
       tags:
       - Rules
-  /rules/{id}:
+  /rules/{id_}:
+    delete:
+      description: Updates RULE with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Rules by id
+      tags:
+      - Rules
     patch:
       description: Updates RULE with the specified ID with details provided in the
         request body
@@ -9197,31 +9222,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Rules by id
-      tags:
-      - Rules
-    delete:
-      description: Updates RULE with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Rules by id
       tags:
       - Rules
     get:
@@ -9413,7 +9413,32 @@ paths:
       summary: Get SampleParameters
       tags:
       - SampleParameters
-  /sampleparameters/{id}:
+  /sampleparameters/{id_}:
+    delete:
+      description: Updates SAMPLEPARAMETER with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete SampleParameters by id
+      tags:
+      - SampleParameters
     patch:
       description: Updates SAMPLEPARAMETER with the specified ID with details provided
         in the request body
@@ -9448,31 +9473,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update SampleParameters by id
-      tags:
-      - SampleParameters
-    delete:
-      description: Updates SAMPLEPARAMETER with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete SampleParameters by id
       tags:
       - SampleParameters
     get:
@@ -9665,7 +9665,32 @@ paths:
       summary: Get SampleTypes
       tags:
       - SampleTypes
-  /sampletypes/{id}:
+  /sampletypes/{id_}:
+    delete:
+      description: Updates SAMPLETYPE with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete SampleTypes by id
+      tags:
+      - SampleTypes
     patch:
       description: Updates SAMPLETYPE with the specified ID with details provided
         in the request body
@@ -9700,31 +9725,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update SampleTypes by id
-      tags:
-      - SampleTypes
-    delete:
-      description: Updates SAMPLETYPE with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete SampleTypes by id
       tags:
       - SampleTypes
     get:
@@ -9915,7 +9915,32 @@ paths:
       summary: Get Samples
       tags:
       - Samples
-  /samples/{id}:
+  /samples/{id_}:
+    delete:
+      description: Updates SAMPLE with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Samples by id
+      tags:
+      - Samples
     patch:
       description: Updates SAMPLE with the specified ID with details provided in the
         request body
@@ -9950,31 +9975,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Samples by id
-      tags:
-      - Samples
-    delete:
-      description: Updates SAMPLE with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Samples by id
       tags:
       - Samples
     get:
@@ -10165,7 +10165,32 @@ paths:
       summary: Get Shifts
       tags:
       - Shifts
-  /shifts/{id}:
+  /shifts/{id_}:
+    delete:
+      description: Updates SHIFT with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Shifts by id
+      tags:
+      - Shifts
     patch:
       description: Updates SHIFT with the specified ID with details provided in the
         request body
@@ -10200,31 +10225,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Shifts by id
-      tags:
-      - Shifts
-    delete:
-      description: Updates SHIFT with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Shifts by id
       tags:
       - Shifts
     get:
@@ -10415,7 +10415,32 @@ paths:
       summary: Get Studies
       tags:
       - Studies
-  /studies/{id}:
+  /studies/{id_}:
+    delete:
+      description: Updates STUDY with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Studies by id
+      tags:
+      - Studies
     patch:
       description: Updates STUDY with the specified ID with details provided in the
         request body
@@ -10450,31 +10475,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Studies by id
-      tags:
-      - Studies
-    delete:
-      description: Updates STUDY with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Studies by id
       tags:
       - Studies
     get:
@@ -10666,7 +10666,32 @@ paths:
       summary: Get StudyInvestigations
       tags:
       - StudyInvestigations
-  /studyinvestigations/{id}:
+  /studyinvestigations/{id_}:
+    delete:
+      description: Updates STUDYINVESTIGATION with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete StudyInvestigations by id
+      tags:
+      - StudyInvestigations
     patch:
       description: Updates STUDYINVESTIGATION with the specified ID with details provided
         in the request body
@@ -10701,31 +10726,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update StudyInvestigations by id
-      tags:
-      - StudyInvestigations
-    delete:
-      description: Updates STUDYINVESTIGATION with the specified ID with details provided
-        in the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete StudyInvestigations by id
       tags:
       - StudyInvestigations
     get:
@@ -10918,7 +10918,32 @@ paths:
       summary: Get UserGroups
       tags:
       - UserGroups
-  /usergroups/{id}:
+  /usergroups/{id_}:
+    delete:
+      description: Updates USERGROUP with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete UserGroups by id
+      tags:
+      - UserGroups
     patch:
       description: Updates USERGROUP with the specified ID with details provided in
         the request body
@@ -10953,31 +10978,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update UserGroups by id
-      tags:
-      - UserGroups
-    delete:
-      description: Updates USERGROUP with the specified ID with details provided in
-        the request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete UserGroups by id
       tags:
       - UserGroups
     get:
@@ -11168,7 +11168,32 @@ paths:
       summary: Get Users
       tags:
       - Users
-  /users/{id}:
+  /users/{id_}:
+    delete:
+      description: Updates USER with the specified ID with details provided in the
+        request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in the database
+      summary: Delete Users by id
+      tags:
+      - Users
     patch:
       description: Updates USER with the specified ID with details provided in the
         request body
@@ -11203,31 +11228,6 @@ paths:
         '404':
           description: No such record - Unable to find a record in the database
       summary: Update Users by id
-      tags:
-      - Users
-    delete:
-      description: Updates USER with the specified ID with details provided in the
-        request body
-      parameters:
-      - description: The id of the entity to delete
-        in: path
-        name: id
-        required: true
-        schema:
-          type: integer
-      responses:
-        '204':
-          description: No Content - Object was successfully deleted
-        '400':
-          description: Bad request - Something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: No such record - Unable to find a record in the database
-      summary: Delete Users by id
       tags:
       - Users
     get:
@@ -11315,6 +11315,42 @@ paths:
       tags:
       - Users
   /sessions:
+    delete:
+      description: Deletes a users sessionID when they logout
+      responses:
+        '200':
+          description: Success - User's session was successfully deleted
+        '400':
+          description: Bad request - something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: Not Found - Unable to find session ID
+      summary: Delete session
+      tags:
+      - Sessions
+    put:
+      description: Refreshes a users session
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: Session ID
+                example: xxxxxx-yyyyyyy-zzzzzz
+                type: string
+          description: Success - the user's session ID that has been refreshed
+        '401':
+          description: Unauthorized - No session ID was found in the HTTP Authorization
+            header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+      summary: Refresh session
+      tags:
+      - Sessions
     post:
       description: Generates a sessionID if the user has correct credentials
       requestBody:
@@ -11352,42 +11388,6 @@ paths:
       summary: Login
       tags:
       - Sessions
-    put:
-      description: Refreshes a users session
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                description: Session ID
-                example: xxxxxx-yyyyyyy-zzzzzz
-                type: string
-          description: Success - the user's session ID that has been refreshed
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-      summary: Refresh session
-      tags:
-      - Sessions
-    delete:
-      description: Deletes a users sessionID when they logout
-      responses:
-        '200':
-          description: Success - User's session was successfully deleted
-        '400':
-          description: Bad request - something was wrong with the request
-        '401':
-          description: Unauthorized - No session ID was found in the HTTP Authorization
-            header
-        '403':
-          description: Forbidden - The session ID provided is invalid
-        '404':
-          description: Not Found - Unable to find session ID
-      summary: Delete session
-      tags:
-      - Sessions
     get:
       description: Gives details of a user's session
       responses:
@@ -11418,7 +11418,7 @@ paths:
       summary: Get session details
       tags:
       - Sessions
-  /instruments/{id}/facilitycycles:
+  /instruments/{id_}/facilitycycles:
     get:
       description: Given an Instrument id get facility cycles where the instrument
         has investigations that occur within that cycle, subject to the given filters
@@ -11457,7 +11457,7 @@ paths:
       summary: Get an Instrument's FacilityCycles
       tags:
       - FacilityCycles
-  /instruments/{id}/facilitycycles/count:
+  /instruments/{id_}/facilitycycles/count:
     get:
       description: Return the count of the Facility Cycles that have investigations
         that occur within that cycle on the specified instrument that would be retrieved

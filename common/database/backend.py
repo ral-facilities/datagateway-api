@@ -1,9 +1,20 @@
 from common.backend import Backend
-from common.database_helpers import get_facility_cycles_for_instrument, get_facility_cycles_for_instrument_count, \
-    get_investigations_for_instrument_in_facility_cycle, get_investigations_for_instrument_in_facility_cycle_count, \
-    get_rows_by_filter, create_rows_from_json, patch_entities, get_row_by_id, insert_row_into_table, \
-    delete_row_by_id, update_row_from_id, get_filtered_row_count, get_first_filtered_row
-from common.database_helpers import requires_session_id
+from common.database.helpers import (
+    get_facility_cycles_for_instrument,
+    get_facility_cycles_for_instrument_count,
+    get_investigations_for_instrument_in_facility_cycle,
+    get_investigations_for_instrument_in_facility_cycle_count,
+    get_rows_by_filter,
+    create_rows_from_json,
+    patch_entities,
+    get_row_by_id,
+    insert_row_into_table,
+    delete_row_by_id,
+    update_row_from_id,
+    get_filtered_row_count,
+    get_first_filtered_row,
+    requires_session_id,
+)
 from common.helpers import queries_records
 from common.models.db_models import SESSION
 import uuid
@@ -11,7 +22,9 @@ from common.exceptions import AuthenticationError
 import datetime
 
 import logging
+
 log = logging.getLogger()
+
 
 class DatabaseBackend(Backend):
     """
@@ -21,8 +34,14 @@ class DatabaseBackend(Backend):
     def login(self, credentials):
         if credentials["username"] == "user" and credentials["password"] == "password":
             session_id = str(uuid.uuid1())
-            insert_row_into_table(SESSION, SESSION(ID=session_id, USERNAME=f"{credentials['mechanism']}/root",
-                                                   EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1)))
+            insert_row_into_table(
+                SESSION,
+                SESSION(
+                    ID=session_id,
+                    USERNAME=f"{credentials['mechanism']}/root",
+                    EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1),
+                ),
+            )
             return session_id
         else:
             raise AuthenticationError("Username and password are incorrect")
@@ -82,20 +101,32 @@ class DatabaseBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def get_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         return get_facility_cycles_for_instrument(instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_with_filters(self, session_id, instrument_id, filters):
+    def count_instrument_facilitycycles_with_filters(
+        self, session_id, instrument_id, filters
+    ):
         return get_facility_cycles_for_instrument_count(instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycle_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
-        return get_investigations_for_instrument_in_facility_cycle(instrument_id, facilitycycle_id, filters)
+    def get_instrument_facilitycycle_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
+        return get_investigations_for_instrument_in_facility_cycle(
+            instrument_id, facilitycycle_id, filters
+        )
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_investigations_with_filters(self, session_id, instrument_id, facilitycycle_id, filters):
-        return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)
+    def count_instrument_facilitycycles_investigations_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters
+    ):
+        return get_investigations_for_instrument_in_facility_cycle_count(
+            instrument_id, facilitycycle_id, filters
+        )

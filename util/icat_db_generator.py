@@ -10,8 +10,22 @@ from common.models import db_models
 from common.session_manager import session_manager
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--seed", "-s", dest="seed", help="Provide seed for random and faker", type=int, default=1)
-parser.add_argument("--years", "-y", dest="years", help="Provide number of years to generate", type=int, default=20)
+parser.add_argument(
+    "--seed",
+    "-s",
+    dest="seed",
+    help="Provide seed for random and faker",
+    type=int,
+    default=1,
+)
+parser.add_argument(
+    "--years",
+    "-y",
+    dest="years",
+    help="Provide number of years to generate",
+    type=int,
+    default=20,
+)
 args = parser.parse_args()
 SEED = args.seed
 YEARS = args.years  # 4 Cycles per years generated
@@ -38,8 +52,10 @@ def get_date_time():
     Generates a datetime
     :return: the datetime
     """
-    return faker.date_time_between_dates(datetime_start=datetime.datetime(2000, 10, 4),
-                                         datetime_end=datetime.datetime(2019, 10, 5))
+    return faker.date_time_between_dates(
+        datetime_start=datetime.datetime(2000, 10, 4),
+        datetime_end=datetime.datetime(2019, 10, 5),
+    )
 
 
 def get_start_date(i):
@@ -48,11 +64,15 @@ def get_start_date(i):
     :param i:
     :return:
     """
-    return datetime.datetime(2000 + i // 4, ((i + 1) * (i + 1)) % 11 + 1, ((i + 1) * (i + 2) % 28 + 1))
+    return datetime.datetime(
+        2000 + i // 4, ((i + 1) * (i + 1)) % 11 + 1, ((i + 1) * (i + 2) % 28 + 1)
+    )
 
 
 def get_end_date(i):
-    return datetime.datetime(2000 + i // 4, (((i + 1) * (i + 2)) % 11) + 1, ((i + 1) ** 2) % 28 + 1)
+    return datetime.datetime(
+        2000 + i // 4, (((i + 1) * (i + 2)) % 11) + 1, ((i + 1) ** 2) % 28 + 1
+    )
 
 
 def apply_common_attributes(entity, iterator):
@@ -78,7 +98,6 @@ def apply_common_parameter_attributes(entity, i):
 
 
 class Generator(ABC):
-
     @property
     @abstractmethod
     def tier(self):
@@ -333,7 +352,9 @@ class InvestigationInstrumentGenerator(Generator):
     amount = InvestigationGenerator.amount  # Must equal number of investigations
 
     def generate(self):
-        self.pool_map(InvestigationInstrumentGenerator.generate_investigation_instrument)
+        self.pool_map(
+            InvestigationInstrumentGenerator.generate_investigation_instrument
+        )
 
     @staticmethod
     def generate_investigation_instrument(i):
@@ -483,7 +504,9 @@ def generate_investigation_parameter(i):
     apply_common_attributes(investigation_parameter, i)
     apply_common_parameter_attributes(investigation_parameter, i)
     investigation_parameter.INVESTIGATION_ID = i
-    investigation_parameter.PARAMETER_TYPE_ID = randrange(1, ParameterTypeGenerator.amount)
+    investigation_parameter.PARAMETER_TYPE_ID = randrange(
+        1, ParameterTypeGenerator.amount
+    )
     post_entity(investigation_parameter)
 
 
@@ -533,7 +556,11 @@ class DatasetGenerator(Generator):
         dataset.COMPLETE = randrange(2)
         dataset.LOCATION = faker.file_path()
         investigation_id = i % InvestigationGenerator.amount
-        dataset.INVESTIGATION_ID = investigation_id if investigation_id != 0 else InvestigationGenerator.amount - 1
+        dataset.INVESTIGATION_ID = (
+            investigation_id
+            if investigation_id != 0
+            else InvestigationGenerator.amount - 1
+        )
         sample_id = i % SampleGenerator.amount
         dataset.SAMPLE_ID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
         dataset.TYPE_ID = randrange(1, DatasetTypeGenerator.amount)
@@ -600,7 +627,9 @@ class DataCollectionParameterGenerator(Generator):
     amount = DataCollectionGenerator.amount
 
     def generate(self):
-        self.pool_map(DataCollectionParameterGenerator.generate_data_collection_parameter)
+        self.pool_map(
+            DataCollectionParameterGenerator.generate_data_collection_parameter
+        )
 
     @staticmethod
     def generate_data_collection_parameter(i):
@@ -608,7 +637,9 @@ class DataCollectionParameterGenerator(Generator):
         apply_common_attributes(datacollection_parameter, i)
         apply_common_parameter_attributes(datacollection_parameter, i)
         datacollection_parameter.DATACOLLECTION_ID = i
-        datacollection_parameter.PARAMETER_TYPE_ID = randrange(1, ParameterTypeGenerator.amount)
+        datacollection_parameter.PARAMETER_TYPE_ID = randrange(
+            1, ParameterTypeGenerator.amount
+        )
         post_entity(datacollection_parameter)
 
 
@@ -650,7 +681,10 @@ def generate_all(i, generators):
     processes = []
     for generator in generators:
         if generator.tier == i:
-            print(f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of tier {generator.tier}")
+            print(
+                f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of"
+                f" tier {generator.tier}"
+            )
             processes.append(Process(target=generator.generate))
 
     [process.start() for process in processes]
@@ -666,7 +700,9 @@ def main():
         generate_all(i, generators)
 
     print(
-        f"Added {sum(generator.amount for generator in generators)} entities in {datetime.datetime.now() - start_time}")
+        f"Added {sum(generator.amount for generator in generators)} entities in"
+        f" {datetime.datetime.now() - start_time}"
+    )
 
 
 if __name__ == "__main__":
