@@ -388,6 +388,8 @@ class icat_query:
         :return: A copy of `distinct_fields`, with the data from the entity name put
             into the base portion of the dictionary
         """
+        # Reset base fields
+        distinct_fields["base"] = []
 
         distinct_fields_copy = distinct_fields.copy()
         if entity_name in distinct_fields_copy.keys():
