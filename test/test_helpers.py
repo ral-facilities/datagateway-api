@@ -29,6 +29,7 @@ from common.models.db_models import SESSION
 from test.test_base import FlaskAppTest
 
 
+# Put this in test definitions, but do tests there, don't abstract out
 class TestIs_valid_json(TestCase):
     def test_array(self):
         self.assertTrue(is_valid_json("[]"))
@@ -55,6 +56,7 @@ class TestIs_valid_json(TestCase):
         self.assertFalse(is_valid_json([]))
 
 
+# Common for both backends, setup and teardown will be different
 class TestRequires_session_id(FlaskAppTest):
     def setUp(self):
         super().setUp()
@@ -93,7 +95,7 @@ class TestRequires_session_id(FlaskAppTest):
             ).status_code,
         )
 
-
+# Common across both, no need to abstract out
 class TestQueries_records(TestCase):
     def test_missing_record_error(self):
         @queries_records
@@ -161,6 +163,7 @@ class TestQueries_records(TestCase):
         self.assertEqual(400, ctx.exception.status_code)
 
 
+# Common across both, no need to abstract out
 class TestGet_session_id_from_auth_header(FlaskAppTest):
     def test_no_session_in_header(self):
         with self.app:
@@ -177,7 +180,7 @@ class TestGet_session_id_from_auth_header(FlaskAppTest):
             self.app.get("/", headers={"Authorization": "Bearer test"})
             self.assertEqual("test", get_session_id_from_auth_header())
 
-
+# Common across both, needs abstracting out, class per filter, multiple tests per filter
 class TestGet_filters_from_query_string(FlaskAppTest):
     def test_no_filters(self):
         with self.app:

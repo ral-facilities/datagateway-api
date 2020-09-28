@@ -4,6 +4,7 @@ from unittest import TestCase
 from common.models.db_models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
 
 
+# DB only tests
 class TestEntityHelper(TestCase):
     def setUp(self):
         self.dataset = DATASET()
