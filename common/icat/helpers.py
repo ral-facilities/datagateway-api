@@ -160,6 +160,7 @@ class icat_query:
             raise PythonICATError(e)
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
+        mapped_distinct_fields = None
 
         if self.query.aggregate == "DISTINCT":
             log.info("Extracting the distinct fields from query's conditions")
