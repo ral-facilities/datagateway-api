@@ -26,7 +26,7 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "ne":
             where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
-            where_filter = self.create_condition(self.field, "like", self.value)
+            where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
