@@ -161,8 +161,12 @@ class icat_query:
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
         mapped_distinct_fields = None
+        
+        # If the query has a COUNT function applied to it, some of these steps can be
+        # skipped
+        count_query = True if "COUNT" in self.query.aggregate else False
 
-        if self.query.aggregate == "DISTINCT":
+        if self.query.aggregate == "DISTINCT" and not count_query:
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
@@ -182,8 +186,7 @@ class icat_query:
             for result in query_result:
                 log.debug(f"Aggregate: {self.query.aggregate}")
                 # TODO - How to deal with distinct and count as aggregate
-                if self.query.aggregate != "COUNT":
-                    
+                if not count_query:
                     dict_result = self.entity_to_dict(
                         result, flat_query_includes, mapped_distinct_fields
                     )

@@ -87,7 +87,15 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
-            query.setAggregate("DISTINCT")
+            if (
+                query.aggregate == "COUNT"
+                or query.aggregate == "AVG"
+                or query.aggregate == "SUM"
+            ):
+                # Distinct can be combined with other aggregate functions
+                query.setAggregate(f"{query.aggregate}:DISTINCT")
+            else:
+                query.setAggregate("DISTINCT")
 
             # Using where filters to identify which fields to apply distinct too
             for field in self.fields:
