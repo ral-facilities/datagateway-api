@@ -10,7 +10,10 @@ from common.helpers import (
     get_session_id_from_auth_header,
     get_filters_from_query_string,
 )
-from common.backends import backend
+from common.backends import create_backend
+from common.config import config
+
+backend = create_backend(config.get_backend_type())
 
 
 class InstrumentsFacilityCycles(Resource):

@@ -11,11 +11,13 @@ from common.database.helpers import (
 )
 from common.helpers import get_session_id_from_auth_header
 from common.models.db_models import SESSION
-from common.backends import backend
+from common.backends import create_backend
 from common.exceptions import AuthenticationError
+from common.config import config
 
 log = logging.getLogger()
 
+backend = create_backend(config.get_backend_type())
 
 class Sessions(Resource):
     def post(self):
