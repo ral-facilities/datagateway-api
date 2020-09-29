@@ -180,10 +180,16 @@ class icat_query:
             data = []
 
             for result in query_result:
-                dict_result = self.entity_to_dict(
-                    result, flat_query_includes, mapped_distinct_fields
-                )
-                data.append(dict_result)
+                log.debug(f"Aggregate: {self.query.aggregate}")
+                # TODO - How to deal with distinct and count as aggregate
+                if self.query.aggregate != "COUNT":
+                    
+                    dict_result = self.entity_to_dict(
+                        result, flat_query_includes, mapped_distinct_fields
+                    )
+                    data.append(dict_result)
+                else:
+                    data.append(result)
             return data
         else:
             log.info("Query results will be returned as ICAT entities")
@@ -677,3 +683,37 @@ def clear_order_filters(filters):
 
     if any(isinstance(filter, PythonICATOrderFilter) for filter in filters):
         PythonICATOrderFilter.result_order = []
+
+
+def get_count_with_filters(client, table_name, filters):
+    """
+    Get the number of results of a given entity, based on the filters provided in the
+    request. This acts very much like `get_entity_with_filters()` but returns the number
+    of results, as opposed to a JSON object of data.
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: :class:`str`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The number of records of the given entity (of type integer), using the
+        filters to restrict the result of the query
+    """
+
+    selected_entity_name = get_python_icat_entity_name(client, table_name)
+    query = icat_query(client, selected_entity_name, aggregate="COUNT")
+
+    filter_handler = FilterOrderHandler()
+    filter_handler.add_filters(filters)
+    merge_limit_skip_filters(filter_handler)
+    clear_order_filters(filter_handler.filters)
+    filter_handler.apply_filters(query.query)
+
+    data = query.execute_query(client, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        # Only ever 1 element in a count query result
+        return data[0]

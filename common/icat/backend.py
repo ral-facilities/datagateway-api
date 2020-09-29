@@ -14,6 +14,7 @@ from common.icat.helpers import (
     update_entity_by_id,
     delete_entity_by_id,
     get_entity_with_filters,
+    get_count_with_filters,
 )
 
 from common.config import config
@@ -74,6 +75,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, table, filters):
+        self.client.sessionId = session_id
         return get_entity_with_filters(self.client, table.__name__, filters)
 
     @requires_session_id
@@ -94,7 +96,8 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def count_with_filters(self, session_id, table, filters):
-        pass
+        self.client.sessionId = session_id
+        return get_count_with_filters(self.client, table.__name__, filters)
 
     @requires_session_id
     @queries_records
