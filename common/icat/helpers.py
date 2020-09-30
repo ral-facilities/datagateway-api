@@ -164,7 +164,10 @@ class icat_query:
         
         # If the query has a COUNT function applied to it, some of these steps can be
         # skipped
-        count_query = True if "COUNT" in self.query.aggregate else False
+        count_query = False
+        if self.query.aggregate is not None:
+            if "COUNT" in self.query.aggregate:
+                count_query = True
 
         if self.query.aggregate == "DISTINCT" and not count_query:
             log.info("Extracting the distinct fields from query's conditions")
