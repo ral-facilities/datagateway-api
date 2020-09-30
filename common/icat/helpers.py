@@ -136,10 +136,12 @@ class icat_query:
                 " suggesting an invalid argument"
             )
 
-    def execute_query(self, client, return_json_formattable=False):
+    def execute_query(
+        self, client, return_json_formattable=False, return_first_value_only=False
+    ):
         """
-        Execute a previously created ICAT Query object and return in the format
-        specified by the return_json_formattable flag
+        Execute the ICAT Query object and return in the format specified by the
+        return_json_formattable flag
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
@@ -149,6 +151,11 @@ class icat_query:
             whether to leave the data in a Python ICAT format (i.e. if it's going to be
             manipulated at some point)
         :type return_json_formattable_data: :class:`bool`
+        :param return_first_value_only: Flag to determine whether the query should only
+            return the first result in the result set. This is used for /findone
+            endpoints so the first result is dealt with before breaking the processing
+            of results and returning the first result only
+        :type return_first_value_only: :class:`bool`
         :return: Data (of type list) from the executed query
         :raises PythonICATError: If an error occurs during query execution
         """
@@ -161,7 +168,7 @@ class icat_query:
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
         mapped_distinct_fields = None
-        
+
         # If the query has a COUNT function applied to it, some of these steps can be
         # skipped
         count_query = False
@@ -187,8 +194,6 @@ class icat_query:
             data = []
 
             for result in query_result:
-                log.debug(f"Aggregate: {self.query.aggregate}")
-                # TODO - How to deal with distinct and count as aggregate
                 if not count_query:
                     dict_result = self.entity_to_dict(
                         result, flat_query_includes, mapped_distinct_fields
@@ -196,6 +201,12 @@ class icat_query:
                     data.append(dict_result)
                 else:
                     data.append(result)
+
+                # For /findone endpoints - only need to process the first result as the
+                # rest won't be sent in the response
+                if return_first_value_only:
+                    break
+
             return data
         else:
             log.info("Query results will be returned as ICAT entities")
@@ -613,7 +624,7 @@ def update_entity_by_id(client, table_name, id_, new_data):
     return get_entity_by_id(client, table_name, id_, True)
 
 
-def get_entity_with_filters(client, table_name, filters):
+def get_entity_with_filters(client, table_name, filters, return_first_value_only=False):
     """
     Gets all the records of a given entity, based on the filters provided in the request
 
@@ -623,9 +634,15 @@ def get_entity_with_filters(client, table_name, filters):
     :type table_name: :class:`str`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
+    :param return_first_value_only: Flag to determine whether the query should only
+        return the first result in the result set. This is used for /findone
+        endpoints so the first result is dealt with before breaking the processing
+        of results and returning the first result only
+    :type return_first_value_only: :class:`bool`
     :return: The list of records of the given entity, using the filters to restrict the
         result of the query
     """
+    log.info("Getting entity using request's filters")
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     query = icat_query(client, selected_entity_name)
@@ -636,7 +653,7 @@ def get_entity_with_filters(client, table_name, filters):
     clear_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query.query)
 
-    data = query.execute_query(client, True)
+    data = query.execute_query(client, True, return_first_value_only)
 
     if not data:
         raise MissingRecordError("No results found")
@@ -723,3 +740,29 @@ def get_count_with_filters(client, table_name, filters):
     else:
         # Only ever 1 element in a count query result
         return data[0]
+
+
+def get_first_result_with_filters(client, table_name, filters):
+    """
+    Using filters in the request, get results of the given entity, but only show the
+    first one to the user
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: :class:`str`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The first record of the given entity, using the filters to restrict the
+        result of the query
+    """
+    log.info("Getting only first result of an entity, making use of filters in request")
+
+    entity_data = get_entity_with_filters(
+        client, table_name, filters, return_first_value_only=True
+    )
+
+    if not entity_data:
+        raise MissingRecordError("No results found")
+    else:
+        return entity_data
