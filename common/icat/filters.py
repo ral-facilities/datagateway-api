@@ -23,8 +23,10 @@ class PythonICATWhereFilter(WhereFilter):
         log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
             where_filter = self.create_condition(self.field, "=", self.value)
+        elif self.operation == "ne":
+            where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
-            where_filter = self.create_condition(self.field, "like", self.value)
+            where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
@@ -34,7 +36,11 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "gte":
             where_filter = self.create_condition(self.field, ">=", self.value)
         elif self.operation == "in":
-            where_filter = self.create_condition(self.field, "in", tuple(self.value))
+            # Convert self.value into a string with brackets equivalent to tuple format.
+            # Cannot convert straight to tuple as single element tuples contain a
+            # trailing comma which Python ICAT/JPQL doesn't accept
+            self.value = str(self.value).replace("[", "(").replace("]", ")")
+            where_filter = self.create_condition(self.field, "in", self.value)
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
@@ -64,10 +70,13 @@ class PythonICATWhereFilter(WhereFilter):
         """
 
         conditions = {}
-        # Removing quote marks when doing conditions with IN expressions
-        jpql_value = f"{value}" if isinstance(value, tuple) else f"'{value}'"
+        # Removing quote marks when doing conditions with IN expressions or when a
+        # distinct filter is used in a request
+        jpql_value = (
+            f"{value}" if operator == "in" or operator == "!=" else f"'{value}'"
+        )
         conditions[attribute_name] = f"{operator} {jpql_value}"
-
+        log.debug("Conditions in ICAT where filter, %s", conditions)
         return conditions
 
 
@@ -76,7 +85,18 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
         super().__init__(fields)
 
     def apply_filter(self, query):
-        pass
+        try:
+            log.info("Adding ICAT distinct filter to ICAT query")
+            query.setAggregate("DISTINCT")
+
+            # Using where filters to identify which fields to apply distinct too
+            for field in self.fields:
+                where_filter = PythonICATWhereFilter(field, "null", "ne")
+                where_filter.apply_filter(query)
+
+            log.debug("Fields for distinct filter: %s", self.fields)
+        except ValueError as e:
+            raise FilterError(e)
 
 
 class PythonICATOrderFilter(OrderFilter):

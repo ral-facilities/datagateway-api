@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import logging
 
+from common.exceptions import BadRequestError
+
 log = logging.getLogger()
 
 
@@ -26,6 +28,13 @@ class WhereFilter(QueryFilter):
 
         self.value = value
         self.operation = operation
+
+        if self.operation == "in":
+            if not isinstance(self.value, list):
+                raise BadRequestError(
+                    "When using the 'in' operation for a WHERE filter, the values must"
+                    " be in a list format e.g. [1, 2, 3]"
+                )
 
     def _extract_filter_fields(self, field):
         fields = field.split(".")
