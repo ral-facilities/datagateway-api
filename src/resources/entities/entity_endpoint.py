@@ -108,13 +108,8 @@ def get_endpoint(name, table):
 
         def patch(self):
             return (
-                list(
-                    map(
-                        lambda x: x.to_dict(),
-                        backend.update(
-                            get_session_id_from_auth_header(), table, request.json
-                        ),
-                    )
+                backend.update(
+                    get_session_id_from_auth_header(), table, request.json
                 ),
                 200,
             )
