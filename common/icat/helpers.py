@@ -293,9 +293,13 @@ class icat_query:
                         " cause an issue further on in the request"
                     )
                 if isinstance(target, Entity):
-                    distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                        key, distinct_fields
-                    )
+                    if distinct_fields is not None:
+                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                            key, distinct_fields
+                        )
+                    else:
+                        distinct_fields_copy = None
+
                     d[key] = self.entity_to_dict(
                         target, includes_copy, distinct_fields_copy
                     )
@@ -304,9 +308,13 @@ class icat_query:
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                            key, distinct_fields
-                        )
+                        if distinct_fields is not None:
+                            distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                                key, distinct_fields
+                            )
+                        else:
+                            distinct_fields_copy = None
+
                         d[key].append(
                             self.entity_to_dict(e, includes_copy, distinct_fields_copy)
                         )
