@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from icat.entity import Entity, EntityList
 from icat.query import Query
-from icat.exception import ICATSessionError, ICATValidationError
+from icat.exception import ICATSessionError, ICATValidationError, ICATInternalError
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -163,7 +163,7 @@ class icat_query:
         try:
             log.debug("Executing ICAT query")
             query_result = client.search(self.query)
-        except ICATValidationError as e:
+        except (ICATValidationError, ICATInternalError) as e:
             raise PythonICATError(e)
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
@@ -538,7 +538,7 @@ def update_attributes(old_entity, new_entity):
         except AttributeError:
             raise BadRequestError(
                 f"Bad request made, cannot find attribute '{key}' within the"
-                f"{old_entity.BeanName} entity"
+                f" {old_entity.BeanName} entity"
             )
 
         try:
@@ -551,7 +551,7 @@ def update_attributes(old_entity, new_entity):
 
     try:
         old_entity.update()
-    except ICATValidationError as e:
+    except (ICATValidationError, ICATInternalError) as e:
         raise PythonICATError(e)
 
 
@@ -774,3 +774,28 @@ def get_first_result_with_filters(client, table_name, filters):
         raise MissingRecordError("No results found")
     else:
         return entity_data
+
+
+def update_entities(client, table_name, data_to_update):
+    """
+    TODO - Add docstring
+    """
+
+    updated_data = []
+
+    if not isinstance(data_to_update, list):
+        data_to_update = [data_to_update]
+
+    for entity in data_to_update:
+        try:
+            updated_result = update_entity_by_id(
+                client, table_name, entity["id"], entity
+            )
+            updated_data.append(updated_result)
+        except KeyError:
+            raise BadRequestError(
+                "The new data in the request body must contain the ID (using the key:"
+                " 'id') of the entity you wish to update"
+            )
+ 
+    return updated_data
