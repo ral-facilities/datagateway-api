@@ -555,7 +555,9 @@ def update_attributes(old_entity, new_entity):
         raise PythonICATError(e)
 
 
-def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
+def get_entity_by_id(
+    client, table_name, id_, return_json_formattable_data, return_related_entities=False
+):
     """
     Gets a record of a given ID from the specified entity
 
@@ -570,6 +572,11 @@ def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
         data will be used as a response for an API call) or whether to leave the data in
         a Python ICAT format
     :type return_json_formattable_data: :class:`bool`
+    :param return_related_entities: Flag to determine whether related entities should
+        automatically be returned or not. Returning related entities used as a bug fix
+        for an `IcatException` where ICAT attempts to set a field to null because said
+        field hasn't been included in the updated data
+    :type return_related_entities: :class:`bool`
     :return: The record of the specified ID from the given entity
     :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
@@ -578,8 +585,9 @@ def get_entity_by_id(client, table_name, id_, return_json_formattable_data):
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
+    includes_value = "1" if return_related_entities == True else None
     id_query = icat_query(
-        client, selected_entity_name, conditions=id_condition, includes="1"
+        client, selected_entity_name, conditions=id_condition, includes=includes_value
     )
     entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
@@ -621,7 +629,9 @@ def update_entity_by_id(client, table_name, id_, new_data):
     :return: The updated record of the specified ID from the given entity
     """
 
-    entity_id_data = get_entity_by_id(client, table_name, id_, False)
+    entity_id_data = get_entity_by_id(
+        client, table_name, id_, False, return_related_entities=True
+    )
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
     # get_entity_by_id()
@@ -797,5 +807,5 @@ def update_entities(client, table_name, data_to_update):
                 "The new data in the request body must contain the ID (using the key:"
                 " 'id') of the entity you wish to update"
             )
- 
+
     return updated_data
