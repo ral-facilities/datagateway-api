@@ -788,7 +788,16 @@ def get_first_result_with_filters(client, table_name, filters):
 
 def update_entities(client, table_name, data_to_update):
     """
-    TODO - Add docstring
+    Update one or more results for the given entity using the JSON provided in 
+    `data_to_update`
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: :class:`str`
+    :param data_to_update: The list of filters to be applied to the request
+    :type data_to_update: :class:`list` or :class:`dict`
+    :return: The updated record(s) of the given entity
     """
 
     updated_data = []
