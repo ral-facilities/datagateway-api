@@ -1,10 +1,16 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
+from dateutil.parser import parse
 
 from icat.entity import Entity, EntityList
 from icat.query import Query
-from icat.exception import ICATSessionError, ICATValidationError, ICATInternalError
+from icat.exception import (
+    ICATSessionError,
+    ICATValidationError,
+    ICATInternalError,
+    ICATObjectExistsError,
+)
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -795,7 +801,7 @@ def update_entities(client, table_name, data_to_update):
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
     :type table_name: :class:`str`
-    :param data_to_update: The list of filters to be applied to the request
+    :param data_to_update: The data that to be updated in ICAT
     :type data_to_update: :class:`list` or :class:`dict`
     :return: The updated record(s) of the given entity
     """
@@ -818,3 +824,66 @@ def update_entities(client, table_name, data_to_update):
             )
 
     return updated_data
+
+
+def create_entities(client, table_name, data):
+    """
+    Add one or more results for the given entity using the JSON provided in `data`
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param table_name: Table name to extract which entity to use
+    :type table_name: :class:`str`
+    :param data: The data that needs to be created in ICAT
+    :type data_to_update: :class:`list` or :class:`dict`
+    :return: The created record(s) of the given entity
+    """
+
+    created_data = []
+
+    if not isinstance(data, list):
+        data = [data]
+
+    for result in data:
+        new_entity = client.new(table_name.lower())
+
+        for attribute_name, value in result.items():
+            try:
+                entity_info = new_entity.getAttrInfo(client, attribute_name)
+                if entity_info.relType.lower() == "attribute":
+                    if is_str_a_date(value):
+                        value = str_to_datetime_object(None, value)
+
+                    setattr(new_entity, attribute_name, value)
+                
+                else:
+                    # This means the attribute has a relationship with another object
+                    related_object = client.get(entity_info.type, value)
+                    setattr(new_entity, attribute_name, related_object)
+
+            except ValueError as e:
+                raise BadRequestError(e)
+
+        try:
+            new_entity.create()
+        except (ICATValidationError, ICATInternalError) as e:
+            raise PythonICATError(e)
+        except ICATObjectExistsError as e:
+            raise BadRequestError(e)
+        
+        created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
+
+    return created_data
+
+
+def is_str_a_date(potential_date):
+    """
+    TODO - Add docstring
+    """
+
+    try:
+        # Disabled fuzzy to avoid picking up dates in things like descriptions etc.
+        parse(potential_date, fuzzy=False)
+        return True
+    except ValueError:
+        return False

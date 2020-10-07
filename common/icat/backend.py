@@ -17,6 +17,7 @@ from common.icat.helpers import (
     get_count_with_filters,
     get_first_result_with_filters,
     update_entities,
+    create_entities,
 )
 
 from common.config import config
@@ -83,7 +84,8 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def create(self, session_id, table, data):
-        pass
+        self.client.sessionId = session_id
+        return create_entities(self.client, table.__name__, data)
 
     @requires_session_id
     @queries_records
