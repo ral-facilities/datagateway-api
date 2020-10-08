@@ -1,7 +1,7 @@
 from functools import wraps
 import logging
 from datetime import datetime, timedelta
-from dateutil.parser import parse
+
 
 from icat.entity import Entity, EntityList
 from icat.entities import getTypeMap
@@ -22,6 +22,7 @@ from common.exceptions import (
     PythonICATError,
 )
 from common.filter_order_handler import FilterOrderHandler
+from common.date_handler import DateHandler
 from common.constants import Constants
 from common.icat.filters import (
     PythonICATLimitFilter,
@@ -251,19 +252,6 @@ class icat_query:
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             attribute_list.append(key)
 
-    def datetime_object_to_str(self, date_obj):
-        """
-        Convert a datetime object to a string so it can be outputted in JSON
-
-        There's currently no reason to make this function static, but it could be useful
-        in the future if a use case required this functionality.
-
-        :param date_obj: Datetime object from data from an ICAT entity
-        :type date_obj: :class:`datetime.datetime`
-        :return: Datetime (of type string) in the agreed format
-        """
-        return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
-
     def entity_to_dict(self, entity, includes, distinct_fields=None):
         """
         This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
@@ -336,7 +324,7 @@ class icat_query:
                     # Convert datetime objects to strings ready to be outputted as JSON
                     if isinstance(entity_data, datetime):
                         # Remove timezone data which isn't utilised in ICAT
-                        entity_data = self.datetime_object_to_str(entity_data)
+                        entity_data = DateHandler.datetime_object_to_str(entity_data)
 
                     d[key] = entity_data
         return d
@@ -500,36 +488,6 @@ def get_python_icat_entity_name(client, database_table_name, camel_case_output=F
     return python_icat_entity_name
 
 
-def str_to_datetime_object(data):
-    """
-    Where data is stored as dates in ICAT (which this function determines), convert 
-    strings (i.e. user data from PATCH/POST requests) into datetime objects so they can
-    be stored in ICAT
-
-    Python 3.7+ has support for `datetime.fromisoformat()` which would be a more elegant
-    solution to this conversion operation since dates are converted into ISO format
-    within this file, however, the production instance of this API is typically built on
-    Python 3.6, and it doesn't seem of enough value to mandate 3.7 for a single line of
-    code
-
-    :param data: Single data value from the request body
-    :type data: Data type of the data as per user's request body
-    :return: Date converted into a :class:`datetime` object
-    :raises BadRequestError: If the date is entered in the incorrect format, as per
-        `Constants.ACCEPTED_DATE_FORMAT`
-    """
-
-    try:
-        data = datetime.strptime(data, Constants.ACCEPTED_DATE_FORMAT)
-    except ValueError:
-        raise BadRequestError(
-            "Bad request made, the date entered is not in the correct format. Use the"
-            f" {Constants.ACCEPTED_DATE_FORMAT} format to submit dates to the API"
-        )
-
-    return data
-
-
 def update_attributes(old_entity, new_entity):
     """
     Updates the attribute(s) of a given object which is a record of an entity from
@@ -548,7 +506,7 @@ def update_attributes(old_entity, new_entity):
         try:
             original_data_attribute = getattr(old_entity, key)
             if isinstance(original_data_attribute, datetime):
-                new_entity[key] = str_to_datetime_object(new_entity[key])
+                new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
         except AttributeError:
             raise BadRequestError(
                 f"Bad request made, cannot find attribute '{key}' within the"
@@ -862,8 +820,8 @@ def create_entities(client, table_name, data):
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
                 if entity_info.relType.lower() == "attribute":
                     if isinstance(value, str):
-                        if is_str_a_date(value):
-                            value = str_to_datetime_object(value)
+                        if DateHandler.is_str_a_date(value):
+                            value = DateHandler.str_to_datetime_object(value)
 
                     setattr(new_entity, attribute_name, value)
                 else:
@@ -886,20 +844,7 @@ def create_entities(client, table_name, data):
             raise PythonICATError(e)
         except (ICATObjectExistsError, ICATParameterError) as e:
             raise BadRequestError(e)
-        
+
         created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
 
     return created_data
-
-
-def is_str_a_date(potential_date):
-    """
-    TODO - Add docstring
-    """
-
-    try:
-        # Disabled fuzzy to avoid picking up dates in things like descriptions etc.
-        parse(potential_date, fuzzy=False)
-        return True
-    except ValueError:
-        return False
