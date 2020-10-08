@@ -865,7 +865,6 @@ def create_entities(client, table_name, data):
                             value = str_to_datetime_object(value)
 
                     setattr(new_entity, attribute_name, value)
-                
                 else:
                     # This means the attribute has a relationship with another object
                     log.debug(f"Entity Info: {entity_info}")
@@ -873,8 +872,6 @@ def create_entities(client, table_name, data):
                         related_object = client.get(entity_info.type, value)
                     except ICATNoObjectError as e:
                         raise BadRequestError(e)
-                    # TODO - Recurse over related_object and get included entities from
-                    # them
                     if entity_info.relType.lower() == "many":
                         related_object = [related_object]
                     setattr(new_entity, attribute_name, related_object)
