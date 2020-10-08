@@ -11,6 +11,7 @@ from icat.exception import (
     ICATValidationError,
     ICATInternalError,
     ICATObjectExistsError,
+    ICATNoObjectError,
 )
 from common.exceptions import (
     AuthenticationError,
@@ -867,7 +868,15 @@ def create_entities(client, table_name, data):
                 
                 else:
                     # This means the attribute has a relationship with another object
-                    related_object = client.get(entity_info.type, value)
+                    log.debug(f"Entity Info: {entity_info}")
+                    try:
+                        related_object = client.get(entity_info.type, value)
+                    except ICATNoObjectError as e:
+                        raise BadRequestError(e)
+                    # TODO - Recurse over related_object and get included entities from
+                    # them
+                    if entity_info.relType.lower() == "many":
+                        related_object = [related_object]
                     setattr(new_entity, attribute_name, related_object)
 
             except ValueError as e:
