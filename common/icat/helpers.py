@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from dateutil.parser import parse
 
 from icat.entity import Entity, EntityList
+from icat.entities import getTypeMap
 from icat.query import Query
 from icat.exception import (
     ICATSessionError,
@@ -451,7 +452,7 @@ class icat_query:
         return [m for n in (field.split(".") for field in includes) for m in n]
 
 
-def get_python_icat_entity_name(client, database_table_name):
+def get_python_icat_entity_name(client, database_table_name, camel_case_output=False):
     """
     From the database table name, this function returns the correctly cased entity name
     relating to the table name
@@ -464,14 +465,23 @@ def get_python_icat_entity_name(client, database_table_name):
     :type client: :class:`icat.client.Client`
     :param database_table_name: Table name (from icatdb) to be interacted with
     :type database_table_name: :class:`str`
+    :param camel_case_output: Flag to signify if the entity name should be returned in
+        camel case format. Enabling this flag gets the entity names from a different
+        place in Python ICAT.
+    :type camel_case_output: :class:`bool`
     :return: Entity name (of type string) in the correct casing ready to be passed into
         Python ICAT
     :raises BadRequestError: If the entity cannot be found
     """
 
+    if camel_case_output:
+        entity_names = getTypeMap(client).keys()
+    else:
+        entity_names = client.getEntityNames()
+
     lowercase_table_name = database_table_name.lower()
-    entity_names = client.getEntityNames()
     python_icat_entity_name = None
+
     for entity_name in entity_names:
         lowercase_name = entity_name.lower()
 
@@ -845,7 +855,9 @@ def create_entities(client, table_name, data):
         data = [data]
 
     for result in data:
-        new_entity = client.new(table_name.lower())
+        new_entity = client.new(
+            get_python_icat_entity_name(client, table_name, camel_case_output=True)
+        )
 
         for attribute_name, value in result.items():
             try:
