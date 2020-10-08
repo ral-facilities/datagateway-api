@@ -498,7 +498,7 @@ def get_python_icat_entity_name(client, database_table_name, camel_case_output=F
     return python_icat_entity_name
 
 
-def str_to_datetime_object(icat_attribute, data):
+def str_to_datetime_object(data):
     """
     Where data is stored as dates in ICAT (which this function determines), convert 
     strings (i.e. user data from PATCH/POST requests) into datetime objects so they can
@@ -510,8 +510,6 @@ def str_to_datetime_object(icat_attribute, data):
     Python 3.6, and it doesn't seem of enough value to mandate 3.7 for a single line of
     code
 
-    :param icat_attribute: Attribute that will be updated with new data
-    :type icat_attribute: Any valid data type that can be stored in Python ICAT
     :param data: Single data value from the request body
     :type data: Data type of the data as per user's request body
     :return: Date converted into a :class:`datetime` object
@@ -548,9 +546,7 @@ def update_attributes(old_entity, new_entity):
         try:
             original_data_attribute = getattr(old_entity, key)
             if isinstance(original_data_attribute, datetime):
-                new_entity[key] = str_to_datetime_object(
-                    original_data_attribute, new_entity[key]
-                )
+                new_entity[key] = str_to_datetime_object(new_entity[key])
         except AttributeError:
             raise BadRequestError(
                 f"Bad request made, cannot find attribute '{key}' within the"
@@ -863,8 +859,9 @@ def create_entities(client, table_name, data):
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
                 if entity_info.relType.lower() == "attribute":
-                    if is_str_a_date(value):
-                        value = str_to_datetime_object(None, value)
+                    if isinstance(value, str):
+                        if is_str_a_date(value):
+                            value = str_to_datetime_object(value)
 
                     setattr(new_entity, attribute_name, value)
                 
