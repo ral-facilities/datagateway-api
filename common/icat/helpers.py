@@ -12,6 +12,7 @@ from icat.exception import (
     ICATInternalError,
     ICATObjectExistsError,
     ICATNoObjectError,
+    ICATParameterError,
 )
 from common.exceptions import (
     AuthenticationError,
@@ -883,7 +884,7 @@ def create_entities(client, table_name, data):
             new_entity.create()
         except (ICATValidationError, ICATInternalError) as e:
             raise PythonICATError(e)
-        except ICATObjectExistsError as e:
+        except (ICATObjectExistsError, ICATParameterError) as e:
             raise BadRequestError(e)
         
         created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
