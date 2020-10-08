@@ -713,6 +713,10 @@ def get_count_with_filters(client, table_name, filters):
     :return: The number of records of the given entity (of type integer), using the
         filters to restrict the result of the query
     """
+    log.info(
+        "Getting the number of results of %s, also using the request's filters",
+        table_name,
+    )
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     query = icat_query(client, selected_entity_name, aggregate="COUNT")
@@ -746,7 +750,9 @@ def get_first_result_with_filters(client, table_name, filters):
     :return: The first record of the given entity, using the filters to restrict the
         result of the query
     """
-    log.info("Getting only first result of an entity, making use of filters in request")
+    log.info(
+        "Getting only first result of %s, making use of filters in request", table_name
+    )
 
     entity_data = get_entity_with_filters(
         client, table_name, filters, return_first_value_only=True
@@ -771,6 +777,7 @@ def update_entities(client, table_name, data_to_update):
     :type data_to_update: :class:`list` or :class:`dict`
     :return: The updated record(s) of the given entity
     """
+    log.info("Updating certain results in %s", table_name)
 
     updated_data = []
 
@@ -804,6 +811,7 @@ def create_entities(client, table_name, data):
     :type data_to_update: :class:`list` or :class:`dict`
     :return: The created record(s) of the given entity
     """
+    log.info("Creating ICAT data for %s", table_name)
 
     created_data = []
 
