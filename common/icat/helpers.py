@@ -463,14 +463,32 @@ def create_entities(client, table_name, data):
 
 def get_facility_cycles_for_instrument(client, instrument_id, filters):
     """
-    TODO - Add docstring
+    Given an Instrument ID, get the Facility Cycles where there are Instruments that
+    have investigations occurring within that cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: A list of Facility Cycles that match the query
     """
     pass
 
 
 def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
     """
-    TODO - Add docstring
+    Given an Instrument ID, get the number of Facility Cycles where there's Instruments
+    that have investigations occurring within that cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The number of Facility Cycles that match the query
     """
     pass
 
@@ -479,7 +497,18 @@ def get_investigations_for_instrument_in_facility_cycle(
     client, instrument_id, facilitycycle_id, filters
 ):
     """
-    TODO - Add docstring
+    Given Instrument and Facility Cycle IDs, get investigations that use the given
+    instrument in the given cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param facilitycycle_id: ID of the facilityCycle from the request
+    :type facilitycycle_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: A list of Investigations that match the query
     """
     pass
 
@@ -488,6 +517,17 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     client, instrument_id, facilitycycle_id, filters
 ):
     """
-    TODO - Add docstring
+    Given Instrument and Facility Cycle IDs, get the number of investigations that use
+    the given instrument in the given cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param facilitycycle_id: ID of the facilityCycle from the request
+    :type facilitycycle_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The number of Investigations that match the query
     """
     pass
