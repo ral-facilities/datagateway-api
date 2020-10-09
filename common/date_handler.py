@@ -30,6 +30,7 @@ class DateHandler:
         except ValueError:
             return False
 
+    @staticmethod
     def str_to_datetime_object(data):
         """
         Convert a string to a `datetime.datetime` object. This is commonly used when
@@ -63,9 +64,6 @@ class DateHandler:
     def datetime_object_to_str(date_obj):
         """
         Convert a datetime object to a string so it can be outputted in JSON
-
-        There's currently no reason to make this function static, but it could be useful
-        in the future if a use case required this functionality.
 
         :param date_obj: Datetime object from data from an ICAT entity
         :type date_obj: :class:`datetime.datetime`
