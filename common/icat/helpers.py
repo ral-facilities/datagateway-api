@@ -741,6 +741,11 @@ def get_first_result_with_filters(client, table_name, filters):
     Using filters in the request, get results of the given entity, but only show the
     first one to the user
 
+    Since only one result will be outputted, inserting a `PythonICATLimitFilter` in the
+    query will make Python ICAT's data fetching more snappy and prevent a 500 being
+    caused by trying to fetch over the number of records limited by ICAT (currently
+    10000).
+
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
@@ -754,6 +759,9 @@ def get_first_result_with_filters(client, table_name, filters):
         "Getting only first result of %s, making use of filters in request", table_name
     )
 
+    limit_filter = PythonICATLimitFilter(1)
+    filters.append(limit_filter)
+
     entity_data = get_entity_with_filters(
         client, table_name, filters, return_first_value_only=True
     )
@@ -761,7 +769,7 @@ def get_first_result_with_filters(client, table_name, filters):
     if not entity_data:
         raise MissingRecordError("No results found")
     else:
-        return entity_data
+        return entity_data[0]
 
 
 def update_entities(client, table_name, data_to_update):
