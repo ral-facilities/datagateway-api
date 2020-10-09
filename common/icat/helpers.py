@@ -24,13 +24,7 @@ from common.exceptions import (
 from common.filter_order_handler import FilterOrderHandler
 from common.date_handler import DateHandler
 from common.constants import Constants
-from common.icat.filters import (
-    PythonICATLimitFilter,
-    PythonICATWhereFilter,
-    PythonICATSkipFilter,
-    PythonICATOrderFilter,
-)
-
+from common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
 
 log = logging.getLogger()
 
@@ -621,10 +615,7 @@ def get_entity_with_filters(client, table_name, filters):
     query = icat_query(client, selected_entity_name)
 
     filter_handler = FilterOrderHandler()
-    filter_handler.add_filters(filters)
-    merge_limit_skip_filters(filter_handler)
-    clear_order_filters(filter_handler.filters)
-    filter_handler.apply_filters(query.query)
+    filter_handler.manage_icat_filters(filters, query.query)
 
     data = query.execute_query(client, True)
 
@@ -632,53 +623,6 @@ def get_entity_with_filters(client, table_name, filters):
         raise MissingRecordError("No results found")
     else:
         return data
-
-
-def merge_limit_skip_filters(filter_handler):
-    """
-    When there are both limit and skip filters in a request, merge them into the limit
-    filter and remove the skip filter from `filter_handler`
-
-    :param filter_handler: The filter handler to apply the filters
-    :param filters: The filters to be applied
-    """
-
-    if any(
-        isinstance(filter, PythonICATSkipFilter) for filter in filter_handler.filters
-    ) and any(
-        isinstance(filter, PythonICATLimitFilter) for filter in filter_handler.filters
-    ):
-        # Merge skip and limit filter into a single limit filter
-        for filter in filter_handler.filters:
-            if isinstance(filter, PythonICATSkipFilter):
-                skip_filter = filter
-                request_skip_value = filter.skip_value
-
-            if isinstance(filter, PythonICATLimitFilter):
-                limit_filter = filter
-
-        if skip_filter and limit_filter:
-            log.info("Merging skip filter with limit filter")
-            limit_filter.skip_value = skip_filter.skip_value
-            log.info("Removing skip filter from list of filters")
-            filter_handler.remove_filter(skip_filter)
-            log.debug("Filters: %s", filter_handler.filters)
-
-
-def clear_order_filters(filters):
-    """
-    Checks if any order filters have been added to the request and resets the variable
-    used to manage which attribute(s) to use for sorting results.
-    
-    A reset is required because Python ICAT overwrites (as opposed to appending to it)
-    the query's order list every time one is added to the query.
-
-    :param filters: The list of filters to be applied to the request
-    :type filters: List of specific implementations :class:`QueryFilter`
-    """
-
-    if any(isinstance(filter, PythonICATOrderFilter) for filter in filters):
-        PythonICATOrderFilter.result_order = []
 
 
 def get_count_with_filters(client, table_name, filters):
@@ -705,10 +649,7 @@ def get_count_with_filters(client, table_name, filters):
     query = icat_query(client, selected_entity_name, aggregate="COUNT")
 
     filter_handler = FilterOrderHandler()
-    filter_handler.add_filters(filters)
-    merge_limit_skip_filters(filter_handler)
-    clear_order_filters(filter_handler.filters)
-    filter_handler.apply_filters(query.query)
+    filter_handler.manage_icat_filters(filters, query.query)
 
     data = query.execute_query(client, True)
 
