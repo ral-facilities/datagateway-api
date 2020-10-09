@@ -10,6 +10,7 @@ from common.filters import (
 )
 from common.exceptions import FilterError
 from common.config import config
+from common.constants import Constants
 
 log = logging.getLogger()
 
@@ -26,7 +27,7 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "ne":
             where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
-            where_filter = self.create_condition(self.field, "like", self.value)
+            where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
@@ -125,7 +126,7 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_properties = config.get_icat_properties()
+        icat_properties = Constants.ICAT_PROPERTIES
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 
