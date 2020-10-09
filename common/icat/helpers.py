@@ -764,7 +764,6 @@ def create_entities(client, table_name, data):
                     setattr(new_entity, attribute_name, value)
                 else:
                     # This means the attribute has a relationship with another object
-                    log.debug(f"Entity Info: {entity_info}")
                     try:
                         related_object = client.get(entity_info.type, value)
                     except ICATNoObjectError as e:
