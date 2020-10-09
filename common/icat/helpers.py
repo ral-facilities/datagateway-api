@@ -146,9 +146,7 @@ class icat_query:
                 " suggesting an invalid argument"
             )
 
-    def execute_query(
-        self, client, return_json_formattable=False, return_first_value_only=False
-    ):
+    def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
         return_json_formattable flag
@@ -161,11 +159,6 @@ class icat_query:
             whether to leave the data in a Python ICAT format (i.e. if it's going to be
             manipulated at some point)
         :type return_json_formattable_data: :class:`bool`
-        :param return_first_value_only: Flag to determine whether the query should only
-            return the first result in the result set. This is used for /findone
-            endpoints so the first result is dealt with before breaking the processing
-            of results and returning the first result only
-        :type return_first_value_only: :class:`bool`
         :return: Data (of type list) from the executed query
         :raises PythonICATError: If an error occurs during query execution
         """
@@ -211,11 +204,6 @@ class icat_query:
                     data.append(dict_result)
                 else:
                     data.append(result)
-
-                # For /findone endpoints - only need to process the first result as the
-                # rest won't be sent in the response
-                if return_first_value_only:
-                    break
 
             return data
         else:
@@ -614,7 +602,7 @@ def update_entity_by_id(client, table_name, id_, new_data):
     return get_entity_by_id(client, table_name, id_, True)
 
 
-def get_entity_with_filters(client, table_name, filters, return_first_value_only=False):
+def get_entity_with_filters(client, table_name, filters):
     """
     Gets all the records of a given entity, based on the filters provided in the request
 
@@ -624,11 +612,6 @@ def get_entity_with_filters(client, table_name, filters, return_first_value_only
     :type table_name: :class:`str`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
-    :param return_first_value_only: Flag to determine whether the query should only
-        return the first result in the result set. This is used for /findone
-        endpoints so the first result is dealt with before breaking the processing
-        of results and returning the first result only
-    :type return_first_value_only: :class:`bool`
     :return: The list of records of the given entity, using the filters to restrict the
         result of the query
     """
@@ -643,7 +626,7 @@ def get_entity_with_filters(client, table_name, filters, return_first_value_only
     clear_order_filters(filter_handler.filters)
     filter_handler.apply_filters(query.query)
 
-    data = query.execute_query(client, True, return_first_value_only)
+    data = query.execute_query(client, True)
 
     if not data:
         raise MissingRecordError("No results found")
@@ -762,9 +745,7 @@ def get_first_result_with_filters(client, table_name, filters):
     limit_filter = PythonICATLimitFilter(1)
     filters.append(limit_filter)
 
-    entity_data = get_entity_with_filters(
-        client, table_name, filters, return_first_value_only=True
-    )
+    entity_data = get_entity_with_filters(client, table_name, filters)
 
     if not entity_data:
         raise MissingRecordError("No results found")
