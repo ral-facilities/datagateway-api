@@ -459,3 +459,35 @@ def create_entities(client, table_name, data):
         created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
 
     return created_data
+
+
+def get_facility_cycles_for_instrument(client, instrument_id, filters):
+    """
+    TODO - Add docstring
+    """
+    pass
+
+
+def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
+    """
+    TODO - Add docstring
+    """
+    pass
+
+
+def get_investigations_for_instrument_in_facility_cycle(
+    client, instrument_id, facilitycycle_id, filters
+):
+    """
+    TODO - Add docstring
+    """
+    pass
+
+
+def get_investigations_for_instrument_in_facility_cycle_count(
+    client, instrument_id, facilitycycle_id, filters
+):
+    """
+    TODO - Add docstring
+    """
+    pass

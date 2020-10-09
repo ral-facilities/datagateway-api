@@ -18,6 +18,10 @@ from common.icat.helpers import (
     get_first_result_with_filters,
     update_entities,
     create_entities,
+    get_facility_cycles_for_instrument,
+    get_facility_cycles_for_instrument_count,
+    get_investigations_for_instrument_in_facility_cycle,
+    get_investigations_for_instrument_in_facility_cycle_count,
 )
 
 from common.config import config
@@ -125,28 +129,35 @@ class PythonICATBackend(Backend):
     def get_facility_cycles_for_instrument_with_filters(
         self, session_id, instrument_id, filters
     ):
-        pass
+        self.client.sessionId = session_id
+        return get_facility_cycles_for_instrument(self.client, instrument_id, filters)
 
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_count_with_filters(
         self, session_id, instrument_id, filters
     ):
-        pass
-        # return get_facility_cycles_for_instrument_count(instrument_id, filters)
+        self.client.sessionId = session_id
+        return get_facility_cycles_for_instrument_count(
+            self.client, instrument_id, filters
+        )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
-        pass
-        # return get_investigations_for_instrument_in_facility_cycle(instrument_id, facilitycycle_id, filters)
+        self.client.sessionId = session_id
+        return get_investigations_for_instrument_in_facility_cycle(
+            self.client, instrument_id, facilitycycle_id, filters
+        )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
-        pass
-        # return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)
+        self.client.sessionId = session_id
+        return get_investigations_for_instrument_in_facility_cycle_count(
+            self.client, instrument_id, facilitycycle_id, filters
+        )
