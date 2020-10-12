@@ -171,7 +171,7 @@ class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
         self.included_filters = []
         log.info("Extracting fields for include filter")
-        self._extract_filter_fields(included_filters["include"])
+        self._extract_filter_fields(included_filters)
 
     def _extract_filter_fields(self, field):
         """

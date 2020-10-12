@@ -233,7 +233,7 @@ class QueryFilterFactory(object):
         elif filter_name == "limit":
             return LimitFilter(filter["limit"])
         elif filter_name == "include":
-            return IncludeFilter(filter)
+            return IncludeFilter(filter["include"])
         elif filter_name == "distinct":
             return DistinctFieldFilter(filter["distinct"])
         else:
