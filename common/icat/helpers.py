@@ -6,7 +6,6 @@ from icat.exception import ICATSessionError, ICATValidationError
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
-    FilterError,
     MissingRecordError,
     PythonICATError,
 )

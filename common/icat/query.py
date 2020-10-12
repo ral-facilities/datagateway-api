@@ -5,7 +5,7 @@ from icat.entity import Entity, EntityList
 from icat.query import Query
 from icat.exception import ICATValidationError
 
-from common.exceptions import PythonICATError
+from common.exceptions import PythonICATError, FilterError
 from common.constants import Constants
 
 log = logging.getLogger()
