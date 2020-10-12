@@ -2,6 +2,7 @@ from functools import wraps
 import logging
 from datetime import datetime, timedelta
 
+from icat.entities import getTypeMap
 from icat.exception import (
     ICATSessionError,
     ICATValidationError,
@@ -13,7 +14,6 @@ from icat.exception import (
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
-    FilterError,
     MissingRecordError,
     PythonICATError,
 )
@@ -320,7 +320,7 @@ def get_count_with_filters(client, table_name, filters):
     )
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
-    query = icat_query(client, selected_entity_name, aggregate="COUNT")
+    query = ICATQuery(client, selected_entity_name, aggregate="COUNT")
 
     filter_handler = FilterOrderHandler()
     filter_handler.manage_icat_filters(filters, query.query)

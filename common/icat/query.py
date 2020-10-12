@@ -6,7 +6,8 @@ from icat.entities import getTypeMap
 from icat.query import Query
 from icat.exception import ICATValidationError, ICATInternalError
 
-from common.exceptions import PythonICATError
+from common.exceptions import PythonICATError, FilterError
+from common.date_handler import DateHandler
 from common.constants import Constants
 
 log = logging.getLogger()
@@ -16,6 +17,43 @@ class ICATQuery:
     def __init__(
         self, client, entity_name, conditions=None, aggregate=None, includes=None
     ):
+        """
+        Create a Query object within Python ICAT 
+
+        :param client: ICAT client containing an authenticated user
+        :type client: :class:`icat.client.Client`
+        :param entity_name: Name of the entity to get data from
+        :type entity_name: :class:`suds.sax.text.Text`
+        :param conditions: Constraints used when an entity is queried
+        :type conditions: :class:`dict`
+        :param aggregate: Name of the aggregate function to apply. Operations such as
+            counting the number of records. See `icat.query.setAggregate` for valid
+            values.
+        :type aggregate: :class:`str`
+        :param includes: List of related entity names to add to the query so related
+            entities (and their data) can be returned with the query result
+        :type includes: :class:`str` or iterable of :class:`str`
+        :return: Query object from Python ICAT
+        :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
+            will be returned as a response
+        """
+
+        try:
+            log.info("Creating ICATQuery for entity: %s", entity_name)
+            self.query = Query(
+                client,
+                entity_name,
+                conditions=conditions,
+                aggregate=aggregate,
+                includes=includes,
+            )
+        except ValueError:
+            raise PythonICATError(
+                "An issue has occurred while creating a Python ICAT Query object,"
+                " suggesting an invalid argument"
+            )
+
+    def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
         return_json_formattable flag
