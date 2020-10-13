@@ -476,7 +476,7 @@ def get_facility_cycles_for_instrument(client, instrument_id, filters):
     """
     # TODO - Add logging
 
-    query = ICATQuery(client, "FacilityCycle")
+    query = ICATQuery(client, "FacilityCycle", aggregate="DISTINCT", isis_endpoint=True)
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq"
