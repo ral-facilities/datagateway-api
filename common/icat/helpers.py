@@ -474,7 +474,41 @@ def get_facility_cycles_for_instrument(client, instrument_id, filters):
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: A list of Facility Cycles that match the query
     """
-    pass
+    # TODO - Add logging
+
+    query = ICATQuery(client, "FacilityCycle")
+
+    instrument_id_check = PythonICATWhereFilter(
+        "facility.instruments.id", instrument_id, "eq"
+    )
+    investigation_instrument_id_check = PythonICATWhereFilter(
+        "facility.instruments.investigationInstruments.instrument.id",
+        instrument_id,
+        "eq",
+    )
+    investigation_start_date_check = PythonICATWhereFilter(
+        "facility.investigations.startDate", "o.startDate", "gte"
+    )
+    investigation_end_date_check = PythonICATWhereFilter(
+        "facility.investigations.startDate", "o.endDate", "lte"
+    )
+
+    facility_cycle_filters = [
+        instrument_id_check,
+        investigation_instrument_id_check,
+        investigation_start_date_check,
+        investigation_end_date_check,
+    ]
+    filters.extend(facility_cycle_filters)
+    filter_handler = FilterOrderHandler()
+    filter_handler.manage_icat_filters(filters, query.query)
+
+    data = query.execute_query(client, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        return data
 
 
 def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
