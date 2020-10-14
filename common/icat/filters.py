@@ -74,8 +74,11 @@ class PythonICATWhereFilter(WhereFilter):
         # Removing quote marks when doing conditions with IN expressions or when a
         # distinct filter is used in a request
         jpql_value = (
-            f"{value}" if operator == "in" or operator == "!=" else f"'{value}'"
+            f"{value}"
+            if operator == "in" or operator == "!=" or "o." in str(value)
+            else f"'{value}'"
         )
+
         conditions[attribute_name] = f"{operator} {jpql_value}"
         log.debug("Conditions in ICAT where filter, %s", conditions)
         return conditions
