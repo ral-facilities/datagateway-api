@@ -538,7 +538,7 @@ def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
 
 
 def get_investigations_for_instrument_in_facility_cycle(
-    client, instrument_id, facilitycycle_id, filters
+    client, instrument_id, facilitycycle_id, filters, count_query=False
 ):
     """
     Given Instrument and Facility Cycle IDs, get investigations that use the given
@@ -552,9 +552,16 @@ def get_investigations_for_instrument_in_facility_cycle(
     :type facilitycycle_id: :class:`int`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
+    :param count_query: Flag to determine if the query in this function should be used
+        as a count query. Used for 
+        `get_investigations_for_instrument_in_facility_cycle_count()`
+    :type count_query: :class:`bool`
     :return: A list of Investigations that match the query
     """
-    pass
+    query_aggregate = "COUNT" if count_query else None
+    query = ICATQuery(
+        client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
+    )
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(
@@ -574,4 +581,6 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The number of Investigations that match the query
     """
-    pass
+    return get_investigations_for_instrument_in_facility_cycle(
+        client, instrument_id, facilitycycle_id, filters, count_query=True
+    )[0]
