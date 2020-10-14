@@ -482,7 +482,7 @@ def get_facility_cycles_for_instrument(client, instrument_id, filters):
         "facility.instruments.id", instrument_id, "eq"
     )
     investigation_instrument_id_check = PythonICATWhereFilter(
-        "facility.instruments.investigationInstruments.instrument.id",
+        "facility.investigations.investigationInstruments.instrument.id",
         instrument_id,
         "eq",
     )
