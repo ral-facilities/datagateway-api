@@ -1,8 +1,12 @@
+import logging
+
 from common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATSkipFilter,
     PythonICATOrderFilter,
 )
+
+log = logging.getLogger()
 
 
 class FilterOrderHandler(object):
