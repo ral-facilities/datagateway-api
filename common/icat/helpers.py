@@ -461,7 +461,9 @@ def create_entities(client, table_name, data):
     return created_data
 
 
-def get_facility_cycles_for_instrument(client, instrument_id, filters):
+def get_facility_cycles_for_instrument(
+    client, instrument_id, filters, count_query=False
+):
     """
     Given an Instrument ID, get the Facility Cycles where there are Instruments that
     have investigations occurring within that cycle
@@ -472,11 +474,17 @@ def get_facility_cycles_for_instrument(client, instrument_id, filters):
     :type instrument_id: :class:`int`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
+    :param count_query: Flag to determine if the query in this function should be used
+        as a count query. Used for `get_facility_cycles_for_instrument_count()`
+    :type count_query: :class:`bool`
     :return: A list of Facility Cycles that match the query
     """
     # TODO - Add logging
 
-    query = ICATQuery(client, "FacilityCycle", aggregate="DISTINCT", isis_endpoint=True)
+    query_aggregate = "COUNT" if count_query else None
+    query = ICATQuery(
+        client, "FacilityCycle", aggregate=query_aggregate, isis_endpoint=True
+    )
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq"
@@ -524,7 +532,9 @@ def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The number of Facility Cycles that match the query
     """
-    pass
+    return get_facility_cycles_for_instrument(
+        client, instrument_id, filters, count_query=True
+    )[0]
 
 
 def get_investigations_for_instrument_in_facility_cycle(
