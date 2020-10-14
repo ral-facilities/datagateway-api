@@ -563,6 +563,40 @@ def get_investigations_for_instrument_in_facility_cycle(
         client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
     )
 
+    instrument_id_check = PythonICATWhereFilter(
+        "facility.instruments.id", instrument_id, "eq"
+    )
+    investigation_instrument_id_check = PythonICATWhereFilter(
+        "investigationInstruments.instrument.id", instrument_id, "eq",
+    )
+    facility_cycle_id_check = PythonICATWhereFilter(
+        "facility.facilityCycles.id", facilitycycle_id, "eq"
+    )
+    facility_cycle_start_date_check = PythonICATWhereFilter(
+        "facility.facilityCycles.startDate", "o.startDate", "lte"
+    )
+    facility_cycle_end_date_check = PythonICATWhereFilter(
+        "facility.facilityCycles.endDate", "o.startDate", "gte"
+    )
+
+    required_filters = [
+        instrument_id_check,
+        investigation_instrument_id_check,
+        facility_cycle_id_check,
+        facility_cycle_start_date_check,
+        facility_cycle_end_date_check,
+    ]
+    filters.extend(required_filters)
+    filter_handler = FilterOrderHandler()
+    filter_handler.manage_icat_filters(filters, query.query)
+
+    data = query.execute_query(client, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        return data
+
 
 def get_investigations_for_instrument_in_facility_cycle_count(
     client, instrument_id, facilitycycle_id, filters
