@@ -479,7 +479,7 @@ def get_facility_cycles_for_instrument(
     :type count_query: :class:`bool`
     :return: A list of Facility Cycles that match the query
     """
-    # TODO - Add logging
+    log.info("Getting a list of facility cycles from the specified instrument for ISIS")
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
@@ -532,6 +532,9 @@ def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The number of Facility Cycles that match the query
     """
+    log.info(
+        "Getting the number of facility cycles from the specified instrument for ISIS"
+    )
     return get_facility_cycles_for_instrument(
         client, instrument_id, filters, count_query=True
     )[0]
@@ -558,6 +561,11 @@ def get_investigations_for_instrument_in_facility_cycle(
     :type count_query: :class:`bool`
     :return: A list of Investigations that match the query
     """
+    log.info(
+        "Getting a list of investigations from the specified instrument and facility"
+        " cycle, for ISIS"
+    )
+
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
         client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
@@ -615,6 +623,10 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The number of Investigations that match the query
     """
+    log.info(
+        "Getting the number of investigations from the specified instrument and"
+        " facility cycle, for ISIS"
+    )
     return get_investigations_for_instrument_in_facility_cycle(
         client, instrument_id, facilitycycle_id, filters, count_query=True
     )[0]
