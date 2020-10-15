@@ -481,7 +481,7 @@ def get_facility_cycles_for_instrument(
     """
     # TODO - Add logging
 
-    query_aggregate = "COUNT" if count_query else None
+    query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
         client, "FacilityCycle", aggregate=query_aggregate, isis_endpoint=True
     )
@@ -558,7 +558,7 @@ def get_investigations_for_instrument_in_facility_cycle(
     :type count_query: :class:`bool`
     :return: A list of Investigations that match the query
     """
-    query_aggregate = "COUNT" if count_query else None
+    query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
         client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
     )
