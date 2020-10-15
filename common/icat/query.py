@@ -39,6 +39,12 @@ class ICATQuery:
         :param includes: List of related entity names to add to the query so related
             entities (and their data) can be returned with the query result
         :type includes: :class:`str` or iterable of :class:`str`
+        :param isis_endpoint: Flag to determine if the instance will be used for an ISIS
+            specific endpoint. These endpoints require the use of the DISTINCT aggregate
+            which is different to the distinct field filter implemented in this API, so
+            this flag prevents code related to the filter from executing (because it
+            doesn't need to be on a DISTINCT aggregate)
+        :type isis_endpoint: :class:`bool`
         :return: Query object from Python ICAT
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
