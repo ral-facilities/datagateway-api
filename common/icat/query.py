@@ -99,6 +99,7 @@ class ICATQuery:
         if self.query.aggregate is not None:
             if "COUNT" in self.query.aggregate:
                 count_query = True
+                log.debug("This ICATQuery is used for COUNT purposes")
 
         if (
             self.query.aggregate == "DISTINCT"

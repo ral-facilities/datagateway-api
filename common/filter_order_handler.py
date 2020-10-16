@@ -49,6 +49,7 @@ class FilterOrderHandler(object):
         When there are both limit and skip filters in a request, merge them into the
         limit filter and remove the skip filter from the instance
         """
+        log.info("Merging a PythonICATSkipFilter and PythonICATLimitFilter together")
 
         if any(
             isinstance(icat_filter, PythonICATSkipFilter)
@@ -81,6 +82,7 @@ class FilterOrderHandler(object):
         A reset is required because Python ICAT overwrites (as opposed to appending to
         it) the query's order list every time one is added to the query.
         """
+        log.debug("Resetting result order for the order filter")
 
         if any(
             isinstance(icat_filter, PythonICATOrderFilter)

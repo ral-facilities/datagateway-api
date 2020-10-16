@@ -47,7 +47,7 @@ class PythonICATWhereFilter(WhereFilter):
 
         log.debug("ICAT Where Filter: %s", where_filter)
         try:
-            log.info("Adding ICAT where filter to query")
+            log.info("Adding ICAT where filter (for %s) to query", self.value)
             query.addConditions(where_filter)
         except ValueError:
             raise FilterError(
@@ -124,7 +124,7 @@ class PythonICATOrderFilter(OrderFilter):
         log.debug("Result Order: %s", PythonICATOrderFilter.result_order)
 
         try:
-            log.info("Adding order filter")
+            log.info("Adding order filter (for %s)", self.field)
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
             # Typically either invalid attribute(s) or attribute(s) contains 1-many
@@ -165,6 +165,7 @@ def icat_set_limit(query, skip_number, limit_number):
     """
     try:
         query.setLimit((skip_number, limit_number))
+        log.debug("Current limit/skip values assigned to query: %s", query.limit)
     except TypeError as e:
         # Not a two element tuple as managed by Python ICAT's setLimit()
         raise FilterError(e)
@@ -192,6 +193,7 @@ class PythonICATIncludeFilter(IncludeFilter):
         :type field: :class:`str` or :class:`list` or :class:`dict`
         """
         if isinstance(field, str):
+            log.debug("Adding %s to include filter", field)
             self.included_filters.append(field)
         elif isinstance(field, dict):
             for key, value in field.items():

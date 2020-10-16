@@ -46,6 +46,7 @@ class PythonICATBackend(Backend):
         )
 
     def login(self, credentials):
+        log.info("Logging in to get session ID")
         # Client object is re-created here so session IDs aren't overwritten in the
         # database
         self.client = icat.client.Client(
@@ -65,11 +66,13 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     def get_session_details(self, session_id):
+        log.info("Getting session details for session: %s", session_id)
         self.client.sessionId = session_id
         return get_session_details_helper(self.client)
 
     @requires_session_id
     def refresh(self, session_id):
+        log.info("Refreshing session: %s", session_id)
         self.client.sessionId = session_id
         return refresh_client_session(self.client)
 
