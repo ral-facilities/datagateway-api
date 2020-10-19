@@ -100,7 +100,6 @@ class ICATQuery:
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
-            log.debug(f"Distinct Attributes: {distinct_attributes}")
             if distinct_attributes != []:
                 mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
                     distinct_attributes, flat_query_includes
