@@ -7,7 +7,7 @@ from random import randrange, seed, choice
 from faker import Faker
 
 from common.database import models
-from common.session_manager import session_manager
+from common.database.session_manager import session_manager
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

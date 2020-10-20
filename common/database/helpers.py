@@ -21,7 +21,7 @@ from common.database.models import (
     FACILITY,
     SESSION,
 )
-from common.session_manager import session_manager
+from common.database.session_manager import session_manager
 from common.filter_order_handler import FilterOrderHandler
 from common.config import config
 

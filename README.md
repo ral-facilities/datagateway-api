@@ -84,7 +84,8 @@ This is illustrated below.
     │   │   ├── backend.py
     │   │   ├── filters.py
     │   │   ├── helpers.py
-    │   │   └── models.py
+    │   │   ├── models.py
+    │   │   └── session_manager.py
     │   ├── icat
     │   ├── backends.py
     │   ├── constants.py
