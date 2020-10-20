@@ -1,7 +1,7 @@
 import datetime
 from unittest import TestCase
 
-from common.models.db_models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
+from common.database.models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
 
 
 class TestEntityHelper(TestCase):

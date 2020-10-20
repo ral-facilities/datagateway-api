@@ -13,9 +13,7 @@ from common.exceptions import (
     BadRequestError,
     MultipleIncludeError,
 )
-from common.models import db_models
-from common.models.db_models import (
-    INVESTIGATIONUSER,
+from common.database.models import (
     INVESTIGATION,
     INSTRUMENT,
     FACILITYCYCLE,

@@ -6,7 +6,7 @@ from random import randrange, seed, choice
 
 from faker import Faker
 
-from common.models import db_models
+from common.database import models
 from common.session_manager import session_manager
 
 parser = argparse.ArgumentParser()
@@ -123,7 +123,7 @@ class FacilityGenerator(Generator):
     amount = 1
 
     def generate(self):
-        facility = db_models.FACILITY()
+        facility = models.FACILITY()
         facility.CREATE_ID = "user"
         facility.MOD_ID = "user"
         facility.MOD_TIME = get_date_time()
@@ -143,7 +143,7 @@ class DataCollectionGenerator(Generator):
 
     @staticmethod
     def generate_data_collection(i):
-        data_collection = db_models.DATACOLLECTION()
+        data_collection = models.DATACOLLECTION()
         apply_common_attributes(data_collection, i)
         post_entity(data_collection)
 
@@ -157,7 +157,7 @@ class ApplicationGenerator(Generator):
 
     @staticmethod
     def generate_applications(i):
-        application = db_models.APPLICATION()
+        application = models.APPLICATION()
         apply_common_attributes(application, i)
         application.VERSION = randrange(1, 4)
         post_entity(application)
@@ -172,7 +172,7 @@ class DatasetTypeGenerator(Generator):
 
     @staticmethod
     def generate_dataset_type(i):
-        dataset_type = db_models.DATASETTYPE()
+        dataset_type = models.DATASETTYPE()
         apply_common_attributes(dataset_type, i)
         post_entity(dataset_type)
 
@@ -186,7 +186,7 @@ class FacilityCycleGenerator(Generator):
 
     @staticmethod
     def generate_facility_cycle(i):
-        facility_cycle = db_models.FACILITYCYCLE()
+        facility_cycle = models.FACILITYCYCLE()
         apply_common_attributes(facility_cycle, i)
         # overwrite the name with a more suitable one
         k = i % 4 + 1  # This will give a repeated 1, 2, 3, 4 for 4 cycles per year
@@ -206,7 +206,7 @@ class SampleTypeGenerator(Generator):
 
     @staticmethod
     def generate_sample_type(i):
-        sample_type = db_models.SAMPLETYPE()
+        sample_type = models.SAMPLETYPE()
         apply_common_attributes(sample_type, i)
         sample_type.MOLECULARFORMULA = randrange(43, 13323)
         sample_type.SAFETYINFORMATION = faker.text()
@@ -222,7 +222,7 @@ class InstrumentGenerator(Generator):
 
     @staticmethod
     def generate_instruments(i):
-        instrument = db_models.INSTRUMENT()
+        instrument = models.INSTRUMENT()
         apply_common_attributes(instrument, i)
         instrument.FULLNAME = faker.text()
         instrument.URL = faker.url()
@@ -239,7 +239,7 @@ class UserGenerator(Generator):
 
     @staticmethod
     def generate_users(i):
-        user = db_models.USER()
+        user = models.USER()
         apply_common_attributes(user, i)
         user.EMAIL = faker.ascii_email()
         user.NAME = faker.first_name() + f"{i}"
@@ -257,7 +257,7 @@ class DatafileFormatGenerator(Generator):
 
     @staticmethod
     def generate_datafile_format(i):
-        datafile_format = db_models.DATAFILEFORMAT()
+        datafile_format = models.DATAFILEFORMAT()
         apply_common_attributes(datafile_format, i)
         datafile_format.VERSION = randrange(1, 14)
         post_entity(datafile_format)
@@ -272,7 +272,7 @@ class InvestigationTypeGenerator(Generator):
 
     @staticmethod
     def generate_investigation_type(i):
-        investigation_type = db_models.INVESTIGATIONTYPE()
+        investigation_type = models.INVESTIGATIONTYPE()
         apply_common_attributes(investigation_type, i)
         post_entity(investigation_type)
 
@@ -286,7 +286,7 @@ class GroupingGenerator(Generator):
 
     @staticmethod
     def generate_groupings(i):
-        grouping = db_models.GROUPING()
+        grouping = models.GROUPING()
         apply_common_attributes(grouping, i)
         post_entity(grouping)
 
@@ -300,7 +300,7 @@ class InvestigationGenerator(Generator):
 
     @staticmethod
     def generate_investigations(i):
-        investigation = db_models.INVESTIGATION()
+        investigation = models.INVESTIGATION()
         apply_common_attributes(investigation, i)
         k = i % 4 + 1
         year = 2000 + (i % 80) // 4
@@ -323,7 +323,7 @@ class InvestigationUserGenerator(Generator):
 
     @staticmethod
     def generate_investigation_user(i):
-        investigation_user = db_models.INVESTIGATIONUSER()
+        investigation_user = models.INVESTIGATIONUSER()
         apply_common_attributes(investigation_user, i)
         investigation_user.ROLE = ["PI", "CI"][randrange(2)]
         investigation_user.INVESTIGATION_ID = i
@@ -340,7 +340,7 @@ class InstrumentScientistGenerator(Generator):
 
     @staticmethod
     def generate_instrument_scientist(i):
-        instrument_scientist = db_models.INSTRUMENTSCIENTIST()
+        instrument_scientist = models.INSTRUMENTSCIENTIST()
         apply_common_attributes(instrument_scientist, i)
         instrument_scientist.INSTRUMENT_ID = i
         instrument_scientist.USER_ID = randrange(1, UserGenerator.amount)
@@ -358,7 +358,7 @@ class InvestigationInstrumentGenerator(Generator):
 
     @staticmethod
     def generate_investigation_instrument(i):
-        investigation_instrument = db_models.INVESTIGATIONINSTRUMENT()
+        investigation_instrument = models.INVESTIGATIONINSTRUMENT()
         apply_common_attributes(investigation_instrument, i)
         investigation_instrument.INVESTIGATION_ID = i
         investigation_instrument.INSTRUMENT_ID = randrange(1, 15)
@@ -374,7 +374,7 @@ class SampleGenerator(Generator):
 
     @staticmethod
     def generate_sample(i):
-        sample = db_models.SAMPLE()
+        sample = models.SAMPLE()
         apply_common_attributes(sample, i)
         sample.INVESTIGATION_ID = i
         sample.SAMPLETYPE_ID = randrange(1, SampleTypeGenerator.amount)
@@ -390,7 +390,7 @@ class UserGroupGenerator(Generator):
 
     @staticmethod
     def generate_user_groups(i):
-        user_group = db_models.USERGROUP()
+        user_group = models.USERGROUP()
         apply_common_attributes(user_group, i)
         user_group.GROUP_ID = randrange(1, GroupingGenerator.amount)
         user_group.USER_ID = i
@@ -406,7 +406,7 @@ class StudyGenerator(Generator):
 
     @staticmethod
     def generate_studies(i):
-        study = db_models.STUDY()
+        study = models.STUDY()
         apply_common_attributes(study, i)
         study.STARTDATE = get_start_date(i)
         study.STATUS = randrange(2)
@@ -423,7 +423,7 @@ class InvestigationGroupGenerator(Generator):
 
     @staticmethod
     def generate_investigation_group(i):
-        investigation_group = db_models.INVESTIGATIONGROUP()
+        investigation_group = models.INVESTIGATIONGROUP()
         apply_common_attributes(investigation_group, i)
         investigation_group.ROLE = faker.text() + str(i)
         investigation_group.GROUP_ID = randrange(1, GroupingGenerator.amount)
@@ -440,7 +440,7 @@ class KeywordGenerator(Generator):
 
     @staticmethod
     def generate_keyword(i):
-        keyword = db_models.KEYWORD()
+        keyword = models.KEYWORD()
         apply_common_attributes(keyword, i)
         keyword.NAME = faker.word() + str(i)
         keyword.INVESTIGATION_ID = randrange(1, InvestigationGenerator.amount)
@@ -456,7 +456,7 @@ class PublicationGenerator(Generator):
 
     @staticmethod
     def generate_publication(i):
-        publication = db_models.PUBLICATION()
+        publication = models.PUBLICATION()
         apply_common_attributes(publication, i)
         publication.FULLREFERENCE = faker.text()
         publication.REPOSITORY = faker.uri()
@@ -475,7 +475,7 @@ class ParameterTypeGenerator(Generator):
 
     @staticmethod
     def generate_parameter_type(i):
-        parameter_type = db_models.PARAMETERTYPE()
+        parameter_type = models.PARAMETERTYPE()
         apply_common_attributes(parameter_type, i)
         parameter_type.APPLICABLETODATACOLLECTION = randrange(2)
         parameter_type.APPLICABLETODATAFILE = randrange(2)
@@ -486,7 +486,7 @@ class ParameterTypeGenerator(Generator):
         parameter_type.MAXIMUMNUMERICVALUE = randrange(10)
         parameter_type.UNITS = f"unit {i}"
         parameter_type.UNITSFULLNAME = faker.word()
-        parameter_type.VALUETYPE = choice(list(db_models.PARAMETERTYPE.ValueTypeEnum))
+        parameter_type.VALUETYPE = choice(list(models.PARAMETERTYPE.ValueTypeEnum))
         parameter_type.VERIFIED = randrange(2)
         post_entity(parameter_type)
 
@@ -500,7 +500,7 @@ class InvestigationParameterGenerator(Generator):
 
 
 def generate_investigation_parameter(i):
-    investigation_parameter = db_models.INVESTIGATIONPARAMETER()
+    investigation_parameter = models.INVESTIGATIONPARAMETER()
     apply_common_attributes(investigation_parameter, i)
     apply_common_parameter_attributes(investigation_parameter, i)
     investigation_parameter.INVESTIGATION_ID = i
@@ -519,7 +519,7 @@ class ShiftGenerator(Generator):
 
     @staticmethod
     def generate_shift(i):
-        shift = db_models.SHIFT()
+        shift = models.SHIFT()
         apply_common_attributes(shift, i)
         shift.COMMENT = faker.text()
         shift.INVESTIGATION_ID = i
@@ -535,7 +535,7 @@ class StudyInvestigationGenerator(Generator):
 
     @staticmethod
     def generate_study_investigation(i):
-        study_investigation = db_models.STUDYINVESTIGATION()
+        study_investigation = models.STUDYINVESTIGATION()
         apply_common_attributes(study_investigation, i)
         study_investigation.INVESTIGATION_ID = i
         study_investigation.STUDY_ID = randrange(1, StudyGenerator.amount)
@@ -551,7 +551,7 @@ class DatasetGenerator(Generator):
 
     @staticmethod
     def generate_dataset(i):
-        dataset = db_models.DATASET()
+        dataset = models.DATASET()
         apply_common_attributes(dataset, i)
         dataset.COMPLETE = randrange(2)
         dataset.LOCATION = faker.file_path()
@@ -576,7 +576,7 @@ class DatasetParameterGenerator(Generator):
 
     @staticmethod
     def generate_dataset_parameter(i):
-        dataset_param = db_models.DATASETPARAMETER()
+        dataset_param = models.DATASETPARAMETER()
         apply_common_attributes(dataset_param, i)
         apply_common_parameter_attributes(dataset_param, i)
         dataset_param.DATASET_ID = randrange(1, DatasetGenerator.amount)
@@ -593,7 +593,7 @@ class DatafileGenerator(Generator):
 
     @staticmethod
     def generate_datafile(i):
-        datafile = db_models.DATAFILE()
+        datafile = models.DATAFILE()
         apply_common_attributes(datafile, i % 19)
         datafile.CHECKSUM = faker.md5()
         datafile.DATAFILECREATETIME = datafile.CREATE_TIME
@@ -615,7 +615,7 @@ class PermissibleStringValueGenerator(Generator):
 
 
 def generate_permissible_string_value(i):
-    permissible_string_value = db_models.PERMISSIBLESTRINGVALUE()
+    permissible_string_value = models.PERMISSIBLESTRINGVALUE()
     apply_common_attributes(permissible_string_value, i)
     permissible_string_value.VALUE = f"value {i}"
     permissible_string_value.PARAMETERTYPE_ID = i
@@ -633,7 +633,7 @@ class DataCollectionParameterGenerator(Generator):
 
     @staticmethod
     def generate_data_collection_parameter(i):
-        datacollection_parameter = db_models.DATACOLLECTIONPARAMETER()
+        datacollection_parameter = models.DATACOLLECTIONPARAMETER()
         apply_common_attributes(datacollection_parameter, i)
         apply_common_parameter_attributes(datacollection_parameter, i)
         datacollection_parameter.DATACOLLECTION_ID = i
@@ -652,7 +652,7 @@ class SampleParameterGenerator(Generator):
 
     @staticmethod
     def generate_sample_parameter(i):
-        sample_parameter = db_models.SAMPLEPARAMETER()
+        sample_parameter = models.SAMPLEPARAMETER()
         apply_common_attributes(sample_parameter, i)
         apply_common_parameter_attributes(sample_parameter, i)
         sample_parameter.SAMPLE_ID = i
@@ -669,7 +669,7 @@ class DatafileParameterGenerator(Generator):
 
     @staticmethod
     def generate_datafile_parameter(i):
-        datafile_param = db_models.DATAFILEPARAMETER()
+        datafile_param = models.DATAFILEPARAMETER()
         apply_common_attributes(datafile_param, i)
         apply_common_parameter_attributes(datafile_param, i)
         datafile_param.DATAFILE_ID = i

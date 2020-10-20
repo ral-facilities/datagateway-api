@@ -16,7 +16,7 @@ from common.database.helpers import (
     requires_session_id,
 )
 from common.helpers import queries_records
-from common.models.db_models import SESSION
+from common.database.models import SESSION
 import uuid
 from common.exceptions import AuthenticationError
 import datetime

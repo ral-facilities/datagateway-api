@@ -83,10 +83,9 @@ This is illustrated below.
     │   ├── database
     │   │   ├── backend.py
     │   │   ├── filters.py
-    │   │   └── helpers.py
+    │   │   ├── helpers.py
+    │   │   └── models.py
     │   ├── icat
-    │   ├── models
-    │   │   └── db_models.py
     │   ├── backends.py
     │   ├── constants.py
     │   ├── exceptions.py
@@ -134,7 +133,7 @@ session endpoint.
 
 
 #### Mapped classes
-The classes mapped from the database are stored in `/common/models/db_models.py`. Each model was 
+The classes mapped from the database are stored in `/common/database/models.py`. Each model was 
 automatically generated using sqlacodegen. A class `EntityHelper` is defined so that each model may
 inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities 
 and updating them, in a form easily converted to JSON.  

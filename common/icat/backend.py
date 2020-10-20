@@ -26,7 +26,6 @@ from common.icat.helpers import (
 
 from common.config import config
 from common.exceptions import AuthenticationError
-from common.models.db_models import SESSION
 
 log = logging.getLogger()
 

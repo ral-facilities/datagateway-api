@@ -1,4 +1,4 @@
-from common.models.db_models import (
+from common.database.models import (
     APPLICATION,
     DATACOLLECTIONDATAFILE,
     DATACOLLECTIONPARAMETER,
