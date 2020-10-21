@@ -101,11 +101,11 @@ def initialise_spec(spec):
                 },
             },
             "examples": {
-                "eq": {"value": [{"ID": {"eq": 1}}]},
-                "like": {"value": [{"NAME": {"like": "dog"}}]},
-                "gte": {"value": [{"ID": {"gte": 50}}]},
-                "lte": {"value": [{"ID": {"lte": 50}}]},
-                "in": {"value": [{"ID": {"in": [1, 2, 3]}}]},
+                "eq": {"value": {"id": {"eq": 1}}},
+                "like": {"value": [{"name": {"like": "dog"}}]},
+                "gte": {"value": [{"id": {"gte": 50}}]},
+                "lte": {"value": [{"id": {"lte": 50}}]},
+                "in": {"value": [{"id": {"in": [1, 2, 3]}}]},
             },
         },
     )
@@ -118,7 +118,7 @@ def initialise_spec(spec):
             "name": "order",
             "description": "Apply order filters to the query. Given a field and direction, order the returned entities.",
             "schema": {"type": "array", "items": {"type": "string"}},
-            "examples": {"asc": {"value": ["ID asc"]}, "desc": {"value": ["ID desc"]}},
+            "examples": {"asc": {"value": ["id asc"]}, "desc": {"value": ["id desc"]}},
         },
     )
 
