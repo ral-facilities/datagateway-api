@@ -175,23 +175,22 @@ ID can be obtained by sending a post request to `/sessions/`. All endpoint metho
 require a session id are decorated with `@requires_session_id`
 
 
-
 #### Generating the swagger spec: `openapi.yaml`
-The swagger generation script is located in `/src/swagger/swagger_generator.py`. The
-script will only run when the config option `generate_swagger` is set to true in
-`config.json`. The generator decorates the first endpoint resource class in it's module
-to get the name of the entity. It then creates the correct paths using the name of the
-entity and outputs the swagger spec to `openapi.yaml` 
+When the config option `generate_swagger` is set to true in `config.json`, a YAML
+file defining the API using OpenAPI standards will be created at
+`src/swagger/openapi.yaml`. [apispec](https://apispec.readthedocs.io/en/latest/) is used
+to help with this, with an `APISpec()` object created in `src/main.py` which is added to
+(using `APISpec.path()`) when the endpoints are created for Flask. These paths are 
+iterated over and ordered alphabetically, to ensure `openapi.yaml` only changes if there
+have been changes to the Swagger docs of the API; without that code, Git will detect
+changes on that file everytime startup occurs (preventing a clean development repo). The
+contents of the `APISpec` object are written to a YAML file and is used when the user
+goes to the configured (root) page in their browser.
 
-Example of the decorator:
-```python
-@swagger_gen.resource_wrapper()
-class DataCollectionDatasets(Resource):
-    @requires_session_id
-    @queries_records
-    def get(self):
-        return get_rows_by_filter(DATACOLLECTIONDATASET, get_filters_from_query_string()), 200
-```
+The endpoint related files in `src/resources/` contain `__doc__` which have the Swagger
+docs for each type of endpoint. `src/resources/swagger/` contain code to aid Swagger doc
+generation, with a plugin (`RestfulPlugin`) created for `apispec` to extract Swagger
+documentation from `flask-restful` functions.
 
 
 ## Running Tests
