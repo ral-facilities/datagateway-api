@@ -10,6 +10,8 @@ ICAT API to interface with the Data Gateway
       - [Main](#main)
       - [Endpoints](#endpoints)
       - [Mapped classes](#mapped-classes)
+      - [Database Generator](#database-generator)
+      - [Class Diagrams](#class-diagrams-for-this-module)
       - [Querying and filtering](#querying-and-filtering)
       - [Swagger Generation](#generating-the-swagger-spec-openapiyaml)
       - [Authentication](#authentication)
@@ -25,8 +27,12 @@ The required python libraries:
    - [SQLAlchemy](https://www.sqlalchemy.org/)    
    - [flask-restful](https://github.com/flask-restful/flask-restful/)  
    - [pymysql](https://pymysql.readthedocs.io/en/latest/)  
-   - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
-   - [pip-tools](https://github.com/jazzband/pip-tools) (For generating requirements.txt)
+   - [apispec](https://apispec.readthedocs.io/en/latest/) (For the swagger generation)
+   - [pip-tools](https://github.com/jazzband/pip-tools) (For generating
+    requirements.txt)
+   - [python-icat](https://python-icat.readthedocs.io/en/stable) (For ICAT backend)
+    
+
 
 ## Setup and running the API   
 The database connection needs to be set up first. This is set in config.json, an example
@@ -196,7 +202,7 @@ documentation from `flask-restful` functions.
 ## Running Tests
 To run the tests use `python -m unittest discover`
 
-## Linter
+## Code Formatter
 When writing code for this repository, [Black](https://black.readthedocs.io/en/stable/)
 is used as the code linter/formatter to ensure the code is kept Pythonic. Installing
 the dev requirements will ensure this package is installed. This repository uses the

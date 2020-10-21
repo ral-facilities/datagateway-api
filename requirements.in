@@ -4,4 +4,4 @@ pymysql == 0.9.3
 flask-cors == 3.0.8
 apispec == 3.3.0
 flask-swagger-ui == 3.25.0
-pyyaml == 5.1.2
+python-icat == 0.17.0
