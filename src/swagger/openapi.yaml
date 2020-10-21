@@ -69,10 +69,10 @@ components:
       examples:
         asc:
           value:
-          - ID asc
+          - id asc
         desc:
           value:
-          - ID desc
+          - id desc
       in: query
       name: order
       schema:
@@ -88,31 +88,44 @@ components:
         type: integer
     WHERE_FILTER:
       description: Apply where filters to the query. The possible operators are like,
-        gte, lte, in and eq
+        gte, lte, in and eq. Please modify the examples before executing a request
+        if you are having issues with the example values.
       examples:
         eq:
           value:
-          - ID:
+          - id:
               eq: 1
+        gt:
+          value:
+          - id:
+              gt: 10
         gte:
           value:
-          - ID:
+          - id:
               gte: 50
         in:
           value:
-          - ID:
+          - id:
               in:
               - 1
               - 2
               - 3
         like:
           value:
-          - NAME:
+          - name:
               like: dog
+        lt:
+          value:
+          - id:
+              lt: 10
         lte:
           value:
-          - ID:
+          - id:
               lte: 50
+        ne:
+          value:
+          - id:
+              ne: 1
       in: query
       name: where
       schema:
@@ -132,11 +145,25 @@ components:
               title: Equality
               type: object
             - properties:
-                gte:
+                ne:
+                  oneOf:
+                  - type: string
+                  - type: number
+                  - type: integer
+                  - type: boolean
+              title: Inequality
+              type: object
+            - properties:
+                like:
+                  type: string
+              title: Substring equality
+              type: object
+            - properties:
+                lt:
                   oneOf:
                   - type: number
                   - type: integer
-              title: Greater than or equal
+              title: Less than
               type: object
             - properties:
                 lte:
@@ -146,9 +173,18 @@ components:
               title: Less than or equal
               type: object
             - properties:
-                like:
-                  type: string
-              title: Substring equality
+                gt:
+                  oneOf:
+                  - type: number
+                  - type: integer
+              title: Greater than
+              type: object
+            - properties:
+                gte:
+                  oneOf:
+                  - type: number
+                  - type: integer
+              title: Greater than or equal
               type: object
             - properties:
                 in:
@@ -1871,7 +1907,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -1895,7 +1931,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -1924,7 +1960,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2122,7 +2158,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2146,7 +2182,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2175,7 +2211,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2375,7 +2411,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2399,7 +2435,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2428,7 +2464,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2629,7 +2665,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2653,7 +2689,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2682,7 +2718,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2882,7 +2918,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2906,7 +2942,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -2935,7 +2971,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3133,7 +3169,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3157,7 +3193,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3186,7 +3222,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3384,7 +3420,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3408,7 +3444,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3437,7 +3473,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3636,7 +3672,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3660,7 +3696,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3689,7 +3725,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3887,7 +3923,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3911,7 +3947,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -3940,7 +3976,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4139,7 +4175,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4163,7 +4199,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4192,7 +4228,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4390,7 +4426,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4414,7 +4450,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4443,7 +4479,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4641,7 +4677,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4665,7 +4701,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4694,7 +4730,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4892,7 +4928,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4916,7 +4952,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -4945,7 +4981,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5143,7 +5179,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5167,7 +5203,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5196,7 +5232,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5394,7 +5430,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5418,7 +5454,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5447,7 +5483,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5646,7 +5682,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5670,7 +5706,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5699,7 +5735,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5897,7 +5933,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5921,7 +5957,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -5950,7 +5986,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6150,7 +6186,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6174,7 +6210,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6203,7 +6239,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6403,7 +6439,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6427,7 +6463,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6456,7 +6492,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6656,7 +6692,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6680,7 +6716,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6709,7 +6745,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6908,7 +6944,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6932,7 +6968,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -6961,7 +6997,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7160,7 +7196,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7184,7 +7220,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7213,7 +7249,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7410,7 +7446,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7434,7 +7470,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7463,7 +7499,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7661,7 +7697,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7685,7 +7721,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7714,7 +7750,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7912,7 +7948,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7936,7 +7972,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -7965,7 +8001,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8163,7 +8199,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8187,7 +8223,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8216,7 +8252,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8416,7 +8452,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8440,7 +8476,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8469,7 +8505,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8667,7 +8703,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8691,7 +8727,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8720,7 +8756,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8918,7 +8954,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8942,7 +8978,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -8971,7 +9007,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9169,7 +9205,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9193,7 +9229,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9222,7 +9258,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9420,7 +9456,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9444,7 +9480,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9473,7 +9509,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9672,7 +9708,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9696,7 +9732,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9725,7 +9761,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9922,7 +9958,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9946,7 +9982,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -9975,7 +10011,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10172,7 +10208,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10196,7 +10232,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10225,7 +10261,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10422,7 +10458,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10446,7 +10482,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10475,7 +10511,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10673,7 +10709,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10697,7 +10733,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10726,7 +10762,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10925,7 +10961,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10949,7 +10985,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -10978,7 +11014,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -11175,7 +11211,7 @@ paths:
       parameters:
       - description: The id of the entity to delete
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -11199,7 +11235,7 @@ paths:
       parameters:
       - description: The id of the entity to retrieve
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -11228,7 +11264,7 @@ paths:
       parameters:
       - description: The id of the entity to update
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -11425,7 +11461,7 @@ paths:
       parameters:
       - description: The id of the instrument to retrieve the facility cycles of
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
@@ -11465,7 +11501,7 @@ paths:
       parameters:
       - description: The id of the instrument to count the facility cycles of
         in: path
-        name: id
+        name: id_
         required: true
         schema:
           type: integer
