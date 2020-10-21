@@ -25,7 +25,7 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "where",
-            "description": "Apply where filters to the query. The possible operators are like, gte, lte, in and eq",
+            "description": "Apply where filters to the query. The possible operators are like, gte, lte, in and eq. Please modify the examples before executing a request if you are having issues with the example values.",
             "schema": {
                 "type": "array",
                 "items": {
@@ -53,9 +53,28 @@ def initialise_spec(spec):
                             },
                             {
                                 "type": "object",
-                                "title": "Greater than or equal",
+                                "title": "Inequality",
                                 "properties": {
-                                    "gte": {
+                                    "ne": {
+                                        "oneOf": [
+                                            {"type": "string"},
+                                            {"type": "number"},
+                                            {"type": "integer"},
+                                            {"type": "boolean"},
+                                        ]
+                                    }
+                                },
+                            },
+                            {
+                                "type": "object",
+                                "title": "Substring equality",
+                                "properties": {"like": {"type": "string"}},
+                            },
+                            {
+                                "type": "object",
+                                "title": "Less than",
+                                "properties": {
+                                    "lt": {
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
@@ -77,8 +96,27 @@ def initialise_spec(spec):
                             },
                             {
                                 "type": "object",
-                                "title": "Substring equality",
-                                "properties": {"like": {"type": "string"}},
+                                "title": "Greater than",
+                                "properties": {
+                                    "gt": {
+                                        "oneOf": [
+                                            {"type": "number"},
+                                            {"type": "integer"},
+                                        ]
+                                    }
+                                },
+                            },
+                            {
+                                "type": "object",
+                                "title": "Greater than or equal",
+                                "properties": {
+                                    "gte": {
+                                        "oneOf": [
+                                            {"type": "number"},
+                                            {"type": "integer"},
+                                        ]
+                                    }
+                                },
                             },
                             {
                                 "type": "object",
@@ -101,10 +139,13 @@ def initialise_spec(spec):
                 },
             },
             "examples": {
-                "eq": {"value": {"id": {"eq": 1}}},
+                "eq": {"value": [{"id": {"eq": 1}}]},
+                "ne": {"value": [{"id": {"ne": 1}}]},
                 "like": {"value": [{"name": {"like": "dog"}}]},
-                "gte": {"value": [{"id": {"gte": 50}}]},
+                "lt": {"value": [{"id": {"lt": 10}}]},
                 "lte": {"value": [{"id": {"lte": 50}}]},
+                "gt": {"value": [{"id": {"gt": 10}}]},
+                "gte": {"value": [{"id": {"gte": 50}}]},  
                 "in": {"value": [{"id": {"in": [1, 2, 3]}}]},
             },
         },
