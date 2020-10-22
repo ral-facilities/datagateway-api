@@ -15,12 +15,7 @@ log = logging.getLogger()
 
 class ICATQuery:
     def __init__(
-        self,
-        client,
-        entity_name,
-        conditions=None,
-        aggregate=None,
-        includes=None,
+        self, client, entity_name, conditions=None, aggregate=None, includes=None,
     ):
         """
         Create a Query object within Python ICAT 
@@ -58,7 +53,6 @@ class ICATQuery:
                 " suggesting an invalid argument"
             )
 
-
     def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
@@ -93,10 +87,7 @@ class ICATQuery:
                 count_query = True
                 log.debug("This ICATQuery is used for COUNT purposes")
 
-        if (
-            self.query.aggregate == "DISTINCT"
-            and not count_query
-        ):
+        if self.query.aggregate == "DISTINCT" and not count_query:
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
