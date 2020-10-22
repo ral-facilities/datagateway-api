@@ -30,6 +30,7 @@ def get_endpoint(name, table):
                 200,
             )
 
+        '''
         get.__doc__ = f"""
             ---
             summary: Get {name}
@@ -61,6 +62,7 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
         def post(self):
             return (
@@ -68,6 +70,7 @@ def get_endpoint(name, table):
                 200,
             )
 
+        '''
         post.__doc__ = f"""
             ---
             summary: Create new {name}
@@ -105,6 +108,7 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
         def patch(self):
             return (
@@ -112,6 +116,7 @@ def get_endpoint(name, table):
                 200,
             )
 
+        '''
         patch.__doc__ = f"""
             ---
             summary: Update {name}
@@ -149,6 +154,7 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
     Endpoint.__name__ = name
     return Endpoint
@@ -172,6 +178,7 @@ def get_id_endpoint(name, table):
                 200,
             )
 
+        '''
         get.__doc__ = f"""
             ---
             summary: Find the {table.__name__} matching the given ID
@@ -201,11 +208,13 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
         def delete(self, id_):
             backend.delete_with_id(get_session_id_from_auth_header(), table, id_)
             return "", 204
 
+        '''
         delete.__doc__ = f"""
             ---
             summary: Delete {name} by id
@@ -231,12 +240,14 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
         def patch(self, id_):
             session_id = get_session_id_from_auth_header()
             backend.update_with_id(session_id, table, id_, request.json)
             return backend.get_with_id(session_id, table, id_), 200
 
+        '''
         patch.__doc__ = f"""
             ---
             summary: Update {name} by id
@@ -273,6 +284,7 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
     EndpointWithID.__name__ = f"{name}WithID"
     return EndpointWithID
@@ -299,6 +311,7 @@ def get_count_endpoint(name, table):
                 200,
             )
 
+        '''
         get.__doc__ = f"""
             ---
             summary: Count {name}
@@ -325,6 +338,7 @@ def get_count_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
     CountEndpoint.__name__ = f"{name}Count"
     return CountEndpoint
@@ -351,6 +365,7 @@ def get_find_one_endpoint(name, table):
                 200,
             )
 
+        '''
         get.__doc__ = f"""
             ---
             summary: Get single {table.__name__}
@@ -380,6 +395,7 @@ def get_find_one_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
+            '''
 
     FindOneEndpoint.__name__ = f"{name}FindOne"
     return FindOneEndpoint
