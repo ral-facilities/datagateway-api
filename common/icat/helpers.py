@@ -185,15 +185,19 @@ def update_attributes(old_entity, new_entity):
 
 
 def get_entity_by_id(
-    client, table_name, id_, return_json_formattable_data, return_related_entities=False
+    client,
+    entity_type,
+    id_,
+    return_json_formattable_data,
+    return_related_entities=False,
 ):
     """
     Gets a record of a given ID from the specified entity
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param id_: ID number of the entity to retrieve
     :type id_: :class:`int`
     :param return_json_formattable_data: Flag to determine whether the data should be 
@@ -209,16 +213,15 @@ def get_entity_by_id(
     :return: The record of the specified ID from the given entity
     :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
-    log.info("Getting %s of the ID %s", table_name, id_)
+    log.info("Getting %s of the ID %s", entity_type, id_)
     log.debug("Return related entities set to: %s", return_related_entities)
 
-    selected_entity_name = get_python_icat_entity_name(client, table_name)
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
     includes_value = "1" if return_related_entities == True else None
     id_query = ICATQuery(
-        client, selected_entity_name, conditions=id_condition, includes=includes_value
+        client, entity_type, conditions=id_condition, includes=includes_value
     )
     entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
@@ -229,40 +232,40 @@ def get_entity_by_id(
         return entity_by_id_data[0]
 
 
-def delete_entity_by_id(client, table_name, id_):
+def delete_entity_by_id(client, entity_type, id_):
     """
     Deletes a record of a given ID of the specified entity
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to delete
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param id_: ID number of the entity to delete
     :type id_: :class:`int`
     """
-    log.info("Deleting %s of ID %s", table_name, id_)
-    entity_id_data = get_entity_by_id(client, table_name, id_, False)
+    log.info("Deleting %s of ID %s", entity_type, id_)
+    entity_id_data = get_entity_by_id(client, entity_type, id_, False)
     client.delete(entity_id_data)
 
 
-def update_entity_by_id(client, table_name, id_, new_data):
+def update_entity_by_id(client, entity_type, id_, new_data):
     """
     Gets a record of a given ID of the specified entity
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param id_: ID number of the entity to retrieve
     :type id_: :class:`int`
     :param new_data: JSON from request body providing new data to update the record with
         the specified ID
     :return: The updated record of the specified ID from the given entity
     """
-    log.info("Updating %s of ID %s", table_name, id_)
+    log.info("Updating %s of ID %s", entity_type, id_)
 
     entity_id_data = get_entity_by_id(
-        client, table_name, id_, False, return_related_entities=True
+        client, entity_type, id_, False, return_related_entities=True
     )
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
@@ -271,17 +274,17 @@ def update_entity_by_id(client, table_name, id_, new_data):
 
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to
     # show to the user whether the change has actually been applied
-    return get_entity_by_id(client, table_name, id_, True)
+    return get_entity_by_id(client, entity_type, id_, True)
 
 
-def get_entity_with_filters(client, table_name, filters):
+def get_entity_with_filters(client, entity_type, filters):
     """
     Gets all the records of a given entity, based on the filters provided in the request
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The list of records of the given entity, using the filters to restrict the
@@ -289,8 +292,7 @@ def get_entity_with_filters(client, table_name, filters):
     """
     log.info("Getting entity using request's filters")
 
-    selected_entity_name = get_python_icat_entity_name(client, table_name)
-    query = ICATQuery(client, selected_entity_name)
+    query = ICATQuery(client, entity_type)
 
     filter_handler = FilterOrderHandler()
     filter_handler.manage_icat_filters(filters, query.query)
@@ -303,7 +305,7 @@ def get_entity_with_filters(client, table_name, filters):
         return data
 
 
-def get_count_with_filters(client, table_name, filters):
+def get_count_with_filters(client, entity_type, filters):
     """
     Get the number of results of a given entity, based on the filters provided in the
     request. This acts very much like `get_entity_with_filters()` but returns the number
@@ -311,8 +313,8 @@ def get_count_with_filters(client, table_name, filters):
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The number of records of the given entity (of type integer), using the
@@ -320,10 +322,10 @@ def get_count_with_filters(client, table_name, filters):
     """
     log.info(
         "Getting the number of results of %s, also using the request's filters",
-        table_name,
+        entity_type,
     )
 
-    selected_entity_name = get_python_icat_entity_name(client, table_name)
+    selected_entity_name = get_python_icat_entity_name(client, entity_type)
     query = ICATQuery(client, selected_entity_name, aggregate="COUNT")
 
     filter_handler = FilterOrderHandler()
@@ -338,7 +340,7 @@ def get_count_with_filters(client, table_name, filters):
         return data[0]
 
 
-def get_first_result_with_filters(client, table_name, filters):
+def get_first_result_with_filters(client, entity_type, filters):
     """
     Using filters in the request, get results of the given entity, but only show the
     first one to the user
@@ -350,21 +352,21 @@ def get_first_result_with_filters(client, table_name, filters):
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
     :return: The first record of the given entity, using the filters to restrict the
         result of the query
     """
     log.info(
-        "Getting only first result of %s, making use of filters in request", table_name
+        "Getting only first result of %s, making use of filters in request", entity_type
     )
 
     limit_filter = PythonICATLimitFilter(1)
     filters.append(limit_filter)
 
-    entity_data = get_entity_with_filters(client, table_name, filters)
+    entity_data = get_entity_with_filters(client, entity_type, filters)
 
     if not entity_data:
         raise MissingRecordError("No results found")
@@ -372,20 +374,20 @@ def get_first_result_with_filters(client, table_name, filters):
         return entity_data[0]
 
 
-def update_entities(client, table_name, data_to_update):
+def update_entities(client, entity_type, data_to_update):
     """
     Update one or more results for the given entity using the JSON provided in 
     `data_to_update`
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param data_to_update: The data that to be updated in ICAT
     :type data_to_update: :class:`list` or :class:`dict`
     :return: The updated record(s) of the given entity
     """
-    log.info("Updating certain results in %s", table_name)
+    log.info("Updating certain results in %s", entity_type)
 
     updated_data = []
 
@@ -395,7 +397,7 @@ def update_entities(client, table_name, data_to_update):
     for entity in data_to_update:
         try:
             updated_result = update_entity_by_id(
-                client, table_name, entity["id"], entity
+                client, entity_type, entity["id"], entity
             )
             updated_data.append(updated_result)
         except KeyError:
@@ -407,19 +409,19 @@ def update_entities(client, table_name, data_to_update):
     return updated_data
 
 
-def create_entities(client, table_name, data):
+def create_entities(client, entity_type, data):
     """
     Add one or more results for the given entity using the JSON provided in `data`
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param table_name: Table name to extract which entity to use
-    :type table_name: :class:`str`
+    :param entity_type: The type of entity requested to manipulate data with
+    :type entity_type: :class:`str`
     :param data: The data that needs to be created in ICAT
     :type data_to_update: :class:`list` or :class:`dict`
     :return: The created record(s) of the given entity
     """
-    log.info("Creating ICAT data for %s", table_name)
+    log.info("Creating ICAT data for %s", entity_type)
 
     created_data = []
 
@@ -428,7 +430,7 @@ def create_entities(client, table_name, data):
 
     for result in data:
         new_entity = client.new(
-            get_python_icat_entity_name(client, table_name, camel_case_output=True)
+            get_python_icat_entity_name(client, entity_type, camel_case_output=True)
         )
 
         for attribute_name, value in result.items():
@@ -461,7 +463,7 @@ def create_entities(client, table_name, data):
         except (ICATObjectExistsError, ICATParameterError) as e:
             raise BadRequestError(e)
 
-        created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
+        created_data.append(get_entity_by_id(client, entity_type, new_entity.id, True))
 
     return created_data
 
@@ -487,9 +489,7 @@ def get_facility_cycles_for_instrument(
     log.info("Getting a list of facility cycles from the specified instrument for ISIS")
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
-    query = ICATQuery(
-        client, "FacilityCycle", aggregate=query_aggregate
-    )
+    query = ICATQuery(client, "FacilityCycle", aggregate=query_aggregate)
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq"
@@ -572,9 +572,7 @@ def get_investigations_for_instrument_in_facility_cycle(
     )
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
-    query = ICATQuery(
-        client, "Investigation", aggregate=query_aggregate
-    )
+    query = ICATQuery(client, "Investigation", aggregate=query_aggregate)
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq"

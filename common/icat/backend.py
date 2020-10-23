@@ -83,48 +83,48 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_with_filters(self, session_id, table, filters):
+    def get_with_filters(self, session_id, entity_type, filters):
         self.client.sessionId = session_id
-        return get_entity_with_filters(self.client, table.__name__, filters)
+        return get_entity_with_filters(self.client, entity_type, filters)
 
     @requires_session_id
     @queries_records
-    def create(self, session_id, table, data):
+    def create(self, session_id, entity_type, data):
         self.client.sessionId = session_id
-        return create_entities(self.client, table.__name__, data)
+        return create_entities(self.client, entity_type, data)
 
     @requires_session_id
     @queries_records
-    def update(self, session_id, table, data):
+    def update(self, session_id, entity_type, data):
         self.client.sessionId = session_id
-        return update_entities(self.client, table.__name__, data)
+        return update_entities(self.client, entity_type, data)
 
     @requires_session_id
     @queries_records
-    def get_one_with_filters(self, session_id, table, filters):
+    def get_one_with_filters(self, session_id, entity_type, filters):
         self.client.sessionId = session_id
-        return get_first_result_with_filters(self.client, table.__name__, filters)
+        return get_first_result_with_filters(self.client, entity_type, filters)
 
     @requires_session_id
     @queries_records
-    def count_with_filters(self, session_id, table, filters):
+    def count_with_filters(self, session_id, entity_type, filters):
         self.client.sessionId = session_id
-        return get_count_with_filters(self.client, table.__name__, filters)
+        return get_count_with_filters(self.client, entity_type, filters)
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, table, id_):
-        return get_entity_by_id(self.client, table.__name__, id_, True)
+    def get_with_id(self, session_id, entity_type, id_):
+        return get_entity_by_id(self.client, entity_type, id_, True)
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, table, id_):
-        return delete_entity_by_id(self.client, table.__name__, id_)
+    def delete_with_id(self, session_id, entity_type, id_):
+        return delete_entity_by_id(self.client, entity_type, id_)
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, table, id_, data):
-        return update_entity_by_id(self.client, table.__name__, id_, data)
+    def update_with_id(self, session_id, entity_type, id_, data):
+        return update_entity_by_id(self.client, entity_type, id_, data)
 
     @requires_session_id
     @queries_records
