@@ -57,7 +57,7 @@ app.register_blueprint(swaggerui_blueprint, url_prefix="/")
 setup_logger()
 log.info("Logging now setup")
 
-#initialise_spec(spec)
+initialise_spec(spec)
 
 for entity_name in endpoints:
     get_endpoint_resource = get_endpoint(entity_name, endpoints[entity_name])

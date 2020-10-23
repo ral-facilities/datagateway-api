@@ -1,3 +1,4 @@
+from common.database.models import EntityHelper
 import datetime
 from sqlalchemy.inspection import inspect
 
@@ -75,7 +76,8 @@ def create_entity_models():
     for endpoint in endpoints:
         params = {}
         required = []
-        endpoint_inspection = inspect(endpoints[endpoint])
+        endpoint_table = EntityHelper.get_entity_object_from_name(endpoints[endpoint])
+        endpoint_inspection = inspect(endpoint_table)
         for column in endpoint_inspection.columns:
             python_type = (
                 column.type.impl.python_type
@@ -113,7 +115,7 @@ def create_entity_models():
                         "$ref": f"#/components/schemas/{relationship_name.strip('_')}"
                     },
                 }
-        endpoint_models[endpoints[endpoint].__name__] = {
+        endpoint_models[endpoint_table.__name__] = {
             "properties": params,
             "required": required,
         }

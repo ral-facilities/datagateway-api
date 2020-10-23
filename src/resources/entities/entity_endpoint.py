@@ -8,14 +8,14 @@ from common.helpers import (
 from common.backends import backend
 
 
-def get_endpoint(name, table):
+def get_endpoint(name, entity_type):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
     
     :param name: The name of the entity
-    :param table: The table the endpoint will use in queries
+    :param entity_type: The entity the endpoint will use in queries
     :return: The generated endpoint class
     """
 
@@ -24,17 +24,16 @@ def get_endpoint(name, table):
             return (
                 backend.get_with_filters(
                     get_session_id_from_auth_header(),
-                    table,
+                    entity_type,
                     get_filters_from_query_string(),
                 ),
                 200,
             )
 
-        '''
         get.__doc__ = f"""
             ---
             summary: Get {name}
-            description: Retrieves a list of {table.__name__} objects
+            description: Retrieves a list of {entity_type} objects
             tags:
                 - {name}
             parameters:
@@ -46,13 +45,13 @@ def get_endpoint(name, table):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - returns {table.__name__} that satisfy the filters
+                    description: Success - returns {entity_type} that satisfy the filters
                     content:
                         application/json:
                             schema:
                                 type: array
                                 items:
-                                  $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                                  $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -62,19 +61,19 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
         def post(self):
             return (
-                backend.create(get_session_id_from_auth_header(), table, request.json),
+                backend.create(
+                    get_session_id_from_auth_header(), entity_type, request.json
+                ),
                 200,
             )
 
-        '''
         post.__doc__ = f"""
             ---
             summary: Create new {name}
-            description: Creates new {table.__name__} object(s) with details provided in the request body
+            description: Creates new {entity_type} object(s) with details provided in the request body
             tags:
                 - {name}
             requestBody:
@@ -83,22 +82,18 @@ def get_endpoint(name, table):
               content:
                 application/json:
                   schema:
-                    oneOf:
-                      - $ref: '#/components/schemas/{table.__name__.strip("_")}'
-                      - type: array
-                        items:
-                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
             responses:
                 200:
                     description: Success - returns the created object
                     content:
                       application/json:
                         schema:
-                          oneOf:
-                            - $ref: '#/components/schemas/{table.__name__.strip("_")}'
-                            - type: array
-                              items:
-                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -108,19 +103,19 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
         def patch(self):
             return (
-                backend.update(get_session_id_from_auth_header(), table, request.json),
+                backend.update(
+                    get_session_id_from_auth_header(), entity_type, request.json
+                ),
                 200,
             )
 
-        '''
         patch.__doc__ = f"""
             ---
             summary: Update {name}
-            description: Updates {table.__name__} object(s) with details provided in the request body
+            description: Updates {entity_type} object(s) with details provided in the request body
             tags:
                 - {name}
             requestBody:
@@ -129,22 +124,18 @@ def get_endpoint(name, table):
               content:
                 application/json:
                   schema:
-                    oneOf:
-                      - $ref: '#/components/schemas/{table.__name__.strip("_")}'
-                      - type: array
-                        items:
-                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
             responses:
                 200:
                     description: Success - returns the updated object(s)
                     content:
                       application/json:
                         schema:
-                          oneOf:
-                            - $ref: '#/components/schemas/{table.__name__.strip("_")}'
-                            - type: array
-                              items:
-                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                          type: array
+                          items:
+                            $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -154,35 +145,35 @@ def get_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
     Endpoint.__name__ = name
     return Endpoint
 
 
-def get_id_endpoint(name, table):
+def get_id_endpoint(name, entity_type):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
 
     :param name: The name of the entity
-    :param table: The table the endpoint will use in queries
+    :param entity_type: The entity the endpoint will use in queries
     :return: The generated id endpoint class
     """
 
     class EndpointWithID(Resource):
         def get(self, id_):
             return (
-                backend.get_with_id(get_session_id_from_auth_header(), table, id_),
+                backend.get_with_id(
+                    get_session_id_from_auth_header(), entity_type, id_
+                ),
                 200,
             )
 
-        '''
         get.__doc__ = f"""
             ---
-            summary: Find the {table.__name__} matching the given ID
-            description: Retrieves a list of {table.__name__} objects
+            summary: Find the {entity_type} matching the given ID
+            description: Retrieves a list of {entity_type} objects
             tags:
                 - {name}
             parameters:
@@ -194,11 +185,11 @@ def get_id_endpoint(name, table):
                     type: integer
             responses:
                 200:
-                    description: Success - the matching {table.__name__}
+                    description: Success - the matching {entity_type}
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                                $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -208,17 +199,15 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
         def delete(self, id_):
-            backend.delete_with_id(get_session_id_from_auth_header(), table, id_)
+            backend.delete_with_id(get_session_id_from_auth_header(), entity_type, id_)
             return "", 204
 
-        '''
         delete.__doc__ = f"""
             ---
             summary: Delete {name} by id
-            description: Updates {table.__name__} with the specified ID with details provided in the request body
+            description: Updates {entity_type} with the specified ID with details provided in the request body
             tags:
                 - {name}
             parameters:
@@ -240,18 +229,16 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
         def patch(self, id_):
             session_id = get_session_id_from_auth_header()
-            backend.update_with_id(session_id, table, id_, request.json)
-            return backend.get_with_id(session_id, table, id_), 200
+            backend.update_with_id(session_id, entity_type, id_, request.json)
+            return backend.get_with_id(session_id, entity_type, id_), 200
 
-        '''
         patch.__doc__ = f"""
             ---
             summary: Update {name} by id
-            description: Updates {table.__name__} with the specified ID with details provided in the request body
+            description: Updates {entity_type} with the specified ID with details provided in the request body
             tags:
                 - {name}
             parameters:
@@ -267,14 +254,14 @@ def get_id_endpoint(name, table):
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                    $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
             responses:
                 200:
                     description: Success - returns the updated object
                     content:
                       application/json:
                         schema:
-                          $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                          $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -284,20 +271,19 @@ def get_id_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
     EndpointWithID.__name__ = f"{name}WithID"
     return EndpointWithID
 
 
-def get_count_endpoint(name, table):
+def get_count_endpoint(name, entity_type):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
 
     :param name: The name of the entity
-    :param table: The table the endpoint will use in queries
+    :param entity_type: The entity the endpoint will use in queries
     :return: The generated count endpoint class
     """
 
@@ -306,16 +292,15 @@ def get_count_endpoint(name, table):
             filters = get_filters_from_query_string()
             return (
                 backend.count_with_filters(
-                    get_session_id_from_auth_header(), table, filters
+                    get_session_id_from_auth_header(), entity_type, filters
                 ),
                 200,
             )
 
-        '''
         get.__doc__ = f"""
             ---
             summary: Count {name}
-            description: Return the count of the {table.__name__} objects that would be retrieved given the filters provided
+            description: Return the count of the {entity_type} objects that would be retrieved given the filters provided
             tags:
                 - {name}
             parameters:
@@ -324,7 +309,7 @@ def get_count_endpoint(name, table):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - The count of the {table.__name__} objects
+                    description: Success - The count of the {entity_type} objects
                     content:
                         application/json:
                             schema:
@@ -338,20 +323,19 @@ def get_count_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
     CountEndpoint.__name__ = f"{name}Count"
     return CountEndpoint
 
 
-def get_find_one_endpoint(name, table):
+def get_find_one_endpoint(name, entity_type):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
 
     :param name: The name of the entity
-    :param table: The table the endpoint will use in queries
+    :param entity_type: The entity the endpoint will use in queries
     :return: The generated findOne endpoint class
     """
 
@@ -360,16 +344,15 @@ def get_find_one_endpoint(name, table):
             filters = get_filters_from_query_string()
             return (
                 backend.get_one_with_filters(
-                    get_session_id_from_auth_header(), table, filters
+                    get_session_id_from_auth_header(), entity_type, filters
                 ),
                 200,
             )
 
-        '''
         get.__doc__ = f"""
             ---
-            summary: Get single {table.__name__}
-            description: Retrieves the first {table.__name__} objects that satisfies the filters.
+            summary: Get single {entity_type}
+            description: Retrieves the first {entity_type} objects that satisfies the filters.
             tags:
                 - {name}
             parameters:
@@ -381,11 +364,11 @@ def get_find_one_endpoint(name, table):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - a {table.__name__} object that satisfies the filters
+                    description: Success - a {entity_type} object that satisfies the filters
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/{table.__name__.strip("_")}'
+                                $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
@@ -395,7 +378,6 @@ def get_find_one_endpoint(name, table):
                 404:
                     description: No such record - Unable to find a record in the database
             """
-            '''
 
     FindOneEndpoint.__name__ = f"{name}FindOne"
     return FindOneEndpoint
