@@ -98,48 +98,35 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def get_python_icat_entity_name(client, database_table_name, camel_case_output=False):
+def get_icat_entity_name_as_camel_case(client, entity_name):
     """
-    From the database table name, this function returns the correctly cased entity name
-    relating to the table name
+    From the entity name, this function returns a camelCase version of its input
 
-    Due to the case sensitivity of Python ICAT, the table name must be compared with
-    each of the valid entity names within Python ICAT to get the correctly cased entity
-    name. This is done by putting everything to lowercase and comparing from there
+    Due to the case sensitivity of Python ICAT, a camelCase version of the entity name
+    is required for creating ICAT entities in ICAT (e.g. `client.new("parameterType")`).
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
-    :param database_table_name: Table name (from icatdb) to be interacted with
-    :type database_table_name: :class:`str`
-    :param camel_case_output: Flag to signify if the entity name should be returned in
-        camel case format. Enabling this flag gets the entity names from a different
-        place in Python ICAT.
-    :type camel_case_output: :class:`bool`
+    :param entity_name: Entity name to fetch a camelCase version of
+    :type entity_name: :class:`str`
     :return: Entity name (of type string) in the correct casing ready to be passed into
         Python ICAT
     :raises BadRequestError: If the entity cannot be found
     """
-    log.debug("Python ICAT entity name camel case flag: %s", camel_case_output)
 
-    if camel_case_output:
-        entity_names = getTypeMap(client).keys()
-    else:
-        entity_names = client.getEntityNames()
-
-    lowercase_table_name = database_table_name.lower()
+    entity_names = getTypeMap(client).keys()
+    lowercase_entity_name = entity_name.lower()
     python_icat_entity_name = None
 
     for entity_name in entity_names:
         lowercase_name = entity_name.lower()
-
-        if lowercase_name == lowercase_table_name:
+        if lowercase_name == lowercase_entity_name:
             python_icat_entity_name = entity_name
 
     # Raise a 400 if a valid entity cannot be found
     if python_icat_entity_name is None:
         raise BadRequestError(
-            f"Bad request made, cannot find {database_table_name} entity within Python"
-            " ICAT"
+            f"Bad request made, cannot find {entity_name} entity within Python ICAT"
         )
 
     return python_icat_entity_name
@@ -325,8 +312,7 @@ def get_count_with_filters(client, entity_type, filters):
         entity_type,
     )
 
-    selected_entity_name = get_python_icat_entity_name(client, entity_type)
-    query = ICATQuery(client, selected_entity_name, aggregate="COUNT")
+    query = ICATQuery(client, entity_type, aggregate="COUNT")
 
     filter_handler = FilterOrderHandler()
     filter_handler.manage_icat_filters(filters, query.query)
@@ -430,7 +416,9 @@ def create_entities(client, entity_type, data):
 
     for result in data:
         new_entity = client.new(
-            get_python_icat_entity_name(client, entity_type, camel_case_output=True)
+            get_icat_entity_name_as_camel_case(
+                client, entity_type, camel_case_output=True
+            )
         )
 
         for attribute_name, value in result.items():
