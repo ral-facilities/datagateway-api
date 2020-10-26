@@ -10,7 +10,7 @@ from common.database.helpers import (
     get_row_by_id,
 )
 from common.helpers import get_session_id_from_auth_header
-from common.models.db_models import SESSION
+from common.database.models import SESSION
 from common.backends import create_backend
 from common.exceptions import AuthenticationError
 from common.config import config

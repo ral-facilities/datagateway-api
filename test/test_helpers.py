@@ -25,7 +25,7 @@ from common.helpers import (
     get_session_id_from_auth_header,
     get_filters_from_query_string,
 )
-from common.models.db_models import SESSION
+from common.database.models import SESSION
 from test.test_base import FlaskAppTest
 
 

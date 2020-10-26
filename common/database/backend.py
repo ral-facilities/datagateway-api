@@ -16,7 +16,7 @@ from common.database.helpers import (
     requires_session_id,
 )
 from common.helpers import queries_records
-from common.models.db_models import SESSION
+from common.database.models import EntityHelper, SESSION
 import uuid
 from common.exceptions import AuthenticationError
 import datetime
@@ -61,61 +61,69 @@ class DatabaseBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_with_filters(self, session_id, table, filters):
+    def get_with_filters(self, session_id, entity_type, filters):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return get_rows_by_filter(table, filters)
 
     @requires_session_id
     @queries_records
-    def create(self, session_id, table, data):
+    def create(self, session_id, entity_type, data):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return create_rows_from_json(table, data)
 
     @requires_session_id
     @queries_records
-    def update(self, session_id, table, data):
+    def update(self, session_id, entity_type, data):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return patch_entities(table, data)
 
     @requires_session_id
     @queries_records
-    def get_one_with_filters(self, session_id, table, filters):
+    def get_one_with_filters(self, session_id, entity_type, filters):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return get_first_filtered_row(table, filters)
 
     @requires_session_id
     @queries_records
-    def count_with_filters(self, session_id, table, filters):
+    def count_with_filters(self, session_id, entity_type, filters):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return get_filtered_row_count(table, filters)
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, table, id_):
+    def get_with_id(self, session_id, entity_type, id_):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return get_row_by_id(table, id_).to_dict()
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, table, id_):
+    def delete_with_id(self, session_id, entity_type, id_):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return delete_row_by_id(table, id_)
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, table, id_, data):
+    def update_with_id(self, session_id, entity_type, id_, data):
+        table = EntityHelper.get_entity_object_from_name(entity_type)
         return update_row_from_id(table, id_, data)
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycles_with_filters(
+    def get_facility_cycles_for_instrument_with_filters(
         self, session_id, instrument_id, filters
     ):
         return get_facility_cycles_for_instrument(instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_with_filters(
+    def get_facility_cycles_for_instrument_count_with_filters(
         self, session_id, instrument_id, filters
     ):
         return get_facility_cycles_for_instrument_count(instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycle_investigations_with_filters(
+    def get_investigations_for_instrument_in_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
         return get_investigations_for_instrument_in_facility_cycle(
@@ -124,7 +132,7 @@ class DatabaseBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_investigations_with_filters(
+    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
         return get_investigations_for_instrument_in_facility_cycle_count(

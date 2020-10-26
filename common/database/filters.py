@@ -7,7 +7,7 @@ from common.filters import (
     IncludeFilter,
 )
 from common.exceptions import FilterError, MultipleIncludeError
-from common.models import db_models
+from common.database import models
 
 from sqlalchemy import asc, desc
 import logging
@@ -57,15 +57,15 @@ class DatabaseWhereFilter(WhereFilter):
             )
 
         if self.included_included_field:
-            included_table = getattr(db_models, self.field)
-            included_included_table = getattr(db_models, self.included_field)
+            included_table = getattr(models, self.field)
+            included_included_table = getattr(models, self.included_field)
             query.base_query = query.base_query.join(included_table).join(
                 included_included_table
             )
             field = getattr(included_included_table, self.included_included_field)
 
         elif self.included_field:
-            included_table = getattr(db_models, self.field)
+            included_table = getattr(models, self.field)
             query.base_query = query.base_query.join(included_table)
             field = getattr(included_table, self.included_field)
 

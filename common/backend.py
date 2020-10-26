@@ -142,7 +142,7 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycles_with_filters(
+    def get_facility_cycles_for_instrument_with_filters(
         self, session_id, instrument_id, filters
     ):
         """
@@ -157,7 +157,7 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_with_filters(
+    def get_facility_cycles_for_instrument_count_with_filters(
         self, session_id, instrument_id, filters
     ):
         """
@@ -172,7 +172,7 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_instrument_facilitycycle_investigations_with_filters(
+    def get_investigations_for_instrument_in_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
         """
@@ -188,7 +188,7 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def count_instrument_facilitycycles_investigations_with_filters(
+    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters
     ):
         """

@@ -55,6 +55,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 app.register_blueprint(swaggerui_blueprint, url_prefix="/")
 
 setup_logger()
+log.info("Logging now setup")
 
 initialise_spec(spec)
 
@@ -101,6 +102,13 @@ api.add_resource(
     "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count",
 )
 spec.path(resource=InstrumentsFacilityCyclesInvestigationsCount, api=api)
+
+# Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
+# change to the Swagger docs, rather than changing on each startup
+log.debug("Reordering OpenAPI docs to alphabetical order")
+for entity_data in spec._paths.values():
+    for endpoint_name in sorted(entity_data.keys()):
+        entity_data.move_to_end(endpoint_name)
 
 openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
 with open(openapi_spec_path, "w") as f:

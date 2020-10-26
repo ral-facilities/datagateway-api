@@ -13,9 +13,7 @@ from common.exceptions import (
     BadRequestError,
     MultipleIncludeError,
 )
-from common.models import db_models
-from common.models.db_models import (
-    INVESTIGATIONUSER,
+from common.database.models import (
     INVESTIGATION,
     INSTRUMENT,
     FACILITYCYCLE,
@@ -23,7 +21,7 @@ from common.models.db_models import (
     FACILITY,
     SESSION,
 )
-from common.session_manager import session_manager
+from common.database.session_manager import session_manager
 from common.filter_order_handler import FilterOrderHandler
 from common.config import config
 
@@ -233,7 +231,7 @@ class QueryFilterFactory(object):
         elif filter_name == "limit":
             return LimitFilter(filter["limit"])
         elif filter_name == "include":
-            return IncludeFilter(filter)
+            return IncludeFilter(filter["include"])
         elif filter_name == "distinct":
             return DistinctFieldFilter(filter["distinct"])
         else:
@@ -426,14 +424,14 @@ def patch_entities(table, json_list):
             if key.upper() == "ID":
                 update_row_from_id(table, json_list[key], json_list)
                 result = get_row_by_id(table, json_list[key])
-                results.append(result)
+                results.append(result.to_dict())
     else:
         for entity in json_list:
             for key in entity:
                 if key.upper() == "ID":
                     update_row_from_id(table, entity[key], entity)
                     result = get_row_by_id(table, entity[key])
-                    results.append(result)
+                    results.append(result.to_dict())
     if len(results) == 0:
         raise BadRequestError(f" Bad request made, request: {json_list}")
 

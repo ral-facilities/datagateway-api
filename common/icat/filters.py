@@ -10,6 +10,7 @@ from common.filters import (
 )
 from common.exceptions import FilterError
 from common.config import config
+from common.constants import Constants
 
 log = logging.getLogger()
 
@@ -26,7 +27,7 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "ne":
             where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
-            where_filter = self.create_condition(self.field, "like", self.value)
+            where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
@@ -46,7 +47,7 @@ class PythonICATWhereFilter(WhereFilter):
 
         log.debug("ICAT Where Filter: %s", where_filter)
         try:
-            log.info("Adding ICAT where filter to query")
+            log.info("Adding ICAT where filter (for %s) to query", self.value)
             query.addConditions(where_filter)
         except ValueError:
             raise FilterError(
@@ -73,8 +74,11 @@ class PythonICATWhereFilter(WhereFilter):
         # Removing quote marks when doing conditions with IN expressions or when a
         # distinct filter is used in a request
         jpql_value = (
-            f"{value}" if operator == "in" or operator == "!=" else f"'{value}'"
+            f"{value}"
+            if operator == "in" or operator == "!=" or "o." in str(value)
+            else f"'{value}'"
         )
+
         conditions[attribute_name] = f"{operator} {jpql_value}"
         log.debug("Conditions in ICAT where filter, %s", conditions)
         return conditions
@@ -87,7 +91,15 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
-            query.setAggregate("DISTINCT")
+            if (
+                query.aggregate == "COUNT"
+                or query.aggregate == "AVG"
+                or query.aggregate == "SUM"
+            ):
+                # Distinct can be combined with other aggregate functions
+                query.setAggregate(f"{query.aggregate}:DISTINCT")
+            else:
+                query.setAggregate("DISTINCT")
 
             # Using where filters to identify which fields to apply distinct too
             for field in self.fields:
@@ -112,7 +124,7 @@ class PythonICATOrderFilter(OrderFilter):
         log.debug("Result Order: %s", PythonICATOrderFilter.result_order)
 
         try:
-            log.info("Adding order filter")
+            log.info("Adding order filter (for %s)", self.field)
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
             # Typically either invalid attribute(s) or attribute(s) contains 1-many
@@ -125,7 +137,7 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_properties = config.get_icat_properties()
+        icat_properties = Constants.ICAT_PROPERTIES
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 
@@ -153,6 +165,7 @@ def icat_set_limit(query, skip_number, limit_number):
     """
     try:
         query.setLimit((skip_number, limit_number))
+        log.debug("Current limit/skip values assigned to query: %s", query.limit)
     except TypeError as e:
         # Not a two element tuple as managed by Python ICAT's setLimit()
         raise FilterError(e)
@@ -162,7 +175,7 @@ class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
         self.included_filters = []
         log.info("Extracting fields for include filter")
-        self._extract_filter_fields(included_filters["include"])
+        self._extract_filter_fields(included_filters)
 
     def _extract_filter_fields(self, field):
         """
@@ -180,6 +193,7 @@ class PythonICATIncludeFilter(IncludeFilter):
         :type field: :class:`str` or :class:`list` or :class:`dict`
         """
         if isinstance(field, str):
+            log.debug("Adding %s to include filter", field)
             self.included_filters.append(field)
         elif isinstance(field, dict):
             for key, value in field.items():

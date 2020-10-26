@@ -1,86 +1,47 @@
-from common.models.db_models import (
-    APPLICATION,
-    DATACOLLECTIONDATAFILE,
-    DATACOLLECTIONPARAMETER,
-    DATACOLLECTIONDATASET,
-    DATACOLLECTION,
-    DATAFILEFORMAT,
-    DATAFILE,
-    FACILITYCYCLE,
-    DATASETTYPE,
-    GROUPING,
-    INSTRUMENT,
-    INSTRUMENTSCIENTIST,
-    INVESTIGATIONGROUP,
-    INVESTIGATIONINSTRUMENT,
-    INVESTIGATIONTYPE,
-    INVESTIGATION,
-    JOB,
-    KEYWORD,
-    PARAMETERTYPE,
-    INVESTIGATIONPARAMETER,
-    INVESTIGATIONUSER,
-    PUBLICSTEP,
-    RULE,
-    SAMPLE,
-    USERGROUP,
-    STUDYINVESTIGATION,
-    SAMPLETYPE,
-    RELATEDDATAFILE,
-    SAMPLEPARAMETER,
-    PUBLICATION,
-    STUDY,
-    USER,
-    SHIFT,
-    PERMISSIBLESTRINGVALUE,
-    FACILITY,
-    DATAFILEPARAMETER,
-    DATASET,
-    DATASETPARAMETER,
-)
-
+from common.database.models import EntityHelper
 import datetime
 from sqlalchemy.inspection import inspect
 
+# endpoint_name: entity_name
 endpoints = {
-    "Applications": APPLICATION,
-    "DataCollectionDatafiles": DATACOLLECTIONDATAFILE,
-    "DataCollectionDatasets": DATACOLLECTIONDATASET,
-    "DataCollectionParameters": DATACOLLECTIONPARAMETER,
-    "DataCollections": DATACOLLECTION,
-    "DatafileFormats": DATAFILEFORMAT,
-    "DatafileParameters": DATAFILEPARAMETER,
-    "Datafiles": DATAFILE,
-    "DatasetParameters": DATASETPARAMETER,
-    "DatasetTypes": DATASETTYPE,
-    "Datasets": DATASET,
-    "Facilities": FACILITY,
-    "FacilityCycles": FACILITYCYCLE,
-    "Groupings": GROUPING,
-    "InstrumentScientists": INSTRUMENTSCIENTIST,
-    "Instruments": INSTRUMENT,
-    "InvestigationGroups": INVESTIGATIONGROUP,
-    "InvestigationInstruments": INVESTIGATIONINSTRUMENT,
-    "InvestigationParameters": INVESTIGATIONPARAMETER,
-    "InvestigationTypes": INVESTIGATIONTYPE,
-    "InvestigationUsers": INVESTIGATIONUSER,
-    "Investigations": INVESTIGATION,
-    "Jobs": JOB,
-    "Keywords": KEYWORD,
-    "ParameterTypes": PARAMETERTYPE,
-    "PermissibleStringValues": PERMISSIBLESTRINGVALUE,
-    "PublicSteps": PUBLICSTEP,
-    "Publications": PUBLICATION,
-    "RelatedDatafiles": RELATEDDATAFILE,
-    "Rules": RULE,
-    "SampleParameters": SAMPLEPARAMETER,
-    "SampleTypes": SAMPLETYPE,
-    "Samples": SAMPLE,
-    "Shifts": SHIFT,
-    "Studies": STUDY,
-    "StudyInvestigations": STUDYINVESTIGATION,
-    "UserGroups": USERGROUP,
-    "Users": USER,
+    "Applications": "Application",
+    "DataCollectionDatafiles": "DataCollectionDatafile",
+    "DataCollectionDatasets": "DataCollectionDataset",
+    "DataCollectionParameters": "DataCollectionParameter",
+    "DataCollections": "DataCollection",
+    "DatafileFormats": "DatafileFormat",
+    "DatafileParameters": "DatafileParameter",
+    "Datafiles": "Datafile",
+    "DatasetParameters": "DatasetParameter",
+    "DatasetTypes": "DatasetType",
+    "Datasets": "Dataset",
+    "Facilities": "Facility",
+    "FacilityCycles": "FacilityCycle",
+    "Groupings": "Grouping",
+    "InstrumentScientists": "InstrumentScientist",
+    "Instruments": "Instrument",
+    "InvestigationGroups": "InvestigationGroup",
+    "InvestigationInstruments": "InvestigationInstrument",
+    "InvestigationParameters": "InvestigationParameter",
+    "InvestigationTypes": "InvestigationType",
+    "InvestigationUsers": "InvestigationUser",
+    "Investigations": "Investigation",
+    "Jobs": "Job",
+    "Keywords": "Keyword",
+    "ParameterTypes": "ParameterType",
+    "PermissibleStringValues": "PermissibleStringValue",
+    "PublicSteps": "PublicStep",
+    "Publications": "Publication",
+    "RelatedDatafiles": "RelatedDatafile",
+    "Rules": "Rule",
+    "SampleParameters": "SampleParameter",
+    "SampleTypes": "SampleType",
+    "Samples": "Sample",
+    "Shifts": "Shift",
+    "Studies": "Study",
+    "StudyInvestigations": "StudyInvestigation",
+    "UserGroups": "UserGroup",
+    "Users": "User",
 }
 
 
@@ -115,7 +76,8 @@ def create_entity_models():
     for endpoint in endpoints:
         params = {}
         required = []
-        endpoint_inspection = inspect(endpoints[endpoint])
+        endpoint_table = EntityHelper.get_entity_object_from_name(endpoints[endpoint])
+        endpoint_inspection = inspect(endpoint_table)
         for column in endpoint_inspection.columns:
             python_type = (
                 column.type.impl.python_type
@@ -153,7 +115,7 @@ def create_entity_models():
                         "$ref": f"#/components/schemas/{relationship_name.strip('_')}"
                     },
                 }
-        endpoint_models[endpoints[endpoint].__name__] = {
+        endpoint_models[endpoint_table.__name__] = {
             "properties": params,
             "required": required,
         }

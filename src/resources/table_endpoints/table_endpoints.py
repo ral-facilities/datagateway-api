@@ -56,7 +56,7 @@ class InstrumentsFacilityCycles(Resource):
                 description: No such record - Unable to find a record in the database
         """
         return (
-            backend.get_facility_cycles_for_instrument(
+            backend.get_facility_cycles_for_instrument_with_filters(
                 get_session_id_from_auth_header(), id_, get_filters_from_query_string()
             ),
             200,
@@ -97,7 +97,7 @@ class InstrumentsFacilityCyclesCount(Resource):
                 description: No such record - Unable to find a record in the database
         """
         return (
-            backend.get_facility_cycles_for_instrument_count(
+            backend.get_facility_cycles_for_instrument_count_with_filters(
                 get_session_id_from_auth_header(), id_, get_filters_from_query_string()
             ),
             200,
@@ -150,7 +150,7 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
                 description: No such record - Unable to find a record in the database
         """
         return (
-            backend.get_investigations_for_instrument_in_facility_cycle(
+            backend.get_investigations_for_instrument_in_facility_cycle_with_filters(
                 get_session_id_from_auth_header(),
                 instrument_id,
                 cycle_id,
@@ -200,7 +200,7 @@ class InstrumentsFacilityCyclesInvestigationsCount(Resource):
                 description: No such record - Unable to find a record in the database
         """
         return (
-            backend.get_investigations_for_instrument_in_facility_cycle_count(
+            backend.get_investigations_for_instrument_in_facility_cycle_count_with_filters(
                 get_session_id_from_auth_header(),
                 instrument_id,
                 cycle_id,
