@@ -8,6 +8,7 @@ code_locations = "common", "src", "test", "util", "noxfile.py"
 @nox.session(python="3.6")
 def format(session):
     args = session.posargs or code_locations
+    session.install("black")
     session.run("black", *args, external=True)
 
 
@@ -22,6 +23,7 @@ def lint(session):
         "flake8-import-order",
     )
     session.run("flake8", *args)
+
 
 @nox.session(python="3.6")
 def safety(session):
