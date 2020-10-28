@@ -4,3 +4,4 @@ venv/
 logs.log
 config.json
 .vscode/
+.nox/
