@@ -9,7 +9,7 @@ log = logging.getLogger()
 
 class Config(object):
     def __init__(self):
-        config_path = Path(__file__).parent.parent / "config.json"
+        config_path = Path(__file__).parent.parent.parent / "config.json"
         with open(config_path) as target:
 
             self.config = json.load(target)
