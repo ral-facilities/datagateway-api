@@ -1,4 +1,4 @@
-from common.config import config
+from datagateway_api.common.config import config
 
 
 class Constants:

@@ -1,6 +1,6 @@
 import logging
 
-from common.icat.filters import (
+from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATSkipFilter,
     PythonICATOrderFilter,

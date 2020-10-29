@@ -1,6 +1,6 @@
 import logging
 
-from common.filters import (
+from datagateway_api.common.filters import (
     WhereFilter,
     DistinctFieldFilter,
     OrderFilter,
@@ -8,9 +8,9 @@ from common.filters import (
     LimitFilter,
     IncludeFilter,
 )
-from common.exceptions import FilterError
-from common.config import config
-from common.constants import Constants
+from datagateway_api.common.exceptions import FilterError
+from datagateway_api.common.config import config
+from datagateway_api.common.constants import Constants
 
 log = logging.getLogger()
 

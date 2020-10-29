@@ -1,4 +1,4 @@
-from common.database.models import EntityHelper
+from datagateway_api.common.database.models import EntityHelper
 import datetime
 from sqlalchemy.inspection import inspect
 

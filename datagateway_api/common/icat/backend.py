@@ -3,9 +3,9 @@ import logging
 import icat.client
 from icat.exception import ICATSessionError
 
-from common.backend import Backend
-from common.helpers import queries_records
-from common.icat.helpers import (
+from datagateway_api.common.backend import Backend
+from datagateway_api.common.helpers import queries_records
+from datagateway_api.common.icat.helpers import (
     requires_session_id,
     get_session_details_helper,
     logout_icat_client,
@@ -24,8 +24,8 @@ from common.icat.helpers import (
     get_investigations_for_instrument_in_facility_cycle_count,
 )
 
-from common.config import config
-from common.exceptions import AuthenticationError
+from datagateway_api.common.config import config
+from datagateway_api.common.exceptions import AuthenticationError
 
 log = logging.getLogger()
 

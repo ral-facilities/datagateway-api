@@ -11,17 +11,17 @@ from icat.exception import (
     ICATNoObjectError,
     ICATParameterError,
 )
-from common.exceptions import (
+from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
     MissingRecordError,
     PythonICATError,
 )
-from common.filter_order_handler import FilterOrderHandler
-from common.date_handler import DateHandler
-from common.constants import Constants
-from common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
-from common.icat.query import ICATQuery
+from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.constants import Constants
+from datagateway_api.common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
+from datagateway_api.common.icat.query import ICATQuery
 
 
 log = logging.getLogger()

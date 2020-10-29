@@ -3,28 +3,28 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from common.config import config
-from common.logger_setup import setup_logger
-from src.resources.entities.entity_endpoint import (
+from datagateway_api.common.config import config
+from datagateway_api.common.logger_setup import setup_logger
+from datagateway_api.src.resources.entities.entity_endpoint import (
     get_endpoint,
     get_id_endpoint,
     get_count_endpoint,
     get_find_one_endpoint,
 )
-from src.resources.entities.entity_map import endpoints
-from src.resources.non_entities.sessions_endpoints import *
-from src.resources.table_endpoints.table_endpoints import (
+from datagateway_api.src.resources.entities.entity_map import endpoints
+from datagateway_api.src.resources.non_entities.sessions_endpoints import *
+from datagateway_api.src.resources.table_endpoints.table_endpoints import (
     InstrumentsFacilityCycles,
     InstrumentsFacilityCyclesCount,
     InstrumentsFacilityCyclesInvestigations,
     InstrumentsFacilityCyclesInvestigationsCount,
 )
-from common.exceptions import ApiError
+from datagateway_api.common.exceptions import ApiError
 from apispec import APISpec
 from pathlib import Path
 import json
-from src.swagger.apispec_flask_restful import RestfulPlugin
-from src.swagger.initialise_spec import initialise_spec
+from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
+from datagateway_api.src.swagger.initialise_spec import initialise_spec
 
 
 spec = APISpec(

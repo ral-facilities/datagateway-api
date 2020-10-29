@@ -1,5 +1,5 @@
-from common.backend import Backend
-from common.database.helpers import (
+from datagateway_api.common.backend import Backend
+from datagateway_api.common.database.helpers import (
     get_facility_cycles_for_instrument,
     get_facility_cycles_for_instrument_count,
     get_investigations_for_instrument_in_facility_cycle,
@@ -15,10 +15,10 @@ from common.database.helpers import (
     get_first_filtered_row,
     requires_session_id,
 )
-from common.helpers import queries_records
-from common.database.models import EntityHelper, SESSION
+from datagateway_api.common.helpers import queries_records
+from datagateway_api.common.database.models import EntityHelper, SESSION
 import uuid
-from common.exceptions import AuthenticationError
+from datagateway_api.common.exceptions import AuthenticationError
 import datetime
 
 import logging

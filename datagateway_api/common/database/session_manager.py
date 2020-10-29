@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.pool import QueuePool
 
-from common.constants import Constants
+from datagateway_api.common.constants import Constants
 
 engine = create_engine(
     Constants.DATABASE_URL, poolclass=QueuePool, pool_size=100, max_overflow=0

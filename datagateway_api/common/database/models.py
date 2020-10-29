@@ -20,7 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
-from common.exceptions import FilterError, DatabaseError, ApiError
+from datagateway_api.common.exceptions import FilterError, DatabaseError, ApiError
 
 Base = declarative_base()
 

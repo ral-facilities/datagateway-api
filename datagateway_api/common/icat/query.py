@@ -6,9 +6,9 @@ from icat.entities import getTypeMap
 from icat.query import Query
 from icat.exception import ICATValidationError, ICATInternalError
 
-from common.exceptions import PythonICATError, FilterError
-from common.date_handler import DateHandler
-from common.constants import Constants
+from datagateway_api.common.exceptions import PythonICATError, FilterError
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.constants import Constants
 
 log = logging.getLogger()
 

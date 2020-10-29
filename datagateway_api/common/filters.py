@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 
-from common.exceptions import BadRequestError
+from datagateway_api.common.exceptions import BadRequestError
 
 log = logging.getLogger()
 

@@ -6,8 +6,8 @@ from random import randrange, seed, choice
 
 from faker import Faker
 
-from common.database import models
-from common.database.session_manager import session_manager
+from datagateway_api.common.database import models
+from datagateway_api.common.database.session_manager import session_manager
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

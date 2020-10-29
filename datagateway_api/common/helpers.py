@@ -6,8 +6,8 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from common.database.helpers import QueryFilterFactory
-from common.exceptions import (
+from datagateway_api.common.database.helpers import QueryFilterFactory
+from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,
     FilterError,

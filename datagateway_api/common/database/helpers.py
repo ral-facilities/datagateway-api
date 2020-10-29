@@ -5,7 +5,7 @@ from functools import wraps
 
 from sqlalchemy.orm import aliased
 
-from common.exceptions import (
+from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,
     MissingRecordError,
@@ -13,7 +13,7 @@ from common.exceptions import (
     BadRequestError,
     MultipleIncludeError,
 )
-from common.database.models import (
+from datagateway_api.common.database.models import (
     INVESTIGATION,
     INSTRUMENT,
     FACILITYCYCLE,
@@ -21,13 +21,13 @@ from common.database.models import (
     FACILITY,
     SESSION,
 )
-from common.database.session_manager import session_manager
-from common.filter_order_handler import FilterOrderHandler
-from common.config import config
+from datagateway_api.common.database.session_manager import session_manager
+from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.common.config import config
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
-    from common.database.filters import (
+    from datagateway_api.common.database.filters import (
         DatabaseWhereFilter as WhereFilter,
         DatabaseDistinctFieldFilter as DistinctFieldFilter,
         DatabaseOrderFilter as OrderFilter,
@@ -36,7 +36,7 @@ if backend_type == "db":
         DatabaseIncludeFilter as IncludeFilter,
     )
 elif backend_type == "python_icat":
-    from common.icat.filters import (
+    from datagateway_api.common.icat.filters import (
         PythonICATWhereFilter as WhereFilter,
         PythonICATDistinctFieldFilter as DistinctFieldFilter,
         PythonICATOrderFilter as OrderFilter,

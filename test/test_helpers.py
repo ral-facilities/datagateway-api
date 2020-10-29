@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
 
-from common.database.helpers import (
+from datagateway_api.common.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
     LimitFilter,
@@ -12,20 +12,20 @@ from common.database.helpers import (
     WhereFilter,
     OrderFilter,
 )
-from common.exceptions import (
+from datagateway_api.common.exceptions import (
     MissingRecordError,
     FilterError,
     BadRequestError,
     MissingCredentialsError,
     AuthenticationError,
 )
-from common.helpers import (
+from datagateway_api.common.helpers import (
     is_valid_json,
     queries_records,
     get_session_id_from_auth_header,
     get_filters_from_query_string,
 )
-from common.database.models import SESSION
+from datagateway_api.common.database.models import SESSION
 from test.test_base import FlaskAppTest
 
 

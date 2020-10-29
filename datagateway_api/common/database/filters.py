@@ -1,4 +1,4 @@
-from common.filters import (
+from datagateway_api.common.filters import (
     WhereFilter,
     DistinctFieldFilter,
     OrderFilter,
@@ -6,8 +6,8 @@ from common.filters import (
     LimitFilter,
     IncludeFilter,
 )
-from common.exceptions import FilterError, MultipleIncludeError
-from common.database import models
+from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
+from datagateway_api.common.database import models
 
 from sqlalchemy import asc, desc
 import logging
