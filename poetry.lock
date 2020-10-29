@@ -181,6 +181,17 @@ black = "*"
 flake8 = ">=3.0.0"
 
 [[package]]
+name = "flake8-broken-line"
+version = "0.3.0"
+description = "Flake8 plugin to forbid backslashes for line breaks"
+category = "dev"
+optional = false
+python-versions = ">=3.6,<4.0"
+
+[package.dependencies]
+flake8 = ">=3.5,<4.0"
+
+[[package]]
 name = "flake8-bugbear"
 version = "20.1.4"
 description = "A plugin for flake8 finding likely bugs and design problems in your program. Contains warnings that don't belong in pyflakes and pycodestyle."
@@ -207,6 +218,29 @@ flake8 = "*"
 test = ["coverage", "coveralls", "mock", "pytest", "pytest-cov"]
 
 [[package]]
+name = "flake8-commas"
+version = "2.0.0"
+description = "Flake8 lint for trailing commas."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+flake8 = ">=2,<4.0.0"
+
+[[package]]
+name = "flake8-comprehensions"
+version = "3.3.0"
+description = "A flake8 plugin to help you write better list/set/dict comprehensions."
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[package.dependencies]
+flake8 = ">=3.0,<3.2.0 || >3.2.0,<4"
+importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
+
+[[package]]
 name = "flake8-import-order"
 version = "0.18.1"
 description = "Flake8 and pylama plugin that checks the ordering of import statements."
@@ -216,6 +250,14 @@ python-versions = "*"
 
 [package.dependencies]
 pycodestyle = "*"
+
+[[package]]
+name = "flake8-logging-format"
+version = "0.6.0"
+description = "Flake8 extension to validate (lack of) logging format strings"
+category = "dev"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "flake8-polyfill"
@@ -397,6 +439,17 @@ description = "Python Build Reasonableness"
 category = "dev"
 optional = false
 python-versions = ">=2.6"
+
+[[package]]
+name = "pep8-naming"
+version = "0.11.1"
+description = "Check PEP-8 naming conventions, plugin for flake8"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+flake8-polyfill = ">=1.0.2,<2"
 
 [[package]]
 name = "pip-tools"
@@ -644,7 +697,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "a66e04cf016e493456a8d86cb62a74bbd7b93c57c2ca6d0efe10fefba2210a87"
+content-hash = "bfbe333aab10d4b666d71e1e0845c58f0b74456f93a11be47b0a16d94b3a791d"
 
 [metadata.files]
 aniso8601 = [
@@ -705,6 +758,10 @@ flake8-bandit = [
 flake8-black = [
     {file = "flake8-black-0.2.1.tar.gz", hash = "sha256:f26651bc10db786c03f4093414f7c9ea982ed8a244cec323c984feeffdf4c118"},
 ]
+flake8-broken-line = [
+    {file = "flake8-broken-line-0.3.0.tar.gz", hash = "sha256:f74e052833324a9e5f0055032f7ccc54b23faabafe5a26241c2f977e70b10b50"},
+    {file = "flake8_broken_line-0.3.0-py3-none-any.whl", hash = "sha256:611f79c7f27118e7e5d3dc098ef7681c40aeadf23783700c5dbee840d2baf3af"},
+]
 flake8-bugbear = [
     {file = "flake8-bugbear-20.1.4.tar.gz", hash = "sha256:bd02e4b009fb153fe6072c31c52aeab5b133d508095befb2ffcf3b41c4823162"},
     {file = "flake8_bugbear-20.1.4-py36.py37.py38-none-any.whl", hash = "sha256:a3ddc03ec28ba2296fc6f89444d1c946a6b76460f859795b35b77d4920a51b63"},
@@ -713,9 +770,20 @@ flake8-builtins = [
     {file = "flake8-builtins-1.5.3.tar.gz", hash = "sha256:09998853b2405e98e61d2ff3027c47033adbdc17f9fe44ca58443d876eb00f3b"},
     {file = "flake8_builtins-1.5.3-py2.py3-none-any.whl", hash = "sha256:7706babee43879320376861897e5d1468e396a40b8918ed7bccf70e5f90b8687"},
 ]
+flake8-commas = [
+    {file = "flake8-commas-2.0.0.tar.gz", hash = "sha256:d3005899466f51380387df7151fb59afec666a0f4f4a2c6a8995b975de0f44b7"},
+    {file = "flake8_commas-2.0.0-py2.py3-none-any.whl", hash = "sha256:ee2141a3495ef9789a3894ed8802d03eff1eaaf98ce6d8653a7c573ef101935e"},
+]
+flake8-comprehensions = [
+    {file = "flake8-comprehensions-3.3.0.tar.gz", hash = "sha256:355ef47288523cad7977cb9c1bc81b71c82b7091e425cd9fbcd7e5c19a613677"},
+    {file = "flake8_comprehensions-3.3.0-py3-none-any.whl", hash = "sha256:c1dd6d8a00e9722619a5c5e0e6c5747f5cf23c089032c86eaf614c14a2e40adb"},
+]
 flake8-import-order = [
     {file = "flake8-import-order-0.18.1.tar.gz", hash = "sha256:a28dc39545ea4606c1ac3c24e9d05c849c6e5444a50fb7e9cdd430fc94de6e92"},
     {file = "flake8_import_order-0.18.1-py2.py3-none-any.whl", hash = "sha256:90a80e46886259b9c396b578d75c749801a41ee969a235e163cfe1be7afd2543"},
+]
+flake8-logging-format = [
+    {file = "flake8-logging-format-0.6.0.tar.gz", hash = "sha256:ca5f2b7fc31c3474a0aa77d227e022890f641a025f0ba664418797d979a779f8"},
 ]
 flake8-polyfill = [
     {file = "flake8-polyfill-1.0.2.tar.gz", hash = "sha256:e44b087597f6da52ec6393a709e7108b2905317d0c0b744cdca6208e670d8eda"},
@@ -810,6 +878,10 @@ pathspec = [
 pbr = [
     {file = "pbr-5.5.1-py2.py3-none-any.whl", hash = "sha256:b236cde0ac9a6aedd5e3c34517b423cd4fd97ef723849da6b0d2231142d89c00"},
     {file = "pbr-5.5.1.tar.gz", hash = "sha256:5fad80b613c402d5b7df7bd84812548b2a61e9977387a80a5fc5c396492b13c9"},
+]
+pep8-naming = [
+    {file = "pep8-naming-0.11.1.tar.gz", hash = "sha256:a1dd47dd243adfe8a83616e27cf03164960b507530f155db94e10b36a6cd6724"},
+    {file = "pep8_naming-0.11.1-py2.py3-none-any.whl", hash = "sha256:f43bfe3eea7e0d73e8b5d07d6407ab47f2476ccaeff6937c84275cd30b016738"},
 ]
 pip-tools = [
     {file = "pip-tools-5.3.1.tar.gz", hash = "sha256:5672c2b6ca0f1fd803f3b45568c2cf7fadf135b4971e7d665232b2075544c0ef"},

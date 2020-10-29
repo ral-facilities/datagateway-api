@@ -19,7 +19,7 @@ def install_with_constraints(session, *args, **kwargs):
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
 
-@nox.session(python=["3.6", "3.7", "3.8", "3.9"], reuse_venv=True)
+@nox.session(python="3.6", reuse_venv=True)
 def format(session):
     args = session.posargs or code_locations
     install_with_constraints(session, "black")
@@ -34,11 +34,14 @@ def lint(session):
         "flake8",
         "flake8-bandit",
         "flake8-black",
+        "flake8-broken-line",
         "flake8-bugbear",
-        "flake8-import-order",
         "flake8-builtins",
-        # "flake8-logging-format",    # TODO - Add this to env
-        # "flake8-commas",
+        "flake8-commas",
+        "flake8-comprehensions",
+        "flake8-import-order",
+        "flake8-logging-format",
+        "pep8-naming",
     )
     session.run("flake8", *args)
 
