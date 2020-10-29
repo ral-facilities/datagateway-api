@@ -1,7 +1,12 @@
 import datetime
 from unittest import TestCase
 
-from datagateway_api.common.database.models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
+from datagateway_api.common.database.models import (
+    DATAFILE,
+    DATASET,
+    DATAFILEFORMAT,
+    INVESTIGATION,
+)
 
 
 class TestEntityHelper(TestCase):

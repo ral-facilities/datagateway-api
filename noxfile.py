@@ -37,8 +37,8 @@ def lint(session):
         "flake8-bugbear",
         "flake8-import-order",
         "flake8-builtins",
-        #"flake8-logging-format",    # TODO - Add this to env
-        #"flake8-commas",
+        # "flake8-logging-format",    # TODO - Add this to env
+        # "flake8-commas",
     )
     session.run("flake8", *args)
 

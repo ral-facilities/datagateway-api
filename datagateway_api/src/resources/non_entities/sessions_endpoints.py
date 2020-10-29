@@ -57,7 +57,7 @@ class Sessions(Resource):
                       example: xxxxxx-yyyyyyy-zzzzzz
           400:
             description: Bad request. User credentials were not provided in request body.
-          403: 
+          403:
              description: Forbidden. User credentials were invalid
         """
         if not (

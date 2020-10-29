@@ -78,7 +78,7 @@ class FilterOrderHandler(object):
         """
         Checks if any order filters have been added to the request and resets the
         variable used to manage which attribute(s) to use for sorting results.
-        
+
         A reset is required because Python ICAT overwrites (as opposed to appending to
         it) the query's order list every time one is added to the query.
         """

@@ -66,7 +66,7 @@ class EntityHelper(object):
 
         :param entity_name: Name of the entity to fetch a version from this model
         :type entity_name: :class:`str`
-        :return: Object of the entity requested (e.g. 
+        :return: Object of the entity requested (e.g.
             :class:`common.database.models.INVESTIGATIONINSTRUMENT`)
         :raises: KeyError: If an entity model cannot be found as a class in this model
         """
@@ -178,7 +178,7 @@ class EntityHelper(object):
         """
         Given a dictionary containing field names and variables, updates the entity from
         the given dictionary
-        
+
         :param dictionary: dict: dictionary containing the new values
         :returns: The updated dict
         """

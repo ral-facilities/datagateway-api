@@ -88,7 +88,7 @@ def get_filters_from_query_string():
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
-    
+
     :return: The list of filters
     """
     log.info(" Getting filters from query string")

@@ -18,7 +18,7 @@ class ICATQuery:
         self, client, entity_name, conditions=None, aggregate=None, includes=None,
     ):
         """
-        Create a Query object within Python ICAT 
+        Create a Query object within Python ICAT
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
@@ -60,7 +60,7 @@ class ICATQuery:
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
-        :param return_json_formattable: Flag to determine whether the data from the 
+        :param return_json_formattable: Flag to determine whether the data from the
             query should be returned as a list of data ready to be converted straight to
             JSON (i.e. if the data will be used as a response for an API call) or
             whether to leave the data in a Python ICAT format (i.e. if it's going to be
@@ -164,7 +164,7 @@ class ICATQuery:
             :class:`icat.entity.Entity`) or :class:`icat.entity.EntityList`
         :param includes: List of fields that have been included in the ICAT query. It is
             assumed each element has been checked for multiple fields separated by dots,
-            split them accordingly and flattened the resulting list. Note: 
+            split them accordingly and flattened the resulting list. Note:
             ICATQuery.flatten_query_included_fields performs this functionality.
         :type includes: :class:`list`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
@@ -232,11 +232,11 @@ class ICATQuery:
         entity they belong to
 
         The result of this function will be a dictionary that has a data structure
-        similar to the example below. The values assigned to the 'base' key are the 
+        similar to the example below. The values assigned to the 'base' key are the
         fields that belong to the entity the request is being sent to (e.g. the base
         values of `/users` would be fields belonging to the User entity).
 
-        Example return value: 
+        Example return value:
         `{'base': ['id', 'modTime'], 'userGroups': ['id', 'fullName'],
          'investigationUser': ['id', 'role']}`
 
@@ -301,7 +301,7 @@ class ICATQuery:
         Copy `distinct_fields` and move the data held in `entity_name` portion of the
         dictionary to the "base" section of the dictionary. This function is called in
         preparation for recursive calls occurring in entity_to_dict()
-        
+
         See map_distinct_attribute_to_entity_names() for an explanation regarding
         `distinct_fields` and its data structure
 

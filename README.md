@@ -22,33 +22,33 @@ ICAT API to interface with the Data Gateway
 ## Requirements
 All requirements can be installed with `pip install -r requirements.txt`, and all development requirements can be installed with `pip install -r dev-requirements.txt`
 
-The required python libraries:  
-   - [SQLAlchemy](https://www.sqlalchemy.org/)    
-   - [flask-restful](https://github.com/flask-restful/flask-restful/)  
-   - [pymysql](https://pymysql.readthedocs.io/en/latest/)  
+The required python libraries:
+   - [SQLAlchemy](https://www.sqlalchemy.org/)
+   - [flask-restful](https://github.com/flask-restful/flask-restful/)
+   - [pymysql](https://pymysql.readthedocs.io/en/latest/)
    - [pyyaml](https://pyyaml.org/wiki/PyYAMLDocumentation) (For the swagger generation)
    - [pip-tools](https://github.com/jazzband/pip-tools) (For generating requirements.txt)
 
-## Setup and running the API   
+## Setup and running the API
 The database connection needs to be set up first. This is set in config.json, an example config file called `config.json.example` is provided.
 
-Ideally the API would be run with:  
+Ideally the API would be run with:
 `python -m src.main`
 However it can be run with the flask run command as shown below:
-  
-  
+
+
 **Warning: the host, port and debug config options will not be respected when the API is run this way**
 
-To use `flask run`, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is 
-set the API can be run with `flask run` while inside the root directory of the project. The `flask run` command gets installed with flask.   
+To use `flask run`, the enviroment variable `FLASK_APP` should be set to `src/main.py`. Once this is
+set the API can be run with `flask run` while inside the root directory of the project. The `flask run` command gets installed with flask.
 
-Examples shown:  
+Examples shown:
 Unix
 ```bash
 $ export FLASK_APP=src/main.py
 $ flask run
 ```
-CMD  
+CMD
 ```CMD
 > set FLASK_APP=src/main.py
 > flask run
@@ -102,7 +102,7 @@ This is illustrated below.
     │   ├── swagger
     │   │   ├── openapi.yaml
     │   │   └── swagger_generator.py
-    │   └── main.py  
+    │   └── main.py
     ├── test
     │   ├── resources
     │   │   ├── entities
@@ -118,15 +118,15 @@ This is illustrated below.
     └── config.json
  `````
 #### Main
-`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is generated and mapped 
+`main.py` is where the flask_restful api is set up. This is where each endpoint resource class is generated and mapped
 to an endpoint.
 
-Example:  
- `api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")`	   
-   
+Example:
+ `api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")`
+
 
 #### Endpoints
-The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and 
+The logic for each endpoint are within `/src/resources`. They are split into entities, non_entities and
 table_endpoints. The entities package contains `entities_map` which maps entity names to their sqlalchemy
 model. The `entity_endpoint` module contains the function that is used to generate endpoints at start up.
 `table_endpoints` contains the endpoint classes that are table specific. Finally, non_entities contains the
@@ -134,20 +134,20 @@ session endpoint.
 
 
 #### Mapped classes
-The classes mapped from the database are stored in `/common/database/models.py`. Each model was 
+The classes mapped from the database are stored in `/common/database/models.py`. Each model was
 automatically generated using sqlacodegen. A class `EntityHelper` is defined so that each model may
-inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities 
-and updating them, in a form easily converted to JSON.  
+inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used for returning entities
+and updating them, in a form easily converted to JSON.
 
 
 
 
 ## Database Generator
 There is a tool to generate mock data into the database. It is located in `util/icat_db_generator.py`
-By default it will generate 20 years worth of data (approx 70,000 entities). The script makes use of 
-`random` and `Faker` and is seeded with a seed of 1. The seed and number of years of data generated can 
+By default it will generate 20 years worth of data (approx 70,000 entities). The script makes use of
+`random` and `Faker` and is seeded with a seed of 1. The seed and number of years of data generated can
 be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years.
-For example:  
+For example:
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10 years of data.
 
 
@@ -156,13 +156,13 @@ The querying and filtering logic is located in `/common/database_helpers.py`. In
 `QueryFilter` classes are defined as well as their implementations. The functions that are used by various endpoints to
 query the database are also in this module.
 Class diagrams for this module:
-![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)  
+![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)
 ![image](https://user-images.githubusercontent.com/44777678/67954834-7fb48700-fbe9-11e9-96f3-ffefc7277ebd.png)
 
 
 #### Authentication
 Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session ID can be obtained by
-sending a post request to `/sessions/`  
+sending a post request to `/sessions/`
 All endpoint methods that require a session id are decorated with `@requires_session_id`
 
 
@@ -170,8 +170,8 @@ All endpoint methods that require a session id are decorated with `@requires_ses
 #### Generating the swagger spec: `openapi.yaml`
 The swagger generation script is located in `/src/swagger/swagger_generator.py`. The script will only run when
 the config option `generate_swagger` is set to true in `config.json`. The generator decorates the first endpoint
-resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the 
-entity and outputs the swagger spec to `openapi.yaml` 
+resource class in it's module to get the name of the entity. It then creates the correct paths using the name of the
+entity and outputs the swagger spec to `openapi.yaml`
 
 Example of the decorator:
 ```python

@@ -17,7 +17,7 @@ class InstrumentsFacilityCycles(Resource):
     def get(self, id_):
         """
         ---
-        summary: Get an Instrument's FacilityCycles 
+        summary: Get an Instrument's FacilityCycles
         description: Given an Instrument id get facility cycles where the instrument has investigations that occur within that cycle, subject to the given filters
         tags:
             - FacilityCycles
@@ -64,7 +64,7 @@ class InstrumentsFacilityCyclesCount(Resource):
     def get(self, id_):
         """
         ---
-        summary: Count an Instrument's FacilityCycles 
+        summary: Count an Instrument's FacilityCycles
         description: Return the count of the Facility Cycles that have investigations that occur within that cycle on the specified instrument that would be retrieved given the filters provided
         tags:
             - FacilityCycles
@@ -105,7 +105,7 @@ class InstrumentsFacilityCyclesInvestigations(Resource):
     def get(self, instrument_id, cycle_id):
         """
         ---
-        summary: Get the investigations for a given Facility Cycle & Instrument 
+        summary: Get the investigations for a given Facility Cycle & Instrument
         description: Given an Instrument id and Facility Cycle id, get the investigations that occur within that cycle on that instrument, subject to the given filters
         tags:
             - Investigations
@@ -161,7 +161,7 @@ class InstrumentsFacilityCyclesInvestigationsCount(Resource):
     def get(self, instrument_id, cycle_id):
         """
         ---
-        summary: Count investigations for a given Facility Cycle & Instrument 
+        summary: Count investigations for a given Facility Cycle & Instrument
         description: Given an Instrument id and Facility Cycle id, get the number of investigations that occur within that cycle on that instrument, subject to the given filters
         tags:
             - Investigations

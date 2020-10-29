@@ -13,7 +13,7 @@ def get_endpoint(name, entity_type):
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
-    
+
     :param name: The name of the entity
     :param entity_type: The entity the endpoint will use in queries
     :return: The generated endpoint class

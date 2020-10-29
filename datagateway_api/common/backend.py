@@ -194,7 +194,7 @@ class Backend(ABC):
         """
         Given an instrument id and facility cycle id, get the count of the
         investigations that use the given instrument in the given cycle
-        
+
         :param session_id: The session id of the requesting user
         :param filters: The filters to be applied to the query
         :param instrument_id: The id of the instrument

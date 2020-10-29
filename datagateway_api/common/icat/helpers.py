@@ -20,7 +20,10 @@ from datagateway_api.common.exceptions import (
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.constants import Constants
-from datagateway_api.common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
+from datagateway_api.common.icat.filters import (
+    PythonICATLimitFilter,
+    PythonICATWhereFilter,
+)
 from datagateway_api.common.icat.query import ICATQuery
 
 
@@ -32,7 +35,7 @@ def requires_session_id(method):
     Decorator for Python ICAT backend methods that looks out for session errors when
     using the API. The API call runs and an ICATSessionError may be raised due to an
     expired session, invalid session ID etc.
- 
+
     :param method: The method for the backend operation
     :raises AuthenticationError: If a valid session_id is not provided with the request
     """
@@ -187,7 +190,7 @@ def get_entity_by_id(
     :type entity_type: :class:`str`
     :param id_: ID number of the entity to retrieve
     :type id_: :class:`int`
-    :param return_json_formattable_data: Flag to determine whether the data should be 
+    :param return_json_formattable_data: Flag to determine whether the data should be
         returned as a list of data ready to be converted straight to JSON (i.e. if the
         data will be used as a response for an API call) or whether to leave the data in
         a Python ICAT format
@@ -362,7 +365,7 @@ def get_first_result_with_filters(client, entity_type, filters):
 
 def update_entities(client, entity_type, data_to_update):
     """
-    Update one or more results for the given entity using the JSON provided in 
+    Update one or more results for the given entity using the JSON provided in
     `data_to_update`
 
     :param client: ICAT client containing an authenticated user
@@ -549,7 +552,7 @@ def get_investigations_for_instrument_in_facility_cycle(
     :param filters: The list of filters to be applied to the request
     :type filters: List of specific implementations :class:`QueryFilter`
     :param count_query: Flag to determine if the query in this function should be used
-        as a count query. Used for 
+        as a count query. Used for
         `get_investigations_for_instrument_in_facility_cycle_count()`
     :type count_query: :class:`bool`
     :return: A list of Investigations that match the query
