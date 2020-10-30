@@ -1,5 +1,0 @@
-pip-tools == 5.3.1
-Faker == 2.0.2
-black == 19.10b0
-nox==2020.8.22
-flake8==3.8.4
