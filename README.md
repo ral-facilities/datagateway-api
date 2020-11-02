@@ -274,7 +274,7 @@ This is illustrated below.
 
 
 `````
-─── datagateway-api
+─── datagateway_api
     ├── common
     │   ├── database
     │   │   ├── backend.py
