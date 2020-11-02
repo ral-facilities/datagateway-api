@@ -175,6 +175,57 @@ command:
 pre-commit run --all-files
 ```
 
+### Summary
+
+As a summary, these are the steps needed to create a dev environment for this repo
+compressed into a single code block:
+
+```bash
+# Install pyenv
+curl https://pyenv.run | bash
+
+# Paste into ~/.bashrc
+export PATH="~/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+# Apply changes made in ~/.bashrc
+source ~/.bashrc
+
+# Install Python build tools
+sudo yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite \
+sqlite-devel openssl-devel xz xz-devel libffi-devel findutils
+
+# Install different versions of Python and verify they work
+pyenv install 3.6.8
+python3.6 --version
+pyenv install 3.7.7
+python3.7 --version
+pyenv install 3.8.2
+python3.8 --version
+
+# Make installed Python versions available to repo
+pyenv local 3.6.8 3.7.7 3.8.2
+
+# Install Poetry
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+
+# Apply changes made to file when installing Poetry
+source ~/.poetry/env
+
+# Install API's dependencies
+poetry install
+
+# Install Nox
+pip install --user --upgrade nox
+
+# Install Pre Commit
+pip install --user --upgrade pre-commit
+
+# Install commit hooks
+pre-commit install
+```
+
 
 ## Running DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`) the connection
