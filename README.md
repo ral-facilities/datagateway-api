@@ -21,7 +21,8 @@ ICAT API to interface with the Data Gateway
 The recommended development environment for this API has taken lots of inspiration from
 the [Hypermodern Python](https://cjolowicz.github.io/posts/hypermodern-python-01-setup/)
 guide found online. It is assumed the commands shown in this part of the README are
-executed in the root directory of this repo.
+executed in the root directory of this repo once it has been cloned to your local
+machine.
 
 ### pyenv (Python Version Management)
 To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
@@ -154,8 +155,7 @@ Currently, the following Nox sessions have been created:
 To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
 is used. Like Nox, Pip is used to install this tool:
 
-```
-bash
+```bash
 pip install --user --upgrade pre-commit
 ```
 
@@ -285,8 +285,6 @@ inherit two methods `to_dict()` and `update_from_dict(dictionary)`, both used fo
 and updating them, in a form easily converted to JSON.
 
 
-
-
 ## Database Generator
 There is a tool to generate mock data into the database. It is located in `util/icat_db_generator.py`
 By default it will generate 20 years worth of data (approx 70,000 entities). The script makes use of
@@ -309,7 +307,6 @@ Class diagrams for this module:
 Each request requires a valid session ID to be provided in the Authorization header. This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session ID can be obtained by
 sending a post request to `/sessions/`
 All endpoint methods that require a session id are decorated with `@requires_session_id`
-
 
 
 #### Generating the swagger spec: `openapi.yaml`
