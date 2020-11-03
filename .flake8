@@ -6,5 +6,5 @@ max-complexity = 10
 max-line-length = 80
 application-import-names = datagateway_api,test,util
 import-order-style = google
-per-file-ignores = test/*:S101
+per-file-ignores = test/*:S101,util/icat_db_generator.py:S311
 enable-extensions=G
