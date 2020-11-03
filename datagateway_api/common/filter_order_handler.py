@@ -18,14 +18,14 @@ class FilterOrderHandler(object):
     def __init__(self):
         self.filters = []
 
-    def add_filter(self, filter):
-        self.filters.append(filter)
+    def add_filter(self, query_filter):
+        self.filters.append(query_filter)
 
-    def add_filters(self, filters):
-        self.filters.extend(filters)
+    def add_filters(self, query_filter):
+        self.filters.extend(query_filter)
 
-    def remove_filter(self, filter):
-        self.filters.remove(filter)
+    def remove_filter(self, query_filter):
+        self.filters.remove(query_filter)
 
     def sort_filters(self):
         """
@@ -41,8 +41,8 @@ class FilterOrderHandler(object):
         """
         self.sort_filters()
 
-        for filter in self.filters:
-            filter.apply_filter(query)
+        for query_filter in self.filters:
+            query_filter.apply_filter(query)
 
     def merge_python_icat_limit_skip_filters(self):
         """
