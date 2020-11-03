@@ -4,28 +4,28 @@ from sqlalchemy.exc import IntegrityError
 
 from datagateway_api.common.database.helpers import (
     delete_row_by_id,
-    insert_row_into_table,
-    LimitFilter,
     DistinctFieldFilter,
     IncludeFilter,
+    insert_row_into_table,
+    LimitFilter,
+    OrderFilter,
     SkipFilter,
     WhereFilter,
-    OrderFilter,
-)
-from datagateway_api.common.exceptions import (
-    MissingRecordError,
-    FilterError,
-    BadRequestError,
-    MissingCredentialsError,
-    AuthenticationError,
-)
-from datagateway_api.common.helpers import (
-    is_valid_json,
-    queries_records,
-    get_session_id_from_auth_header,
-    get_filters_from_query_string,
 )
 from datagateway_api.common.database.models import SESSION
+from datagateway_api.common.exceptions import (
+    AuthenticationError,
+    BadRequestError,
+    FilterError,
+    MissingCredentialsError,
+    MissingRecordError,
+)
+from datagateway_api.common.helpers import (
+    get_filters_from_query_string,
+    get_session_id_from_auth_header,
+    is_valid_json,
+    queries_records,
+)
 from test.test_base import FlaskAppTest
 
 

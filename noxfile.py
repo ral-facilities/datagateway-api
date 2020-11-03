@@ -1,5 +1,6 @@
-import nox
 import tempfile
+
+import nox
 
 # Separating Black away from the rest of the sessions
 nox.options.sessions = "lint", "safety"

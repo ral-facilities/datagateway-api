@@ -1,16 +1,19 @@
+from datetime import datetime, timedelta
 from functools import wraps
 import logging
-from datetime import datetime, timedelta
+
 
 from icat.entities import getTypeMap
 from icat.exception import (
+    ICATInternalError,
+    ICATNoObjectError,
+    ICATObjectExistsError,
+    ICATParameterError,
     ICATSessionError,
     ICATValidationError,
-    ICATInternalError,
-    ICATObjectExistsError,
-    ICATNoObjectError,
-    ICATParameterError,
 )
+
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -18,8 +21,6 @@ from datagateway_api.common.exceptions import (
     PythonICATError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.constants import Constants
 from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,

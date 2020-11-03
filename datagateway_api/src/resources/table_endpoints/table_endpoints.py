@@ -1,16 +1,10 @@
 from flask_restful import Resource
 
-from datagateway_api.common.database.helpers import (
-    get_facility_cycles_for_instrument,
-    get_facility_cycles_for_instrument_count,
-    get_investigations_for_instrument_in_facility_cycle,
-    get_investigations_for_instrument_in_facility_cycle_count,
-)
-from datagateway_api.common.helpers import (
-    get_session_id_from_auth_header,
-    get_filters_from_query_string,
-)
 from datagateway_api.common.backends import backend
+from datagateway_api.common.helpers import (
+    get_filters_from_query_string,
+    get_session_id_from_auth_header,
+)
 
 
 class InstrumentsFacilityCycles(Resource):

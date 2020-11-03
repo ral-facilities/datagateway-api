@@ -1,26 +1,25 @@
-import enum
-
 from datetime import datetime
 from decimal import Decimal
+import enum
 
 from sqlalchemy import (
-    Index,
-    Column,
     BigInteger,
-    String,
-    DateTime,
-    ForeignKey,
-    Integer,
-    Float,
-    FetchedValue,
-    TypeDecorator,
     Boolean,
+    Column,
+    DateTime,
+    FetchedValue,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    TypeDecorator,
 )
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
-from datagateway_api.common.exceptions import FilterError, DatabaseError, ApiError
+from datagateway_api.common.exceptions import ApiError, DatabaseError, FilterError
 
 Base = declarative_base()
 

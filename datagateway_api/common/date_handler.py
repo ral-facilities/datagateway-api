@@ -1,8 +1,9 @@
 from datetime import datetime
+
 from dateutil.parser import parse
 
-from datagateway_api.common.exceptions import BadRequestError
 from datagateway_api.common.constants import Constants
+from datagateway_api.common.exceptions import BadRequestError
 
 
 class DateHandler:

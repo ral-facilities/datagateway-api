@@ -1,28 +1,28 @@
 from unittest import TestCase
 
-from datagateway_api.common.database.helpers import QueryFilterFactory
 from datagateway_api.common.config import config
+from datagateway_api.common.database.helpers import QueryFilterFactory
 from datagateway_api.common.exceptions import ApiError
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
     from datagateway_api.common.database.filters import (
-        DatabaseWhereFilter as WhereFilter,
         DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseLimitFilter as LimitFilter,
         DatabaseOrderFilter as OrderFilter,
         DatabaseSkipFilter as SkipFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseWhereFilter as WhereFilter,
     )
 elif backend_type == "python_icat":
     # TODO - Adapt these tests for the ICAT implementation of filters
     from datagateway_api.common.icat.filters import (
-        PythonICATWhereFilter as WhereFilter,
         PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATLimitFilter as LimitFilter,
         PythonICATOrderFilter as OrderFilter,
         PythonICATSkipFilter as SkipFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATWhereFilter as WhereFilter,
     )
 else:
     raise ApiError(

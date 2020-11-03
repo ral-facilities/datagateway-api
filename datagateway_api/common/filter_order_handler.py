@@ -2,8 +2,8 @@ import logging
 
 from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
-    PythonICATSkipFilter,
     PythonICATOrderFilter,
+    PythonICATSkipFilter,
 )
 
 log = logging.getLogger()

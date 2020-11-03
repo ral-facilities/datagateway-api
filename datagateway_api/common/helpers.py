@@ -1,6 +1,6 @@
+from functools import wraps
 import json
 import logging
-from functools import wraps
 
 from flask import request
 from flask_restful import reqparse
@@ -10,11 +10,9 @@ from datagateway_api.common.database.helpers import QueryFilterFactory
 from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,
-    FilterError,
     BadRequestError,
+    FilterError,
     MissingCredentialsError,
-    MissingRecordError,
-    MultipleIncludeError,
 )
 
 log = logging.getLogger()

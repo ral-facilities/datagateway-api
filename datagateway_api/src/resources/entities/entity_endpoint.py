@@ -1,11 +1,11 @@
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.helpers import (
-    get_session_id_from_auth_header,
-    get_filters_from_query_string,
-)
 from datagateway_api.common.backends import backend
+from datagateway_api.common.helpers import (
+    get_filters_from_query_string,
+    get_session_id_from_auth_header,
+)
 
 
 def get_endpoint(name, entity_type):

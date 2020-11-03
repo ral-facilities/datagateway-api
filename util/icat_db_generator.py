@@ -1,8 +1,8 @@
+from abc import ABC, abstractmethod
 import argparse
 import datetime
-from abc import ABC, abstractmethod
-from multiprocessing import Process, Pool
-from random import randrange, seed, choice
+from multiprocessing import Pool, Process
+from random import choice, randrange, seed
 
 from faker import Faker
 

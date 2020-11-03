@@ -1,48 +1,48 @@
-import datetime
-import logging
 from abc import ABC, abstractmethod
+import datetime
 from functools import wraps
+import logging
 
 from sqlalchemy.orm import aliased
 
-from datagateway_api.common.exceptions import (
-    ApiError,
-    AuthenticationError,
-    MissingRecordError,
-    FilterError,
-    BadRequestError,
-    MultipleIncludeError,
-)
+from datagateway_api.common.config import config
 from datagateway_api.common.database.models import (
-    INVESTIGATION,
-    INSTRUMENT,
-    FACILITYCYCLE,
-    INVESTIGATIONINSTRUMENT,
     FACILITY,
+    FACILITYCYCLE,
+    INSTRUMENT,
+    INVESTIGATION,
+    INVESTIGATIONINSTRUMENT,
     SESSION,
 )
 from datagateway_api.common.database.session_manager import session_manager
+from datagateway_api.common.exceptions import (
+    ApiError,
+    AuthenticationError,
+    BadRequestError,
+    FilterError,
+    MissingRecordError,
+)
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.common.config import config
+
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
     from datagateway_api.common.database.filters import (
-        DatabaseWhereFilter as WhereFilter,
         DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseLimitFilter as LimitFilter,
         DatabaseOrderFilter as OrderFilter,
         DatabaseSkipFilter as SkipFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseWhereFilter as WhereFilter,
     )
 elif backend_type == "python_icat":
     from datagateway_api.common.icat.filters import (
-        PythonICATWhereFilter as WhereFilter,
         PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATLimitFilter as LimitFilter,
         PythonICATOrderFilter as OrderFilter,
         PythonICATSkipFilter as SkipFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATWhereFilter as WhereFilter,
     )
 else:
     raise ApiError(

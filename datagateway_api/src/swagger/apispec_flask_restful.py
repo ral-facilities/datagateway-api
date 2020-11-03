@@ -4,10 +4,10 @@
 import logging
 import re
 
-import yaml
 import apispec
 from apispec import yaml_utils
 from apispec.exceptions import APISpecError
+import yaml
 
 
 def deduce_path(resource, **kwargs):

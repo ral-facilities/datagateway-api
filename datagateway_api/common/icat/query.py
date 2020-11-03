@@ -1,14 +1,14 @@
-import logging
 from datetime import datetime
+import logging
 
 from icat.entity import Entity, EntityList
-from icat.entities import getTypeMap
+from icat.exception import ICATInternalError, ICATValidationError
 from icat.query import Query
-from icat.exception import ICATValidationError, ICATInternalError
 
-from datagateway_api.common.exceptions import PythonICATError, FilterError
-from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.constants import Constants
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.exceptions import FilterError, PythonICATError
+
 
 log = logging.getLogger()
 

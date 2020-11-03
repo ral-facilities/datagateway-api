@@ -1,18 +1,12 @@
-import uuid
 import logging
 
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
-from datagateway_api.common.database.helpers import (
-    insert_row_into_table,
-    delete_row_by_id,
-    get_row_by_id,
-)
-from datagateway_api.common.helpers import get_session_id_from_auth_header
-from datagateway_api.common.database.models import SESSION
 from datagateway_api.common.backends import backend
 from datagateway_api.common.exceptions import AuthenticationError
+from datagateway_api.common.helpers import get_session_id_from_auth_header
+
 
 log = logging.getLogger()
 

@@ -1,6 +1,3 @@
-import werkzeug
-
-
 class ApiError(Exception):
     status_code = 500
 

@@ -3,8 +3,8 @@ from unittest import TestCase
 
 from datagateway_api.common.database.models import (
     DATAFILE,
-    DATASET,
     DATAFILEFORMAT,
+    DATASET,
     INVESTIGATION,
 )
 

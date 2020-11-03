@@ -1,16 +1,18 @@
-from datagateway_api.common.filters import (
-    WhereFilter,
-    DistinctFieldFilter,
-    OrderFilter,
-    SkipFilter,
-    LimitFilter,
-    IncludeFilter,
-)
-from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
-from datagateway_api.common.database import models
+import logging
 
 from sqlalchemy import asc, desc
-import logging
+
+from datagateway_api.common.database import models
+from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
+from datagateway_api.common.filters import (
+    DistinctFieldFilter,
+    IncludeFilter,
+    LimitFilter,
+    OrderFilter,
+    SkipFilter,
+    WhereFilter,
+)
+
 
 log = logging.getLogger()
 

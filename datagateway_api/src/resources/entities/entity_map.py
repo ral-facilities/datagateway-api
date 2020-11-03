@@ -1,6 +1,9 @@
-from datagateway_api.common.database.models import EntityHelper
 import datetime
+
 from sqlalchemy.inspection import inspect
+
+from datagateway_api.common.database.models import EntityHelper
+
 
 # endpoint_name: entity_name
 endpoints = {

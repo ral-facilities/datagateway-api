@@ -1,8 +1,10 @@
 import json
-import sys
-from pathlib import Path
-import requests
 import logging
+from pathlib import Path
+import sys
+
+import requests
+
 
 log = logging.getLogger()
 

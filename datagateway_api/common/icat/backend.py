@@ -4,28 +4,28 @@ import icat.client
 from icat.exception import ICATSessionError
 
 from datagateway_api.common.backend import Backend
+from datagateway_api.common.config import config
+from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.common.helpers import queries_records
 from datagateway_api.common.icat.helpers import (
-    requires_session_id,
+    create_entities,
+    delete_entity_by_id,
+    get_count_with_filters,
+    get_entity_by_id,
+    get_entity_with_filters,
+    get_facility_cycles_for_instrument,
+    get_facility_cycles_for_instrument_count,
+    get_first_result_with_filters,
+    get_investigations_for_instrument_in_facility_cycle,
+    get_investigations_for_instrument_in_facility_cycle_count,
     get_session_details_helper,
     logout_icat_client,
     refresh_client_session,
-    get_entity_by_id,
-    update_entity_by_id,
-    delete_entity_by_id,
-    get_entity_with_filters,
-    get_count_with_filters,
-    get_first_result_with_filters,
+    requires_session_id,
     update_entities,
-    create_entities,
-    get_facility_cycles_for_instrument,
-    get_facility_cycles_for_instrument_count,
-    get_investigations_for_instrument_in_facility_cycle,
-    get_investigations_for_instrument_in_facility_cycle_count,
+    update_entity_by_id,
 )
 
-from datagateway_api.common.config import config
-from datagateway_api.common.exceptions import AuthenticationError
 
 log = logging.getLogger()
 
