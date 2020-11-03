@@ -190,7 +190,8 @@ def update_attributes(old_entity, new_entity):
     Python ICAT
 
     :param old_entity: An existing entity record from Python ICAT
-    :type object: :class:`icat.entities.ENTITY`
+    :type object: :class:`icat.entities.ENTITY` (implementation of
+        :class:`icat.entity.Entity`)
     :param new_entity: Dictionary containing the new data to be modified
     :type new_entity: :class:`dict`
     :raises BadRequestError: If the attribute cannot be found, or if it cannot be edited

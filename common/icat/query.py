@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+from icat.entity import Entity, EntityList
 from icat.query import Query
 from icat.exception import ICATValidationError
 
@@ -36,6 +37,7 @@ class ICATQuery:
         """
 
         try:
+            log.info("Creating ICATQuery for entity: %s", entity_name)
             self.query = Query(
                 client,
                 entity_name,
@@ -63,18 +65,20 @@ class ICATQuery:
             manipulated at some point)
         :type return_json_formattable_data: :class:`bool`
         :return: Data (of type list) from the executed query
+        :raises PythonICATError: If an error occurs during query execution
         """
 
         try:
+            log.debug("Executing ICAT query")
             query_result = client.search(self.query)
         except ICATValidationError as e:
             raise PythonICATError(e)
 
         if self.query.aggregate == "DISTINCT":
+            log.info("Extracting the distinct fields from query's conditions")
             distinct_filter_flag = True
             # Check query's conditions for the ones created by the distinct filter
             self.attribute_names = []
-            log.debug("Query conditions: %s", self.query.conditions)
 
             for key, value in self.query.conditions.items():
                 # Value can be a list if there's multiple WHERE filters for the same
@@ -93,36 +97,27 @@ class ICATQuery:
             distinct_filter_flag = False
 
         if return_json_formattable:
+            log.info("Query results will be returned in a JSON format")
             data = []
+
             for result in query_result:
-                dict_result = result.as_dict()
                 distinct_result = {}
+                dict_result = self.entity_to_dict(result, self.query.includes)
 
-                for key in dict_result:
-                    # Convert datetime objects to strings so they can be JSON
-                    # serialisable
-                    if isinstance(dict_result[key], datetime):
-                        # Remove timezone data which isn't utilised in ICAT
-                        dict_result[key] = (
-                            dict_result[key]
-                            .replace(tzinfo=None)
-                            .strftime(Constants.ACCEPTED_DATE_FORMAT)
-                        )
-
+                for key, value in dict_result.items():
                     if distinct_filter_flag:
                         # Add only the required data as per request's distinct filter
                         # fields
                         if key in self.attribute_names:
                             distinct_result[key] = dict_result[key]
 
-                # Add to the response's data depending on whether request has a distinct
-                # filter
                 if distinct_filter_flag:
                     data.append(distinct_result)
                 else:
                     data.append(dict_result)
             return data
         else:
+            log.info("Query results will be returned as ICAT entities")
             return query_result
 
     def check_attribute_name_for_distinct(self, key, value):
@@ -139,3 +134,71 @@ class ICATQuery:
         """
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             self.attribute_names.append(key)
+
+    def datetime_object_to_str(self, date_obj):
+        """
+        Convert a datetime object to a string so it can be outputted in JSON
+
+        There's currently no reason to make this function static, but it could be useful
+        in the future if a use case required this functionality.
+
+        :param date_obj: Datetime object from data from an ICAT entity
+        :type date_obj: :class:`datetime.datetime`
+        :return: Datetime (of type string) in the agreed format
+        """
+        return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
+
+    def entity_to_dict(self, entity, includes):
+        """
+        This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
+        to use set operators to create a version of the entity as a dictionary
+
+        Most of this function is dedicated to recursing over included fields from a
+        query, since this is functionality isn't part of Python ICAT's `as_dict()`. This
+        function can be used when there are no include filters in the query/request
+        however.
+
+        :param entity: Python ICAT entity from an ICAT query
+        :type entity: :class:`icat.entities.ENTITY` (implementation of
+            :class:`icat.entity.Entity`) or :class:`icat.entity.EntityList`
+        :param includes: Set of fields that have been included in the ICAT query. Where
+            fields have a chain of relationships, they're a single element string
+            separated by dots
+        :type includes: :class:`set`
+        :return: ICAT Data (of type dictionary) ready to be serialised to JSON
+        """
+        d = {}
+
+        # Split up the fields separated by dots and flatten the resulting lists
+        flat_includes = [m for n in (field.split(".") for field in includes) for m in n]
+
+        # Verifying that `flat_includes` only has fields which are related to the entity
+        include_set = (entity.InstRel | entity.InstMRel) & set(flat_includes)
+        for key in entity.InstAttr | entity.MetaAttr | include_set:
+            if key in flat_includes:
+                target = getattr(entity, key)
+                # Copy and remove don't return values so must be done separately
+                includes_copy = flat_includes.copy()
+                try:
+                    includes_copy.remove(key)
+                except ValueError:
+                    log.warning(
+                        "Key couldn't be found to remove from include list, this could"
+                        " cause an issue further on in the request"
+                    )
+                if isinstance(target, Entity):
+                    d[key] = self.entity_to_dict(target, includes_copy)
+                # Related fields with one-many relationships are stored as EntityLists
+                elif isinstance(target, EntityList):
+                    d[key] = []
+                    for e in target:
+                        d[key].append(self.entity_to_dict(e, includes_copy))
+            # Add actual piece of data to the dictionary
+            else:
+                entity_data = getattr(entity, key)
+                # Convert datetime objects to strings ready to be outputted as JSON
+                if isinstance(entity_data, datetime):
+                    # Remove timezone data which isn't utilised in ICAT
+                    entity_data = self.datetime_object_to_str(entity_data)
+                d[key] = entity_data
+        return d
