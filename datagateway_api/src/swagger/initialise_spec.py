@@ -25,7 +25,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "where",
-            "description": "Apply where filters to the query. The possible operators are like, gte, lte, in and eq",
+            "description": "Apply where filters to the query. The possible operators"
+            " are like, gte, lte, in and eq",
             "schema": {
                 "type": "array",
                 "items": {
@@ -116,7 +117,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "order",
-            "description": "Apply order filters to the query. Given a field and direction, order the returned entities.",
+            "description": "Apply order filters to the query. Given a field and"
+            " direction, order the returned entities.",
             "schema": {"type": "array", "items": {"type": "string"}},
             "examples": {"asc": {"value": ["ID asc"]}, "desc": {"value": ["ID desc"]}},
         },
@@ -128,7 +130,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "limit",
-            "description": "Apply limit filter to the query. Limit the number of entities returned.",
+            "description": "Apply limit filter to the query. Limit the number of"
+            " entities returned.",
             "schema": {"type": "integer"},
         },
     )
@@ -139,7 +142,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "skip",
-            "description": "Apply skip filter to the query. Offset the returned entities by a given number.",
+            "description": "Apply skip filter to the query. Offset the returned"
+            " entities by a given number.",
             "schema": {"type": "integer"},
         },
     )
@@ -149,7 +153,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "distinct",
-            "description": "Apply distinct filter to the query. Return unique values for the fields requested.",
+            "description": "Apply distinct filter to the query. Return unique values"
+            " for the fields requested.",
             "schema": {"type": "array", "items": {"type": "string"}},
         },
     )
@@ -159,7 +164,9 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "include",
-            "description": "Apply include filter to the query. Given the names of related entities, include them in the results. Only one include parameter is allowed.",
+            "description": "Apply include filter to the query. Given the names of"
+            " related entities, include them in the results. Only one include parameter"
+            " is allowed.",
             "schema": {
                 "oneOf": [
                     {"type": "string"},

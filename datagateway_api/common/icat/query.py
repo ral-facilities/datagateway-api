@@ -96,8 +96,8 @@ class ICATQuery:
                     distinct_attributes, flat_query_includes,
                 )
                 log.debug(
-                    "Attribute names used in the distinct filter, mapped to the entity they"
-                    " are a part of: %s",
+                    "Attribute names used in the distinct filter, mapped to the entity"
+                    " they are a part of: %s",
                     mapped_distinct_fields,
                 )
 
@@ -188,7 +188,7 @@ class ICATQuery:
                     )
                 if isinstance(target, Entity):
                     if distinct_fields is not None:
-                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                        distinct_fields_copy = self.prepare_distinct_fields(
                             key, distinct_fields,
                         )
                     else:
@@ -203,7 +203,7 @@ class ICATQuery:
                     d[key] = []
                     for e in target:
                         if distinct_fields is not None:
-                            distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                            distinct_fields_copy = self.prepare_distinct_fields(
                                 key, distinct_fields,
                             )
                         else:
@@ -296,7 +296,7 @@ class ICATQuery:
 
         return distinct_field_dict
 
-    def prepare_distinct_fields_for_recursion(self, entity_name, distinct_fields):
+    def prepare_distinct_fields(self, entity_name, distinct_fields):
         """
         Copy `distinct_fields` and move the data held in `entity_name` portion of the
         dictionary to the "base" section of the dictionary. This function is called in

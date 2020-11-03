@@ -9,7 +9,8 @@ logger_config = {
     "version": 1,
     "formatters": {
         "default": {
-            "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d} %(levelname)s -%(message)s  ",
+            "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d}"
+            " %(levelname)s - %(message)s",
         },
     },
     "handlers": {

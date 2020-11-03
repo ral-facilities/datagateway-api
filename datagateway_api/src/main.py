@@ -102,7 +102,8 @@ api.add_resource(
 spec.path(resource=InstrumentsFacilityCyclesInvestigations, api=api)
 api.add_resource(
     InstrumentsFacilityCyclesInvestigationsCount,
-    "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations/count",
+    "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations"
+    "/count",
 )
 spec.path(resource=InstrumentsFacilityCyclesInvestigationsCount, api=api)
 

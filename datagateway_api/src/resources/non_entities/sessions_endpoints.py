@@ -50,7 +50,7 @@ class Sessions(Resource):
                       description: Session ID
                       example: xxxxxx-yyyyyyy-zzzzzz
           400:
-            description: Bad request. User credentials were not provided in request body.
+            description: Bad request. User credentials not provided in request body
           403:
              description: Forbidden. User credentials were invalid
         """
@@ -81,7 +81,7 @@ class Sessions(Resource):
           400:
             description: Bad request - something was wrong with the request
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
           404:
@@ -120,7 +120,7 @@ class Sessions(Resource):
                       type: string
                       description: Username associated with this session
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
         """
@@ -145,7 +145,7 @@ class Sessions(Resource):
                   description: Session ID
                   example: xxxxxx-yyyyyyy-zzzzzz
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
         """

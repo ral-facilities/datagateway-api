@@ -156,7 +156,7 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
+    def get_investigation_count_for_instrument_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         self.client.sessionId = session_id
