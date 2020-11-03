@@ -110,31 +110,31 @@ class DatabaseBackend(Backend):
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         return get_facility_cycles_for_instrument(instrument_id, filters)
 
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         return get_facility_cycles_for_instrument_count(instrument_id, filters)
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         return get_investigations_for_instrument_in_facility_cycle(
-            instrument_id, facilitycycle_id, filters
+            instrument_id, facilitycycle_id, filters,
         )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         return get_investigations_for_instrument_in_facility_cycle_count(
-            instrument_id, facilitycycle_id, filters
+            instrument_id, facilitycycle_id, filters,
         )

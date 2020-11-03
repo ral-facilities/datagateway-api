@@ -41,7 +41,7 @@ class PythonICATBackend(Backend):
         # use an endpoint before logging in. Also helps to give a bit of certainty to
         # what's stored here
         self.client = icat.client.Client(
-            config.get_icat_url(), checkCert=config.get_icat_check_cert()
+            config.get_icat_url(), checkCert=config.get_icat_check_cert(),
         )
 
     def login(self, credentials):
@@ -49,7 +49,7 @@ class PythonICATBackend(Backend):
         # Client object is re-created here so session IDs aren't overwritten in the
         # database
         self.client = icat.client.Client(
-            config.get_icat_url(), checkCert=config.get_icat_check_cert()
+            config.get_icat_url(), checkCert=config.get_icat_check_cert(),
         )
 
         # Syntax for Python ICAT
@@ -129,7 +129,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         self.client.sessionId = session_id
         return get_facility_cycles_for_instrument(self.client, instrument_id, filters)
@@ -137,29 +137,29 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         self.client.sessionId = session_id
         return get_facility_cycles_for_instrument_count(
-            self.client, instrument_id, filters
+            self.client, instrument_id, filters,
         )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         self.client.sessionId = session_id
         return get_investigations_for_instrument_in_facility_cycle(
-            self.client, instrument_id, facilitycycle_id, filters
+            self.client, instrument_id, facilitycycle_id, filters,
         )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         self.client.sessionId = session_id
         return get_investigations_for_instrument_in_facility_cycle_count(
-            self.client, instrument_id, facilitycycle_id, filters
+            self.client, instrument_id, facilitycycle_id, filters,
         )

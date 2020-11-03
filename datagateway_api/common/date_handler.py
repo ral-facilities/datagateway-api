@@ -55,7 +55,7 @@ class DateHandler:
             raise BadRequestError(
                 "Bad request made, the date entered is not in the correct format. Use"
                 f" the {Constants.ACCEPTED_DATE_FORMAT} format to submit dates to the"
-                " API"
+                " API",
             )
 
         return data

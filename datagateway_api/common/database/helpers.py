@@ -47,7 +47,7 @@ elif backend_type == "python_icat":
 else:
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type"
+        " has a valid backend type",
     )
 
 log = logging.getLogger()
@@ -521,7 +521,7 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
 
 
 def get_investigations_for_instrument_in_facility_cycle(
-    instrument_id, facility_cycle_id, filters
+    instrument_id, facility_cycle_id, filters,
 ):
     """
     Given an instrument id and facility cycle id, get investigations that use the given
@@ -534,7 +534,7 @@ def get_investigations_for_instrument_in_facility_cycle(
     """
     filter_handler = FilterOrderHandler()
     with InstrumentFacilityCycleInvestigationsQuery(
-        instrument_id, facility_cycle_id
+        instrument_id, facility_cycle_id,
     ) as query:
         return get_filtered_read_query_results(filter_handler, filters, query)
 
@@ -558,7 +558,7 @@ class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(
-    instrument_id, facility_cycle_id, filters
+    instrument_id, facility_cycle_id, filters,
 ):
     """
     Given an instrument id and facility cycle id, get the count of the investigations
@@ -570,7 +570,7 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     :return: The investigations count
     """
     with InstrumentFacilityCycleInvestigationsCountQuery(
-        instrument_id, facility_cycle_id
+        instrument_id, facility_cycle_id,
     ) as query:
         filter_handler = FilterOrderHandler()
         filter_handler.add_filters(filters)

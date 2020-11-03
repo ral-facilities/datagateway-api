@@ -103,7 +103,7 @@ def create_entity_models():
                 or relationship_class.direction.name == "ONETOONE"
             ):
                 params[relationship_name] = {
-                    "$ref": f"#/components/schemas/{relationship_name.strip('_')}"
+                    "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
                 }
             if (
                 relationship_class.direction.name == "MANYTOMANY"
@@ -112,7 +112,7 @@ def create_entity_models():
                 params[relationship_name] = {
                     "type": "array",
                     "items": {
-                        "$ref": f"#/components/schemas/{relationship_name.strip('_')}"
+                        "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
                     },
                 }
         endpoint_models[endpoint_table.__name__] = {

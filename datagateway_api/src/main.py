@@ -69,13 +69,13 @@ for entity_name in endpoints:
     spec.path(resource=get_id_endpoint_resource, api=api)
 
     get_count_endpoint_resource = get_count_endpoint(
-        entity_name, endpoints[entity_name]
+        entity_name, endpoints[entity_name],
     )
     api.add_resource(get_count_endpoint_resource, f"/{entity_name.lower()}/count")
     spec.path(resource=get_count_endpoint_resource, api=api)
 
     get_find_one_endpoint_resource = get_find_one_endpoint(
-        entity_name, endpoints[entity_name]
+        entity_name, endpoints[entity_name],
     )
     api.add_resource(get_find_one_endpoint_resource, f"/{entity_name.lower()}/findone")
     spec.path(resource=get_find_one_endpoint_resource, api=api)
@@ -89,7 +89,7 @@ spec.path(resource=Sessions, api=api)
 api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id_>/facilitycycles")
 spec.path(resource=InstrumentsFacilityCycles, api=api)
 api.add_resource(
-    InstrumentsFacilityCyclesCount, "/instruments/<int:id_>/facilitycycles/count"
+    InstrumentsFacilityCyclesCount, "/instruments/<int:id_>/facilitycycles/count",
 )
 spec.path(resource=InstrumentsFacilityCyclesCount, api=api)
 api.add_resource(
@@ -124,5 +124,5 @@ def specs():
 
 if __name__ == "__main__":
     app.run(
-        host=config.get_host(), port=config.get_port(), debug=config.is_debug_mode()
+        host=config.get_host(), port=config.get_port(), debug=config.is_debug_mode(),
     )

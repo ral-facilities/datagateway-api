@@ -10,7 +10,7 @@ logger_config = {
     "formatters": {
         "default": {
             "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d} %(levelname)s -%(message)s  ",
-        }
+        },
     },
     "handlers": {
         "default": {
@@ -20,7 +20,7 @@ logger_config = {
             "filename": LOG_FILE_NAME,
             "maxBytes": 5000000,
             "backupCount": 10,
-        }
+        },
     },
     "root": {"level": config.get_log_level(), "handlers": ["default"]},
 }

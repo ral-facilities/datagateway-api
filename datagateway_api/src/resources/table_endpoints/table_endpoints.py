@@ -54,7 +54,7 @@ class InstrumentsFacilityCycles(Resource):
         """
         return (
             backend.get_facility_cycles_for_instrument_with_filters(
-                get_session_id_from_auth_header(), id_, get_filters_from_query_string()
+                get_session_id_from_auth_header(), id_, get_filters_from_query_string(),
             ),
             200,
         )
@@ -95,7 +95,7 @@ class InstrumentsFacilityCyclesCount(Resource):
         """
         return (
             backend.get_facility_cycles_for_instrument_count_with_filters(
-                get_session_id_from_auth_header(), id_, get_filters_from_query_string()
+                get_session_id_from_auth_header(), id_, get_filters_from_query_string(),
             ),
             200,
         )

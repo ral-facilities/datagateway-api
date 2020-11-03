@@ -64,7 +64,7 @@ def get_session_id_from_auth_header():
         raise MissingCredentialsError(f"No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(
-            f" Could not authenticate consumer with auth header {auth_header}"
+            f" Could not authenticate consumer with auth header {auth_header}",
         )
     return auth_header[1]
 
@@ -97,7 +97,7 @@ def get_filters_from_query_string():
         for arg in request.args:
             for value in request.args.getlist(arg):
                 filters.append(
-                    QueryFilterFactory.get_query_filter({arg: json.loads(value)})
+                    QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
                 )
         return filters
     except Exception as e:

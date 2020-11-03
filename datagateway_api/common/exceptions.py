@@ -22,7 +22,7 @@ class MultipleIncludeError(FilterError):
         self,
         msg="Bad request, only one include filter may be given per request",
         *args,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(msg, *args, **kwargs)
         self.status_code = 400

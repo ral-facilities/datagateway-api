@@ -74,7 +74,7 @@ class EntityHelper(object):
             return globals()[entity_name.upper()]
         except KeyError:
             raise ApiError(
-                f"Entity class cannot be found. Please create a class for {entity_name}"
+                f"Entity class cannot be found, missing class for {entity_name}",
             )
 
     def to_dict(self):
@@ -132,17 +132,17 @@ class EntityHelper(object):
         related_entity = self.get_related_entity(list(include)[0])
         if not isinstance(related_entity, InstrumentedList):
             dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(
-                include[list(include)[0]]
+                include[list(include)[0]],
             )
         else:
             for entity in related_entity:
                 if entity.__tablename__ in dictionary.keys():
                     dictionary[entity.__tablename__].append(
-                        entity.to_nested_dict(include[list(include)[0]])
+                        entity.to_nested_dict(include[list(include)[0]]),
                     )
                 else:
                     dictionary[entity.__tablename__] = [
-                        entity.to_nested_dict(include[list(include)[0]])
+                        entity.to_nested_dict(include[list(include)[0]]),
                     ]
 
     def _nest_string_include(self, dictionary, include):
@@ -289,7 +289,7 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper):
     __tablename__ = "DATACOLLECTIONPARAMETER"
     __table_args__ = (
         Index(
-            "UNQ_DATACOLLECTIONPARAMETER_0", "DATACOLLECTION_ID", "PARAMETER_TYPE_ID"
+            "UNQ_DATACOLLECTIONPARAMETER_0", "DATACOLLECTION_ID", "PARAMETER_TYPE_ID",
         ),
     )
 
@@ -306,7 +306,7 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper):
     STRING_VALUE = Column(String(4000))
     DATACOLLECTION_ID = Column(ForeignKey("DATACOLLECTION.ID"), nullable=False)
     PARAMETER_TYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     DATACOLLECTION = relationship(
@@ -347,7 +347,7 @@ class DATAFILE(Base, EntityHelper):
         backref="DATAFILE",
     )
     DATASET = relationship(
-        "DATASET", primaryjoin="DATAFILE.DATASET_ID == DATASET.ID", backref="DATAFILE"
+        "DATASET", primaryjoin="DATAFILE.DATASET_ID == DATASET.ID", backref="DATAFILE",
     )
 
 
@@ -392,7 +392,7 @@ class DATAFILEPARAMETER(Base, EntityHelper):
     STRING_VALUE = Column(String(4000))
     DATAFILE_ID = Column(ForeignKey("DATAFILE.ID"), nullable=False)
     PARAMETER_TYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     DATAFILE = relationship(
@@ -433,7 +433,7 @@ class DATASET(Base, EntityHelper):
         backref="DATASET",
     )
     SAMPLE = relationship(
-        "SAMPLE", primaryjoin="DATASET.SAMPLE_ID == SAMPLE.ID", backref="DATASET"
+        "SAMPLE", primaryjoin="DATASET.SAMPLE_ID == SAMPLE.ID", backref="DATASET",
     )
     DATASETTYPE = relationship(
         "DATASETTYPE",
@@ -461,7 +461,7 @@ class DATASETPARAMETER(Base, EntityHelper):
     STRING_VALUE = Column(String(4000))
     DATASET_ID = Column(ForeignKey("DATASET.ID"), nullable=False)
     PARAMETER_TYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     DATASET = relationship(
@@ -622,7 +622,7 @@ class INVESTIGATIONGROUP(Base, EntityHelper):
     ROLE = Column(String(255), nullable=False)
     GROUP_ID = Column(ForeignKey("GROUPING.ID"), nullable=False)
     INVESTIGATION_ID = Column(
-        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True
+        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
 
     GROUPING = relationship(
@@ -682,7 +682,7 @@ class INVESTIGATIONPARAMETER(Base, EntityHelper):
     STRING_VALUE = Column(String(4000))
     INVESTIGATION_ID = Column(ForeignKey("INVESTIGATION.ID"), nullable=False)
     PARAMETER_TYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     INVESTIGATION = relationship(
@@ -730,7 +730,7 @@ class INVESTIGATIONUSER(Base, EntityHelper):
     MOD_TIME = Column(DateTime, nullable=False)
     ROLE = Column(String(255), nullable=False)
     INVESTIGATION_ID = Column(
-        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True
+        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
     USER_ID = Column(ForeignKey("USER_.ID"), nullable=False)
 
@@ -760,7 +760,9 @@ class JOB(Base, EntityHelper):
     OUTPUTDATACOLLECTION_ID = Column(ForeignKey("DATACOLLECTION.ID"), index=True)
 
     APPLICATION = relationship(
-        "APPLICATION", primaryjoin="JOB.APPLICATION_ID == APPLICATION.ID", backref="JOB"
+        "APPLICATION",
+        primaryjoin="JOB.APPLICATION_ID == APPLICATION.ID",
+        backref="JOB",
     )
     DATACOLLECTION = relationship(
         "DATACOLLECTION",
@@ -780,7 +782,7 @@ class KEYWORD(Base, EntityHelper):
     MOD_TIME = Column(DateTime, nullable=False)
     NAME = Column(String(255), nullable=False)
     INVESTIGATION_ID = Column(
-        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True
+        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
 
     INVESTIGATION = relationship(
@@ -840,7 +842,7 @@ class PERMISSIBLESTRINGVALUE(Base, EntityHelper):
     MOD_TIME = Column(DateTime, nullable=False)
     VALUE = Column(String(255), nullable=False)
     PARAMETERTYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     PARAMETERTYPE = relationship(
@@ -864,7 +866,7 @@ class PUBLICATION(Base, EntityHelper):
     REPOSITORYID = Column(String(255))
     URL = Column(String(255))
     INVESTIGATION_ID = Column(
-        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True
+        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
 
     INVESTIGATION = relationship(
@@ -932,7 +934,7 @@ class RULE(Base, EntityHelper):
     GROUPING_ID = Column(ForeignKey("GROUPING.ID"), index=True)
 
     GROUPING = relationship(
-        "GROUPING", primaryjoin="RULE.GROUPING_ID == GROUPING.ID", backref="RULE"
+        "GROUPING", primaryjoin="RULE.GROUPING_ID == GROUPING.ID", backref="RULE",
     )
 
 
@@ -978,7 +980,7 @@ class SAMPLEPARAMETER(Base, EntityHelper):
     STRING_VALUE = Column(String(4000))
     SAMPLE_ID = Column(ForeignKey("SAMPLE.ID"), nullable=False)
     PARAMETER_TYPE_ID = Column(
-        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True
+        ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
     PARAMETERTYPE = relationship(
@@ -1049,10 +1051,12 @@ class USERGROUP(Base, EntityHelper):
     USER_ID = Column(ForeignKey("USER_.ID"), nullable=False)
 
     GROUPING = relationship(
-        "GROUPING", primaryjoin="USERGROUP.GROUP_ID == GROUPING.ID", backref="USERGROUP"
+        "GROUPING",
+        primaryjoin="USERGROUP.GROUP_ID == GROUPING.ID",
+        backref="USERGROUP",
     )
     USER_ = relationship(
-        "USER", primaryjoin="USERGROUP.USER_ID == USER.ID", backref="USERGROUP"
+        "USER", primaryjoin="USERGROUP.USER_ID == USER.ID", backref="USERGROUP",
     )
 
 
@@ -1068,7 +1072,7 @@ class STUDYINVESTIGATION(Base, EntityHelper):
     MOD_ID = Column(String(255), nullable=False)
     MOD_TIME = Column(DateTime, nullable=False)
     INVESTIGATION_ID = Column(
-        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True
+        ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
     STUDY_ID = Column(ForeignKey("STUDY.ID"), nullable=False)
 
@@ -1099,7 +1103,7 @@ class STUDY(Base, EntityHelper):
     USER_ID = Column(ForeignKey("USER_.ID"), index=True)
 
     USER_ = relationship(
-        "USER", primaryjoin="STUDY.USER_ID == USER.ID", backref="STUDY"
+        "USER", primaryjoin="STUDY.USER_ID == USER.ID", backref="STUDY",
     )
 
 

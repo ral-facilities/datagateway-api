@@ -65,13 +65,13 @@ def get_start_date(i):
     :return:
     """
     return datetime.datetime(
-        2000 + i // 4, ((i + 1) * (i + 1)) % 11 + 1, ((i + 1) * (i + 2) % 28 + 1)
+        2000 + i // 4, ((i + 1) * (i + 1)) % 11 + 1, ((i + 1) * (i + 2) % 28 + 1),
     )
 
 
 def get_end_date(i):
     return datetime.datetime(
-        2000 + i // 4, (((i + 1) * (i + 2)) % 11) + 1, ((i + 1) ** 2) % 28 + 1
+        2000 + i // 4, (((i + 1) * (i + 2)) % 11) + 1, ((i + 1) ** 2) % 28 + 1,
     )
 
 
@@ -353,7 +353,7 @@ class InvestigationInstrumentGenerator(Generator):
 
     def generate(self):
         self.pool_map(
-            InvestigationInstrumentGenerator.generate_investigation_instrument
+            InvestigationInstrumentGenerator.generate_investigation_instrument,
         )
 
     @staticmethod
@@ -505,7 +505,7 @@ def generate_investigation_parameter(i):
     apply_common_parameter_attributes(investigation_parameter, i)
     investigation_parameter.INVESTIGATION_ID = i
     investigation_parameter.PARAMETER_TYPE_ID = randrange(
-        1, ParameterTypeGenerator.amount
+        1, ParameterTypeGenerator.amount,
     )
     post_entity(investigation_parameter)
 
@@ -628,7 +628,7 @@ class DataCollectionParameterGenerator(Generator):
 
     def generate(self):
         self.pool_map(
-            DataCollectionParameterGenerator.generate_data_collection_parameter
+            DataCollectionParameterGenerator.generate_data_collection_parameter,
         )
 
     @staticmethod
@@ -638,7 +638,7 @@ class DataCollectionParameterGenerator(Generator):
         apply_common_parameter_attributes(datacollection_parameter, i)
         datacollection_parameter.DATACOLLECTION_ID = i
         datacollection_parameter.PARAMETER_TYPE_ID = randrange(
-            1, ParameterTypeGenerator.amount
+            1, ParameterTypeGenerator.amount,
         )
         post_entity(datacollection_parameter)
 
@@ -683,7 +683,7 @@ def generate_all(i, generators):
         if generator.tier == i:
             print(
                 f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of"
-                f" tier {generator.tier}"
+                f" tier {generator.tier}",
             )
             processes.append(Process(target=generator.generate))
 
@@ -701,7 +701,7 @@ def main():
 
     print(
         f"Added {sum(generator.amount for generator in generators)} entities in"
-        f" {datetime.datetime.now() - start_time}"
+        f" {datetime.datetime.now() - start_time}",
     )
 
 

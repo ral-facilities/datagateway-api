@@ -75,7 +75,7 @@ class TestRequires_session_id(FlaskAppTest):
         self.assertEqual(
             403,
             self.app.get(
-                "/datafiles", headers=self.invalid_credentials_header
+                "/datafiles", headers=self.invalid_credentials_header,
             ).status_code,
         )
 
@@ -89,7 +89,7 @@ class TestRequires_session_id(FlaskAppTest):
         self.assertEqual(
             200,
             self.app.get(
-                "/datafiles?limit=0", headers=self.good_credentials_header
+                "/datafiles?limit=0", headers=self.good_credentials_header,
             ).status_code,
         )
 
@@ -194,7 +194,7 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get("/?limit=10")
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters"
+                1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(LimitFilter, type(filters[0]), msg="Incorrect type of filter")
 
@@ -203,10 +203,10 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get('/?order="ID DESC"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters"
+                1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                OrderFilter, type(filters[0]), msg="Incorrect type of filter returned"
+                OrderFilter, type(filters[0]), msg="Incorrect type of filter returned",
             )
 
     def test_where_filter(self):
@@ -214,10 +214,10 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get('/?where={"ID":{"eq":3}}')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters"
+                1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                WhereFilter, type(filters[0]), msg="Incorrect type of filter returned"
+                WhereFilter, type(filters[0]), msg="Incorrect type of filter returned",
             )
 
     def test_skip_filter(self):
@@ -225,10 +225,10 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get("/?skip=10")
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters"
+                1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                SkipFilter, type(filters[0]), msg="Incorrect type of filter returned"
+                SkipFilter, type(filters[0]), msg="Incorrect type of filter returned",
             )
 
     def test_include_filter(self):
@@ -236,10 +236,12 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get('/?include="TEST"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned"
+                1, len(filters), msg="Incorrect number of filters returned",
             )
             self.assertIs(
-                IncludeFilter, type(filters[0]), msg="Incorrect type of filter returned"
+                IncludeFilter,
+                type(filters[0]),
+                msg="Incorrect type of filter returned",
             )
 
     def test_distinct_filter(self):
@@ -247,7 +249,7 @@ class TestGet_filters_from_query_string(FlaskAppTest):
             self.app.get('/?distinct="ID"')
             filters = get_filters_from_query_string()
             self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned"
+                1, len(filters), msg="Incorrect number of filters returned",
             )
             self.assertIs(
                 DistinctFieldFilter,

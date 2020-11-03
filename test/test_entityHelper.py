@@ -142,7 +142,7 @@ class TestEntityHelper(TestCase):
             },
         }
         self.assertEqual(
-            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"})
+            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"}),
         )
 
     def test_get_related_entity(self):

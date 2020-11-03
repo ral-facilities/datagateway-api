@@ -27,24 +27,25 @@ elif backend_type == "python_icat":
 else:
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type"
+        " has a valid backend type",
     )
 
 
 class TestQueryFilterFactory(TestCase):
     def test_order_filter(self):
         self.assertIs(
-            OrderFilter, type(QueryFilterFactory.get_query_filter({"order": "ID DESC"}))
+            OrderFilter,
+            type(QueryFilterFactory.get_query_filter({"order": "ID DESC"})),
         )
 
     def test_limit_filter(self):
         self.assertIs(
-            LimitFilter, type(QueryFilterFactory.get_query_filter({"limit": 10}))
+            LimitFilter, type(QueryFilterFactory.get_query_filter({"limit": 10})),
         )
 
     def test_skip_filter(self):
         self.assertIs(
-            SkipFilter, type(QueryFilterFactory.get_query_filter({"skip": 10}))
+            SkipFilter, type(QueryFilterFactory.get_query_filter({"skip": 10})),
         )
 
     def test_where_filter(self):
@@ -68,8 +69,8 @@ class TestQueryFilterFactory(TestCase):
             WhereFilter,
             type(
                 QueryFilterFactory.get_query_filter(
-                    {"where": {"ID": {"in": ["1", "2", "3"]}}}
-                )
+                    {"where": {"ID": {"in": ["1", "2", "3"]}}},
+                ),
             ),
         )
 
@@ -86,8 +87,8 @@ class TestQueryFilterFactory(TestCase):
             IncludeFilter,
             type(
                 QueryFilterFactory.get_query_filter(
-                    {"include": {"Test": ["TEST1", "Test2"]}}
-                )
+                    {"include": {"Test": ["TEST1", "Test2"]}},
+                ),
             ),
         )
 

@@ -51,7 +51,7 @@ class PythonICATWhereFilter(WhereFilter):
             query.addConditions(where_filter)
         except ValueError:
             raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query"
+                "Something went wrong when adding WHERE filter to ICAT query",
             )
 
     @staticmethod
@@ -200,7 +200,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                 if not isinstance(key, str):
                     raise FilterError(
                         "Include Filter: Dictionary key should only be a string, not"
-                        " any other type"
+                        " any other type",
                     )
 
                 if isinstance(value, str):
@@ -214,24 +214,24 @@ class PythonICATIncludeFilter(IncludeFilter):
                         if not isinstance(inner_key, str):
                             raise FilterError(
                                 "Include Filter: Dictionary key should only be a string"
-                                ", not any other type"
+                                ", not any other type",
                             )
 
                         # Will end up as: key.inner_key.inner_value
                         self._extract_filter_fields(
-                            {".".join((key, inner_key)): inner_value}
+                            {".".join((key, inner_key)): inner_value},
                         )
                 else:
                     raise FilterError(
                         "Include Filter: Inner field type (inside dictionary) not"
-                        " recognised, cannot interpret input"
+                        " recognised, cannot interpret input",
                     )
         elif isinstance(field, list):
             for element in field:
                 self._extract_filter_fields(element)
         else:
             raise FilterError(
-                "Include Filter: Field type not recognised, cannot interpret input"
+                "Include Filter: Field type not recognised, cannot interpret input",
             )
 
     def apply_filter(self, query):

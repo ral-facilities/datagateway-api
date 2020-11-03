@@ -11,7 +11,7 @@ def initialise_spec(spec):
     """
 
     spec.components.security_scheme(
-        "session_id", {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"}
+        "session_id", {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
     )
 
     entity_schemas = create_entity_models()
@@ -47,8 +47,8 @@ def initialise_spec(spec):
                                             {"type": "number"},
                                             {"type": "integer"},
                                             {"type": "boolean"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -59,8 +59,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -71,8 +71,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -91,9 +91,9 @@ def initialise_spec(spec):
                                                 {"type": "string"},
                                                 {"type": "number"},
                                                 {"type": "integer"},
-                                            ]
+                                            ],
                                         },
-                                    }
+                                    },
                                 },
                             },
                         ],
@@ -177,10 +177,10 @@ def initialise_spec(spec):
                                                 "type": "array",
                                                 "items": [{"type": "string"}],
                                             },
-                                        ]
+                                        ],
                                     },
                                 },
-                            ]
+                            ],
                         },
                     },
                     {
@@ -189,24 +189,24 @@ def initialise_spec(spec):
                             "oneOf": [
                                 {"type": "string"},
                                 {"type": "array", "items": [{"type": "string"}]},
-                            ]
+                            ],
                         },
                     },
-                ]
+                ],
             },
             "examples": {
                 "single": {"value": "RELATED_COLUMN"},
                 "array": {"value": ["RELATED_COLUMN_1", "RELATED_COLUMN_2"]},
                 "multi-level": {
-                    "value": {"RELATED_COLUMN": "RELATED_COLUMN_RELATED_COLUMN"}
+                    "value": {"RELATED_COLUMN": "RELATED_COLUMN_RELATED_COLUMN"},
                 },
                 "multi-level array": {
                     "value": {
                         "RELATED_COLUMN": [
                             "RELATED_COLUMN_RELATED_COLUMN_1",
                             "RELATED_COLUMN_RELATED_COLUMN_2",
-                        ]
-                    }
+                        ],
+                    },
                 },
                 "array of multi-level": {
                     "value": [
@@ -216,9 +216,9 @@ def initialise_spec(spec):
                             "RELATED_COLUMN_3": [
                                 "RELATED_COLUMN_3_RELATED_COLUMN_1",
                                 "RELATED_COLUMN_3_RELATED_COLUMN_2",
-                            ]
+                            ],
                         },
-                    ]
+                    ],
                 },
             },
         },

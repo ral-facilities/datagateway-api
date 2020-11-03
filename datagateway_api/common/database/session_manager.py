@@ -5,7 +5,7 @@ from sqlalchemy.pool import QueuePool
 from datagateway_api.common.constants import Constants
 
 engine = create_engine(
-    Constants.DATABASE_URL, poolclass=QueuePool, pool_size=100, max_overflow=0
+    Constants.DATABASE_URL, poolclass=QueuePool, pool_size=100, max_overflow=0,
 )
 session_factory = sessionmaker(engine)
 

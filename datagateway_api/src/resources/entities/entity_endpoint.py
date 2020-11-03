@@ -65,7 +65,7 @@ def get_endpoint(name, entity_type):
         def post(self):
             return (
                 backend.create(
-                    get_session_id_from_auth_header(), entity_type, request.json
+                    get_session_id_from_auth_header(), entity_type, request.json,
                 ),
                 200,
             )
@@ -107,7 +107,7 @@ def get_endpoint(name, entity_type):
         def patch(self):
             return (
                 backend.update(
-                    get_session_id_from_auth_header(), entity_type, request.json
+                    get_session_id_from_auth_header(), entity_type, request.json,
                 ),
                 200,
             )
@@ -165,7 +165,7 @@ def get_id_endpoint(name, entity_type):
         def get(self, id_):
             return (
                 backend.get_with_id(
-                    get_session_id_from_auth_header(), entity_type, id_
+                    get_session_id_from_auth_header(), entity_type, id_,
                 ),
                 200,
             )
@@ -292,7 +292,7 @@ def get_count_endpoint(name, entity_type):
             filters = get_filters_from_query_string()
             return (
                 backend.count_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters
+                    get_session_id_from_auth_header(), entity_type, filters,
                 ),
                 200,
             )
@@ -344,7 +344,7 @@ def get_find_one_endpoint(name, entity_type):
             filters = get_filters_from_query_string()
             return (
                 backend.get_one_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters
+                    get_session_id_from_auth_header(), entity_type, filters,
                 ),
                 200,
             )
