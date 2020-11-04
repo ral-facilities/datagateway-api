@@ -50,29 +50,22 @@ class FilterOrderHandler(object):
         limit filter and remove the skip filter from the instance
         """
         log.info("Merging a PythonICATSkipFilter and PythonICATLimitFilter together")
+        skip_filter = None
+        limit_filter = None
 
-        if any(
-            isinstance(icat_filter, PythonICATSkipFilter)
-            for icat_filter in self.filters
-        ) and any(
-            isinstance(icat_filter, PythonICATLimitFilter)
-            for icat_filter in self.filters
-        ):
-            # Merge skip and limit filter into a single limit filter
-            for icat_filter in self.filters:
-                if isinstance(icat_filter, PythonICATSkipFilter):
-                    skip_filter = icat_filter
-                    request_skip_value = icat_filter.skip_value
+        for icat_filter in self.filters:
+            if isinstance(icat_filter, PythonICATSkipFilter):
+                skip_filter = icat_filter
 
-                if isinstance(icat_filter, PythonICATLimitFilter):
-                    limit_filter = icat_filter
+            if isinstance(icat_filter, PythonICATLimitFilter):
+                limit_filter = icat_filter
 
-            if skip_filter and limit_filter:
-                log.info("Merging skip filter with limit filter")
-                limit_filter.skip_value = skip_filter.skip_value
-                log.info("Removing skip filter from list of filters")
-                self.remove_filter(skip_filter)
-                log.debug("Filters: %s", self.filters)
+        if skip_filter and limit_filter:
+            log.info("Merging skip filter with limit filter")
+            limit_filter.skip_value = skip_filter.skip_value
+            log.info("Removing skip filter from list of filters")
+            self.remove_filter(skip_filter)
+            log.debug("Filters: %s", self.filters)
 
     def clear_python_icat_order_filters(self):
         """

@@ -59,7 +59,7 @@ def get_session_id_from_auth_header():
         args["Authorization"].split(" ") if args["Authorization"] is not None else ""
     )
     if auth_header == "":
-        raise MissingCredentialsError(f"No credentials provided in auth header")
+        raise MissingCredentialsError("No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(
             f" Could not authenticate consumer with auth header {auth_header}",
@@ -74,7 +74,7 @@ def is_valid_json(string):
     :return: boolean representing if the string is valid JSON
     """
     try:
-        json_object = json.loads(string)
+        json.loads(string)
     except ValueError:
         return False
     except TypeError:

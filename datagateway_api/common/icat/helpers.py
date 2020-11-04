@@ -210,7 +210,7 @@ def get_entity_by_id(
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
-    includes_value = "1" if return_related_entities == True else None
+    includes_value = "1" if return_related_entities else None
     id_query = ICATQuery(
         client, entity_type, conditions=id_condition, includes=includes_value,
     )

@@ -695,8 +695,8 @@ def generate_all(i, generators):
 def main():
     start_time = datetime.datetime.now()
     generators = [generator() for generator in Generator.__subclasses__()]
-    TIERS = 7
-    for i in range(TIERS):
+    tiers = 7
+    for i in range(tiers):
         generate_all(i, generators)
 
     print(

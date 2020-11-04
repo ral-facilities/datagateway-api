@@ -61,7 +61,7 @@ def parse_operations(resource, operations):
                 logging.getLogger(__name__).warning(
                     "Cannot load docstring for {}/{}".format(resource, method),
                 )
-            operations[method.lower()] = operation or dict()
+            operations[method.lower()] = operation or {}
 
 
 class RestfulPlugin(apispec.BasePlugin):
