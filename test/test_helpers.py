@@ -29,7 +29,7 @@ from datagateway_api.common.helpers import (
 from test.test_base import FlaskAppTest
 
 
-class TestIs_valid_json(TestCase):
+class TestIsValidJSON(TestCase):
     def test_array(self):
         self.assertTrue(is_valid_json("[]"))
 
@@ -55,7 +55,7 @@ class TestIs_valid_json(TestCase):
         self.assertFalse(is_valid_json([]))
 
 
-class TestRequires_session_id(FlaskAppTest):
+class TestRequiresSessionID(FlaskAppTest):
     def setUp(self):
         super().setUp()
         self.good_credentials_header = {"Authorization": "Bearer Test"}
@@ -94,7 +94,7 @@ class TestRequires_session_id(FlaskAppTest):
         )
 
 
-class TestQueries_records(TestCase):
+class TestQueriesRecords(TestCase):
     def test_missing_record_error(self):
         @queries_records
         def raise_missing_record():
@@ -161,7 +161,7 @@ class TestQueries_records(TestCase):
         self.assertEqual(400, ctx.exception.status_code)
 
 
-class TestGet_session_id_from_auth_header(FlaskAppTest):
+class TestGetSessionIDFromAuthHeader(FlaskAppTest):
     def test_no_session_in_header(self):
         with self.app:
             self.app.get("/")
@@ -178,7 +178,7 @@ class TestGet_session_id_from_auth_header(FlaskAppTest):
             self.assertEqual("test", get_session_id_from_auth_header())
 
 
-class TestGet_filters_from_query_string(FlaskAppTest):
+class TestGetFiltersFromQueryString(FlaskAppTest):
     def test_no_filters(self):
         with self.app:
             self.app.get("/")
