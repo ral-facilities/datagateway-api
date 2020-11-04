@@ -10,11 +10,43 @@ from common.exceptions import FilterError, MultipleIncludeError
 from common.models import db_models
 
 from sqlalchemy import asc, desc
+import logging
+
+log = logging.getLogger()
 
 
 class DatabaseWhereFilter(WhereFilter):
     def __init__(self, field, value, operation):
         super().__init__(field, value, operation)
+
+        self.included_field = None
+        self.included_included_field = None
+        self._extract_filter_fields(field)
+
+    def _extract_filter_fields(self, field):
+        """
+        Extract the related fields names and put them into separate variables
+
+        :param field: ICAT field names, separated by dots
+        :type field: :class:`str`
+        """
+
+        fields = field.split(".")
+        include_depth = len(fields)
+
+        log.debug("Fields: %s, Include Depth: %d", fields, include_depth)
+
+        if include_depth == 1:
+            self.field = fields[0]
+        elif include_depth == 2:
+            self.field = fields[0]
+            self.included_field = fields[1]
+        elif include_depth == 3:
+            self.field = fields[0]
+            self.included_field = fields[1]
+            self.included_included_field = fields[2]
+        else:
+            raise ValueError(f"Maximum include depth exceeded. {field}'s depth > 3")
 
     def apply_filter(self, query):
         try:
