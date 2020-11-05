@@ -31,16 +31,16 @@ def queries_records(method):
         try:
             return method(*args, **kwargs)
         except ApiError as e:
-            log.exception(e)
+            log.exception(*e.args)
             raise e
         except ValueError as e:
-            log.exception(e)
+            log.exception(*e.args)
             raise BadRequestError()
         except TypeError as e:
-            log.exception(e)
+            log.exception(*e.args)
             raise BadRequestError()
         except IntegrityError as e:
-            log.exception(e)
+            log.exception(*e.args)
             raise BadRequestError()
 
     return wrapper_gets_records
