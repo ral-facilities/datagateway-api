@@ -46,6 +46,12 @@ class Config(object):
         except KeyError:
             sys.exit("Missing config value, log_level")
 
+    def get_log_location(self):
+        try:
+            return self.config["log_location"]
+        except KeyError:
+            sys.exit("Missing config value, log_location")
+
     def is_debug_mode(self):
         try:
             return self.config["debug_mode"]

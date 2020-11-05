@@ -4,6 +4,7 @@
   "ICAT_URL": "https://localhost.localdomain:8181",
   "icat_check_cert": false,
   "log_level": "WARN",
+  "log_location": "/home/user1/datagateway-api/logs.log",
   "debug_mode": false,
   "generate_swagger": false,
   "host": "127.0.0.1",
