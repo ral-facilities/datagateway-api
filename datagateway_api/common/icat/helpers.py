@@ -431,9 +431,10 @@ def create_entities(client, entity_type, data):
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
                 if entity_info.relType.lower() == "attribute":
-                    if isinstance(value, str):
-                        if DateHandler.is_str_a_date(value):
-                            value = DateHandler.str_to_datetime_object(value)
+                    # Short circuiting ensures is_str_date() will only be executed if
+                    # value is a string
+                    if isinstance(value, str) and DateHandler.is_str_a_date(value):
+                        value = DateHandler.str_to_datetime_object(value)
 
                     setattr(new_entity, attribute_name, value)
                 else:

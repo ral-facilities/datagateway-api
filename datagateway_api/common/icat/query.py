@@ -176,6 +176,14 @@ class ICATQuery:
         include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
             if key in includes:
+                # Make a copy of distinct_fields when calling this function again later
+                if distinct_fields is not None:
+                    distinct_fields_copy = self.prepare_distinct_fields(
+                        key, distinct_fields,
+                    )
+                else:
+                    distinct_fields_copy = None
+
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
                 includes_copy = includes.copy()
@@ -187,31 +195,17 @@ class ICATQuery:
                         " cause an issue further on in the request",
                     )
                 if isinstance(target, Entity):
-                    if distinct_fields is not None:
-                        distinct_fields_copy = self.prepare_distinct_fields(
-                            key, distinct_fields,
-                        )
-                    else:
-                        distinct_fields_copy = None
-
                     d[key] = self.entity_to_dict(
                         target, includes_copy, distinct_fields_copy,
                     )
-
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        if distinct_fields is not None:
-                            distinct_fields_copy = self.prepare_distinct_fields(
-                                key, distinct_fields,
-                            )
-                        else:
-                            distinct_fields_copy = None
-
                         d[key].append(
                             self.entity_to_dict(e, includes_copy, distinct_fields_copy),
                         )
+
             # Add actual piece of data to the dictionary
             else:
                 entity_data = None
