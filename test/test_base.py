@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.main import app
+from datagateway_api.src.main import app
 
 
 # Move this into the test defintions and let it be inherited in test classes that need
