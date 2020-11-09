@@ -61,3 +61,10 @@ def safety(session):
             external=True,
         )
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
+
+
+@nox.session(python=["3.6", "3.7", "3.8"], reuse_venv=True)
+def tests(session):
+    args = session.posargs
+    session.run("poetry", "install", external=True)
+    session.run("pytest", *args)
