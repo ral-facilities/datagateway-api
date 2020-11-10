@@ -76,17 +76,11 @@ class Config(object):
         except KeyError:
             sys.exit("Missing config value, port")
 
-    def get_test_username(self):
+    def get_test_user_credentials(self):
         try:
-            return self.config["test_username"]
+            return self.config["test_user_credentials"]
         except KeyError:
-            sys.exit("Missing config value, test_username")
-
-    def get_test_password(self):
-        try:
-            return self.config["test_password"]
-        except KeyError:
-            sys.exit("Missing config value, test_password")
+            sys.exit("Missing config value, test_user_credentials")
 
     def get_test_mechanism(self):
         try:

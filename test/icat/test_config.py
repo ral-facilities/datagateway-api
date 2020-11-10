@@ -120,24 +120,14 @@ class TestGetPort:
             invalid_config.get_icat_url()
 
 
-class TestGetTestUsername:
-    def test_valid_test_username(self, valid_config):
-        test_username = valid_config.get_test_username()
-        assert test_username == "root"
+class TestGetTestUserCredentials:
+    def test_valid_test_user_credentials(self, valid_config):
+        test_user_credentials = valid_config.get_test_user_credentials()
+        assert test_user_credentials == {"username": "root", "password": "pw"}
 
-    def test_invalid_test_username(self, invalid_config):
+    def test_invalid_test_user_credentials(self, invalid_config):
         with pytest.raises(SystemExit):
-            invalid_config.get_test_username()
-
-
-class TestGetTestPassword:
-    def test_valid_test_password(self, valid_config):
-        test_password = valid_config.get_test_password()
-        assert test_password == "pw"
-
-    def test_invalid_test_password(self, invalid_config):
-        with pytest.raises(SystemExit):
-            invalid_config.get_test_password()
+            invalid_config.get_test_user_credentials()
 
 
 class TestGetTestMechanism:
