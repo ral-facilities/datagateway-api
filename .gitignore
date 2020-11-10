@@ -6,3 +6,4 @@ config.json
 .vscode/
 .nox/
 .python-version
+.coverage
