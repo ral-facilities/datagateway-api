@@ -76,6 +76,24 @@ class Config(object):
         except KeyError:
             sys.exit("Missing config value, port")
 
+    def get_test_username(self):
+        try:
+            return self.config["test_username"]
+        except KeyError:
+            sys.exit("Missing config value, test_username")
+
+    def get_test_password(self):
+        try:
+            return self.config["test_password"]
+        except KeyError:
+            sys.exit("Missing config value, test_password")
+
+    def get_test_mechanism(self):
+        try:
+            return self.config["test_mechanism"]
+        except KeyError:
+            sys.exit("Missing config value, test_mechanism")
+
     def get_icat_properties(self):
         """
         ICAT properties can be retrieved using Python ICAT's client object, however this
