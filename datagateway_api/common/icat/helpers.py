@@ -3,6 +3,7 @@ from functools import wraps
 import logging
 
 
+import icat.client
 from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
@@ -13,6 +14,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
+from datagateway_api.common.config import config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -37,6 +39,15 @@ def requires_session_id(method):
     using the API. The API call runs and an ICATSessionError may be raised due to an
     expired session, invalid session ID etc.
 
+    The session ID from the request is set here, so there is no requirement for a user
+    to use the login endpoint, they can go straight into using the API so long as they
+    have a valid session ID (be it created from this API, or from an alternative such as
+    scigateway-auth).
+
+    This assumes the session ID is the second argument of the function where this
+    decorator is applied, which is reasonable to assume considering the current method
+    signatures of all the endpoints.
+
     :param method: The method for the backend operation
     :raises AuthenticationError: If a valid session_id is not provided with the request
     """
@@ -44,8 +55,11 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         try:
+            client = create_client()
+            client.sessionId = args[1]
+            # Client object put into kwargs so it can be accessed by backend functions
+            kwargs["client"] = client
 
-            client = args[0].client
             # Find out if session has expired
             session_time = client.getRemainingMinutes()
             log.info("Session time: %d", session_time)
@@ -57,6 +71,13 @@ def requires_session_id(method):
             raise AuthenticationError("Forbidden")
 
     return wrapper_requires_session
+
+
+def create_client():
+    client = icat.client.Client(
+        config.get_icat_url(), checkCert=config.get_icat_check_cert(),
+    )
+    return client
 
 
 def get_session_details_helper(client):
