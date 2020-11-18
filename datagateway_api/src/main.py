@@ -107,16 +107,18 @@ api.add_resource(
 )
 spec.path(resource=InstrumentsFacilityCyclesInvestigationsCount, api=api)
 
-# Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
-# change to the Swagger docs, rather than changing on each startup
-log.debug("Reordering OpenAPI docs to alphabetical order")
-for entity_data in spec._paths.values():
-    for endpoint_name in sorted(entity_data.keys()):
-        entity_data.move_to_end(endpoint_name)
 
-openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
-with open(openapi_spec_path, "w") as f:
-    f.write(spec.to_yaml())
+if config.is_generate_swagger():
+    # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
+    # change to the Swagger docs, rather than changing on each startup
+    log.debug("Reordering OpenAPI docs to alphabetical order")
+    for entity_data in spec._paths.values():
+        for endpoint_name in sorted(entity_data.keys()):
+            entity_data.move_to_end(endpoint_name)
+
+    openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
+    with open(openapi_spec_path, "w") as f:
+        f.write(spec.to_yaml())
 
 
 @app.route("/openapi.json")
