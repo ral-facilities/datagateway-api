@@ -1,3 +1,5 @@
+This PR will close #{issue number}
+
 ## Description
 Enter a description of the changes here
 
