@@ -329,4 +329,4 @@ class ICATQuery:
             ICAT query
         """
 
-        return [m for n in (field.split(".") for field in includes) for m in n]
+        return [m for n in (field.split(".") for field in sorted(includes)) for m in n]
