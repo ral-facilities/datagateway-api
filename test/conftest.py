@@ -1,15 +1,17 @@
+import uuid
+
 from icat.client import Client
 from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
+from test.icat.test_query import remove_meta_attributes
 
 
 @pytest.fixture(scope="package")
 def icat_client():
     client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
     client.login(config.get_test_mechanism(), config.get_test_user_credentials())
-    print(f"ID: {client.sessionId}")
     return client
 
 
@@ -18,3 +20,29 @@ def icat_query(icat_client):
     query = Query(icat_client, "Investigation")
 
     return query
+
+
+@pytest.fixture()
+def add_single_investigation_test_data(icat_client):
+    # Inject data
+    investigation = icat_client.new("investigation")
+    investigation.name = "Test Data for DataGateway API Testing"
+    investigation.title = "Test data for the Python ICAT Backend on DataGateway API"
+    # UUID visit ID means uniquesness constraint should always be met
+    investigation.visitId = str(uuid.uuid1())
+    investigation.facility = icat_client.get("Facility", 1)
+    investigation.type = icat_client.get("InvestigationType", 1)
+    investigation.create()
+
+    investigation_dict = investigation.as_dict()
+    remove_meta_attributes(investigation_dict)
+
+    yield [investigation_dict]
+
+    # Remove data from ICAT
+    icat_client.delete(investigation)
+
+
+@pytest.fixture()
+def remove_single_investiation_result():
+    pass
