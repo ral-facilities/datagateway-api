@@ -488,7 +488,7 @@ def get_facility_cycles_for_instrument(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
-        client, "FacilityCycle", aggregate=query_aggregate, isis_endpoint=True
+        client, "FacilityCycle", aggregate=query_aggregate
     )
 
     instrument_id_check = PythonICATWhereFilter(
@@ -573,7 +573,7 @@ def get_investigations_for_instrument_in_facility_cycle(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
-        client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
+        client, "Investigation", aggregate=query_aggregate
     )
 
     instrument_id_check = PythonICATWhereFilter(
