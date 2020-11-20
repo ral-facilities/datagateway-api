@@ -379,6 +379,9 @@ def update_entities(client, table_name, data_to_update):
     Update one or more results for the given entity using the JSON provided in 
     `data_to_update`
 
+    If an exception occurs while sending data to icatdb, an attempt will be made to
+    restore a backup of the data made before making the update.
+
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
@@ -394,6 +397,7 @@ def update_entities(client, table_name, data_to_update):
     if not isinstance(data_to_update, list):
         data_to_update = [data_to_update]
 
+    icat_data_backup = []
     updated_icat_data = []
 
     for entity_request in data_to_update:
@@ -405,6 +409,7 @@ def update_entities(client, table_name, data_to_update):
                 False,
                 return_related_entities=True,
             )
+            icat_data_backup.append(entity_data.copy())
 
             updated_entity_data = update_attributes(entity_data, entity_request)
             updated_icat_data.append(updated_entity_data)
@@ -415,9 +420,25 @@ def update_entities(client, table_name, data_to_update):
             )
 
     # This separates the local data updates from pushing these updates to icatdb
-    for entity in updated_icat_data:
-        push_data_updates_to_icat(entity)
-        updated_data.append(get_entity_by_id(client, table_name, entity.id, True))
+    for updated_icat_entity in updated_icat_data:
+        try:
+            updated_icat_entity.update()
+        except (ICATValidationError, ICATInternalError) as e:
+            # Use `icat_data_backup` to restore data trying to updated to the state
+            # before this request
+            for icat_entity_backup in icat_data_backup:
+                try:
+                    icat_entity_backup.update()
+                except (ICATValidationError, ICATInternalError) as e:
+                    # If an error occurs while trying to restore backup data, just throw
+                    # a 500 immediately
+                    raise PythonICATError(e)
+
+            raise PythonICATError(e)
+
+        updated_data.append(
+            get_entity_by_id(client, table_name, updated_icat_entity.id, True)
+        )
 
     return updated_data
 
