@@ -12,6 +12,7 @@ from icat.exception import (
     ICATNoObjectError,
     ICATParameterError,
 )
+from icat.sslcontext import create_ssl_context
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -425,6 +426,13 @@ def create_entities(client, table_name, data):
     """
     Add one or more results for the given entity using the JSON provided in `data`
 
+    `created_icat_data` is data of `icat.entity.Entity` type that is collated to be
+    pushed to ICAT at the end of the function - this avoids confusion over which data
+    has/hasn't been created if the request returns an error. When pushing the data to
+    ICAT, there is still risk an exception might be caught, so any entities already
+    pushed to ICAT will be deleted. Python ICAT doesn't support a database rollback (or
+    the concept of transactions) so this is a good alternative.
+
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
@@ -436,6 +444,7 @@ def create_entities(client, table_name, data):
     log.info("Creating ICAT data for %s", table_name)
 
     created_data = []
+    created_icat_data = []
 
     if not isinstance(data, list):
         data = [data]
@@ -467,13 +476,23 @@ def create_entities(client, table_name, data):
             except ValueError as e:
                 raise BadRequestError(e)
 
+        created_icat_data.append(new_entity)
+
+    for entity in created_icat_data:
         try:
-            new_entity.create()
+            entity.create()
         except (ICATValidationError, ICATInternalError) as e:
+            for entity_json in created_data:
+                # Delete any data that has been pushed to ICAT before the exception
+                delete_entity_by_id(client, table_name, entity_json["id"])
+
             raise PythonICATError(e)
         except (ICATObjectExistsError, ICATParameterError) as e:
+            for entity_json in created_data:
+                delete_entity_by_id(client, table_name, entity_json["id"])
+
             raise BadRequestError(e)
 
-        created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
+        created_data.append(get_entity_by_id(client, table_name, entity.id, True))
 
     return created_data
