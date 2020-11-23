@@ -2,7 +2,10 @@ from icat.entity import Entity
 import pytest
 
 from datagateway_api.common.exceptions import PythonICATError
-from datagateway_api.common.icat.filters import PythonICATWhereFilter
+from datagateway_api.common.icat.filters import (
+    PythonICATSkipFilter,
+    PythonICATWhereFilter,
+)
 from datagateway_api.common.icat.query import ICATQuery
 
 
@@ -56,8 +59,15 @@ class TestICATQuery:
         assert query_output_dicts == single_investigation_test_data
 
     def test_invalid_query_execution(self, icat_client):
-        # Try to get ICATValidationError raised
-        pass
+        test_query = ICATQuery(icat_client, "Investigation")
+
+        # Create filter with valid value, then change to invalid value that'll cause 500
+        test_skip_filter = PythonICATSkipFilter(1)
+        test_skip_filter.skip_value = -1
+        test_skip_filter.apply_filter(test_query.query)
+
+        with pytest.raises(PythonICATError):
+            test_query.execute_query(icat_client)
 
     def test_valid_count_query_execution(self, icat_client):
         pass
