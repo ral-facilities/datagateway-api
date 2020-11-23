@@ -16,6 +16,11 @@ def icat_client():
 
 
 @pytest.fixture()
+def valid_credentials_header(icat_client):
+    return {"Authorization": f"Bearer {icat_client.sessionId}"}
+
+
+@pytest.fixture()
 def icat_query(icat_client):
     query = Query(icat_client, "Investigation")
 
