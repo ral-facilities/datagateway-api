@@ -6,6 +6,7 @@ from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
+from datagateway_api.src.main import app
 
 
 @pytest.fixture(scope="package")
@@ -51,5 +52,6 @@ def single_investigation_test_data(icat_client):
 
 
 @pytest.fixture()
-def remove_single_investiation_result():
-    pass
+def flask_test_app():
+    app.config["TESTING"] = True
+    return app.test_client()
