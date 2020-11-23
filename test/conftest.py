@@ -1,11 +1,11 @@
 import uuid
 
 from icat.client import Client
+from icat.entity import Entity
 from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
-from test.icat.test_query import remove_meta_attributes
 
 
 @pytest.fixture(scope="package")
@@ -33,9 +33,11 @@ def single_investigation_test_data(icat_client):
     investigation.facility = icat_client.get("Facility", 1)
     investigation.type = icat_client.get("InvestigationType", 1)
     investigation.create()
-
     investigation_dict = investigation.as_dict()
-    remove_meta_attributes(investigation_dict)
+
+    meta_attributes = Entity.MetaAttr
+    for attr in meta_attributes:
+        investigation_dict.pop(attr)
 
     yield [investigation_dict]
 

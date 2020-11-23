@@ -6,10 +6,28 @@ from datagateway_api.common.icat.filters import PythonICATWhereFilter
 from datagateway_api.common.icat.query import ICATQuery
 
 
-def remove_meta_attributes(entity_dict):
+def prepare_icat_data_for_assertion(data):
+    """
+    Remove meta attributes from ICAT data. Meta attributes contain data about data
+    creation/modification, and should be removed to ensure correct assertion values
+
+    :param data: ICAT data containing meta attributes such as modTime
+    :type data: :class:`dict` or an inherited version of :class:`icat.entity.Entity`
+    """
+    assertable_data = []
     meta_attributes = Entity.MetaAttr
-    for attr in meta_attributes:
-        entity_dict.pop(attr)
+
+    for entity in data:
+        # Convert to dictionary if an ICAT entity object
+        if isinstance(entity, Entity):
+            entity = entity.as_dict()
+
+        for attr in meta_attributes:
+            entity.pop(attr)
+
+        assertable_data.append(entity)
+
+    return assertable_data
 
 
 class TestICATQuery:
@@ -33,11 +51,7 @@ class TestICATQuery:
         test_data_filter.apply_filter(test_query.query)
         query_data = test_query.execute_query(icat_client)
 
-        query_output_dicts = []
-        for entity in query_data:
-            entity_dict = entity.as_dict()
-            remove_meta_attributes(entity_dict)
-            query_output_dicts.append(entity_dict)
+        query_output_dicts = prepare_icat_data_for_assertion(query_data)
 
         assert query_output_dicts == single_investigation_test_data
 
@@ -51,11 +65,19 @@ class TestICATQuery:
     def test_valid_distinct_query_execution(self, icat_client):
         pass
 
-    def test_json_format_execution_output(self, icat_client):
-        pass
+    def test_json_format_execution_output(
+        self, icat_client, single_investigation_test_data,
+    ):
+        test_query = ICATQuery(icat_client, "Investigation")
+        test_data_filter = PythonICATWhereFilter(
+            "title", "Test data for the Python ICAT Backend on DataGateway API", "eq",
+        )
+        test_data_filter.apply_filter(test_query.query)
+        query_data = test_query.execute_query(icat_client, True)
 
-    def test_icat_execution_output(self, icat_client):
-        pass
+        query_output_json = prepare_icat_data_for_assertion(query_data)
+
+        assert query_output_json == single_investigation_test_data
 
     # gap in function testing
 
