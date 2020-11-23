@@ -28,10 +28,8 @@ class TestICATLimitFilter:
         [pytest.param(-50, id="extreme invalid"), pytest.param(-1, id="boundary")],
     )
     def test_invalid_limit_value(self, icat_query, limit_value):
-        test_filter = PythonICATLimitFilter(limit_value)
-
         with pytest.raises(FilterError):
-            test_filter.apply_filter(icat_query)
+            PythonICATLimitFilter(limit_value)
 
     @pytest.mark.parametrize(
         "skip_value, limit_value",
