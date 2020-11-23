@@ -23,7 +23,7 @@ def icat_query(icat_client):
 
 
 @pytest.fixture()
-def add_single_investigation_test_data(icat_client):
+def single_investigation_test_data(icat_client):
     # Inject data
     investigation = icat_client.new("investigation")
     investigation.name = "Test Data for DataGateway API Testing"

@@ -23,9 +23,8 @@ class TestICATQuery:
         with pytest.raises(PythonICATError):
             ICATQuery(icat_client, "User", conditions={"invalid": "invalid"})
 
-    # @pytest.mark.usefixtures("")
     def test_valid_query_exeuction(
-        self, icat_client, add_single_investigation_test_data,
+        self, icat_client, single_investigation_test_data,
     ):
         test_query = ICATQuery(icat_client, "Investigation")
         test_data_filter = PythonICATWhereFilter(
@@ -40,7 +39,7 @@ class TestICATQuery:
             remove_meta_attributes(entity_dict)
             query_output_dicts.append(entity_dict)
 
-        assert query_output_dicts == add_single_investigation_test_data
+        assert query_output_dicts == single_investigation_test_data
 
     def test_invalid_query_execution(self, icat_client):
         # Try to get ICATValidationError raised
