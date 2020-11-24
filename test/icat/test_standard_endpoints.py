@@ -91,10 +91,6 @@ class TestStandardEndpoints:
 
         assert response_json == filtered_investigation_data
 
-    def test_invalid_get_with_filters(self):
-        # Invalid data?
-        pass
-
     def test_valid_create_data(self):
         pass
 
@@ -107,12 +103,57 @@ class TestStandardEndpoints:
         # Target ICATObjectExistsError
         pass
 
-    def test_valid_update_data(self):
-        pass
+    def test_valid_multiple_update_data(
+        self,
+        flask_test_app,
+        valid_credentials_header,
+        multiple_investigation_test_data,
+    ):
+        expected_doi = "Test Data Identifier"
+        expected_summary = "Test Summary"
 
-    def test_valid_boundary_update_data(self):
+        update_data_list = []
+
+        for investigation in multiple_investigation_test_data:
+            investigation["doi"] = expected_doi
+            investigation["summary"] = expected_summary
+
+            update_entity = {
+                "id": investigation["id"],
+                "doi": expected_doi,
+                "summary": expected_summary,
+            }
+            update_data_list.append(update_entity)
+
+        test_response = flask_test_app.patch(
+            "/investigations", headers=valid_credentials_header, json=update_data_list,
+        )
+        response_json = prepare_icat_data_for_assertion(test_response.json)
+
+        assert response_json == multiple_investigation_test_data
+
+    def test_valid_boundary_update_data(
+        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+    ):
         """ Request body is a dictionary, not a list of dictionaries"""
-        pass
+
+        expected_doi = "Test Data Identifier"
+        expected_summary = "Test Summary"
+
+        update_data_json = {
+            "id": single_investigation_test_data[0]["id"],
+            "doi": expected_doi,
+            "summary": expected_summary,
+        }
+        single_investigation_test_data[0]["doi"] = expected_doi
+        single_investigation_test_data[0]["summary"] = expected_summary
+
+        test_response = flask_test_app.patch(
+            "/investigations", headers=valid_credentials_header, json=update_data_json,
+        )
+        response_json = prepare_icat_data_for_assertion(test_response.json)
+
+        assert response_json == single_investigation_test_data
 
     def test_invalid_update_data(self):
         # Exclude an ID at in one of the data pieces
