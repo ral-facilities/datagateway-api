@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.common.exceptions import BadRequestError
 from datagateway_api.src.main import api
 from datagateway_api.src.main import app
 from datagateway_api.src.resources.entities.entity_map import endpoints
@@ -155,9 +156,26 @@ class TestStandardEndpoints:
 
         assert response_json == single_investigation_test_data
 
-    def test_invalid_update_data(self):
-        # Exclude an ID at in one of the data pieces
-        pass
+    def test_invalid_update_data(
+        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+    ):
+        """There should be an ID in the request body to know which entity to update"""
+
+        expected_doi = "Test Data Identifier"
+        expected_summary = "Test Summary"
+
+        update_data_json = {
+            "doi": expected_doi,
+            "summary": expected_summary,
+        }
+        single_investigation_test_data[0]["doi"] = expected_doi
+        single_investigation_test_data[0]["summary"] = expected_summary
+
+        test_response = flask_test_app.patch(
+            "/investigations", headers=valid_credentials_header, json=update_data_json,
+        )
+
+        assert test_response.status_code == 400
 
     def test_valid_get_one_with_filters(
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
