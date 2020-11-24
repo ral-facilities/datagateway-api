@@ -64,6 +64,33 @@ class TestStandardEndpoints:
         for title in expected:
             assert title in test_response.json
 
+    def test_limit_skip_merge_get_with_filters(
+        self,
+        flask_test_app,
+        valid_credentials_header,
+        multiple_investigation_test_data,
+    ):
+        skip_value = 1
+        limit_value = 2
+
+        test_response = flask_test_app.get(
+            '/investigations?where={"title": {"like": "Test data for the Python ICAT'
+            ' Backend on DataGateway API"}}'
+            f'&skip={skip_value}&limit={limit_value}&order="id ASC"',
+            headers=valid_credentials_header,
+        )
+        response_json = prepare_icat_data_for_assertion(test_response.json)
+
+        filtered_investigation_data = []
+        filter_count = 0
+        while filter_count < limit_value:
+            filtered_investigation_data.append(
+                multiple_investigation_test_data.pop(skip_value),
+            )
+            filter_count += 1
+
+        assert response_json == filtered_investigation_data
+
     def test_invalid_get_with_filters(self):
         # Invalid data?
         pass
