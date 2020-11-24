@@ -193,8 +193,10 @@ def update_attributes(old_entity, new_entity):
 
     try:
         old_entity.update()
-    except (ICATValidationError, ICATInternalError) as e:
+    except ICATInternalError as e:
         raise PythonICATError(e)
+    except ICATValidationError as e:
+        raise BadRequestError(e)
 
 
 def get_entity_by_id(
@@ -474,9 +476,9 @@ def create_entities(client, entity_type, data):
 
         try:
             new_entity.create()
-        except (ICATValidationError, ICATInternalError) as e:
+        except ICATInternalError as e:
             raise PythonICATError(e)
-        except (ICATObjectExistsError, ICATParameterError) as e:
+        except (ICATObjectExistsError, ICATParameterError, ICATValidationError) as e:
             raise BadRequestError(e)
 
         created_data.append(get_entity_by_id(client, entity_type, new_entity.id, True))
