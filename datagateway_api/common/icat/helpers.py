@@ -171,6 +171,7 @@ def update_attributes(old_entity, new_entity):
         - typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId &
         modTime)
     """
+    log.debug("Updating entity attributes: %s", list(new_entity.keys()))
     for key in new_entity:
         try:
             original_data_attribute = getattr(old_entity, key)
