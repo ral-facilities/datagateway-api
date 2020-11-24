@@ -263,5 +263,23 @@ class TestStandardEndpoints:
 
         assert response_json == single_investigation_test_data
 
-    def test_invalid_update_with_id(self):
-        pass
+    def test_invalid_update_with_id(
+        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+    ):
+        """This test will attempt to put `icatdb` into an invalid state"""
+
+        # DOI cannot be over 255 characters, which this string is
+        invalid_update_json = {
+            "doi": "__________________________________________________________________"
+            "_________________________________________________________________________"
+            "_________________________________________________________________________"
+            "_________________________________________________________________________",
+        }
+
+        test_response = flask_test_app.patch(
+            f"/investigations/{single_investigation_test_data[0]['id']}",
+            headers=valid_credentials_header,
+            json=invalid_update_json,
+        )
+
+        assert test_response.status_code == 400
