@@ -2,6 +2,7 @@ import uuid
 
 from icat.client import Client
 from icat.entity import Entity
+from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
@@ -48,7 +49,11 @@ def single_investigation_test_data(icat_client):
     yield [investigation_dict]
 
     # Remove data from ICAT
-    icat_client.delete(investigation)
+    try:
+        icat_client.delete(investigation)
+    except ICATNoObjectError as e:
+        # This should occur on DELETE endpoints, normal behaviour for those tests
+        print(e)
 
 
 @pytest.fixture()

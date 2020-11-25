@@ -275,9 +275,8 @@ class TestStandardEndpoints:
         assert response_json == single_investigation_test_data
 
     def test_invalid_get_with_id(self, flask_test_app, valid_credentials_header):
-        # Do a get one with filters (order desc), extract the id of that, add 5 and do a
-        # request for that
-        # Need to identify the ID given to the test data
+        """Request with a non-existent ID"""
+
         final_investigation_result = flask_test_app.get(
             '/investigations/findone?order="id DESC"', headers=valid_credentials_header,
         )
@@ -290,12 +289,30 @@ class TestStandardEndpoints:
 
         assert test_response.status_code == 404
 
-    def test_valid_delete_with_id(self):
-        pass
+    def test_valid_delete_with_id(
+        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+    ):
+        test_response = flask_test_app.delete(
+            f'/investigations/{single_investigation_test_data[0]["id"]}',
+            headers=valid_credentials_header,
+        )
 
-    def test_invalid_delete_with_id(self):
-        # like invalid get, but try to delete
-        pass
+        assert test_response.status_code == 204
+
+    def test_invalid_delete_with_id(self, flask_test_app, valid_credentials_header):
+        """Request with a non-existent ID"""
+
+        final_investigation_result = flask_test_app.get(
+            '/investigations/findone?order="id DESC"', headers=valid_credentials_header,
+        )
+        test_data_id = final_investigation_result.json["id"]
+
+        # Adding 100 onto the ID to the most recent result should ensure a 404
+        test_response = flask_test_app.delete(
+            f"/investigations/{test_data_id + 100}", headers=valid_credentials_header,
+        )
+
+        assert test_response.status_code == 404
 
     def test_valid_update_with_id(
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
