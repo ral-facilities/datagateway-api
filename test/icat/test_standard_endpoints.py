@@ -165,10 +165,43 @@ class TestStandardEndpoints:
         # Invalid request body
         pass
 
-    def test_invalid_create_data_1(self):
-        # TODO - Rename function
-        # Target ICATObjectExistsError
-        pass
+    def test_invalid_create_data(self, flask_test_app, valid_credentials_header):
+        """An investigation requires a minimum of: name, visitId, facility, type"""
+
+        invalid_request_body = {
+            "title": "Test Title for DataGateway API Backend testing",
+        }
+
+        test_response = flask_test_app.post(
+            "/investigations",
+            headers=valid_credentials_header,
+            json=invalid_request_body,
+        )
+
+        assert test_response.status_code == 400
+
+    def test_invalid_existing_data_create(
+        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+    ):
+        """This test targets raising ICATObjectExistsError, causing a 400"""
+
+        # entity.as_dict() removes details about facility and type, hence they're
+        # hardcoded here instead of using sinle_investigation_test_data
+        existing_object_json = {
+            "name": single_investigation_test_data[0]["name"],
+            "title": single_investigation_test_data[0]["title"],
+            "visitId": single_investigation_test_data[0]["visitId"],
+            "facility": 1,
+            "type": 1,
+        }
+
+        test_response = flask_test_app.post(
+            "/investigations",
+            headers=valid_credentials_header,
+            json=existing_object_json,
+        )
+
+        assert test_response.status_code == 400
 
     def test_valid_multiple_update_data(
         self,
