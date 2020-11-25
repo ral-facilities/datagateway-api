@@ -9,7 +9,7 @@ from datagateway_api.common.icat.filters import (
 from datagateway_api.common.icat.query import ICATQuery
 
 
-def prepare_icat_data_for_assertion(data):
+def prepare_icat_data_for_assertion(data, remove_id=False):
     """
     Remove meta attributes from ICAT data. Meta attributes contain data about data
     creation/modification, and should be removed to ensure correct assertion values
@@ -27,6 +27,10 @@ def prepare_icat_data_for_assertion(data):
 
         for attr in meta_attributes:
             entity.pop(attr)
+
+        # meta_attributes is immutable
+        if remove_id:
+            entity.pop("id")
 
         assertable_data.append(entity)
 
