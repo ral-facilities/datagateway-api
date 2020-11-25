@@ -44,6 +44,17 @@ class TestStandardEndpoints:
 
         assert response_json == single_investigation_test_data
 
+    def test_valid_no_results_get_with_filters(
+        self, flask_test_app, valid_credentials_header,
+    ):
+        test_response = flask_test_app.get(
+            '/investigations?where={"title": {"eq": "This filter should cause a 404 for'
+            'testing purposes..."}}',
+            headers=valid_credentials_header,
+        )
+
+        assert test_response.status_code == 404
+
     @pytest.mark.usefixtures("multiple_investigation_test_data")
     def test_valid_get_with_filters_distinct(
         self, flask_test_app, valid_credentials_header,
@@ -199,7 +210,7 @@ class TestStandardEndpoints:
 
         assert test_response.status_code == 400
 
-    def test_valid_get_one_with_filters(
+    def test_valid_findone_with_filters(
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
     ):
         test_response = flask_test_app.get(
@@ -211,6 +222,17 @@ class TestStandardEndpoints:
 
         assert response_json == single_investigation_test_data
 
+    def test_valid_no_results_findone_with_filters(
+        self, flask_test_app, valid_credentials_header,
+    ):
+        test_response = flask_test_app.get(
+            '/investigations/findone?where={"title": {"eq": "This filter should cause a'
+            '404 for testing purposes..."}}',
+            headers=valid_credentials_header,
+        )
+
+        assert test_response.status_code == 404
+
     @pytest.mark.usefixtures("single_investigation_test_data")
     def test_valid_count_with_filters(self, flask_test_app, valid_credentials_header):
         test_response = flask_test_app.get(
@@ -220,6 +242,17 @@ class TestStandardEndpoints:
         )
 
         assert test_response.json == 1
+
+    def test_valid_no_results_count_with_filters(
+        self, flask_test_app, valid_credentials_header,
+    ):
+        test_response = flask_test_app.get(
+            '/investigations/count?where={"title": {"eq": "This filter should cause a'
+            '404 for testing purposes..."}}',
+            headers=valid_credentials_header,
+        )
+
+        assert test_response.json == 0
 
     def test_valid_get_with_id(
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
