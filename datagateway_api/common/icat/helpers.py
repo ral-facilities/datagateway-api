@@ -445,9 +445,7 @@ def create_entities(client, entity_type, data):
 
     for result in data:
         new_entity = client.new(
-            get_icat_entity_name_as_camel_case(
-                client, entity_type, camel_case_output=True,
-            ),
+            get_icat_entity_name_as_camel_case(client, entity_type),
         )
 
         for attribute_name, value in result.items():
