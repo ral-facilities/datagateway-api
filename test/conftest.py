@@ -23,6 +23,11 @@ def valid_credentials_header(icat_client):
 
 
 @pytest.fixture()
+def invalid_credentials_header():
+    return {"Authorization": "Bearer Invalid"}
+
+
+@pytest.fixture()
 def icat_query(icat_client):
     query = Query(icat_client, "Investigation")
 
