@@ -29,9 +29,7 @@ def invalid_credentials_header():
 
 @pytest.fixture()
 def icat_query(icat_client):
-    query = Query(icat_client, "Investigation")
-
-    return query
+    return Query(icat_client, "Investigation")
 
 
 @pytest.fixture()
