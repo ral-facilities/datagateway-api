@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from icat.entity import Entity
 import pytest
 
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.common.icat.filters import (
     PythonICATSkipFilter,
@@ -15,7 +18,7 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
     creation/modification, and should be removed to ensure correct assertion values
 
     :param data: ICAT data containing meta attributes such as modTime
-    :type data: :class:`dict` or an inherited version of :class:`icat.entity.Entity`
+    :type data: :class:`list` or :class:`icat.entity.EntityList`
     """
     assertable_data = []
     meta_attributes = Entity.MetaAttr
@@ -27,6 +30,10 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
 
         for attr in meta_attributes:
             entity.pop(attr)
+
+        for attr in entity.keys():
+            if isinstance(entity[attr], datetime):
+                entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
 
         # meta_attributes is immutable
         if remove_id:

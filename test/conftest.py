@@ -1,13 +1,14 @@
+from datetime import datetime
 import uuid
 
 from icat.client import Client
-from icat.entity import Entity
 from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
 from datagateway_api.src.main import app
+from test.icat.test_query import prepare_icat_data_for_assertion
 
 
 @pytest.fixture(scope="package")
@@ -32,24 +33,41 @@ def icat_query(icat_client):
     return Query(icat_client, "Investigation")
 
 
+def create_investigation_test_data(client, num_entities=1):
+    test_data = []
+
+    for i in range(num_entities):
+        investigation = client.new("investigation")
+        investigation.name = f"Test Data for DataGateway API Testing {i}"
+        investigation.title = (
+            f"Test data for the Python ICAT Backend on DataGateway API {i}"
+        )
+        investigation.startDate = datetime(
+            year=2020, month=1, day=4, hour=1, minute=1, second=1,
+        )
+        investigation.endDate = datetime(
+            year=2020, month=1, day=8, hour=1, minute=1, second=1,
+        )
+        # UUID visit ID means uniquesness constraint should always be met
+        investigation.visitId = str(uuid.uuid1())
+        investigation.facility = client.get("Facility", 1)
+        investigation.type = client.get("InvestigationType", 1)
+        investigation.create()
+
+        test_data.append(investigation)
+
+    if len(test_data) == 1:
+        return test_data[0]
+    else:
+        return test_data
+
+
 @pytest.fixture()
 def single_investigation_test_data(icat_client):
-    # Inject data
-    investigation = icat_client.new("investigation")
-    investigation.name = "Test Data for DataGateway API Testing"
-    investigation.title = "Test data for the Python ICAT Backend on DataGateway API"
-    # UUID visit ID means uniquesness constraint should always be met
-    investigation.visitId = str(uuid.uuid1())
-    investigation.facility = icat_client.get("Facility", 1)
-    investigation.type = icat_client.get("InvestigationType", 1)
-    investigation.create()
-    investigation_dict = investigation.as_dict()
+    investigation = create_investigation_test_data(icat_client)
+    investigation_dict = prepare_icat_data_for_assertion([investigation])
 
-    meta_attributes = Entity.MetaAttr
-    for attr in meta_attributes:
-        investigation_dict.pop(attr)
-
-    yield [investigation_dict]
+    yield investigation_dict
 
     # Remove data from ICAT
     try:
@@ -61,32 +79,14 @@ def single_investigation_test_data(icat_client):
 
 @pytest.fixture()
 def multiple_investigation_test_data(icat_client):
-    investigation_test_data = []
     investigation_dicts = []
-    meta_attributes = Entity.MetaAttr
-
-    for i in range(5):
-        investigation = icat_client.new("investigation")
-        investigation.name = f"Test Data for DataGateway API Testing {i}"
-        investigation.title = (
-            f"Test data for the Python ICAT Backend on DataGateway API {i}"
-        )
-        investigation.visitId = str(uuid.uuid1())
-        investigation.facility = icat_client.get("Facility", 1)
-        investigation.type = icat_client.get("InvestigationType", 1)
-        investigation.create()
-        investigation_test_data.append(investigation)
-        investigation_dict = investigation.as_dict()
-
-        for attr in meta_attributes:
-            investigation_dict.pop(attr)
-
-        investigation_dicts.append(investigation_dict)
+    investigations = create_investigation_test_data(icat_client, num_entities=5)
+    investigation_dicts = prepare_icat_data_for_assertion(investigations)
 
     yield investigation_dicts
 
-    for entity in investigation_test_data:
-        icat_client.delete(entity)
+    for investigation in investigations:
+        icat_client.delete(investigation)
 
 
 @pytest.fixture()
