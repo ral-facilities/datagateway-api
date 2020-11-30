@@ -60,7 +60,7 @@ class TestICATQuery:
     ):
         test_query = ICATQuery(icat_client, "Investigation")
         test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "eq",
+            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
         )
         test_data_filter.apply_filter(test_query.query)
         query_data = test_query.execute_query(icat_client)
@@ -91,7 +91,7 @@ class TestICATQuery:
     ):
         test_query = ICATQuery(icat_client, "Investigation")
         test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "eq",
+            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
         )
         test_data_filter.apply_filter(test_query.query)
         query_data = test_query.execute_query(icat_client, True)

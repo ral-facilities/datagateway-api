@@ -6,7 +6,7 @@ class TestFindone:
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
     ):
         test_response = flask_test_app.get(
-            '/investigations/findone?where={"title": {"eq": "Test data for the Python'
+            '/investigations/findone?where={"title": {"like": "Test data for the Python'
             ' ICAT Backend on DataGateway API"}}',
             headers=valid_credentials_header,
         )

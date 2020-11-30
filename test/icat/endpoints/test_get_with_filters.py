@@ -8,7 +8,7 @@ class TestGetWithFilters:
         self, flask_test_app, valid_credentials_header, single_investigation_test_data,
     ):
         test_response = flask_test_app.get(
-            '/investigations?where={"title": {"eq": "Test data for the Python ICAT'
+            '/investigations?where={"title": {"like": "Test data for the Python ICAT'
             ' Backend on DataGateway API"}}',
             headers=valid_credentials_header,
         )
