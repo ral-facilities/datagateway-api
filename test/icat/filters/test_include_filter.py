@@ -1,6 +1,6 @@
-from datagateway_api.common.exceptions import FilterError
 import pytest
 
+from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.icat.filters import PythonICATIncludeFilter
 
 
@@ -61,7 +61,7 @@ class TestICATIncludeFilter:
         [
             pytest.param({2: "datasets"}, id="invalid dictionary key"),
             pytest.param(
-                {"datasets": {2: "datafiles"}}, id="invalid inner dictionary key"
+                {"datasets": {2: "datafiles"}}, id="invalid inner dictionary key",
             ),
             pytest.param(
                 {"datasets": {"datafiles", "sample"}},
