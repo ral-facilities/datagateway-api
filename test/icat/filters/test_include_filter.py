@@ -1,3 +1,4 @@
+from datagateway_api.common.exceptions import FilterError
 import pytest
 
 from datagateway_api.common.icat.filters import PythonICATIncludeFilter
@@ -45,3 +46,29 @@ class TestICATIncludeFilter:
         test_filter.apply_filter(icat_query)
 
         assert icat_query.includes == expected_output
+
+    def test_invalid_type(self, icat_query):
+        with pytest.raises(FilterError):
+            PythonICATIncludeFilter({"datasets", "facility"})
+
+    def test_invalid_field(self, icat_query):
+        test_filter = PythonICATIncludeFilter("invalidField")
+        with pytest.raises(FilterError):
+            test_filter.apply_filter(icat_query)
+
+    @pytest.mark.parametrize(
+        "filter_input",
+        [
+            pytest.param({2: "datasets"}, id="invalid dictionary key"),
+            pytest.param(
+                {"datasets": {2: "datafiles"}}, id="invalid inner dictionary key"
+            ),
+            pytest.param(
+                {"datasets": {"datafiles", "sample"}},
+                id="invalid inner dictionary value",
+            ),
+        ],
+    )
+    def test_invalid_extract_field(self, filter_input):
+        with pytest.raises(FilterError):
+            PythonICATIncludeFilter(filter_input)
