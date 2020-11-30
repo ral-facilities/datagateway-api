@@ -31,8 +31,6 @@ else:
     )
 
 
-# Common across both, needs parameterized tests for different cased names, need multiple
-# tests for each filter
 class TestQueryFilterFactory(TestCase):
     def test_order_filter(self):
         self.assertIs(

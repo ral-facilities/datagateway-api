@@ -30,7 +30,6 @@ from datagateway_api.common.helpers import (
 from test.test_base import FlaskAppTest
 
 
-# Put this in test definitions, but do tests there, don't abstract out
 class TestIsValidJSON(TestCase):
     def test_array(self):
         self.assertTrue(is_valid_json("[]"))
@@ -57,7 +56,6 @@ class TestIsValidJSON(TestCase):
         self.assertFalse(is_valid_json([]))
 
 
-# Common for both backends, setup and teardown will be different
 class TestRequiresSessionID(FlaskAppTest):
     def setUp(self):
         super().setUp()
@@ -100,7 +98,6 @@ class TestRequiresSessionID(FlaskAppTest):
         )
 
 
-# Common across both, no need to abstract out
 class TestQueriesRecords(TestCase):
     def test_missing_record_error(self):
         @queries_records
@@ -168,7 +165,6 @@ class TestQueriesRecords(TestCase):
         self.assertEqual(400, ctx.exception.status_code)
 
 
-# Common across both, no need to abstract out
 class TestGetSessionIDFromAuthHeader(FlaskAppTest):
     def test_no_session_in_header(self):
         with self.app:
@@ -186,7 +182,6 @@ class TestGetSessionIDFromAuthHeader(FlaskAppTest):
             self.assertEqual("test", get_session_id_from_auth_header())
 
 
-# Common across both, needs abstracting out, class per filter, multiple tests per filter
 class TestGetFiltersFromQueryString(FlaskAppTest):
     def test_no_filters(self):
         with self.app:

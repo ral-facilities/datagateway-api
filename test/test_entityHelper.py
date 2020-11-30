@@ -9,7 +9,6 @@ from datagateway_api.common.database.models import (
 )
 
 
-# DB only tests
 class TestEntityHelper(TestCase):
     def setUp(self):
         self.dataset = DATASET()
