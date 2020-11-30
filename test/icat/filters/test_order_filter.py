@@ -11,7 +11,12 @@ class TestICATOrderFilter:
         """Direction must be uppercase for Python ICAT to see the input as valid"""
         test_filter = PythonICATOrderFilter("id", "asc")
 
+        filter_handler = FilterOrderHandler()
+        filter_handler.add_filter(test_filter)
+
         assert test_filter.direction == "ASC"
+
+        filter_handler.clear_python_icat_order_filters()
 
     def test_result_order_appended(self, icat_query):
         id_filter = PythonICATOrderFilter("id", "ASC")
