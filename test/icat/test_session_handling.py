@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from icat.client import Client
 import pytest
 
 from datagateway_api.common.config import config
@@ -98,10 +99,12 @@ class TestSessionHandling:
 
         assert login_response.status_code == 403
 
-    def test_valid_logout(self, flask_test_app, valid_credentials_header):
-        logout_response = flask_test_app.delete(
-            "/sessions", headers=valid_credentials_header,
-        )
+    def test_valid_logout(self, flask_test_app):
+        client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
+        client.login(config.get_test_mechanism(), config.get_test_user_credentials())
+        creds_header = {"Authorization": f"Bearer {client.sessionId}"}
+
+        logout_response = flask_test_app.delete("/sessions", headers=creds_header)
 
         assert logout_response.status_code == 200
 
