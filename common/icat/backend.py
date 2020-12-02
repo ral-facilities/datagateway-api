@@ -80,7 +80,7 @@ class PythonICATBackend(Backend):
     @queries_records
     def create(self, session_id, table, data, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
-        return update_entities(client, table.__name__, data)
+        return create_entities(client, table.__name__, data)
 
     @requires_session_id
     @queries_records
