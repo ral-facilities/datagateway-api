@@ -266,16 +266,12 @@ class ICATQuery:
             if len(split_fields) == 1:
                 # Conventional list assignment causes IndexError because -2 is out of
                 # range of a list with a single element
-                split_fields.insert(-2, "base")
+                split_fields.insert(0, "base")
 
             # If a key doesn't exist in the dictionary, create it and assign an empty
             # list to it
-            try:
-                distinct_field_dict[split_fields[-2]]
-            except KeyError:
-                distinct_field_dict[split_fields[-2]] = []
-
-            distinct_field_dict[split_fields[-2]].append(split_fields[-1])
+            distinct_field_dict.setdefault(split_fields[0], [])
+            distinct_field_dict[split_fields[0]].append(split_fields[-1])
 
         # Remove "base" key as this isn't a valid entity name in Python ICAT
         distinct_entities = list(distinct_field_dict.keys())
