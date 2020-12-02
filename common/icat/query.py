@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 
 from icat.entity import Entity, EntityList
+from icat.entities import getTypeMap
 from icat.query import Query
 from icat.exception import ICATValidationError, ICATInternalError
 
@@ -14,7 +15,13 @@ log = logging.getLogger()
 
 class ICATQuery:
     def __init__(
-        self, client, entity_name, conditions=None, aggregate=None, includes=None
+        self,
+        client,
+        entity_name,
+        conditions=None,
+        aggregate=None,
+        includes=None,
+        isis_endpoint=False,
     ):
         """
         Create a Query object within Python ICAT 
@@ -32,6 +39,12 @@ class ICATQuery:
         :param includes: List of related entity names to add to the query so related
             entities (and their data) can be returned with the query result
         :type includes: :class:`str` or iterable of :class:`str`
+        :param isis_endpoint: Flag to determine if the instance will be used for an ISIS
+            specific endpoint. These endpoints require the use of the DISTINCT aggregate
+            which is different to the distinct field filter implemented in this API, so
+            this flag prevents code related to the filter from executing (because it
+            doesn't need to be on a DISTINCT aggregate)
+        :type isis_endpoint: :class:`bool`
         :return: Query object from Python ICAT
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
@@ -52,6 +65,8 @@ class ICATQuery:
                 " suggesting an invalid argument"
             )
 
+        self.isis_endpoint = isis_endpoint
+
     def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
@@ -70,7 +85,7 @@ class ICATQuery:
         """
 
         try:
-            log.debug("Executing ICAT query")
+            log.debug("Executing ICAT query: %s", self.query)
             query_result = client.search(self.query)
         except (ICATValidationError, ICATInternalError) as e:
             raise PythonICATError(e)
@@ -85,7 +100,11 @@ class ICATQuery:
             if "COUNT" in self.query.aggregate:
                 count_query = True
 
-        if self.query.aggregate == "DISTINCT" and not count_query:
+        if (
+            self.query.aggregate == "DISTINCT"
+            and not count_query
+            and not self.isis_endpoint
+        ):
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()

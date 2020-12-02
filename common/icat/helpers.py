@@ -2,7 +2,6 @@ from functools import wraps
 import logging
 from datetime import datetime, timedelta
 
-
 from icat.entities import getTypeMap
 from icat.exception import (
     ICATSessionError,
@@ -539,3 +538,174 @@ def create_entities(client, table_name, data):
         created_data.append(get_entity_by_id(client, table_name, entity.id, True))
 
     return created_data
+
+
+def get_facility_cycles_for_instrument(
+    client, instrument_id, filters, count_query=False
+):
+    """
+    Given an Instrument ID, get the Facility Cycles where there are Instruments that
+    have investigations occurring within that cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :param count_query: Flag to determine if the query in this function should be used
+        as a count query. Used for `get_facility_cycles_for_instrument_count()`
+    :type count_query: :class:`bool`
+    :return: A list of Facility Cycles that match the query
+    """
+    log.info("Getting a list of facility cycles from the specified instrument for ISIS")
+
+    query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
+    query = ICATQuery(
+        client, "FacilityCycle", aggregate=query_aggregate, isis_endpoint=True
+    )
+
+    instrument_id_check = PythonICATWhereFilter(
+        "facility.instruments.id", instrument_id, "eq"
+    )
+    investigation_instrument_id_check = PythonICATWhereFilter(
+        "facility.investigations.investigationInstruments.instrument.id",
+        instrument_id,
+        "eq",
+    )
+    investigation_start_date_check = PythonICATWhereFilter(
+        "facility.investigations.startDate", "o.startDate", "gte"
+    )
+    investigation_end_date_check = PythonICATWhereFilter(
+        "facility.investigations.startDate", "o.endDate", "lte"
+    )
+
+    facility_cycle_filters = [
+        instrument_id_check,
+        investigation_instrument_id_check,
+        investigation_start_date_check,
+        investigation_end_date_check,
+    ]
+    filters.extend(facility_cycle_filters)
+    filter_handler = FilterOrderHandler()
+    filter_handler.manage_icat_filters(filters, query.query)
+
+    data = query.execute_query(client, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        return data
+
+
+def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
+    """
+    Given an Instrument ID, get the number of Facility Cycles where there's Instruments
+    that have investigations occurring within that cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The number of Facility Cycles that match the query
+    """
+    log.info(
+        "Getting the number of facility cycles from the specified instrument for ISIS"
+    )
+    return get_facility_cycles_for_instrument(
+        client, instrument_id, filters, count_query=True
+    )[0]
+
+
+def get_investigations_for_instrument_in_facility_cycle(
+    client, instrument_id, facilitycycle_id, filters, count_query=False
+):
+    """
+    Given Instrument and Facility Cycle IDs, get investigations that use the given
+    instrument in the given cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param facilitycycle_id: ID of the facilityCycle from the request
+    :type facilitycycle_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :param count_query: Flag to determine if the query in this function should be used
+        as a count query. Used for 
+        `get_investigations_for_instrument_in_facility_cycle_count()`
+    :type count_query: :class:`bool`
+    :return: A list of Investigations that match the query
+    """
+    log.info(
+        "Getting a list of investigations from the specified instrument and facility"
+        " cycle, for ISIS"
+    )
+
+    query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
+    query = ICATQuery(
+        client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
+    )
+
+    instrument_id_check = PythonICATWhereFilter(
+        "facility.instruments.id", instrument_id, "eq"
+    )
+    investigation_instrument_id_check = PythonICATWhereFilter(
+        "investigationInstruments.instrument.id", instrument_id, "eq",
+    )
+    facility_cycle_id_check = PythonICATWhereFilter(
+        "facility.facilityCycles.id", facilitycycle_id, "eq"
+    )
+    facility_cycle_start_date_check = PythonICATWhereFilter(
+        "facility.facilityCycles.startDate", "o.startDate", "lte"
+    )
+    facility_cycle_end_date_check = PythonICATWhereFilter(
+        "facility.facilityCycles.endDate", "o.startDate", "gte"
+    )
+
+    required_filters = [
+        instrument_id_check,
+        investigation_instrument_id_check,
+        facility_cycle_id_check,
+        facility_cycle_start_date_check,
+        facility_cycle_end_date_check,
+    ]
+    filters.extend(required_filters)
+    filter_handler = FilterOrderHandler()
+    filter_handler.manage_icat_filters(filters, query.query)
+
+    data = query.execute_query(client, True)
+
+    if not data:
+        raise MissingRecordError("No results found")
+    else:
+        return data
+
+
+def get_investigations_for_instrument_in_facility_cycle_count(
+    client, instrument_id, facilitycycle_id, filters
+):
+    """
+    Given Instrument and Facility Cycle IDs, get the number of investigations that use
+    the given instrument in the given cycle
+
+    :param client: ICAT client containing an authenticated user
+    :type client: :class:`icat.client.Client`
+    :param instrument_id: ID of the instrument from the request
+    :type instrument_id: :class:`int`
+    :param facilitycycle_id: ID of the facilityCycle from the request
+    :type facilitycycle_id: :class:`int`
+    :param filters: The list of filters to be applied to the request
+    :type filters: List of specific implementations :class:`QueryFilter`
+    :return: The number of Investigations that match the query
+    """
+    log.info(
+        "Getting the number of investigations from the specified instrument and"
+        " facility cycle, for ISIS"
+    )
+    return get_investigations_for_instrument_in_facility_cycle(
+        client, instrument_id, facilitycycle_id, filters, count_query=True
+    )[0]
