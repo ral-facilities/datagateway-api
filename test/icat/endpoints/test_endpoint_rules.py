@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.main import api
+from datagateway_api.src.main import app
 from datagateway_api.src.resources.entities.entity_map import endpoints
 
 
@@ -22,7 +22,7 @@ class TestEndpointRules:
         for endpoint_entity in endpoints.keys():
             endpoint_found = False
 
-            for rule in api.app.url_map.iter_rules():
+            for rule in app.url_map.iter_rules():
                 if f"/{endpoint_entity.lower()}{endpoint_ending}" == rule.rule:
                     endpoint_found = True
 
@@ -64,7 +64,7 @@ class TestEndpointRules:
     def test_non_entity_endpoints(self, endpoint_name, expected_methods):
         endpoint_found = False
 
-        for rule in api.app.url_map.iter_rules():
+        for rule in app.url_map.iter_rules():
             if endpoint_name == rule.rule:
                 endpoint_found = True
 

@@ -8,10 +8,10 @@ from datagateway_api.common.helpers import (
     get_session_id_from_auth_header,
 )
 
-backend = create_backend(config.get_backend_type())
+# backend = create_backend(config.get_backend_type())
 
 
-def get_endpoint(name, entity_type):
+def get_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
@@ -159,7 +159,7 @@ def get_endpoint(name, entity_type):
     return Endpoint
 
 
-def get_id_endpoint(name, entity_type):
+def get_id_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
@@ -289,7 +289,7 @@ def get_id_endpoint(name, entity_type):
     return EndpointWithID
 
 
-def get_count_endpoint(name, entity_type):
+def get_count_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
@@ -342,7 +342,7 @@ def get_count_endpoint(name, entity_type):
     return CountEndpoint
 
 
-def get_find_one_endpoint(name, entity_type):
+def get_find_one_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g

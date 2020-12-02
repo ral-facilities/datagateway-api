@@ -19,12 +19,14 @@ from datagateway_api.src.resources.entities.entity_endpoint import (
     get_id_endpoint,
 )
 from datagateway_api.src.resources.entities.entity_map import endpoints
-from datagateway_api.src.resources.non_entities.sessions_endpoints import Sessions
+from datagateway_api.src.resources.non_entities.sessions_endpoints import (
+    session_endpoints,
+)
 from datagateway_api.src.resources.table_endpoints.table_endpoints import (
-    InstrumentsFacilityCycles,
-    InstrumentsFacilityCyclesCount,
-    InstrumentsFacilityCyclesInvestigations,
-    InstrumentsFacilityCyclesInvestigationsCount,
+    count_instrument_facility_cycles_endpoint,
+    instrument_facility_cycles_endpoint,
+    instrument_investigation_endpoint,
+    count_instrument_investigation_endpoint,
 )
 from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
 from datagateway_api.src.swagger.initialise_spec import initialise_spec
@@ -68,56 +70,79 @@ def handle_error(e):
 def create_api_endpoints(app, api, spec):
     try:
         backend_type = app.config["TEST_BACKEND"]
+        print(f"test backend: {backend_type}")
     except KeyError:
         backend_type = config.get_backend_type()
+        print(f"config backend: {backend_type}")
 
+    # TODO - Add :param backend: to the endpoint functions
     backend = create_backend(backend_type)
+    print(f"Backend: {backend}, Type: {type(backend)}")
 
     for entity_name in endpoints:
-        get_endpoint_resource = get_endpoint(entity_name, endpoints[entity_name])
+        get_endpoint_resource = get_endpoint(
+            entity_name, endpoints[entity_name], backend
+        )
         api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
         spec.path(resource=get_endpoint_resource, api=api)
 
-        get_id_endpoint_resource = get_id_endpoint(entity_name, endpoints[entity_name])
+        get_id_endpoint_resource = get_id_endpoint(
+            entity_name, endpoints[entity_name], backend
+        )
         api.add_resource(get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id_>")
         spec.path(resource=get_id_endpoint_resource, api=api)
 
         get_count_endpoint_resource = get_count_endpoint(
-            entity_name, endpoints[entity_name],
+            entity_name, endpoints[entity_name], backend,
         )
         api.add_resource(get_count_endpoint_resource, f"/{entity_name.lower()}/count")
         spec.path(resource=get_count_endpoint_resource, api=api)
 
         get_find_one_endpoint_resource = get_find_one_endpoint(
-            entity_name, endpoints[entity_name],
+            entity_name, endpoints[entity_name], backend,
         )
         api.add_resource(
-            get_find_one_endpoint_resource, f"/{entity_name.lower()}/findone"
+            get_find_one_endpoint_resource, f"/{entity_name.lower()}/findone",
         )
         spec.path(resource=get_find_one_endpoint_resource, api=api)
 
     # Session endpoint
-    api.add_resource(Sessions, "/sessions")
-    spec.path(resource=Sessions, api=api)
+    session_endpoint_resource = session_endpoints(backend)
+    api.add_resource(session_endpoint_resource, "/sessions")
+    # spec.path(resource=session_endpoint_resource, api=api)
 
     # Table specific endpoints
-    api.add_resource(InstrumentsFacilityCycles, "/instruments/<int:id_>/facilitycycles")
-    spec.path(resource=InstrumentsFacilityCycles, api=api)
+    instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(backend)
     api.add_resource(
-        InstrumentsFacilityCyclesCount, "/instruments/<int:id_>/facilitycycles/count",
+        instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles"
     )
-    spec.path(resource=InstrumentsFacilityCyclesCount, api=api)
+    # spec.path(resource=instrument_facility_cycle_resource, api=api)
+
+    count_instrument_facility_cycle_resource = count_instrument_facility_cycles_endpoint(
+        backend
+    )
     api.add_resource(
-        InstrumentsFacilityCyclesInvestigations,
+        count_instrument_facility_cycle_resource,
+        "/instruments/<int:id_>/facilitycycles/count",
+    )
+    # spec.path(resource=count_instrument_facility_cycle_resource, api=api)
+
+    instrument_investigation_resource = instrument_investigation_endpoint(backend)
+    api.add_resource(
+        instrument_investigation_resource,
         "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations",
     )
-    spec.path(resource=InstrumentsFacilityCyclesInvestigations, api=api)
+    # spec.path(resource=instrument_investigation_resource, api=api)
+
+    count_instrument_investigation_resource = count_instrument_investigation_endpoint(
+        backend
+    )
     api.add_resource(
-        InstrumentsFacilityCyclesInvestigationsCount,
+        count_instrument_investigation_resource,
         "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations"
         "/count",
     )
-    spec.path(resource=InstrumentsFacilityCyclesInvestigationsCount, api=api)
+    # spec.path(resource=count_instrument_investigation_resource, api=api)
 
 
 def openapi_config(spec):
@@ -141,7 +166,7 @@ def specs():
 
 
 if __name__ == "__main__":
-    api, spec = create_app_infrastructure()
+    api, spec = create_app_infrastructure(app)
     create_api_endpoints(app, api, spec)
     openapi_config(spec)
     app.run(
