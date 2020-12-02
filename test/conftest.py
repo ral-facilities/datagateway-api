@@ -1,13 +1,18 @@
 from datetime import datetime
 import uuid
 
+from flask import Flask
 from icat.client import Client
 from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
-from datagateway_api.src.main import app
+from datagateway_api.src.main import (
+    app,
+    create_api_endpoints,
+    create_app_infrastructure,
+)
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -91,8 +96,16 @@ def multiple_investigation_test_data(icat_client):
 
 @pytest.fixture()
 def flask_test_app():
-    app.config["TESTING"] = True
-    return app.test_client()
+    my_app = Flask(__name__)
+    my_app.config["TESTING"] = True
+    my_app.config["TEST_BACKEND"] = "python_icat"
+
+    api, spec = create_app_infrastructure(my_app)
+    create_api_endpoints(my_app, api, spec)
+
+    yield my_app.test_client()
+
+    #   app.url_map._rules.clear()
 
 
 @pytest.fixture()
