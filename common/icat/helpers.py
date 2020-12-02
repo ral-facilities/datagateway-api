@@ -84,7 +84,6 @@ def logout_icat_client(client):
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     """
-    log.info("Logging out of the Python ICAT client")
     client.logout()
 
 
