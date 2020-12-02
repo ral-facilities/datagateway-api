@@ -73,6 +73,8 @@ class DatabaseWhereFilter(WhereFilter):
 
         if self.operation == "eq":
             query.base_query = query.base_query.filter(field == self.value)
+        elif self.operation == "ne":
+            query.base_query = query.base_query.filter(field != self.value)
         elif self.operation == "like":
             query.base_query = query.base_query.filter(field.like(f"%{self.value}%"))
         elif self.operation == "lt":

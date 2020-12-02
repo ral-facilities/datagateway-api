@@ -187,7 +187,7 @@ def get_id_endpoint(name, entity_type):
             parameters:
                 - in: path
                   required: true
-                  name: id
+                  name: id_
                   description: The id of the entity to retrieve
                   schema:
                     type: integer
@@ -222,7 +222,7 @@ def get_id_endpoint(name, entity_type):
             parameters:
                 - in: path
                   required: true
-                  name: id
+                  name: id_
                   description: The id of the entity to delete
                   schema:
                     type: integer
@@ -254,7 +254,7 @@ def get_id_endpoint(name, entity_type):
             parameters:
                 - in: path
                   required: true
-                  name: id
+                  name: id_
                   description: The id of the entity to update
                   schema:
                     type: integer

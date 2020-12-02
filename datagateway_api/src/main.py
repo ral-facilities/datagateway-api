@@ -37,18 +37,21 @@ spec = APISpec(
     security=[{"session_id": []}],
 )
 
+
+class CustomErrorHandledApi(Api):
+    """
+    This class overrides `handle_error` function from the API class from `flask_restful`
+    to correctly return response codes and exception messages from uncaught exceptions
+    """
+
+    def handle_error(self, e):
+        return str(e), e.status_code
+
+
 app = Flask(__name__)
 cors = CORS(app)
 app.url_map.strict_slashes = False
-api = Api(app)
-
-
-def handle_error(e):
-    return str(e), e.status_code
-
-
-app.register_error_handler(ApiError, handle_error)
-
+api = CustomErrorHandledApi(app)
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     "", "/openapi.json", config={"app_name": "DataGateway API OpenAPI Spec"},
