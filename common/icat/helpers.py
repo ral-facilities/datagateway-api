@@ -11,6 +11,7 @@ from icat.exception import (
     ICATNoObjectError,
     ICATParameterError,
 )
+from icat.sslcontext import create_ssl_context
 from common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -23,6 +24,8 @@ from common.constants import Constants
 from common.icat.filters import PythonICATLimitFilter, PythonICATWhereFilter
 from common.icat.query import ICATQuery
 
+import icat.client
+from common.config import config
 
 log = logging.getLogger()
 
@@ -32,7 +35,16 @@ def requires_session_id(method):
     Decorator for Python ICAT backend methods that looks out for session errors when
     using the API. The API call runs and an ICATSessionError may be raised due to an
     expired session, invalid session ID etc.
- 
+
+    The session ID from the request is set here, so there is no requirement for a user
+    to use the login endpoint, they can go straight into using the API so long as they
+    have a valid session ID (be it created from this API, or from an alternative such as
+    scigateway-auth).
+
+    This assumes the session ID is the second argument of the function where this
+    decorator is applied, which is reasonable to assume considering the current method
+    signatures of all the endpoints.
+
     :param method: The method for the backend operation
     :raises AuthenticationError: If a valid session_id is not provided with the request
     """
@@ -40,8 +52,11 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         try:
+            client = create_client()
+            client.sessionId = args[1]
+            # Client object put into kwargs so it can be accessed by backend functions
+            kwargs["client"] = client
 
-            client = args[0].client
             # Find out if session has expired
             session_time = client.getRemainingMinutes()
             log.info("Session time: %d", session_time)
@@ -53,6 +68,13 @@ def requires_session_id(method):
             raise AuthenticationError("Forbidden")
 
     return wrapper_requires_session
+
+
+def create_client():
+    client = icat.client.Client(
+        config.get_icat_url(), checkCert=config.get_icat_check_cert()
+    )
+    return client
 
 
 def get_session_details_helper(client):
@@ -177,8 +199,12 @@ def update_attributes(old_entity, new_entity):
                 f" {old_entity.BeanName} entity"
             )
 
+    return old_entity
+
+
+def push_data_updates_to_icat(entity):
     try:
-        old_entity.update()
+        entity.update()
     except (ICATValidationError, ICATInternalError) as e:
         raise PythonICATError(e)
 
@@ -263,7 +289,8 @@ def update_entity_by_id(client, table_name, id_, new_data):
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
     # get_entity_by_id()
-    update_attributes(entity_id_data, new_data)
+    updated_icat_entity = update_attributes(entity_id_data, new_data)
+    push_data_updates_to_icat(updated_icat_entity)
 
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to
     # show to the user whether the change has actually been applied
@@ -373,6 +400,9 @@ def update_entities(client, table_name, data_to_update):
     Update one or more results for the given entity using the JSON provided in 
     `data_to_update`
 
+    If an exception occurs while sending data to icatdb, an attempt will be made to
+    restore a backup of the data made before making the update.
+
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     :param table_name: Table name to extract which entity to use
@@ -388,17 +418,48 @@ def update_entities(client, table_name, data_to_update):
     if not isinstance(data_to_update, list):
         data_to_update = [data_to_update]
 
-    for entity in data_to_update:
+    icat_data_backup = []
+    updated_icat_data = []
+
+    for entity_request in data_to_update:
         try:
-            updated_result = update_entity_by_id(
-                client, table_name, entity["id"], entity
+            entity_data = get_entity_by_id(
+                client,
+                table_name,
+                entity_request["id"],
+                False,
+                return_related_entities=True,
             )
-            updated_data.append(updated_result)
+            icat_data_backup.append(entity_data.copy())
+
+            updated_entity_data = update_attributes(entity_data, entity_request)
+            updated_icat_data.append(updated_entity_data)
         except KeyError:
             raise BadRequestError(
                 "The new data in the request body must contain the ID (using the key:"
                 " 'id') of the entity you wish to update"
             )
+
+    # This separates the local data updates from pushing these updates to icatdb
+    for updated_icat_entity in updated_icat_data:
+        try:
+            updated_icat_entity.update()
+        except (ICATValidationError, ICATInternalError) as e:
+            # Use `icat_data_backup` to restore data trying to updated to the state
+            # before this request
+            for icat_entity_backup in icat_data_backup:
+                try:
+                    icat_entity_backup.update()
+                except (ICATValidationError, ICATInternalError) as e:
+                    # If an error occurs while trying to restore backup data, just throw
+                    # a 500 immediately
+                    raise PythonICATError(e)
+
+            raise PythonICATError(e)
+
+        updated_data.append(
+            get_entity_by_id(client, table_name, updated_icat_entity.id, True)
+        )
 
     return updated_data
 
@@ -406,6 +467,13 @@ def update_entities(client, table_name, data_to_update):
 def create_entities(client, table_name, data):
     """
     Add one or more results for the given entity using the JSON provided in `data`
+
+    `created_icat_data` is data of `icat.entity.Entity` type that is collated to be
+    pushed to ICAT at the end of the function - this avoids confusion over which data
+    has/hasn't been created if the request returns an error. When pushing the data to
+    ICAT, there is still risk an exception might be caught, so any entities already
+    pushed to ICAT will be deleted. Python ICAT doesn't support a database rollback (or
+    the concept of transactions) so this is a good alternative.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -418,6 +486,7 @@ def create_entities(client, table_name, data):
     log.info("Creating ICAT data for %s", table_name)
 
     created_data = []
+    created_icat_data = []
 
     if not isinstance(data, list):
         data = [data]
@@ -449,14 +518,24 @@ def create_entities(client, table_name, data):
             except ValueError as e:
                 raise BadRequestError(e)
 
+        created_icat_data.append(new_entity)
+
+    for entity in created_icat_data:
         try:
-            new_entity.create()
+            entity.create()
         except (ICATValidationError, ICATInternalError) as e:
+            for entity_json in created_data:
+                # Delete any data that has been pushed to ICAT before the exception
+                delete_entity_by_id(client, table_name, entity_json["id"])
+
             raise PythonICATError(e)
         except (ICATObjectExistsError, ICATParameterError) as e:
+            for entity_json in created_data:
+                delete_entity_by_id(client, table_name, entity_json["id"])
+
             raise BadRequestError(e)
 
-        created_data.append(get_entity_by_id(client, table_name, new_entity.id, True))
+        created_data.append(get_entity_by_id(client, table_name, entity.id, True))
 
     return created_data
 
