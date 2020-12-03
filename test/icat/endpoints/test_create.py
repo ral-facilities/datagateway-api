@@ -3,7 +3,7 @@ from test.icat.test_query import prepare_icat_data_for_assertion
 
 class TestCreateData:
     def test_valid_create_data(
-        self, flask_test_app_icat, valid_icat_credentials_header
+        self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         create_investigations_json = [
             {
@@ -99,7 +99,7 @@ class TestCreateData:
         )
 
     def test_invalid_create_data(
-        self, flask_test_app_icat, valid_icat_credentials_header
+        self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         """An investigation requires a minimum of: name, visitId, facility, type"""
 

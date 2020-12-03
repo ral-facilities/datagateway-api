@@ -11,15 +11,12 @@ from datagateway_api.common.database.filters import (
     DatabaseWhereFilter,
 )
 from datagateway_api.common.exceptions import (
-    AuthenticationError,
     BadRequestError,
     FilterError,
-    MissingCredentialsError,
     MissingRecordError,
 )
 from datagateway_api.common.helpers import (
     get_filters_from_query_string,
-    get_session_id_from_auth_header,
     queries_records,
 )
 from test.test_base import FlaskAppTest
@@ -90,23 +87,6 @@ class TestQueriesRecords(TestCase):
 
         self.assertEqual("Bad request", str(ctx.exception))
         self.assertEqual(400, ctx.exception.status_code)
-
-
-class TestGetSessionIDFromAuthHeader(FlaskAppTest):
-    def test_no_session_in_header(self):
-        with self.app:
-            self.app.get("/")
-            self.assertRaises(MissingCredentialsError, get_session_id_from_auth_header)
-
-    def test_with_bad_header(self):
-        with self.app:
-            self.app.get("/", headers={"Authorization": "test"})
-            self.assertRaises(AuthenticationError, get_session_id_from_auth_header)
-
-    def test_with_good_header(self):
-        with self.app:
-            self.app.get("/", headers={"Authorization": "Bearer test"})
-            self.assertEqual("test", get_session_id_from_auth_header())
 
 
 class TestGetFiltersFromQueryString(FlaskAppTest):

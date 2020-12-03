@@ -38,7 +38,7 @@ def valid_db_credentials_header():
 
     insert_row_into_table(SESSION, session)
 
-    yield {"Authorization": "Bearer Test"}
+    yield {"Authorization": f"Bearer {session.ID}"}
 
     delete_row_by_id(SESSION, "Test")
 
