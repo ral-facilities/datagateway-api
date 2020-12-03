@@ -225,7 +225,7 @@ def get_row_by_id(table, id_):
     :return: the record retrieved
     """
     with ReadQuery(table) as read_query:
-        log.info(" Querying %s for record with ID: %d", table.__tablename__, id_)
+        log.info(" Querying %s for record with ID: %s", table.__tablename__, id_)
         where_filter = WhereFilter("ID", id_, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
@@ -239,7 +239,7 @@ def delete_row_by_id(table, id_):
     :param table: the table to be searched
     :param id_: the id of the record to delete
     """
-    log.info(" Deleting row from %s with ID: %d", table.__tablename__, id_)
+    log.info(" Deleting row from %s with ID: %s", table.__tablename__, id_)
     row = get_row_by_id(table, id_)
     with DeleteQuery(table, row) as delete_query:
         delete_query.execute_query()
