@@ -1,6 +1,5 @@
 import pytest
 
-from datagateway_api.src.main import app
 from datagateway_api.src.resources.entities.entity_map import endpoints
 
 
@@ -18,11 +17,11 @@ class TestEndpointRules:
             pytest.param("", ["GET", "PATCH", "POST"], id="typical endpoints"),
         ],
     )
-    def test_entity_endpoints(self, endpoint_ending, expected_methods):
+    def test_entity_endpoints(self, flask_test_app, endpoint_ending, expected_methods):
         for endpoint_entity in endpoints.keys():
             endpoint_found = False
 
-            for rule in app.url_map.iter_rules():
+            for rule in flask_test_app.url_map.iter_rules():
                 if f"/{endpoint_entity.lower()}{endpoint_ending}" == rule.rule:
                     endpoint_found = True
 
@@ -61,10 +60,12 @@ class TestEndpointRules:
             ),
         ],
     )
-    def test_non_entity_endpoints(self, endpoint_name, expected_methods):
+    def test_non_entity_endpoints(
+        self, flask_test_app, endpoint_name, expected_methods
+    ):
         endpoint_found = False
 
-        for rule in app.url_map.iter_rules():
+        for rule in flask_test_app.url_map.iter_rules():
             if endpoint_name == rule.rule:
                 endpoint_found = True
 
