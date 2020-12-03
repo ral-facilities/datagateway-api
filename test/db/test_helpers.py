@@ -26,36 +26,9 @@ from datagateway_api.common.exceptions import (
 from datagateway_api.common.helpers import (
     get_filters_from_query_string,
     get_session_id_from_auth_header,
-    is_valid_json,
     queries_records,
 )
 from test.test_base import FlaskAppTest
-
-
-class TestIsValidJSON(TestCase):
-    def test_array(self):
-        self.assertTrue(is_valid_json("[]"))
-
-    def test_null(self):
-        self.assertTrue("null")
-
-    def test_valid_json(self):
-        self.assertTrue(is_valid_json('{"test":1}'))
-
-    def test_single_quoted_json(self):
-        self.assertFalse(is_valid_json("{'test':1}"))
-
-    def test_none(self):
-        self.assertFalse(is_valid_json(None))
-
-    def test_int(self):
-        self.assertFalse(is_valid_json(1))
-
-    def test_dict(self):
-        self.assertFalse(is_valid_json({"test": 1}))
-
-    def test_list(self):
-        self.assertFalse(is_valid_json([]))
 
 
 class TestRequiresSessionID(FlaskAppTest):
