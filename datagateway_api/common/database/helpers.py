@@ -5,7 +5,10 @@ import logging
 
 from sqlalchemy.orm import aliased
 
-from datagateway_api.common.config import config
+from datagateway_api.common.database.filters import (
+    DatabaseIncludeFilter as IncludeFilter,
+    DatabaseWhereFilter as WhereFilter,
+)
 from datagateway_api.common.database.models import (
     FACILITY,
     FACILITYCYCLE,
@@ -16,39 +19,12 @@ from datagateway_api.common.database.models import (
 )
 from datagateway_api.common.database.session_manager import session_manager
 from datagateway_api.common.exceptions import (
-    ApiError,
     AuthenticationError,
     BadRequestError,
-    FilterError,
     MissingRecordError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 
-
-backend_type = config.get_backend_type()
-if backend_type == "db":
-    from datagateway_api.common.database.filters import (
-        DatabaseDistinctFieldFilter as DistinctFieldFilter,
-        DatabaseIncludeFilter as IncludeFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseOrderFilter as OrderFilter,
-        DatabaseSkipFilter as SkipFilter,
-        DatabaseWhereFilter as WhereFilter,
-    )
-elif backend_type == "python_icat":
-    from datagateway_api.common.icat.filters import (
-        PythonICATDistinctFieldFilter as DistinctFieldFilter,
-        PythonICATIncludeFilter as IncludeFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATOrderFilter as OrderFilter,
-        PythonICATSkipFilter as SkipFilter,
-        PythonICATWhereFilter as WhereFilter,
-    )
-else:
-    raise ApiError(
-        "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type",
-    )
 
 log = logging.getLogger()
 
