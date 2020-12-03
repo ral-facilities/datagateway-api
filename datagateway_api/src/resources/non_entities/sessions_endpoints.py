@@ -3,22 +3,17 @@ import logging
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.backends import create_backend
-from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.common.helpers import get_session_id_from_auth_header
 
 
 log = logging.getLogger()
 
-# backend = create_backend(config.get_backend_type())
-
 
 def session_endpoints(backend):
     """
     TODO - Add docstring
     """
-    log.info("test")
 
     class Sessions(Resource):
         def post(self):

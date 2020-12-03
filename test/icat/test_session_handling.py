@@ -12,13 +12,11 @@ class TestSessionHandling:
         pass
 
     def test_get_valid_session_details(
-        self, flask_test_app_icat, valid_credentials_header
+        self, flask_test_app_icat, valid_credentials_header,
     ):
         session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_credentials_header,
         )
-
-        print(f"JSON: {session_details.json}, Code: {session_details.status_code}")
 
         # Check username is correct
         assert (

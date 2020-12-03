@@ -13,7 +13,7 @@ class TestDeleteByID:
         assert test_response.status_code == 204
 
     def test_invalid_delete_with_id(
-        self, flask_test_app_icat, valid_credentials_header
+        self, flask_test_app_icat, valid_credentials_header,
     ):
         """Request with a non-existent ID"""
 

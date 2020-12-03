@@ -4,7 +4,7 @@ import pytest
 class TestCountWithFilters:
     @pytest.mark.usefixtures("single_investigation_test_data")
     def test_valid_count_with_filters(
-        self, flask_test_app_icat, valid_credentials_header
+        self, flask_test_app_icat, valid_credentials_header,
     ):
         test_response = flask_test_app_icat.get(
             '/investigations/count?where={"title": {"like": "Test data for the Python'

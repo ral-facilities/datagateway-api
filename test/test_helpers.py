@@ -203,7 +203,7 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                DatabaseLimitFilter, type(filters[0]), msg="Incorrect type of filter"
+                DatabaseLimitFilter, type(filters[0]), msg="Incorrect type of filter",
             )
 
     def test_order_filter(self):

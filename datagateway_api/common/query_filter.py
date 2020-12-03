@@ -25,7 +25,6 @@ class QueryFilterFactory(object):
         """
 
         backend_type = config.get_backend_type()
-        print(f"Backend inside staticmethod: {backend_type}")
         if backend_type == "db":
             from datagateway_api.common.database.filters import (
                 DatabaseDistinctFieldFilter as DistinctFieldFilter,

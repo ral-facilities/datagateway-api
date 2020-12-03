@@ -24,9 +24,9 @@ from datagateway_api.src.resources.non_entities.sessions_endpoints import (
 )
 from datagateway_api.src.resources.table_endpoints.table_endpoints import (
     count_instrument_facility_cycles_endpoint,
+    count_instrument_investigation_endpoint,
     instrument_facility_cycles_endpoint,
     instrument_investigation_endpoint,
-    count_instrument_investigation_endpoint,
 )
 from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
 from datagateway_api.src.swagger.initialise_spec import initialise_spec
@@ -51,7 +51,7 @@ def create_app_infrastructure(flask_app):
         security=[{"session_id": []}],
     )
 
-    cors = CORS(flask_app)
+    CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = Api(flask_app)
 
@@ -70,24 +70,21 @@ def create_api_endpoints(flask_app, api, spec):
     try:
         backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
-        print(f"test backend: {backend_type}")
     except KeyError:
         backend_type = config.get_backend_type()
-        print(f"config backend: {backend_type}")
 
     # TODO - Add :param backend: to the endpoint functions
     backend = create_backend(backend_type)
-    print(f"Backend: {backend}, Type: {type(backend)}")
 
     for entity_name in endpoints:
         get_endpoint_resource = get_endpoint(
-            entity_name, endpoints[entity_name], backend
+            entity_name, endpoints[entity_name], backend,
         )
         api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
         spec.path(resource=get_endpoint_resource, api=api)
 
         get_id_endpoint_resource = get_id_endpoint(
-            entity_name, endpoints[entity_name], backend
+            entity_name, endpoints[entity_name], backend,
         )
         api.add_resource(get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id_>")
         spec.path(resource=get_id_endpoint_resource, api=api)
@@ -114,15 +111,15 @@ def create_api_endpoints(flask_app, api, spec):
     # Table specific endpoints
     instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(backend)
     api.add_resource(
-        instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles"
+        instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles",
     )
     # spec.path(resource=instrument_facility_cycle_resource, api=api)
 
-    count_instrument_facility_cycle_resource = count_instrument_facility_cycles_endpoint(
-        backend
+    count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
+        backend,
     )
     api.add_resource(
-        count_instrument_facility_cycle_resource,
+        count_instrument_facility_cycle_res,
         "/instruments/<int:id_>/facilitycycles/count",
     )
     # spec.path(resource=count_instrument_facility_cycle_resource, api=api)
@@ -135,7 +132,7 @@ def create_api_endpoints(flask_app, api, spec):
     # spec.path(resource=instrument_investigation_resource, api=api)
 
     count_instrument_investigation_resource = count_instrument_investigation_endpoint(
-        backend
+        backend,
     )
     api.add_resource(
         count_instrument_investigation_resource,

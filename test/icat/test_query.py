@@ -122,7 +122,6 @@ class TestICATQuery:
         test_query = ICATQuery(icat_client, "User")
 
         flat_list = test_query.flatten_query_included_fields(included_field_set)
-        print(flat_list)
 
         assert flat_list == [
             "instrumentScientists",

@@ -57,7 +57,7 @@ class TestCreateData:
             )
 
     def test_valid_boundary_create_data(
-        self, flask_test_app_icat, valid_credentials_header
+        self, flask_test_app_icat, valid_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 

@@ -1,13 +1,9 @@
 from flask_restful import Resource
 
-from datagateway_api.common.backends import create_backend
-from datagateway_api.common.config import config
 from datagateway_api.common.helpers import (
     get_filters_from_query_string,
     get_session_id_from_auth_header,
 )
-
-backend = create_backend(config.get_backend_type())
 
 
 def instrument_facility_cycles_endpoint(backend):
@@ -179,7 +175,7 @@ def instrument_investigation_endpoint(backend):
                     description: No such record - Unable to find a record in ICAT
             """
             return (
-                backend.get_investigations_for_instrument_in_facility_cycle_with_filters(
+                backend.get_investigations_for_instrument_facility_cycle_with_filters(
                     get_session_id_from_auth_header(),
                     instrument_id,
                     cycle_id,
@@ -240,7 +236,7 @@ def count_instrument_investigation_endpoint(backend):
                     description: No such record - Unable to find a record in ICAT
             """
             return (
-                backend.get_investigation_count_for_instrument_facility_cycle_with_filters(
+                backend.get_investigation_count_instrument_facility_cycle_with_filters(
                     get_session_id_from_auth_header(),
                     instrument_id,
                     cycle_id,
