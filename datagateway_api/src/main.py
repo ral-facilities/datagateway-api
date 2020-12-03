@@ -37,13 +37,12 @@ log.info("Logging now setup")
 
 app = Flask(__name__)
 
-swaggerui_blueprint = get_swaggerui_blueprint(
-    "", "/openapi.json", config={"app_name": "DataGateway API OpenAPI Spec"},
-)
-app.register_blueprint(swaggerui_blueprint, url_prefix="/")
 
-
-def create_app_infrastructure(app):
+def create_app_infrastructure(flask_app):
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        "", "/openapi.json", config={"app_name": "DataGateway API OpenAPI Spec"},
+    )
+    flask_app.register_blueprint(swaggerui_blueprint, url_prefix="/")
     spec = APISpec(
         title="DataGateway API",
         version="1.0",
@@ -52,11 +51,11 @@ def create_app_infrastructure(app):
         security=[{"session_id": []}],
     )
 
-    cors = CORS(app)
-    app.url_map.strict_slashes = False
-    api = Api(app)
+    cors = CORS(flask_app)
+    flask_app.url_map.strict_slashes = False
+    api = Api(flask_app)
 
-    app.register_error_handler(ApiError, handle_error)
+    flask_app.register_error_handler(ApiError, handle_error)
 
     initialise_spec(spec)
 
@@ -67,9 +66,9 @@ def handle_error(e):
     return str(e), e.status_code
 
 
-def create_api_endpoints(app, api, spec):
+def create_api_endpoints(flask_app, api, spec):
     try:
-        backend_type = app.config["TEST_BACKEND"]
+        backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
         print(f"test backend: {backend_type}")
     except KeyError:

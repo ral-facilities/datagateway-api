@@ -5,9 +5,12 @@ from test.icat.test_query import prepare_icat_data_for_assertion
 
 class TestGetWithFilters:
     def test_valid_get_with_filters(
-        self, flask_test_app, valid_credentials_header, single_investigation_test_data,
+        self,
+        flask_test_app_icat,
+        valid_credentials_header,
+        single_investigation_test_data,
     ):
-        test_response = flask_test_app.get(
+        test_response = flask_test_app_icat.get(
             '/investigations?where={"title": {"like": "Test data for the Python ICAT'
             ' Backend on DataGateway API"}}',
             headers=valid_credentials_header,
@@ -17,9 +20,9 @@ class TestGetWithFilters:
         assert response_json == single_investigation_test_data
 
     def test_valid_no_results_get_with_filters(
-        self, flask_test_app, valid_credentials_header,
+        self, flask_test_app_icat, valid_credentials_header,
     ):
-        test_response = flask_test_app.get(
+        test_response = flask_test_app_icat.get(
             '/investigations?where={"title": {"eq": "This filter should cause a 404 for'
             'testing purposes..."}}',
             headers=valid_credentials_header,
@@ -29,9 +32,9 @@ class TestGetWithFilters:
 
     @pytest.mark.usefixtures("multiple_investigation_test_data")
     def test_valid_get_with_filters_distinct(
-        self, flask_test_app, valid_credentials_header,
+        self, flask_test_app_icat, valid_credentials_header,
     ):
-        test_response = flask_test_app.get(
+        test_response = flask_test_app_icat.get(
             '/investigations?where={"title": {"like": "Test data for the Python ICAT'
             ' Backend on DataGateway API"}}&distinct="title"',
             headers=valid_credentials_header,
@@ -49,14 +52,14 @@ class TestGetWithFilters:
 
     def test_limit_skip_merge_get_with_filters(
         self,
-        flask_test_app,
+        flask_test_app_icat,
         valid_credentials_header,
         multiple_investigation_test_data,
     ):
         skip_value = 1
         limit_value = 2
 
-        test_response = flask_test_app.get(
+        test_response = flask_test_app_icat.get(
             '/investigations?where={"title": {"like": "Test data for the Python ICAT'
             ' Backend on DataGateway API"}}'
             f'&skip={skip_value}&limit={limit_value}&order="id ASC"',

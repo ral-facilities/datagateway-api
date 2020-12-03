@@ -11,8 +11,10 @@ class TestSessionHandling:
     def test_session_id_decorator(self):
         pass
 
-    def test_get_valid_session_details(self, flask_test_app, valid_credentials_header):
-        session_details = flask_test_app.get(
+    def test_get_valid_session_details(
+        self, flask_test_app_icat, valid_credentials_header
+    ):
+        session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_credentials_header,
         )
 
@@ -40,25 +42,25 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
     def test_get_invalid_session_details(
-        self, invalid_credentials_header, flask_test_app,
+        self, invalid_credentials_header, flask_test_app_icat,
     ):
-        session_details = flask_test_app.get(
+        session_details = flask_test_app_icat.get(
             "/sessions", headers=invalid_credentials_header,
         )
 
         assert session_details.status_code == 403
 
-    def test_refresh_session(self, valid_credentials_header, flask_test_app):
-        pre_refresh_session_details = flask_test_app.get(
+    def test_refresh_session(self, valid_credentials_header, flask_test_app_icat):
+        pre_refresh_session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_credentials_header,
         )
 
-        refresh_session = flask_test_app.put(
+        refresh_session = flask_test_app_icat.put(
             "/sessions", headers=valid_credentials_header,
         )
         assert refresh_session.status_code == 200
 
-        post_refresh_session_details = flask_test_app.get(
+        post_refresh_session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_credentials_header,
         )
 
@@ -68,7 +70,7 @@ class TestSessionHandling:
         )
 
     @pytest.mark.usefixtures("single_investigation_test_data")
-    def test_valid_login(self, flask_test_app, icat_client, icat_query):
+    def test_valid_login(self, flask_test_app_icat, icat_client, icat_query):
         user_credentials = config.get_test_user_credentials()
 
         login_json = {
@@ -76,7 +78,7 @@ class TestSessionHandling:
             "password": user_credentials["password"],
             "mechanism": config.get_test_mechanism(),
         }
-        login_response = flask_test_app.post("/sessions", json=login_json)
+        login_response = flask_test_app_icat.post("/sessions", json=login_json)
 
         icat_client.sessionId = login_response.json["sessionID"]
         icat_query.setAggregate("COUNT")
@@ -89,27 +91,27 @@ class TestSessionHandling:
 
         assert test_query == [1] and login_response.status_code == 201
 
-    def test_invalid_login(self, flask_test_app):
+    def test_invalid_login(self, flask_test_app_icat):
         login_json = {
             "username": "Invalid Username",
             "password": "InvalidPassword",
             "mechanism": config.get_test_mechanism(),
         }
-        login_response = flask_test_app.post("/sessions", json=login_json)
+        login_response = flask_test_app_icat.post("/sessions", json=login_json)
 
         assert login_response.status_code == 403
 
-    def test_valid_logout(self, flask_test_app):
+    def test_valid_logout(self, flask_test_app_icat):
         client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
         client.login(config.get_test_mechanism(), config.get_test_user_credentials())
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
-        logout_response = flask_test_app.delete("/sessions", headers=creds_header)
+        logout_response = flask_test_app_icat.delete("/sessions", headers=creds_header)
 
         assert logout_response.status_code == 200
 
-    def test_invalid_logout(self, invalid_credentials_header, flask_test_app):
-        logout_response = flask_test_app.delete(
+    def test_invalid_logout(self, invalid_credentials_header, flask_test_app_icat):
+        logout_response = flask_test_app_icat.delete(
             "/sessions", headers=invalid_credentials_header,
         )
 
