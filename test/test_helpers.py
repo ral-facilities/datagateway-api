@@ -3,15 +3,17 @@ from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
 
+from datagateway_api.common.database.filters import (
+    DatabaseDistinctFieldFilter,
+    DatabaseIncludeFilter,
+    DatabaseLimitFilter,
+    DatabaseOrderFilter,
+    DatabaseSkipFilter,
+    DatabaseWhereFilter,
+)
 from datagateway_api.common.database.helpers import (
     delete_row_by_id,
-    DistinctFieldFilter,
-    IncludeFilter,
     insert_row_into_table,
-    LimitFilter,
-    OrderFilter,
-    SkipFilter,
-    WhereFilter,
 )
 from datagateway_api.common.database.models import SESSION
 from datagateway_api.common.exceptions import (
@@ -200,7 +202,9 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
             self.assertEqual(
                 1, len(filters), msg="Returned incorrect number of filters",
             )
-            self.assertIs(LimitFilter, type(filters[0]), msg="Incorrect type of filter")
+            self.assertIs(
+                DatabaseLimitFilter, type(filters[0]), msg="Incorrect type of filter"
+            )
 
     def test_order_filter(self):
         with self.app:
@@ -210,7 +214,9 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                OrderFilter, type(filters[0]), msg="Incorrect type of filter returned",
+                DatabaseOrderFilter,
+                type(filters[0]),
+                msg="Incorrect type of filter returned",
             )
 
     def test_where_filter(self):
@@ -221,7 +227,9 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                WhereFilter, type(filters[0]), msg="Incorrect type of filter returned",
+                DatabaseWhereFilter,
+                type(filters[0]),
+                msg="Incorrect type of filter returned",
             )
 
     def test_skip_filter(self):
@@ -232,7 +240,9 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Returned incorrect number of filters",
             )
             self.assertIs(
-                SkipFilter, type(filters[0]), msg="Incorrect type of filter returned",
+                DatabaseSkipFilter,
+                type(filters[0]),
+                msg="Incorrect type of filter returned",
             )
 
     def test_include_filter(self):
@@ -243,7 +253,7 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Incorrect number of filters returned",
             )
             self.assertIs(
-                IncludeFilter,
+                DatabaseIncludeFilter,
                 type(filters[0]),
                 msg="Incorrect type of filter returned",
             )
@@ -256,7 +266,7 @@ class TestGetFiltersFromQueryString(FlaskAppTest):
                 1, len(filters), msg="Incorrect number of filters returned",
             )
             self.assertIs(
-                DistinctFieldFilter,
+                DatabaseDistinctFieldFilter,
                 type(filters[0]),
                 msg="Incorrect type of filter returned",
             )
