@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
@@ -11,11 +10,6 @@ from datagateway_api.common.database.filters import (
     DatabaseSkipFilter,
     DatabaseWhereFilter,
 )
-from datagateway_api.common.database.helpers import (
-    delete_row_by_id,
-    insert_row_into_table,
-)
-from datagateway_api.common.database.models import SESSION
 from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -29,48 +23,6 @@ from datagateway_api.common.helpers import (
     queries_records,
 )
 from test.test_base import FlaskAppTest
-
-
-class TestRequiresSessionID(FlaskAppTest):
-    def setUp(self):
-        super().setUp()
-        self.good_credentials_header = {"Authorization": "Bearer Test"}
-        self.invalid_credentials_header = {"Authorization": "Test"}
-        self.bad_credentials_header = {"Authorization": "Bearer BadTest"}
-        session = SESSION()
-        session.ID = "Test"
-        session.EXPIREDATETIME = datetime.now() + timedelta(hours=1)
-        session.username = "Test User"
-
-        insert_row_into_table(SESSION, session)
-
-    def tearDown(self):
-        delete_row_by_id(SESSION, "Test")
-
-    def test_missing_credentials(self):
-        self.assertEqual(401, self.app.get("/datafiles").status_code)
-
-    def test_invalid_credentials(self):
-        self.assertEqual(
-            403,
-            self.app.get(
-                "/datafiles", headers=self.invalid_credentials_header,
-            ).status_code,
-        )
-
-    def test_bad_credentials(self):
-        self.assertEqual(
-            403,
-            self.app.get("/datafiles", headers=self.bad_credentials_header).status_code,
-        )
-
-    def test_good_credentials(self):
-        self.assertEqual(
-            200,
-            self.app.get(
-                "/datafiles?limit=0", headers=self.good_credentials_header,
-            ).status_code,
-        )
 
 
 class TestQueriesRecords(TestCase):

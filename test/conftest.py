@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 
 from flask import Flask
@@ -8,6 +8,11 @@ from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
+from datagateway_api.common.database.helpers import (
+    delete_row_by_id,
+    insert_row_into_table,
+)
+from datagateway_api.common.database.models import SESSION
 from datagateway_api.src.main import create_api_endpoints, create_app_infrastructure
 from test.icat.test_query import prepare_icat_data_for_assertion
 
@@ -25,8 +30,28 @@ def valid_credentials_header(icat_client):
 
 
 @pytest.fixture()
-def invalid_credentials_header():
+def valid_db_credentials_header():
+    session = SESSION()
+    session.ID = "Test"
+    session.EXPIREDATETIME = datetime.now() + timedelta(hours=1)
+    session.username = "Test User"
+
+    insert_row_into_table(SESSION, session)
+
+    yield {"Authorization": "Bearer Test"}
+
+    delete_row_by_id(SESSION, "Test")
+
+
+@pytest.fixture()
+def bad_credentials_header():
     return {"Authorization": "Bearer Invalid"}
+
+
+# TODO - Implement this in test_session_handling.py
+@pytest.fixture()
+def invalid_credentials_header():
+    return {"Authorization": "Test"}
 
 
 @pytest.fixture()
