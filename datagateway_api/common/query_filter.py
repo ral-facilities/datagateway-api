@@ -13,15 +13,18 @@ class QueryFilterFactory(object):
     @staticmethod
     def get_query_filter(request_filter):
         """
-        Given a filter return a matching Query filter object
+        Given a filter, return a matching Query filter object
 
-        This factory is not in common.filters so the created filter can be for the
-        correct backend. Moving the factory into that file would mean the filters would
-        be based off the abstract classes (because they're in the same file) which won't
-        enable filters to be unique to the backend
+        The filters are imported inside this method to enable the unit tests to not rely
+        on the contents of `config.json`. If they're imported at the top of the file,
+        the backend type won't have been updated if the Flask app has been created from
+        an automated test (file imports occur before `create_api_endpoints()` executes).
 
-        :param request_filter: dict - The filter to create the QueryFilter for
+        :param request_filter: The filter to create the QueryFilter for
+        :type request_filter: :class:`dict`
         :return: The QueryFilter object created
+        :raises ApiError: If the backend type contains an invalid value
+        :raises FilterError: If the filter name is not recognised
         """
 
         backend_type = config.get_backend_type()

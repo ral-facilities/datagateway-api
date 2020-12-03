@@ -117,9 +117,7 @@ def multiple_investigation_test_data(icat_client):
 
 @pytest.fixture(scope="package")
 def flask_test_app():
-    """
-    TODO - Explain why a generic test app is needed that doesn't rely on any backend
-    """
+    """This is used to check the endpoints exist and have the correct HTTP methods"""
     test_app = Flask(__name__)
     api, spec = create_app_infrastructure(test_app)
     create_api_endpoints(test_app, api, spec)
@@ -129,7 +127,6 @@ def flask_test_app():
 
 @pytest.fixture(scope="package")
 def flask_test_app_icat(flask_test_app):
-    """TODO - Explain ICAT test client"""
     icat_app = Flask(__name__)
     icat_app.config["TESTING"] = True
     icat_app.config["TEST_BACKEND"] = "python_icat"
@@ -142,7 +139,6 @@ def flask_test_app_icat(flask_test_app):
 
 @pytest.fixture(scope="package")
 def flask_test_app_db():
-    """TODO - Add DB test client doc"""
     db_app = Flask(__name__)
     db_app.config["TESTING"] = True
     db_app.config["TEST_BACKEND"] = "db"

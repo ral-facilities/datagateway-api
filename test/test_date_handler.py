@@ -71,7 +71,3 @@ class TestDatetimeToStr:
         )
         str_date_output = DateHandler.datetime_object_to_str(example_date)
         assert str_date_output == "2020-02-29 23:59:59"
-
-    def test_invalid_datetime(self):
-        # TODO - Not sure how to create an invalid datetime object
-        pass

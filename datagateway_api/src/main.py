@@ -73,7 +73,6 @@ def create_api_endpoints(flask_app, api, spec):
     except KeyError:
         backend_type = config.get_backend_type()
 
-    # TODO - Add :param backend: to the endpoint functions
     backend = create_backend(backend_type)
 
     for entity_name in endpoints:

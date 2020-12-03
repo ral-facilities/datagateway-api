@@ -8,7 +8,13 @@ from datagateway_api.common.helpers import (
 
 def instrument_facility_cycles_endpoint(backend):
     """
-    TODO - Add docstring
+    Generate a flask_restful Resource class using the configured backend. In main.py
+    these generated classes are registered with the api e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")`
+
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :return: The generated endpoint class
     """
     pass
 
@@ -68,7 +74,13 @@ def instrument_facility_cycles_endpoint(backend):
 
 def count_instrument_facility_cycles_endpoint(backend):
     """
-    TODO - Add docstring
+    Generate a flask_restful Resource class using the configured backend. In main.py
+    these generated classes are registered with the api e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")`
+
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :return: The generated endpoint class
     """
     pass
 
@@ -122,7 +134,13 @@ def count_instrument_facility_cycles_endpoint(backend):
 
 def instrument_investigation_endpoint(backend):
     """
-    TODO - Add docstring
+    Generate a flask_restful Resource class using the configured backend. In main.py
+    these generated classes are registered with the api e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")`
+
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :return: The generated endpoint class
     """
     pass
 
@@ -189,7 +207,13 @@ def instrument_investigation_endpoint(backend):
 
 def count_instrument_investigation_endpoint(backend):
     """
-    TODO - Add docstring
+    Generate a flask_restful Resource class using the configured backend. In main.py
+    these generated classes are registered with the api e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")`
+
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :return: The generated endpoint class
     """
     pass
 

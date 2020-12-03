@@ -14,7 +14,11 @@ def get_endpoint(name, entity_type, backend):
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated endpoint class
     """
 
@@ -162,7 +166,11 @@ def get_id_endpoint(name, entity_type, backend):
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated id endpoint class
     """
 
@@ -292,7 +300,11 @@ def get_count_endpoint(name, entity_type, backend):
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated count endpoint class
     """
 
@@ -345,7 +357,11 @@ def get_find_one_endpoint(name, entity_type, backend):
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated findOne endpoint class
     """
 

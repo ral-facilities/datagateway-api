@@ -5,7 +5,6 @@ import sys
 
 import requests
 
-# from datagateway_api.src.main import app
 
 log = logging.getLogger()
 
@@ -25,7 +24,14 @@ class Config(object):
 
     def set_backend_type(self, backend_type):
         """
-        TODO - Explain the reason behind the setter
+        This setter is used as a way for automated tests to set the backend type. The
+        API can detect if the Flask app setup is from an automated test by checking the
+        app's config for a `TEST_BACKEND`. If this value exists (a KeyError will be
+        raised when the API is run normally, which will then grab the backend type from
+        `config.json`), it needs to be set using this function. This is required because
+        creating filters in the `QueryFilterFactory` is backend-specific so the backend
+        type must be fetched. This must be done using this module (rather than directly
+        importing and checking the Flask app's config) to avoid circular import issues.
         """
         self.config["backend"] = backend_type
 
