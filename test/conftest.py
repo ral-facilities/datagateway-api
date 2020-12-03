@@ -8,11 +8,7 @@ from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
-from datagateway_api.src.main import (
-    app,
-    create_api_endpoints,
-    create_app_infrastructure,
-)
+from datagateway_api.src.main import create_api_endpoints, create_app_infrastructure
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
