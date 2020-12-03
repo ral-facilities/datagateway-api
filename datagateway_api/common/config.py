@@ -5,6 +5,7 @@ import sys
 
 import requests
 
+# from datagateway_api.src.main import app
 
 log = logging.getLogger()
 
@@ -21,6 +22,12 @@ class Config(object):
             return self.config["backend"]
         except KeyError:
             sys.exit("Missing config value, backend")
+
+    def set_backend_type(self, backend_type):
+        """
+        TODO - Explain the reason behind the setter
+        """
+        self.config["backend"] = backend_type
 
     def get_db_url(self):
         try:

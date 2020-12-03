@@ -70,6 +70,7 @@ def handle_error(e):
 def create_api_endpoints(app, api, spec):
     try:
         backend_type = app.config["TEST_BACKEND"]
+        config.set_backend_type(backend_type)
         print(f"test backend: {backend_type}")
     except KeyError:
         backend_type = config.get_backend_type()

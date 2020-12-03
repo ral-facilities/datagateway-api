@@ -94,18 +94,19 @@ def multiple_investigation_test_data(icat_client):
         icat_client.delete(investigation)
 
 
-@pytest.fixture()
+@pytest.fixture(scope="package")
 def flask_test_app():
-    my_app = Flask(__name__)
-    my_app.config["TESTING"] = True
-    my_app.config["TEST_BACKEND"] = "python_icat"
+    # my_app = Flask(__name__)
+    app.config["TESTING"] = True
+    app.config["TEST_BACKEND"] = "python_icat"
 
-    api, spec = create_app_infrastructure(my_app)
-    create_api_endpoints(my_app, api, spec)
+    api, spec = create_app_infrastructure(app)
+    create_api_endpoints(app, api, spec)
 
-    yield my_app.test_client()
+    yield app.test_client()
 
-    #   app.url_map._rules.clear()
+    # app.url_map._rules.clear()
+    # app.url_map._rules_by_endpoint.clear()
 
 
 @pytest.fixture()
