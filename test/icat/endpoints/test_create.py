@@ -2,7 +2,9 @@ from test.icat.test_query import prepare_icat_data_for_assertion
 
 
 class TestCreateData:
-    def test_valid_create_data(self, flask_test_app_icat, valid_credentials_header):
+    def test_valid_create_data(
+        self, flask_test_app_icat, valid_icat_credentials_header
+    ):
         create_investigations_json = [
             {
                 "name": "Test Data for API Testing, Data Creation 1",
@@ -32,7 +34,7 @@ class TestCreateData:
 
         test_response = flask_test_app_icat.post(
             "/investigations",
-            headers=valid_credentials_header,
+            headers=valid_icat_credentials_header,
             json=create_investigations_json,
         )
 
@@ -53,11 +55,12 @@ class TestCreateData:
         # Delete the entities created by this test
         for investigation_id in test_data_ids:
             flask_test_app_icat.delete(
-                f"/investigations/{investigation_id}", headers=valid_credentials_header,
+                f"/investigations/{investigation_id}",
+                headers=valid_icat_credentials_header,
             )
 
     def test_valid_boundary_create_data(
-        self, flask_test_app_icat, valid_credentials_header,
+        self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 
@@ -76,7 +79,7 @@ class TestCreateData:
 
         test_response = flask_test_app_icat.post(
             "/investigations",
-            headers=valid_credentials_header,
+            headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
 
@@ -91,10 +94,13 @@ class TestCreateData:
         assert [create_investigation_json] == response_json
 
         flask_test_app_icat.delete(
-            f"/investigations/{created_test_data_id}", headers=valid_credentials_header,
+            f"/investigations/{created_test_data_id}",
+            headers=valid_icat_credentials_header,
         )
 
-    def test_invalid_create_data(self, flask_test_app_icat, valid_credentials_header):
+    def test_invalid_create_data(
+        self, flask_test_app_icat, valid_icat_credentials_header
+    ):
         """An investigation requires a minimum of: name, visitId, facility, type"""
 
         invalid_request_body = {
@@ -103,7 +109,7 @@ class TestCreateData:
 
         test_response = flask_test_app_icat.post(
             "/investigations",
-            headers=valid_credentials_header,
+            headers=valid_icat_credentials_header,
             json=invalid_request_body,
         )
 
@@ -112,7 +118,7 @@ class TestCreateData:
     def test_invalid_existing_data_create(
         self,
         flask_test_app_icat,
-        valid_credentials_header,
+        valid_icat_credentials_header,
         single_investigation_test_data,
     ):
         """This test targets raising ICATObjectExistsError, causing a 400"""
@@ -129,7 +135,7 @@ class TestCreateData:
 
         test_response = flask_test_app_icat.post(
             "/investigations",
-            headers=valid_credentials_header,
+            headers=valid_icat_credentials_header,
             json=existing_object_json,
         )
 

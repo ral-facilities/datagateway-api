@@ -7,7 +7,7 @@ class TestUpdateMultipleEntities:
     def test_valid_multiple_update_data(
         self,
         flask_test_app_icat,
-        valid_credentials_header,
+        valid_icat_credentials_header,
         multiple_investigation_test_data,
     ):
         expected_doi = "Test Data Identifier"
@@ -27,7 +27,9 @@ class TestUpdateMultipleEntities:
             update_data_list.append(update_entity)
 
         test_response = flask_test_app_icat.patch(
-            "/investigations", headers=valid_credentials_header, json=update_data_list,
+            "/investigations",
+            headers=valid_icat_credentials_header,
+            json=update_data_list,
         )
         response_json = prepare_icat_data_for_assertion(test_response.json)
 
@@ -36,7 +38,7 @@ class TestUpdateMultipleEntities:
     def test_valid_boundary_update_data(
         self,
         flask_test_app_icat,
-        valid_credentials_header,
+        valid_icat_credentials_header,
         single_investigation_test_data,
     ):
         """ Request body is a dictionary, not a list of dictionaries"""
@@ -53,7 +55,9 @@ class TestUpdateMultipleEntities:
         single_investigation_test_data[0]["summary"] = expected_summary
 
         test_response = flask_test_app_icat.patch(
-            "/investigations", headers=valid_credentials_header, json=update_data_json,
+            "/investigations",
+            headers=valid_icat_credentials_header,
+            json=update_data_json,
         )
         response_json = prepare_icat_data_for_assertion(test_response.json)
 
@@ -62,7 +66,7 @@ class TestUpdateMultipleEntities:
     def test_invalid_missing_update_data(
         self,
         flask_test_app_icat,
-        valid_credentials_header,
+        valid_icat_credentials_header,
         single_investigation_test_data,
     ):
         """There should be an ID in the request body to know which entity to update"""
@@ -73,7 +77,9 @@ class TestUpdateMultipleEntities:
         }
 
         test_response = flask_test_app_icat.patch(
-            "/investigations", headers=valid_credentials_header, json=update_data_json,
+            "/investigations",
+            headers=valid_icat_credentials_header,
+            json=update_data_json,
         )
 
         assert test_response.status_code == 400
@@ -88,7 +94,7 @@ class TestUpdateMultipleEntities:
     def test_invalid_attribute_update(
         self,
         flask_test_app_icat,
-        valid_credentials_header,
+        valid_icat_credentials_header,
         single_investigation_test_data,
         update_key,
         update_value,
@@ -100,7 +106,7 @@ class TestUpdateMultipleEntities:
 
         test_response = flask_test_app_icat.patch(
             "/investigations",
-            headers=valid_credentials_header,
+            headers=valid_icat_credentials_header,
             json=invalid_update_data_json,
         )
 

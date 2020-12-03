@@ -12,10 +12,10 @@ class TestSessionHandling:
         pass
 
     def test_get_valid_session_details(
-        self, flask_test_app_icat, valid_credentials_header,
+        self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         session_details = flask_test_app_icat.get(
-            "/sessions", headers=valid_credentials_header,
+            "/sessions", headers=valid_icat_credentials_header,
         )
 
         # Check username is correct
@@ -26,7 +26,7 @@ class TestSessionHandling:
         # Check session ID matches the header from the request
         assert (
             session_details.json["ID"]
-            == valid_credentials_header["Authorization"].split()[1]
+            == valid_icat_credentials_header["Authorization"].split()[1]
         )
 
         session_expiry_datetime = datetime.strptime(
@@ -40,26 +40,26 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
     def test_get_invalid_session_details(
-        self, invalid_credentials_header, flask_test_app_icat,
+        self, bad_credentials_header, flask_test_app_icat,
     ):
         session_details = flask_test_app_icat.get(
-            "/sessions", headers=invalid_credentials_header,
+            "/sessions", headers=bad_credentials_header,
         )
 
         assert session_details.status_code == 403
 
-    def test_refresh_session(self, valid_credentials_header, flask_test_app_icat):
+    def test_refresh_session(self, valid_icat_credentials_header, flask_test_app_icat):
         pre_refresh_session_details = flask_test_app_icat.get(
-            "/sessions", headers=valid_credentials_header,
+            "/sessions", headers=valid_icat_credentials_header,
         )
 
         refresh_session = flask_test_app_icat.put(
-            "/sessions", headers=valid_credentials_header,
+            "/sessions", headers=valid_icat_credentials_header,
         )
         assert refresh_session.status_code == 200
 
         post_refresh_session_details = flask_test_app_icat.get(
-            "/sessions", headers=valid_credentials_header,
+            "/sessions", headers=valid_icat_credentials_header,
         )
 
         assert (
@@ -108,9 +108,9 @@ class TestSessionHandling:
 
         assert logout_response.status_code == 200
 
-    def test_invalid_logout(self, invalid_credentials_header, flask_test_app_icat):
+    def test_invalid_logout(self, bad_credentials_header, flask_test_app_icat):
         logout_response = flask_test_app_icat.delete(
-            "/sessions", headers=invalid_credentials_header,
+            "/sessions", headers=bad_credentials_header,
         )
 
         assert logout_response.status_code == 403
