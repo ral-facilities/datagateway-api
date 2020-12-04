@@ -3,7 +3,7 @@ import pytest
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
-class TestGetWithFilters:
+class TestICATGetWithFilters:
     def test_valid_get_with_filters(
         self,
         flask_test_app_icat,

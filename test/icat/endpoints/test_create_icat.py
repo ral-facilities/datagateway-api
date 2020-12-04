@@ -1,7 +1,7 @@
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
-class TestCreateData:
+class TestICATCreateData:
     def test_valid_create_data(
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
