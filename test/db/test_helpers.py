@@ -2,24 +2,12 @@ from unittest import TestCase
 
 from sqlalchemy.exc import IntegrityError
 
-from datagateway_api.common.database.filters import (
-    DatabaseDistinctFieldFilter,
-    DatabaseIncludeFilter,
-    DatabaseLimitFilter,
-    DatabaseOrderFilter,
-    DatabaseSkipFilter,
-    DatabaseWhereFilter,
-)
 from datagateway_api.common.exceptions import (
     BadRequestError,
     FilterError,
     MissingRecordError,
 )
-from datagateway_api.common.helpers import (
-    get_filters_from_query_string,
-    queries_records,
-)
-from test.test_base import FlaskAppTest
+from datagateway_api.common.helpers import queries_records
 
 
 class TestQueriesRecords(TestCase):
@@ -87,97 +75,3 @@ class TestQueriesRecords(TestCase):
 
         self.assertEqual("Bad request", str(ctx.exception))
         self.assertEqual(400, ctx.exception.status_code)
-
-
-class TestGetFiltersFromQueryString(FlaskAppTest):
-    def test_no_filters(self):
-        with self.app:
-            self.app.get("/")
-            self.assertEqual([], get_filters_from_query_string())
-
-    def test_bad_filter(self):
-        with self.app:
-            self.app.get('/?test="test"')
-            self.assertRaises(FilterError, get_filters_from_query_string)
-
-    def test_limit_filter(self):
-        with self.app:
-            self.app.get("/?limit=10")
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters",
-            )
-            self.assertIs(
-                DatabaseLimitFilter, type(filters[0]), msg="Incorrect type of filter",
-            )
-
-    def test_order_filter(self):
-        with self.app:
-            self.app.get('/?order="ID DESC"')
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters",
-            )
-            self.assertIs(
-                DatabaseOrderFilter,
-                type(filters[0]),
-                msg="Incorrect type of filter returned",
-            )
-
-    def test_where_filter(self):
-        with self.app:
-            self.app.get('/?where={"ID":{"eq":3}}')
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters",
-            )
-            self.assertIs(
-                DatabaseWhereFilter,
-                type(filters[0]),
-                msg="Incorrect type of filter returned",
-            )
-
-    def test_skip_filter(self):
-        with self.app:
-            self.app.get("/?skip=10")
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Returned incorrect number of filters",
-            )
-            self.assertIs(
-                DatabaseSkipFilter,
-                type(filters[0]),
-                msg="Incorrect type of filter returned",
-            )
-
-    def test_include_filter(self):
-        with self.app:
-            self.app.get('/?include="TEST"')
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned",
-            )
-            self.assertIs(
-                DatabaseIncludeFilter,
-                type(filters[0]),
-                msg="Incorrect type of filter returned",
-            )
-
-    def test_distinct_filter(self):
-        with self.app:
-            self.app.get('/?distinct="ID"')
-            filters = get_filters_from_query_string()
-            self.assertEqual(
-                1, len(filters), msg="Incorrect number of filters returned",
-            )
-            self.assertIs(
-                DatabaseDistinctFieldFilter,
-                type(filters[0]),
-                msg="Incorrect type of filter returned",
-            )
-
-    def test_multiple_filters(self):
-        with self.app:
-            self.app.get("/?limit=10&skip=4")
-            filters = get_filters_from_query_string()
-            self.assertEqual(2, len(filters))
