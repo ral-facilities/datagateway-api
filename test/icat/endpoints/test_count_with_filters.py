@@ -1,7 +1,7 @@
 import pytest
 
 
-class TestCountWithFilters:
+class TestICATCountWithFilters:
     @pytest.mark.usefixtures("single_investigation_test_data")
     def test_valid_count_with_filters(
         self, flask_test_app_icat, valid_icat_credentials_header,
