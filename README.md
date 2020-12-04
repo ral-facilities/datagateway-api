@@ -29,7 +29,7 @@ machine.
 ### pyenv (Python Version Management)
 To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
 this tool ([pyenv-win](https://github.com/pyenv-win/pyenv-win)), however this is
-currently untested on this repoThis is used to manage the various versions of Python
+currently untested on this repo. This is used to manage the various versions of Python
 that will be used to test/lint Python during development. Install by executing the following:
 
 ```bash
