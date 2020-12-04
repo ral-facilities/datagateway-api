@@ -1,7 +1,7 @@
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
-class TestGetByID:
+class TestICATGetByID:
     def test_valid_get_with_id(
         self,
         flask_test_app_icat,
