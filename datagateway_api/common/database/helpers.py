@@ -329,7 +329,11 @@ def get_first_filtered_row(table, filters):
     :return: the first row matching the filter
     """
     log.info(" Getting first filtered row for %s", table.__tablename__)
-    return get_rows_by_filter(table, filters)[0]
+    try:
+        result = get_rows_by_filter(table, filters)[0]
+    except IndexError:
+        raise MissingRecordError()
+    return result
 
 
 def get_filtered_row_count(table, filters):
