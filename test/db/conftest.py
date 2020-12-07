@@ -87,6 +87,7 @@ def isis_specific_endpoint_data_db():
     )
     facility_cycle.FACILITY_ID = 1
     set_meta_attributes(facility_cycle)
+    insert_row_into_table(FACILITYCYCLE, facility_cycle)
 
     investigation = create_investigation_db_data()
 
@@ -94,7 +95,6 @@ def isis_specific_endpoint_data_db():
     instrument.NAME = "Test Instrument for DataGateway API Endpoint Testing (DB)"
     instrument.FACILITY_ID = 1
     set_meta_attributes(instrument)
-
     insert_row_into_table(INSTRUMENT, instrument)
 
     investigation_instrument = INVESTIGATIONINSTRUMENT()
@@ -106,6 +106,7 @@ def isis_specific_endpoint_data_db():
 
     yield (instrument.ID, facility_cycle, investigation)
 
+    delete_row_by_id(INVESTIGATIONINSTRUMENT, investigation_instrument.ID)
     delete_row_by_id(FACILITYCYCLE, facility_cycle.ID)
     delete_row_by_id(INVESTIGATION, investigation.ID)
     delete_row_by_id(INSTRUMENT, instrument.ID)

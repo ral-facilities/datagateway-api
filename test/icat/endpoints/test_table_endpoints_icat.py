@@ -1,7 +1,7 @@
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
-class TestTableEndpoints:
+class TestICATableEndpoints:
     """
     This class tests the endpoints defined in table_endpoints.py, commonly referred to
     as the ISIS specific endpoints
