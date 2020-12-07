@@ -125,7 +125,8 @@ used to lint/format/test the code in the included `noxfile.py`. To install Nox, 
 as shown below. Nox is not listed as a Poetry dependency because this has the potential
 to cause issues if Nox was executed inside Poetry (see
 [here](https://medium.com/@cjolowicz/nox-is-a-part-of-your-global-developer-environment-like-poetry-pre-commit-pyenv-or-pipx-1cdeba9198bd)
-for more detailed reasoning):
+for more detailed reasoning). If you do choose to install these packages within a
+virtual environment, you do not need the `--user` option:
 
 ```bash
 pip install --user --upgrade nox
@@ -278,45 +279,68 @@ This is illustrated below.
 
 
 `````
-─── datagateway_api
-    ├── common
-    │   ├── database
-    │   │   ├── backend.py
-    │   │   ├── filters.py
-    │   │   ├── helpers.py
-    │   │   ├── models.py
-    │   │   └── session_manager.py
-    │   ├── icat
-    │   ├── backends.py
-    │   ├── constants.py
-    │   ├── exceptions.py
-    │   ├── filters.py
-    │   └── helpers.py
-    ├── src
-    │   ├── resources
-    │   │   ├── entities
-    │   │   │   ├── entity_endpoint.py
-    │   │   │   └── entity_map.py
-    │   │   └── non_entities
-    │   │       └── <non_entity>_endpoints.py
-    │   ├── swagger
-    │   │   ├── openapi.yaml
-    │   │   └── swagger_generator.py
-    │   └── main.py
-    ├── test
-    │   ├── resources
-    │   │   ├── entities
-    │   │   │   └──test_<entity>.py
-    │   │   └── non_entities
-    │   │       └── test_<non_entity>.py
-    │   └── test_base
-    │       ├── constants.py
-    │       └── rest_test.py
-    ├── util
-    │   └── icat_db_generator.py
-    ├── logs.log
-    └── config.json
+.
+├── .flake8
+├── .gitignore
+├── .pre-commit-config.yaml
+├── LICENSE
+├── README.md
+├── config.json.example
+├── datagateway_api
+│   ├── common
+│   │   ├── backend.py
+│   │   ├── backends.py
+│   │   ├── config.py
+│   │   ├── constants.py
+│   │   ├── database
+│   │   │   ├── backend.py
+│   │   │   ├── filters.py
+│   │   │   ├── helpers.py
+│   │   │   ├── models.py
+│   │   │   └── session_manager.py
+│   │   ├── date_handler.py
+│   │   ├── exceptions.py
+│   │   ├── filter_order_handler.py
+│   │   ├── filters.py
+│   │   ├── helpers.py
+│   │   ├── icat
+│   │   │   ├── backend.py
+│   │   │   ├── filters.py
+│   │   │   ├── helpers.py
+│   │   │   └── query.py
+│   │   └── logger_setup.py
+│   └── src
+│       ├── main.py
+│       ├── resources
+│       │   ├── entities
+│       │   │   ├── entity_endpoint.py
+│       │   │   └── entity_map.py
+│       │   ├── non_entities
+│       │   │   └── sessions_endpoints.py
+│       │   └── table_endpoints
+│       │       └── table_endpoints.py
+│       └── swagger
+│           ├── apispec_flask_restful.py
+│           ├── initialise_spec.py
+│           └── openapi.yaml
+├── noxfile.py
+├── poetry.lock
+├── postman_collection_icat.json
+├── pyproject.toml
+├── test
+│   ├── test_base.py
+│   ├── test_database_helpers.py
+│   ├── test_entityHelper.py
+│   └── test_helpers.py
+└── util
+    └── icat_db_generator.py
  `````
+
+The directory tree can be generated using the following command:
+
+ `git ls-tree -r --name-only HEAD | grep -v __init__.py | tree --fromfile`
+
+
 #### Main
 `main.py` is where the flask_restful api is set up. This is where each endpoint resource
 class is generated and mapped to an endpoint.
