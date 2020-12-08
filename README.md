@@ -30,7 +30,8 @@ machine.
 To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
 this tool ([pyenv-win](https://github.com/pyenv-win/pyenv-win)), however this is
 currently untested on this repo. This is used to manage the various versions of Python
-that will be used to test/lint Python during development. Install by executing the following:
+that will be used to test/lint Python during development. Install by executing the
+following:
 
 ```bash
 curl https://pyenv.run | bash
@@ -153,6 +154,21 @@ Currently, the following Nox sessions have been created:
 - `safety` - this uses [safety](https://github.com/pyupio/safety) to check the
   dependencies (pulled directly from Poetry) for any known vulnerabilities. This session
   gives the output in a full ASCII style report.
+
+Each Nox session builds an environment using the repo's dependencies (defined using
+Poetry) using `install_with_constraints()`. This stores the dependencies in a
+`requirements.txt`-like format temporarily during this process, using the OS' default
+temporary location. This could result in permissions issues (this has been seen by a
+colleague on Windows), so adding the `--tmpdir [DIRECTORY PATH]` allows the user to
+define where this file should be stored. Due to Nox session being initiated in the
+command line, this argument needs to be a positional argument (denoted by the `--` in
+the Nox command). This argument is optional, but **must** be the final argument avoid
+interference with Nox's argument parsing. An example:
+
+```bash
+nox -s lint -- util datagateway_api --tmpdir /root
+```
+
 
 ### Pre Commit (Automated Checks during Git Commit)
 To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)

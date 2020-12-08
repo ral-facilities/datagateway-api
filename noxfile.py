@@ -1,13 +1,15 @@
-import nox
 import tempfile
+
+import nox
+
 
 # Separating Black away from the rest of the sessions
 nox.options.sessions = "lint", "safety"
 code_locations = "datagateway_api", "test", "util", "noxfile.py"
 
 
-def install_with_constraints(session, *args, **kwargs):
-    with tempfile.NamedTemporaryFile() as requirements:
+def install_with_constraints(session, req_dir=None, *args, **kwargs):
+    with tempfile.NamedTemporaryFile(dir=req_dir) as requirements:
         session.run(
             "poetry",
             "export",
@@ -19,18 +21,35 @@ def install_with_constraints(session, *args, **kwargs):
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
 
+def get_tmp_dir(session):
+    tmp_dir = None
+
+    try:
+        if session.posargs[-2] == "--tmpdir":
+            tmp_dir = session.posargs.pop(-1)
+            session.posargs.remove("--tmpdir")
+    except IndexError:
+        session.log("Info: No --tmpdir option given")
+
+    return tmp_dir
+
+
 @nox.session(python="3.6", reuse_venv=True)
 def format(session):
+    tmp_dir = get_tmp_dir(session)
     args = session.posargs or code_locations
-    install_with_constraints(session, "black")
+
+    install_with_constraints(session, tmp_dir, "black")
     session.run("black", *args, external=True)
 
 
 @nox.session(python="3.6", reuse_venv=True)
 def lint(session):
+    tmp_dir = get_tmp_dir(session)
     args = session.posargs or code_locations
     install_with_constraints(
         session,
+        tmp_dir,
         "flake8",
         "flake8-bandit",
         "flake8-black",
@@ -48,8 +67,9 @@ def lint(session):
 
 @nox.session(python="3.6", reuse_venv=True)
 def safety(session):
-    install_with_constraints(session, "safety")
-    with tempfile.NamedTemporaryFile() as requirements:
+    tmp_dir = get_tmp_dir(session)
+    install_with_constraints(session, tmp_dir, "safety")
+    with tempfile.NamedTemporaryFile(dir=tmp_dir) as requirements:
         session.run(
             "poetry",
             "export",

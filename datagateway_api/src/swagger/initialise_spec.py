@@ -145,7 +145,7 @@ def initialise_spec(spec):
                 "lt": {"value": [{"id": {"lt": 10}}]},
                 "lte": {"value": [{"id": {"lte": 50}}]},
                 "gt": {"value": [{"id": {"gt": 10}}]},
-                "gte": {"value": [{"id": {"gte": 50}}]},  
+                "gte": {"value": [{"id": {"gte": 50}}]},
                 "in": {"value": [{"id": {"in": [1, 2, 3]}}]},
             },
         },
