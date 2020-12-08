@@ -10,7 +10,6 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.common.backends import create_backend
 from datagateway_api.common.config import config
-from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import setup_logger
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
@@ -38,6 +37,16 @@ log.info("Logging now setup")
 app = Flask(__name__)
 
 
+class CustomErrorHandledApi(Api):
+    """
+    This class overrides `handle_error` function from the API class from `flask_restful`
+    to correctly return response codes and exception messages from uncaught exceptions
+    """
+
+    def handle_error(self, e):
+        return str(e), e.status_code
+
+
 def create_app_infrastructure(flask_app):
     swaggerui_blueprint = get_swaggerui_blueprint(
         "", "/openapi.json", config={"app_name": "DataGateway API OpenAPI Spec"},
@@ -53,9 +62,7 @@ def create_app_infrastructure(flask_app):
 
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
-    api = Api(flask_app)
-
-    flask_app.register_error_handler(ApiError, handle_error)
+    api = CustomErrorHandledApi(flask_app)
 
     initialise_spec(spec)
 
@@ -144,10 +151,11 @@ def create_api_endpoints(flask_app, api, spec):
 def openapi_config(spec):
     # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
     # change to the Swagger docs, rather than changing on each startup
-    log.debug("Reordering OpenAPI docs to alphabetical order")
-    for entity_data in spec._paths.values():
-        for endpoint_name in sorted(entity_data.keys()):
-            entity_data.move_to_end(endpoint_name)
+    if config.is_generate_swagger():
+        log.debug("Reordering OpenAPI docs to alphabetical order")
+        for entity_data in spec._paths.values():
+            for endpoint_name in sorted(entity_data.keys()):
+                entity_data.move_to_end(endpoint_name)
 
     openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
     with open(openapi_spec_path, "w") as f:
