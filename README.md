@@ -1,5 +1,6 @@
 # datagateway-api
-ICAT API to interface with the Data Gateway
+Flask-based API that fetches data from an ICAT instance, to interface with
+[DataGateway](https://github.com/ral-facilities/datagateway)
 
 ## Contents
 - [datagateway-api](#datagateway-api)
@@ -268,17 +269,20 @@ Once this is set the API can be run with `flask run` while inside the root direc
 the project. The `flask run` command gets installed with flask.
 
 Examples shown:
-Unix
+
+Unix:
 ```bash
 $ export FLASK_APP=src/main.py
 $ flask run
 ```
-CMD
+
+CMD:
 ```CMD
 > set FLASK_APP=src/main.py
 > flask run
 ```
-PowerShell
+
+PowerShell:
 ```powershell
 > $env:FLASK_APP = "src/main.py"
 > flask run
@@ -353,14 +357,14 @@ This is illustrated below.
 │   └── test_helpers.py
 └── util
     └── icat_db_generator.py
- `````
+`````
 
 The directory tree can be generated using the following command:
 
  `git ls-tree -r --name-only HEAD | grep -v __init__.py | tree --fromfile`
 
 
-#### Main
+### Main
 `main.py` is where the flask_restful api is set up. This is where each endpoint resource
 class is generated and mapped to an endpoint.
 
@@ -370,7 +374,7 @@ api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_n
 ```
 
 
-#### Endpoints
+### Endpoints
 The logic for each endpoint are within `/src/resources`. They are split into entities,
 non_entities and table_endpoints. The entities package contains `entities_map` which
 maps entity names to their sqlalchemy model. The `entity_endpoint` module contains the
@@ -379,7 +383,7 @@ endpoint classes that are table specific. Finally, non_entities contains the ses
 endpoint.
 
 
-#### Mapped classes
+### Mapped classes
 The classes mapped from the database are stored in `/common/database/models.py`. Each
 model was automatically generated using sqlacodegen. A class `EntityHelper` is defined
 so that each model may inherit two methods `to_dict()` and
@@ -397,25 +401,25 @@ example: `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 a
 generate 10 years of data.
 
 
-#### Querying and filtering:
+### Querying and filtering:
 The querying and filtering logic is located in `/common/database_helpers.py`. In this
 module the abstract `Query` and `QueryFilter` classes are defined as well as their
 implementations. The functions that are used by various endpoints to query the database
 are also in this module.
 
 
-#### Class diagrams for this module:
+### Class diagrams for this module:
 ![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)
 ![image](https://user-images.githubusercontent.com/44777678/67954834-7fb48700-fbe9-11e9-96f3-ffefc7277ebd.png)
 
 
-#### Authentication
+### Authentication
 Each request requires a valid session ID to be provided in the Authorization header.
 This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session
 ID can be obtained by sending a post request to `/sessions/`. All endpoint methods that
 require a session id are decorated with `@requires_session_id`
 
-#### Generating the swagger spec: `openapi.yaml`
+### Generating the swagger spec: `openapi.yaml`
 When the config option `generate_swagger` is set to true in `config.json`, a YAML
 file defining the API using OpenAPI standards will be created at
 `src/swagger/openapi.yaml`. [apispec](https://apispec.readthedocs.io/en/latest/) is used
