@@ -150,6 +150,9 @@ Currently, the following Nox sessions have been created:
 - `safety` - this uses [safety](https://github.com/pyupio/safety) to check the
   dependencies (pulled directly from Poetry) for any known vulnerabilities. This session
   gives the output in a full ASCII style report.
+- `tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
+  automated tests in `test/`, tests for the database and ICAT backends, and non-backend
+  specific tests. More details [here](#running-tests).
 
 ### Pre Commit (Automated Checks during Git Commit)
 To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
@@ -234,7 +237,7 @@ provided in the base directory of this repository). Copy `config.json.example` t
 `config.json` and set the values as needed.
 
 Ideally, the API would be run with:
-`poetry run python -m src.main`
+`poetry run python -m datagateway_api.src.main`
 However it can be run with the flask run command as shown below:
 
 
@@ -378,4 +381,52 @@ class DataCollectionDatasets(Resource):
 
 
 ## Running Tests
-To run the tests use `python -m unittest discover`
+To run the tests use `nox -s tests`. The repository contains a variety of tests, to test
+the functionality of the API works as intended. The tests are split into 3 main
+sections: non-backend specific (testing features such as the date handler), ICAT backend
+tests (containing tests for backend specific components, including tests for the
+different types of endpoints) and Database Backend tests (like the ICAT backend tests,
+but covering only the most used aspects of the API).
+
+The configuration file (`config.json`) contains two options that will be used during the
+testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for
+your test environment, using `config.json.example` as a reference. The tests require a
+connection to an instance of ICAT, so set the rest of the config as needed.
+
+By default, this will execute the repo's tests in
+Python 3.6, 3.7 and 3.8. For most cases, running the tests in a single Python version
+will be sufficient:
+
+```bash
+nox -p 3.6 -s tests
+```
+
+This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
+to check how much of the codebase is covered by the tests in `test/`:
+
+```bash
+nox -p 3.6 -s tests -- --cov-report term --cov=./datagateway_api
+```
+
+With `pytest`, you can output the duration for each test, useful for showing the slower
+tests in the collection (sortest from slowest to fastest). The test duration is split
+into setup, call and teardown to more easily understand where the tests are being slowed
+down:
+
+```bash
+nox -p 3.6 -s tests -- --durations=0
+```
+
+To test a specific test class (or even a specific test function), use a double colon to
+denote a each level down beyond the filename:
+
+```bash
+# Test a specific file
+nox -p 3.6 -s tests -- test/icat/test_query.py
+
+# Test a specific test class
+nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery
+
+# Test a specific test function
+nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
+```
