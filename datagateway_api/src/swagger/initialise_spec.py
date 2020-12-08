@@ -64,8 +64,8 @@ def initialise_spec(spec):
                                             {"type": "number"},
                                             {"type": "integer"},
                                             {"type": "boolean"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -105,8 +105,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -117,8 +117,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {

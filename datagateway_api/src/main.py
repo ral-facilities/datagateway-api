@@ -9,7 +9,6 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.common.config import config
-from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import setup_logger
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
