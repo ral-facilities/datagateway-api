@@ -87,9 +87,9 @@ components:
       schema:
         type: integer
     WHERE_FILTER:
-      description: Apply where filters to the query. The possible operators are like,
-        gte, lte, in and eq. Please modify the examples before executing a request
-        if you are having issues with the example values.
+      description: 'Apply where filters to the query. The possible operators are:
+        ne, like, lt, lte, gt, gte, in and eq. Please modify the examples before executing
+        a request if you are having issues with the example values.'
       examples:
         eq:
           value:
@@ -10817,9 +10817,9 @@ paths:
                 type: object
           description: Success - returns a session ID
         '400':
-          description: Bad request. User credentials not provided in request body
+          description: Bad request - User credentials not provided in request body
         '403':
-          description: Forbidden. User credentials were invalid
+          description: Forbidden - User credentials were invalid
       security: []
       summary: Login
       tags:
