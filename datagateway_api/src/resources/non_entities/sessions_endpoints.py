@@ -60,9 +60,9 @@ def session_endpoints(backend):
                           description: Session ID
                           example: xxxxxx-yyyyyyy-zzzzzz
               400:
-                description: Bad request. User credentials not provided in request body
+                description: Bad request - User credentials not provided in request body
               403:
-                 description: Forbidden. User credentials were invalid
+                 description: Forbidden - User credentials were invalid
             """
             if not (
                 request.data

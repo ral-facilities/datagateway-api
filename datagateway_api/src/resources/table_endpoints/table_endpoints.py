@@ -31,7 +31,7 @@ def instrument_facility_cycles_endpoint(backend):
             parameters:
                 - in: path
                   required: true
-                  name: id
+                  name: id_
                   description: The id of the instrument to retrieve the facility cycles
                       of
                   schema:
@@ -98,7 +98,7 @@ def count_instrument_facility_cycles_endpoint(backend):
             parameters:
                 - in: path
                   required: true
-                  name: id
+                  name: id_
                   description: The id of the instrument to count the facility cycles of
                   schema:
                     type: integer
