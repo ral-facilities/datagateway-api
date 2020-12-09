@@ -152,7 +152,9 @@ used to lint/format/test the code in the included `noxfile.py`. To install Nox, 
 as shown below. Nox is not listed as a Poetry dependency because this has the potential
 to cause issues if Nox was executed inside Poetry (see
 [here](https://medium.com/@cjolowicz/nox-is-a-part-of-your-global-developer-environment-like-poetry-pre-commit-pyenv-or-pipx-1cdeba9198bd)
-for more detailed reasoning). If you do choose to install these packages within a
+for more detailed reasoning). When using the `--user` option, ensure your user's Python
+installation is added to the system `PATH` variable, remembering to reboot your system
+if you need to change the `PATH`. If you do choose to install these packages within a
 virtual environment, you do not need the `--user` option:
 
 ```bash
