@@ -1,33 +1,56 @@
-# datagateway-api
-Flask-based API that fetches data from an ICAT instance, to interface with
-[DataGateway](https://github.com/ral-facilities/datagateway)
+# DataGateway API
+This is a Flask-based API that fetches data from an ICAT instance, to interface with
+[DataGateway](https://github.com/ral-facilities/datagateway). This API uses two ways
+for data collection/manipulation, using a Python-based ICAT API wrapper or using
+sqlalchemy to communicate directly with ICAT's database.
 
-## Contents
-- [datagateway-api](#datagateway-api)
-  - [Contents](#contents)
-  - [Creating Dev Environment and API Setup](#creating-dev-environment-and-api-setup)
-  - [Running DataGateway API](#running-datagateway-api)
-  - [Project structure](#project-structure)
-      - [Main](#main)
-      - [Endpoints](#endpoints)
-      - [Mapped classes](#mapped-classes)
-      - [Database Generator](#database-generator)
-      - [Class Diagrams](#class-diagrams-for-this-module)
-      - [Querying and filtering](#querying-and-filtering)
-      - [Swagger Generation](#generating-the-swagger-spec-openapiyaml)
-      - [Authentication](#authentication)
+
+
+
+# Contents
+- [Creating Dev Environment and API Setup](#creating-dev-environment-and-api-setup)
+  - [Python Version Management (pyenv)](#python-version-management-(pyenv))
+  - [API Dependency Management (Poetry)](#api-dependency-management-(poetry))
+  - [Automated Testing & Other Development Helpers (Nox)](#automated-testing-&-other-development-helpers-(nox))
+  - [Automated Checks during Git Commit (Pre Commit)](#automated-checks-during-git-commit-(pre-commit))
+  - [Summary](#summary)
+- [Running DataGateway API](#running-datagateway-api)
+  - [API Startup](#api-startup)
+  - [Authentication](#authentication)
+  - [Swagger Interface](#swagger-interface)
+- [Running Tests](#running-tests)
+- [Project Structure](#project-structure)
+  - [Main](#main)
+  - [Endpoints](#endpoints)
+  - [Logging](#logging)
+  - [Date Handler](#date-handler)
+  - [Exceptions & Flask Error Handling](#exceptions-&-flask-error-handling)
+  - [Filtering](#filtering)
+  - [Backends](#backends)
+    - [Abstract Backend Class](#abstract-backend-class)
+    - [Creating a Backend](#creating-a-backend)
+  - [Database Backend](#database-backend)
+    - [Mapped Classes](#mapped-classes)
+  - [Python ICAT Backend](#python-icat-backend)
+    - [ICATQuery](#icatquery)
+  - [Generating the OpenAPI Specification](#generating-the-openapi-specification)
+- [Utilities](#utilities)
   - [Database Generator](#database-generator)
-  - [Running Tests](#running-tests)
+  - [Postman Collection](#postman-collection)
+- [Updating README](#updating-readme)
 
 
-## Creating Dev Environment and API Setup
+
+
+# Creating Dev Environment and API Setup
 The recommended development environment for this API has taken lots of inspiration from
 the [Hypermodern Python](https://cjolowicz.github.io/posts/hypermodern-python-01-setup/)
 guide found online. It is assumed the commands shown in this part of the README are
 executed in the root directory of this repo once it has been cloned to your local
 machine.
 
-### pyenv (Python Version Management)
+
+## Python Version Management (pyenv)
 To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
 this tool ([pyenv-win](https://github.com/pyenv-win/pyenv-win)), however this is
 currently untested on this repo. This is used to manage the various versions of Python
@@ -86,7 +109,8 @@ currently listed in `.gitignore`):
 pyenv local 3.6.8 3.7.7 3.8.2
 ```
 
-### Poetry (API Dependency Management)
+
+## API Dependency Management (Poetry)
 To maintain records of the API's dependencies,
 [Poetry](https://github.com/python-poetry/poetry) is used. To install, use the following
 command:
@@ -121,7 +145,8 @@ intricacies of this command:
 poetry add [PACKAGE-NAME]
 ```
 
-### Nox (Automated Testing & Other Code Changes)
+
+## Automated Testing & Other Development Helpers (Nox)
 When developing new features for the API, there are a number of Nox sessions that can be
 used to lint/format/test the code in the included `noxfile.py`. To install Nox, use Pip
 as shown below. Nox is not listed as a Poetry dependency because this has the potential
@@ -157,7 +182,7 @@ Currently, the following Nox sessions have been created:
   gives the output in a full ASCII style report.
 - `tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
   automated tests in `test/`, tests for the database and ICAT backends, and non-backend
-  specific tests. More details [here](#running-tests).
+  specific tests. More details about the tests themselves [here](#running-tests).
 
 Each Nox session builds an environment using the repo's dependencies (defined using
 Poetry) using `install_with_constraints()`. This stores the dependencies in a
@@ -174,7 +199,7 @@ nox -s lint -- util datagateway_api --tmpdir /root
 ```
 
 
-### Pre Commit (Automated Checks during Git Commit)
+## Automated Checks during Git Commit (Pre Commit)
 To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
 is used. Like Nox, Pip is used to install this tool:
 
@@ -198,8 +223,8 @@ command:
 pre-commit run --all-files
 ```
 
-### Summary
 
+## Summary
 As a summary, these are the steps needed to create a dev environment for this repo
 compressed into a single code block:
 
@@ -250,23 +275,34 @@ pre-commit install
 ```
 
 
-## Running DataGateway API
+
+
+# Running DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`) the connection
 URL for the backend needs to be set. These are set in `config.json` (an example file is
 provided in the base directory of this repository). Copy `config.json.example` to
 `config.json` and set the values as needed.
 
-Ideally, the API would be run with:
-`poetry run python -m datagateway_api.src.main`
-However it can be run with the flask run command as shown below:
+By default, the API will run on `http://localhost:5000` and all requests are made here
+e.g. `http://localhost:5000/sessions`.
 
+
+## API Startup
+Ideally, the API would be run using the following command:
+
+```bash
+poetry run python -m datagateway_api.src.main
+```
+
+However, it can also be run with the `flask run` command (installed with Flask) as shown
+below:
 
 **Warning: the host, port and debug config options will not be respected when the API is
 run this way**
 
-To use `flask run`, the enviroment variable `FLASK_APP` should be set to `src/main.py`.
-Once this is set the API can be run with `flask run` while inside the root directory of
-the project. The `flask run` command gets installed with flask.
+To use `flask run`, the enviroment variable `FLASK_APP` should be set to
+`datagateway_api/src/main.py`. Once this is set, the API can be run with `flask run`
+while inside the root directory of the project.
 
 Examples shown:
 
@@ -290,154 +326,31 @@ PowerShell:
 
 More information can be found [here](http://flask.pocoo.org/docs/1.0/cli/).
 
-By default the api will run on `http://localhost:5000` and all requests are made here
-e.g. `http://localhost:5000/sessions`
 
-## Project structure
-The project consists of 3 main packages: common, src and test. common contains modules
-shared across test and src such as the database mapping classes. src contains the api
-resources and their http method definitions, and test contains tests for each endpoint.
-
-This is illustrated below.
-
-
-`````
-.
-├── .flake8
-├── .gitignore
-├── .pre-commit-config.yaml
-├── LICENSE
-├── README.md
-├── config.json.example
-├── datagateway_api
-│   ├── common
-│   │   ├── backend.py
-│   │   ├── backends.py
-│   │   ├── config.py
-│   │   ├── constants.py
-│   │   ├── database
-│   │   │   ├── backend.py
-│   │   │   ├── filters.py
-│   │   │   ├── helpers.py
-│   │   │   ├── models.py
-│   │   │   └── session_manager.py
-│   │   ├── date_handler.py
-│   │   ├── exceptions.py
-│   │   ├── filter_order_handler.py
-│   │   ├── filters.py
-│   │   ├── helpers.py
-│   │   ├── icat
-│   │   │   ├── backend.py
-│   │   │   ├── filters.py
-│   │   │   ├── helpers.py
-│   │   │   └── query.py
-│   │   └── logger_setup.py
-│   └── src
-│       ├── main.py
-│       ├── resources
-│       │   ├── entities
-│       │   │   ├── entity_endpoint.py
-│       │   │   └── entity_map.py
-│       │   ├── non_entities
-│       │   │   └── sessions_endpoints.py
-│       │   └── table_endpoints
-│       │       └── table_endpoints.py
-│       └── swagger
-│           ├── apispec_flask_restful.py
-│           ├── initialise_spec.py
-│           └── openapi.yaml
-├── noxfile.py
-├── poetry.lock
-├── postman_collection_icat.json
-├── pyproject.toml
-├── test
-│   ├── test_base.py
-│   ├── test_database_helpers.py
-│   ├── test_entityHelper.py
-│   └── test_helpers.py
-└── util
-    └── icat_db_generator.py
-`````
-
-The directory tree can be generated using the following command:
-
- `git ls-tree -r --name-only HEAD | grep -v __init__.py | tree --fromfile`
-
-
-### Main
-`main.py` is where the flask_restful api is set up. This is where each endpoint resource
-class is generated and mapped to an endpoint.
-
-Example:
-```python
-api.add_resource(get_endpoint(entity_name, endpoints[entity_name]), f"/{entity_name.lower()}")
-```
-
-
-### Endpoints
-The logic for each endpoint are within `/src/resources`. They are split into entities,
-non_entities and table_endpoints. The entities package contains `entities_map` which
-maps entity names to their sqlalchemy model. The `entity_endpoint` module contains the
-function that is used to generate endpoints at start up. `table_endpoints` contains the
-endpoint classes that are table specific. Finally, non_entities contains the session
-endpoint.
-
-
-### Mapped classes
-The classes mapped from the database are stored in `/common/database/models.py`. Each
-model was automatically generated using sqlacodegen. A class `EntityHelper` is defined
-so that each model may inherit two methods `to_dict()` and
-`update_from_dict(dictionary)`, both used for returning entities and updating them, in a
-form easily converted to JSON.
-
-
-## Database Generator
-There is a tool to generate mock data into the database. It is located in
-`util/icat_db_generator.py`. By default it will generate 20 years worth of data (approx
-70,000 entities). The script makes use of `random` and `Faker` and is seeded with a seed
-of 1. The seed and number of years of data generated can be changed by using the arg
-flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years. For
-example: `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and
-generate 10 years of data.
-
-
-### Querying and filtering:
-The querying and filtering logic is located in `/common/database_helpers.py`. In this
-module the abstract `Query` and `QueryFilter` classes are defined as well as their
-implementations. The functions that are used by various endpoints to query the database
-are also in this module.
-
-
-### Class diagrams for this module:
-![image](https://user-images.githubusercontent.com/44777678/67954353-ba69ef80-fbe8-11e9-81e3-0668cea3fa35.png)
-![image](https://user-images.githubusercontent.com/44777678/67954834-7fb48700-fbe9-11e9-96f3-ffefc7277ebd.png)
-
-
-### Authentication
+## Authentication
 Each request requires a valid session ID to be provided in the Authorization header.
 This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session
-ID can be obtained by sending a post request to `/sessions/`. All endpoint methods that
-require a session id are decorated with `@requires_session_id`
-
-### Generating the swagger spec: `openapi.yaml`
-When the config option `generate_swagger` is set to true in `config.json`, a YAML
-file defining the API using OpenAPI standards will be created at
-`src/swagger/openapi.yaml`. [apispec](https://apispec.readthedocs.io/en/latest/) is used
-to help with this, with an `APISpec()` object created in `src/main.py` which is added to
-(using `APISpec.path()`) when the endpoints are created for Flask. These paths are
-iterated over and ordered alphabetically, to ensure `openapi.yaml` only changes if there
-have been changes to the Swagger docs of the API; without that code, Git will detect
-changes on that file everytime startup occurs (preventing a clean development repo). The
-contents of the `APISpec` object are written to a YAML file and is used when the user
-goes to the configured (root) page in their browser.
-
-The endpoint related files in `src/resources/` contain `__doc__` which have the Swagger
-docs for each type of endpoint. `src/resources/swagger/` contain code to aid Swagger doc
-generation, with a plugin (`RestfulPlugin`) created for `apispec` to extract Swagger
-documentation from `flask-restful` functions.
+ID can be obtained by sending a POST request to `/sessions`. All endpoint methods that
+require a session id are decorated with `@requires_session_id`.
 
 
-## Running Tests
+## Swagger Interface
+If you go to the API's base path in your browser (`http://localhost:5000` by default), a
+representation of the API will be shown using
+[Swagger UI](https://swagger.io/tools/swagger-ui/). This uses an OpenAPI specfication to
+visualise and allow users to easily interact with the API without building their own
+requests. It's great for gaining an understanding in what endpoints are available and
+what inputs the requests can receive, all from an interactive interface.
+
+This specification is built with the Database Backend in mind (attribute names on
+example outputs are capitalised for example), however the Swagger interface can also be
+used with the Python ICAT Backend. More details on how the API's OpenAPI specification
+is built can be found [here](TODO INSERT HYPERLINK).
+
+
+
+
+# Running Tests
 To run the tests use `nox -s tests`. The repository contains a variety of tests, to test
 the functionality of the API works as intended. The tests are split into 3 main
 sections: non-backend specific (testing features such as the date handler), ICAT backend
@@ -487,3 +400,344 @@ nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery
 # Test a specific test function
 nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
 ```
+
+
+
+
+# Project Structure
+The project consists of 3 main packages: `datagateway_api.common`,
+`datagateway_api.src`, and `test`. `datagateway_api.common` contains modules for the
+Database and Python ICAT Backends as well as code to deal with query filters.
+`datagateway_api.src` contains the API resources and their HTTP method definitions (e.g.
+GET, POST). `test` contains automated tests written using Pytest. A directory tree is
+illustrated below:
+
+`````
+.
+├── .flake8
+├── .gitignore
+├── .pre-commit-config.yaml
+├── LICENSE
+├── README.md
+├── config.json.example
+├── datagateway_api
+│   ├── common
+│   │   ├── backend.py
+│   │   ├── backends.py
+│   │   ├── config.py
+│   │   ├── constants.py
+│   │   ├── database
+│   │   │   ├── backend.py
+│   │   │   ├── filters.py
+│   │   │   ├── helpers.py
+│   │   │   ├── models.py
+│   │   │   └── session_manager.py
+│   │   ├── date_handler.py
+│   │   ├── exceptions.py
+│   │   ├── filter_order_handler.py
+│   │   ├── filters.py
+│   │   ├── helpers.py
+│   │   ├── icat
+│   │   │   ├── backend.py
+│   │   │   ├── filters.py
+│   │   │   ├── helpers.py
+│   │   │   └── query.py
+│   │   ├── logger_setup.py
+│   │   └── query_filter.py
+│   └── src
+│       ├── main.py
+│       ├── resources
+│       │   ├── entities
+│       │   │   ├── entity_endpoint.py
+│       │   │   └── entity_map.py
+│       │   ├── non_entities
+│       │   │   └── sessions_endpoints.py
+│       │   └── table_endpoints
+│       │       └── table_endpoints.py
+│       └── swagger
+│           ├── apispec_flask_restful.py
+│           ├── initialise_spec.py
+│           └── openapi.yaml
+├── noxfile.py
+├── poetry.lock
+├── postman_collection_icat.json
+├── pyproject.toml
+├── test
+│   ├── conftest.py
+│   ├── db
+│   │   ├── conftest.py
+│   │   ├── endpoints
+│   │   │   ├── test_count_with_filters_db.py
+│   │   │   ├── test_findone_db.py
+│   │   │   ├── test_get_by_id_db.py
+│   │   │   ├── test_get_with_filters.py
+│   │   │   └── test_table_endpoints_db.py
+│   │   ├── test_entity_helper.py
+│   │   ├── test_query_filter_factory.py
+│   │   └── test_requires_session_id.py
+│   ├── icat
+│   │   ├── conftest.py
+│   │   ├── endpoints
+│   │   │   ├── test_count_with_filters_icat.py
+│   │   │   ├── test_create_icat.py
+│   │   │   ├── test_delete_by_id_icat.py
+│   │   │   ├── test_findone_icat.py
+│   │   │   ├── test_get_by_id_icat.py
+│   │   │   ├── test_get_with_filters_icat.py
+│   │   │   ├── test_table_endpoints_icat.py
+│   │   │   ├── test_update_by_id_icat.py
+│   │   │   └── test_update_multiple_icat.py
+│   │   ├── filters
+│   │   │   ├── test_distinct_filter.py
+│   │   │   ├── test_include_filter.py
+│   │   │   ├── test_limit_filter.py
+│   │   │   ├── test_order_filter.py
+│   │   │   ├── test_skip_filter.py
+│   │   │   └── test_where_filter.py
+│   │   ├── test_filter_order_handler.py
+│   │   ├── test_query.py
+│   │   └── test_session_handling.py
+│   ├── test_backends.py
+│   ├── test_base.py
+│   ├── test_config.py
+│   ├── test_date_handler.py
+│   ├── test_endpoint_rules.py
+│   ├── test_get_filters_from_query.py
+│   ├── test_get_session_id_from_auth_header.py
+│   ├── test_is_valid_json.py
+│   └── test_queries_records.py
+└── util
+    └── icat_db_generator.py
+`````
+
+
+## Main
+`main.py` is where the flask_restful API is set up. This is where each endpoint resource
+class is generated and mapped to an endpoint.
+
+Example:
+```python
+api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
+```
+
+
+## Endpoints
+The logic for each endpoint is within `/src/resources`. They are split into entities,
+non_entities and table_endpoints.
+
+The entities package contains `entity_map` which
+maps entity names to their field name used in backend-specific code. The Database
+Backend uses this for its mapped classes (explained below) and the Python ICAT Backend
+uses this for interacting with ICAT objects within Python ICAT. In most instances, the
+dictionary found in `entity_map.py` is simply mapping the plural entity name (used to
+build the entity endpoints) to the singular version. The `entity_endpoint` module
+contains the function that is used to generate endpoints at start up. `table_endpoints`
+contains the endpoint classes that are table specific (currently these are the ISIS
+specific endpoints required for their use cases). Finally, `non_entities` contains the
+session endpoint for session handling.
+
+
+## Logging
+Logging configuration can be found in `datagateway_api.common.logger_setup.py`. This
+contains a typical dictionary-based config for the standard Python `logging` library
+that rotates files after they become 5MB in size.
+
+The default logging location is in the root directory of this repo. This location (and
+filename) can be changed by editing the `log_location` value in `config.json`. The log
+level (set to `WARN` by default) can also be changed using the appropriate value in that
+file.
+
+
+## Date Handler
+This is a class containing static methods to deal with dates within the API. The date
+handler can be used to convert dates between string and datetime objects (using a format
+agreed in `datagateway_api.common.constants`) and uses a parser from `dateutil` to
+detect if an input contains a date. This is useful for determining if a JSON value given
+in a request body is a date, at which point it can be converted to a datetime object,
+ready for storing in ICAT. The handler is currently only used in the Python ICAT
+Backend, however this is non-backend specific class.
+
+
+## Exceptions & Flask Error Handling
+Exceptions custom to DataGateway API are defined in `datagateway_api.common.exceptions`.
+Each exception has a status code and a default message (which can be changed when
+raising the exception in code). None of them are backend specific, however some are only
+used in a single backend because their meaning becomes irrelevant anywhere else.
+
+When the API is setup in `main.py`, a custom API object is created (inheriting
+flask_restful's `Api` object) so `handle_error()` can be overridden. A previous
+iteration of the API registered a error handler with the `Api` object, however this
+meant DataGateway API's custom error handling only worked as intended in debug mode (as
+detailed in a
+[GitHub issue](https://github.com/ral-facilities/datagateway-api/issues/147)). This
+solution prevents any exception returning a 500 status code (no matter the defined
+status code in `exceptions.py`) in production mode. This is explained in a
+[Stack Overflow answer](https://stackoverflow.com/a/43534068).
+
+
+## Filtering
+Filters available for use in the API are defined in `datagateway_api.common.filters`.
+These filters are all based from `QueryFilter`, an asbtract class to define any filter
+for the API. Precedence is used to prioritise in which order filters should be applied,
+but is only needed for the Database Backend.
+
+Filtering logic is located in `datagateway_api.common.helpers`.
+`get_filters_from_query_string()` uses the request query parameters to form filters to
+be used within the API. A `QueryFilterFactory` is used to build filters for the correct
+backend and the static method within this class is called in
+`get_filters_from_query_string()`.
+
+
+## Backends
+As described at the top of this file, there are currently two ways that the API
+creates/fetches/updates/deletes data from ICAT. The intention is each backend allows a
+different method to communicate with ICAT, but results in a very similarly behaving
+DataGateway API.
+
+
+### Abstract Backend Class
+The abstract class can be found in `datagateway_api.common.backend` and contains all the
+abstract methods that should be found in a class which implements `Backend`. The typical
+architecture across both backends is that the implemented functions call a helper
+function to process the request and the result of that is returned to the user.
+
+Each backend module contains the following files which offer similar functionality,
+implemented in their own ways:
+- `backend.py` - Implemented version of `datagateway_api.common.backend`
+- `filters.py` - Inherited versions of each filter defined in
+  `datagateway_api.common.filters`
+- `helpers.py` - Helper functions that are called in `backend.py`
+
+
+### Creating a Backend
+A function inside `datagateway_api.common.backends` creates an instance of a backend
+using input to that function to decide which backend to create. This function is called
+in `main.py` which uses the backend type set in `config.json`, or a config value in the
+Flask app if it's set (this config option is only used in the tests however). The
+backend object is then parsed into the endpoint classes so the correct backend can be
+used.
+
+
+## Database Backend
+The Database Backend uses [SQLAlchemy](https://www.sqlalchemy.org/) to interface
+directly with the database for an instance of ICAT. This backend favours speed over
+thoroughness, allowing no control over which users can access a particular piece of
+data.
+
+
+### Mapped Classes
+The classes mapped from the database (as described [above](#endpoints)) are stored in
+`/common/database/models.py`. Each model was automatically generated using sqlacodegen.
+A class `EntityHelper` is defined so that each model may inherit two methods `to_dict()`
+and `update_from_dict(dictionary)`, both used for returning entities and updating them,
+in a form easily converted to JSON.
+
+
+## Python ICAT Backend
+Sometimes referred to as the ICAT Backend, this uses
+[python-icat](https://python-icat.readthedocs.io/en/stable/) to interact with ICAT data.
+The Python-based API wrapper allows ICAT Server to be accessed using the SOAP interface.
+Python ICAT allows control over which users can access a particular piece of data, with
+the API supporting multiple authentication mechanisms. Meta attributes such as `modId`
+are dealt by Python ICAT, rather than the API.
+
+
+### ICATQuery
+The ICATQuery classed is in `datagateway_api.common.icat.query`. This class stores a
+query created with Python ICAT
+[documentation for the query](https://python-icat.readthedocs.io/en/stable/query.html).
+The `execute_query()` function executes the query and returns either results in either a
+JSON format, or a list of
+[Python ICAT entity's](https://python-icat.readthedocs.io/en/stable/entity.html) (this
+is defined using the `return_json_formattable` flag). Other functions within that class
+are used within `execute_query()`.
+
+
+## Generating the OpenAPI Specification
+When the config option `generate_swagger` is set to true in `config.json`, a YAML
+file defining the API using OpenAPI standards will be created at
+`src/swagger/openapi.yaml`. This option should be disabled in production to avoid any
+issues with read-only directories.
+
+[apispec](https://apispec.readthedocs.io/en/latest/) is used to help with this, with an
+`APISpec()` object created in `src/main.py` which endpoint specifications are added to
+(using `APISpec.path()`) when the endpoints are created for Flask. These paths are
+iterated over and ordered alphabetically, to ensure `openapi.yaml` only changes if there
+have been changes to the Swagger docs of the API; without that code, Git will detect
+changes on that file everytime startup occurs (preventing a clean development repo). The
+contents of the `APISpec` object are written to a YAML file and is used when the user
+goes to the configured (root) page in their browser.
+
+The endpoint related files in `src/resources/` contain `__doc__` which have the Swagger
+docs for each type of endpoint. For non-entity and table endpoints, the Swagger docs are
+contained in the docstrings. `src/resources/swagger/` contain code to aid Swagger doc
+generation, with a plugin (`RestfulPlugin`) created for `apispec` to extract Swagger
+documentation from `flask-restful` functions.
+
+
+
+
+# Utilities
+Within the repository, there are some useful files which can help with using the API.
+
+
+## Database Generator
+There is a tool to generate mock data into ICAT's database. It is located in
+`util/icat_db_generator.py`. By default it will generate 20 years worth of data (approx
+70,000 entities). The script makes use of `random` and `Faker` and is seeded with a seed
+of 1. The seed and number of years of data generated can be changed by using the arg
+flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years. For
+example: `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and
+generate 10 years of data.
+
+This uses code from the API's Database Backend, so a suitable `DB_URL` should be
+configured in `config.json`.
+
+
+## Postman Collection
+With a handful of endpoints associated with each entity, there are hundreds of endpoints
+for this API. A Postman collection is stored in the root directory of this repository,
+containing over 300 requests, with each type of endpoint for every entity as well as the
+table and session endpoints. The exported collection is in v2.1 format and is currently
+the recommended export version for Postman.
+
+This collection is mainly based around the Python ICAT Backend (request bodies for
+creating and updating data uses camelCase attribute names as accepted by that backend)
+but can easily be adapted for using the Database Backend if needed (changing attribute
+names to uppercase for example). The collection also contains a login request specially
+for the Database Backend, as logging in using that backend is slightly different to
+logging in via the Python ICAT Backend.
+
+The repo's collection can be easily imported into your Postman installation by opening
+Postman and selecting File > Import... and choosing the Postman collection from your
+cloned DataGateway API repository.
+
+
+
+
+# Updating README
+Like the codebase, this README file follows a 88 character per line formatting approach.
+This isn't always possible with URLs and codeblocks, but the vast majority of the file
+should follow this approach. Most IDEs can be configured to include a guideline to show
+where this point is. To do this in VS Code, insert the following line into
+`settings.json`:
+
+```json
+"editor.rulers": [
+  88
+]
+```
+
+Before a heading with a single hash, a four line gap should be given to easily indicate
+separation between two sections. Before every other heading (i.e. headings with two or
+more hashes), a two line gap should be given. This helps to denote a new heading rather
+than just a new paragraph. While sections can be easily distinguished in a colourful
+IDE, the multi-line spacing can be much easier to identify on an editor that doesn't use
+colours.
+
+The directory tree found in the [project structure](#project-structure) can be generated
+using the following command:
+
+ ```bash
+ git ls-tree -r --name-only HEAD | grep -v __init__.py | tree --fromfile
+ ```
