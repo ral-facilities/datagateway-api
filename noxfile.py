@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import nox
@@ -8,8 +9,10 @@ nox.options.sessions = "lint", "safety"
 code_locations = "datagateway_api", "test", "util", "noxfile.py"
 
 
-def install_with_constraints(session, req_dir=None, *args, **kwargs):
-    with tempfile.NamedTemporaryFile(dir=req_dir) as requirements:
+def install_with_constraints(session, *args, **kwargs):
+    # Auto file deletion is turned off to prevent a PermissionError experienced on
+    # Windows
+    with tempfile.NamedTemporaryFile(delete=False) as requirements:
         session.run(
             "poetry",
             "export",
@@ -20,36 +23,27 @@ def install_with_constraints(session, req_dir=None, *args, **kwargs):
         )
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
-
-def get_tmp_dir(session):
-    tmp_dir = None
-
-    try:
-        if session.posargs[-2] == "--tmpdir":
-            tmp_dir = session.posargs.pop(-1)
-            session.posargs.remove("--tmpdir")
-    except IndexError:
-        session.log("Info: No --tmpdir option given")
-
-    return tmp_dir
+        try:
+            # Due to delete=False, the file must be deleted manually
+            requirements.close()
+            os.unlink(requirements.name)
+        except IOError:
+            session.log("Error: The temporary requirements file could not be closed")
 
 
 @nox.session(python="3.6", reuse_venv=True)
 def format(session):
-    tmp_dir = get_tmp_dir(session)
     args = session.posargs or code_locations
 
-    install_with_constraints(session, tmp_dir, "black")
+    install_with_constraints(session, "black")
     session.run("black", *args, external=True)
 
 
 @nox.session(python="3.6", reuse_venv=True)
 def lint(session):
-    tmp_dir = get_tmp_dir(session)
     args = session.posargs or code_locations
     install_with_constraints(
         session,
-        tmp_dir,
         "flake8",
         "flake8-bandit",
         "flake8-black",
@@ -67,9 +61,8 @@ def lint(session):
 
 @nox.session(python="3.6", reuse_venv=True)
 def safety(session):
-    tmp_dir = get_tmp_dir(session)
-    install_with_constraints(session, tmp_dir, "safety")
-    with tempfile.NamedTemporaryFile(dir=tmp_dir) as requirements:
+    install_with_constraints(session, "safety")
+    with tempfile.NamedTemporaryFile(delete=False) as requirements:
         session.run(
             "poetry",
             "export",
@@ -80,3 +73,10 @@ def safety(session):
             external=True,
         )
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
+
+        try:
+            # Due to delete=False, the file must be deleted manually
+            requirements.close()
+            os.unlink(requirements.name)
+        except IOError:
+            session.log("Error: The temporary requirements file could not be closed")
