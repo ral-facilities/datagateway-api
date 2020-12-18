@@ -445,7 +445,7 @@ illustrated below:
 │   │   │   ├── helpers.py
 │   │   │   └── query.py
 │   │   ├── logger_setup.py
-│   │   └── query_filter.py
+│   │   └── query_filter_factory.py
 │   └── src
 │       ├── main.py
 │       ├── resources
