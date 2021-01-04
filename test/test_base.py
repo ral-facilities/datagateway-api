@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.main import app
+from datagateway_api.src.main import app
 
 
 class FlaskAppTest(TestCase):

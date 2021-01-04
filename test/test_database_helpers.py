@@ -1,50 +1,51 @@
 from unittest import TestCase
 
-from common.database.helpers import QueryFilterFactory
-from common.config import config
-from common.exceptions import ApiError
+from datagateway_api.common.config import config
+from datagateway_api.common.database.helpers import QueryFilterFactory
+from datagateway_api.common.exceptions import ApiError
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
-    from common.database.filters import (
-        DatabaseWhereFilter as WhereFilter,
+    from datagateway_api.common.database.filters import (
         DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseLimitFilter as LimitFilter,
         DatabaseOrderFilter as OrderFilter,
         DatabaseSkipFilter as SkipFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseWhereFilter as WhereFilter,
     )
 elif backend_type == "python_icat":
     # TODO - Adapt these tests for the ICAT implementation of filters
-    from common.icat.filters import (
-        PythonICATWhereFilter as WhereFilter,
+    from datagateway_api.common.icat.filters import (
         PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATLimitFilter as LimitFilter,
         PythonICATOrderFilter as OrderFilter,
         PythonICATSkipFilter as SkipFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATWhereFilter as WhereFilter,
     )
 else:
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type"
+        " has a valid backend type",
     )
 
 
 class TestQueryFilterFactory(TestCase):
     def test_order_filter(self):
         self.assertIs(
-            OrderFilter, type(QueryFilterFactory.get_query_filter({"order": "ID DESC"}))
+            OrderFilter,
+            type(QueryFilterFactory.get_query_filter({"order": "ID DESC"})),
         )
 
     def test_limit_filter(self):
         self.assertIs(
-            LimitFilter, type(QueryFilterFactory.get_query_filter({"limit": 10}))
+            LimitFilter, type(QueryFilterFactory.get_query_filter({"limit": 10})),
         )
 
     def test_skip_filter(self):
         self.assertIs(
-            SkipFilter, type(QueryFilterFactory.get_query_filter({"skip": 10}))
+            SkipFilter, type(QueryFilterFactory.get_query_filter({"skip": 10})),
         )
 
     def test_where_filter(self):
@@ -68,8 +69,8 @@ class TestQueryFilterFactory(TestCase):
             WhereFilter,
             type(
                 QueryFilterFactory.get_query_filter(
-                    {"where": {"ID": {"in": ["1", "2", "3"]}}}
-                )
+                    {"where": {"ID": {"in": ["1", "2", "3"]}}},
+                ),
             ),
         )
 
@@ -86,8 +87,8 @@ class TestQueryFilterFactory(TestCase):
             IncludeFilter,
             type(
                 QueryFilterFactory.get_query_filter(
-                    {"include": {"Test": ["TEST1", "Test2"]}}
-                )
+                    {"include": {"Test": ["TEST1", "Test2"]}},
+                ),
             ),
         )
 

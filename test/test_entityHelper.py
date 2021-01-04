@@ -1,7 +1,12 @@
 import datetime
 from unittest import TestCase
 
-from common.database.models import DATAFILE, DATASET, DATAFILEFORMAT, INVESTIGATION
+from datagateway_api.common.database.models import (
+    DATAFILE,
+    DATAFILEFORMAT,
+    DATASET,
+    INVESTIGATION,
+)
 
 
 class TestEntityHelper(TestCase):
@@ -137,7 +142,7 @@ class TestEntityHelper(TestCase):
             },
         }
         self.assertEqual(
-            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"})
+            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"}),
         )
 
     def test_get_related_entity(self):
