@@ -189,16 +189,10 @@ Currently, the following Nox sessions have been created:
 Each Nox session builds an environment using the repo's dependencies (defined using
 Poetry) using `install_with_constraints()`. This stores the dependencies in a
 `requirements.txt`-like format temporarily during this process, using the OS' default
-temporary location. This could result in permissions issues (this has been seen by a
-colleague on Windows), so adding the `--tmpdir [DIRECTORY PATH]` allows the user to
-define where this file should be stored. Due to Nox session being initiated in the
-command line, this argument needs to be a positional argument (denoted by the `--` in
-the Nox command). This argument is optional, but **must** be the final argument avoid
-interference with Nox's argument parsing. An example:
-
-```bash
-nox -s lint -- util datagateway_api --tmpdir /root
-```
+temporary location. These files are manually deleted in `noxfile.py` (as opposed to
+being automatically removed by Python) to minimise any potential permission-related
+issues as documented
+[here](https://github.com/bravoserver/bravo/issues/111#issuecomment-826990).
 
 
 ## Automated Checks during Git Commit (Pre Commit)
