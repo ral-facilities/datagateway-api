@@ -274,53 +274,53 @@ pre-commit install
 
 
 # Running DataGateway API
-Depending on the backend you want to use (either `db` or `python_icat`) the connection
-URL for the backend needs to be set. These are set in `config.json` (an example file is
-provided in the base directory of this repository). Copy `config.json.example` to
-`config.json` and set the values as needed.
+Depending on the backend you want to use (either `db` or `python_icat`, more details
+about backends [here](#backends)) the connection URL for the backend needs to be set.
+These are set in `config.json` (an example file is provided in the base directory of
+this repository). Copy `config.json.example` to `config.json` and set the values as
+needed.
 
 By default, the API will run on `http://localhost:5000` and all requests are made here
 e.g. `http://localhost:5000/sessions`.
 
 
 ## API Startup
-Ideally, the API would be run using the following command:
+Ideally, the API would be run using the following command, the alternative (detailed
+below) should only be used for development purposes.
 
 ```bash
 poetry run python -m datagateway_api.src.main
 ```
 
-However, it can also be run with the `flask run` command (installed with Flask) as shown
-below:
+However, it can also be run with the `flask run` command (installed with Flask). To use
+`flask run`, the enviroment variable `FLASK_APP` should be set to
+`datagateway_api/src/main.py`. Once this is set, the API can be run with `flask run`
+while inside the root directory of the project. This shouldn't be used in production, as
+detailed in Flask's documentation, this method of running the API is only
+["provided for convenience"](https://flask.palletsprojects.com/en/1.1.x/cli/#run-the-development-server).
 
-**Warning: the host, port and debug config options will not be respected when the API is
+**WARNING: the host, port and debug config options will not be respected when the API is
 run this way**
 
-To use `flask run`, the enviroment variable `FLASK_APP` should be set to
-`datagateway_api/src/main.py`. Once this is set, the API can be run with `flask run`
-while inside the root directory of the project.
-
-Examples shown:
+Examples:
 
 Unix:
 ```bash
-$ export FLASK_APP=src/main.py
+$ export FLASK_APP=datagateway_api/src/main.py
 $ flask run
 ```
 
 CMD:
 ```CMD
-> set FLASK_APP=src/main.py
+> set FLASK_APP=datagateway_api/src/main.py
 > flask run
 ```
 
 PowerShell:
 ```powershell
-> $env:FLASK_APP = "src/main.py"
+> $env:FLASK_APP = "datagateway_api/src/main.py"
 > flask run
 ```
-
-More information can be found [here](http://flask.pocoo.org/docs/1.0/cli/).
 
 
 ## Authentication
@@ -341,7 +341,7 @@ what inputs the requests can receive, all from an interactive interface.
 This specification is built with the Database Backend in mind (attribute names on
 example outputs are capitalised for example), however the Swagger interface can also be
 used with the Python ICAT Backend. More details on how the API's OpenAPI specification
-is built can be found [here](TODO INSERT HYPERLINK).
+is built can be found [here](#generating-the-openapi-specification).
 
 
 
