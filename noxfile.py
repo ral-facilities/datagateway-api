@@ -72,7 +72,7 @@ def safety(session):
             external=True,
         )
         session.run("safety", "check", f"--file={requirements.name}", "--full-report")
-        
+
         try:
             # Due to delete=False, the file must be deleted manually
             requirements.close()

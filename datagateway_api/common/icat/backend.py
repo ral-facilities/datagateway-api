@@ -67,6 +67,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def logout(self, session_id, **kwargs):
+        log.info("Logging out of the Python ICAT client")
         client = kwargs["client"] if kwargs["client"] else create_client()
         return logout_icat_client(client)
 
