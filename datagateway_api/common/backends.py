@@ -15,7 +15,7 @@ def create_backend(backend_type):
 
     :param backend_type: The type of backend that should be created and used for the API
     :type backend_type: :class:`str`
-    :return: Either an instance of `common.dataase.backend.DatabaseBackend` or
+    :return: Either an instance of `common.database.backend.DatabaseBackend` or
         `common.icat.backend.PythonICATBackend`
     """
 
