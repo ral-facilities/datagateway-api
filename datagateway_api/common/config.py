@@ -14,7 +14,6 @@ class Config(object):
         self.path = path
         with open(self.path) as target:
             self.config = json.load(target)
-        target.close()
 
     def get_backend_type(self):
         try:

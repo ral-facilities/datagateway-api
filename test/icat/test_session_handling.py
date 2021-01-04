@@ -8,25 +8,11 @@ from datagateway_api.common.icat.filters import PythonICATWhereFilter
 
 
 class TestSessionHandling:
-    def test_session_id_decorator(self):
-        pass
-
     def test_get_valid_session_details(
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_icat_credentials_header,
-        )
-
-        # Check username is correct
-        assert (
-            session_details.json["USERNAME"] == f"{config.get_test_mechanism()}/"
-            f"{config.get_test_user_credentials()['username']}"
-        )
-        # Check session ID matches the header from the request
-        assert (
-            session_details.json["ID"]
-            == valid_icat_credentials_header["Authorization"].split()[1]
         )
 
         session_expiry_datetime = datetime.strptime(
@@ -38,6 +24,18 @@ class TestSessionHandling:
 
         # Allows a bit of leeway for slow test execution
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
+
+        # Check username is correct
+        assert (
+            session_details.json["USERNAME"] == f"{config.get_test_mechanism()}/"
+            f"{config.get_test_user_credentials()['username']}"
+        )
+
+        # Check session ID matches the header from the request
+        assert (
+            session_details.json["ID"]
+            == valid_icat_credentials_header["Authorization"].split()[1]
+        )
 
     def test_get_invalid_session_details(
         self, bad_credentials_header, flask_test_app_icat,
@@ -56,11 +54,12 @@ class TestSessionHandling:
         refresh_session = flask_test_app_icat.put(
             "/sessions", headers=valid_icat_credentials_header,
         )
-        assert refresh_session.status_code == 200
 
         post_refresh_session_details = flask_test_app_icat.get(
             "/sessions", headers=valid_icat_credentials_header,
         )
+
+        assert refresh_session.status_code == 200
 
         assert (
             pre_refresh_session_details.json["EXPIREDATETIME"]

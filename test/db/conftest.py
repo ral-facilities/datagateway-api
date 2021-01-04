@@ -3,6 +3,7 @@ import uuid
 
 import pytest
 
+from datagateway_api.common.constants import Constants
 from datagateway_api.common.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
@@ -17,8 +18,8 @@ from datagateway_api.common.database.models import (
 
 def set_meta_attributes(entity):
     db_meta_attributes = {
-        "CREATE_TIME": datetime(2000, 1, 1),
-        "MOD_TIME": datetime(2000, 1, 1),
+        "CREATE_TIME": Constants.TEST_MOD_CREATE_DATETIME,
+        "MOD_TIME": Constants.TEST_MOD_CREATE_DATETIME,
         "CREATE_ID": "test create id",
         "MOD_ID": "test mod id",
     }
@@ -110,3 +111,19 @@ def isis_specific_endpoint_data_db():
     delete_row_by_id(FACILITYCYCLE, facility_cycle.ID)
     delete_row_by_id(INVESTIGATION, investigation.ID)
     delete_row_by_id(INSTRUMENT, instrument.ID)
+
+
+@pytest.fixture()
+def final_instrument_id(flask_test_app_db, valid_db_credentials_header):
+    final_instrument_result = flask_test_app_db.get(
+        '/instruments/findone?order="ID DESC"', headers=valid_db_credentials_header,
+    )
+    return final_instrument_result.json["ID"]
+
+
+@pytest.fixture()
+def final_facilitycycle_id(flask_test_app_db, valid_db_credentials_header):
+    final_facilitycycle_result = flask_test_app_db.get(
+        '/facilitycycles/findone?order="ID DESC"', headers=valid_db_credentials_header,
+    )
+    return final_facilitycycle_result.json["ID"]

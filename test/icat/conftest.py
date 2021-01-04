@@ -134,3 +134,20 @@ def isis_specific_endpoint_data(icat_client):
         icat_client.delete(instrument)
     except ICATNoObjectError as e:
         print(e)
+
+
+@pytest.fixture()
+def final_instrument_id(flask_test_app_icat, valid_icat_credentials_header):
+    final_instrument_result = flask_test_app_icat.get(
+        '/instruments/findone?order="id DESC"', headers=valid_icat_credentials_header,
+    )
+    return final_instrument_result.json["id"]
+
+
+@pytest.fixture()
+def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
+    final_facilitycycle_result = flask_test_app_icat.get(
+        '/facilitycycles/findone?order="id DESC"',
+        headers=valid_icat_credentials_header,
+    )
+    return final_facilitycycle_result.json["id"]

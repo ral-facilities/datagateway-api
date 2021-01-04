@@ -8,15 +8,11 @@ class TestUpdateByID:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        expected_doi = "Test Data Identifier"
-        expected_summary = "Test Summary"
-
         update_data_json = {
-            "doi": expected_doi,
-            "summary": expected_summary,
+            "doi": "Test Data Identifier",
+            "summary": "Test Summary",
         }
-        single_investigation_test_data[0]["doi"] = expected_doi
-        single_investigation_test_data[0]["summary"] = expected_summary
+        single_investigation_test_data[0].update(update_data_json)
 
         test_response = flask_test_app_icat.patch(
             f"/investigations/{single_investigation_test_data[0]['id']}",
@@ -37,10 +33,7 @@ class TestUpdateByID:
 
         # DOI cannot be over 255 characters, which this string is
         invalid_update_json = {
-            "doi": "__________________________________________________________________"
-            "_________________________________________________________________________"
-            "_________________________________________________________________________"
-            "_________________________________________________________________________",
+            "doi": "_" * 256,
         }
 
         test_response = flask_test_app_icat.patch(

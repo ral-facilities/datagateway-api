@@ -24,7 +24,6 @@ class TestDBGetWithFilters:
             'testing purposes..."}}',
             headers=valid_db_credentials_header,
         )
-        print(test_response.json)
 
         assert test_response.json == []
 
@@ -39,7 +38,7 @@ class TestDBGetWithFilters:
         )
 
         expected = [
-            {"TITLE": f"Title for DataGateway API Testing (DB) {i}" for i in range(5)},
+            {"TITLE": f"Title for DataGateway API Testing (DB) {i}"} for i in range(5)
         ]
 
         for title in expected:

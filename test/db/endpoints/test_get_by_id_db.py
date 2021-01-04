@@ -11,7 +11,6 @@ class TestDBGetByID:
             ' Testing (DB)"}}',
             headers=valid_db_credentials_header,
         )
-        print(investigation_data.json)
         test_data_id = investigation_data.json[0]["ID"]
 
         test_response = flask_test_app_db.get(

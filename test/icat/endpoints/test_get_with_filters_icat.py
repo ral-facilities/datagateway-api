@@ -41,10 +41,8 @@ class TestICATGetWithFilters:
         )
 
         expected = [
-            {
-                "title": f"Test data for the Python ICAT Backend on DataGateway API {i}"
-                for i in range(5)
-            },
+            {"title": f"Test data for the Python ICAT Backend on DataGateway API {i}"}
+            for i in range(5)
         ]
 
         for title in expected:

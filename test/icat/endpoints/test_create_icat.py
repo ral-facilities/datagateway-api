@@ -7,7 +7,7 @@ class TestICATCreateData:
     ):
         create_investigations_json = [
             {
-                "name": "Test Data for API Testing, Data Creation 1",
+                "name": f"Test Data for API Testing, Data Creation {i}",
                 "title": "Test data for the Python ICAT Backend on DataGateway API",
                 "summary": "Test data for DataGateway API testing",
                 "releaseDate": "2020-03-03 08:00:08",
@@ -17,19 +17,8 @@ class TestICATCreateData:
                 "doi": "DataGateway API Test DOI",
                 "facility": 1,
                 "type": 1,
-            },
-            {
-                "name": "Test Data for API Testing, Data Creation 2",
-                "title": "Test data for the Python ICAT Backend on DataGateway API",
-                "summary": "Test data for DataGateway API testing",
-                "releaseDate": "2020-03-03 08:00:08",
-                "startDate": "2020-02-02 09:00:09",
-                "endDate": "2020-02-03 10:00:10",
-                "visitId": "Data Creation Visit",
-                "doi": "DataGateway API Test DOI",
-                "facility": 1,
-                "type": 1,
-            },
+            }
+            for i in range(2)
         ]
 
         test_response = flask_test_app_icat.post(

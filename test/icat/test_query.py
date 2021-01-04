@@ -46,7 +46,7 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
 
 class TestICATQuery:
     def test_valid_query_creation(self, icat_client):
-        # Paramitise and add inputs for conditions, aggregate and includes
+        # Paramatise and add inputs for conditions, aggregate and includes
         test_query = ICATQuery(icat_client, "User")
 
         assert test_query.query.entity == icat_client.getEntityClass("User")
@@ -80,12 +80,6 @@ class TestICATQuery:
         with pytest.raises(PythonICATError):
             test_query.execute_query(icat_client)
 
-    def test_valid_count_query_execution(self, icat_client):
-        pass
-
-    def test_valid_distinct_query_execution(self, icat_client):
-        pass
-
     def test_json_format_execution_output(
         self, icat_client, single_investigation_test_data,
     ):
@@ -100,17 +94,6 @@ class TestICATQuery:
 
         assert query_output_json == single_investigation_test_data
 
-    # gap in function testing
-
-    def test_valid_entity_to_dict_conversion(self, icat_client):
-        # Want just a typical entity and an entity with an entity list in it
-        pass
-
-    def test_valid_distinct_attribute_mapping(self):
-        pass
-
-    # another gap
-
     def test_include_fields_list_flatten(self, icat_client):
         included_field_set = {
             "investigationUsers.investigation.datasets",
@@ -120,7 +103,6 @@ class TestICATQuery:
         }
 
         test_query = ICATQuery(icat_client, "User")
-
         flat_list = test_query.flatten_query_included_fields(included_field_set)
 
         assert flat_list == [

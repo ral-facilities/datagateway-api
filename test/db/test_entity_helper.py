@@ -1,7 +1,6 @@
-import datetime
-
 import pytest
 
+from datagateway_api.common.constants import Constants
 from datagateway_api.common.database.models import (
     DATAFILE,
     DATAFILEFORMAT,
@@ -28,12 +27,12 @@ def datafile_entity(dataset_entity):
     datafile.DATASET = dataset_entity
     datafile.DATAFILEFORMAT = datafileformat
     datafile.NAME = "test name"
-    datafile.MOD_TIME = datetime.datetime(2000, 1, 1)
-    datafile.CREATE_TIME = datetime.datetime(2000, 1, 1)
+    datafile.MOD_TIME = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.CREATE_TIME = Constants.TEST_MOD_CREATE_DATETIME
     datafile.CHECKSUM = "test checksum"
     datafile.FILESIZE = 64
-    datafile.DATAFILEMODTIME = datetime.datetime(2000, 1, 1)
-    datafile.DATAFILECREATETIME = datetime.datetime(2000, 1, 1)
+    datafile.DATAFILEMODTIME = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.DATAFILECREATETIME = Constants.TEST_MOD_CREATE_DATETIME
     datafile.DATASET_ID = 1
     datafile.DOI = "test doi"
     datafile.DESCRIPTION = "test description"
@@ -50,18 +49,18 @@ class TestEntityHelper:
             "ID": 1,
             "LOCATION": "test location",
             "NAME": "test name",
-            "MOD_TIME": str(datetime.datetime(2000, 1, 1)),
+            "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
             "CHECKSUM": "test checksum",
             "FILESIZE": 64,
-            "DATAFILEMODTIME": str(datetime.datetime(2000, 1, 1)),
-            "DATAFILECREATETIME": str(datetime.datetime(2000, 1, 1)),
+            "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
             "DATASET_ID": 1,
             "DOI": "test doi",
             "DESCRIPTION": "test description",
             "CREATE_ID": "test create id",
             "MOD_ID": "test mod id",
             "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
+            "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
         test_data = datafile_entity.to_dict()
@@ -76,18 +75,18 @@ class TestEntityHelper:
                     "ID": 1,
                     "LOCATION": "test location",
                     "NAME": "test name",
-                    "MOD_TIME": str(datetime.datetime(2000, 1, 1)),
+                    "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "CHECKSUM": "test checksum",
                     "FILESIZE": 64,
-                    "DATAFILEMODTIME": str(datetime.datetime(2000, 1, 1)),
-                    "DATAFILECREATETIME": str(datetime.datetime(2000, 1, 1)),
+                    "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET_ID": 1,
                     "DOI": "test doi",
                     "DESCRIPTION": "test description",
                     "CREATE_ID": "test create id",
                     "MOD_ID": "test mod id",
                     "DATAFILEFORMAT_ID": 1,
-                    "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
+                    "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET": {
                         "ID": None,
                         "CREATE_TIME": None,
@@ -114,18 +113,18 @@ class TestEntityHelper:
                     "ID": 1,
                     "LOCATION": "test location",
                     "NAME": "test name",
-                    "MOD_TIME": str(datetime.datetime(2000, 1, 1)),
+                    "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "CHECKSUM": "test checksum",
                     "FILESIZE": 64,
-                    "DATAFILEMODTIME": str(datetime.datetime(2000, 1, 1)),
-                    "DATAFILECREATETIME": str(datetime.datetime(2000, 1, 1)),
+                    "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET_ID": 1,
                     "DOI": "test doi",
                     "DESCRIPTION": "test description",
                     "CREATE_ID": "test create id",
                     "MOD_ID": "test mod id",
                     "DATAFILEFORMAT_ID": 1,
-                    "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
+                    "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET": {
                         "ID": None,
                         "CREATE_TIME": None,
@@ -180,18 +179,18 @@ class TestEntityHelper:
             "ID": 1,
             "LOCATION": "test location",
             "NAME": "test name",
-            "MOD_TIME": str(datetime.datetime(2000, 1, 1)),
+            "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
             "CHECKSUM": "test checksum",
             "FILESIZE": 64,
-            "DATAFILEMODTIME": str(datetime.datetime(2000, 1, 1)),
-            "DATAFILECREATETIME": str(datetime.datetime(2000, 1, 1)),
+            "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
             "DATASET_ID": 1,
             "DOI": "test doi",
             "DESCRIPTION": "test description",
             "CREATE_ID": "test create id",
             "MOD_ID": "test mod id",
             "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(datetime.datetime(2000, 1, 1)),
+            "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
         datafile.update_from_dict(test_dict_data)
