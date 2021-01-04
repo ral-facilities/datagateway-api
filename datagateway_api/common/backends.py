@@ -1,8 +1,10 @@
-from datagateway_api.common.database.backend import DatabaseBackend
-from datagateway_api.common.icat.backend import PythonICATBackend
+import sys
+
 from datagateway_api.common.backend import Backend
 from datagateway_api.common.config import config
-import sys
+from datagateway_api.common.database.backend import DatabaseBackend
+from datagateway_api.common.icat.backend import PythonICATBackend
+
 
 backend_type = config.get_backend_type()
 

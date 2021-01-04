@@ -1,11 +1,11 @@
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.helpers import (
-    get_session_id_from_auth_header,
-    get_filters_from_query_string,
-)
 from datagateway_api.common.backends import backend
+from datagateway_api.common.helpers import (
+    get_filters_from_query_string,
+    get_session_id_from_auth_header,
+)
 
 
 def get_endpoint(name, entity_type):
@@ -18,6 +18,8 @@ def get_endpoint(name, entity_type):
     :param entity_type: The entity the endpoint will use in queries
     :return: The generated endpoint class
     """
+
+    entity_schema_name = entity_type.strip("_").upper()
 
     class Endpoint(Resource):
         def get(self):
@@ -45,27 +47,29 @@ def get_endpoint(name, entity_type):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - returns {entity_type} that satisfy the filters
+                    description: Success - returns {entity_type} that satisfy the
+                        filters
                     content:
                         application/json:
                             schema:
                                 type: array
                                 items:
-                                  $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                                  $ref:
+                                    '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
         def post(self):
             return (
                 backend.create(
-                    get_session_id_from_auth_header(), entity_type, request.json
+                    get_session_id_from_auth_header(), entity_type, request.json,
                 ),
                 200,
             )
@@ -73,7 +77,8 @@ def get_endpoint(name, entity_type):
         post.__doc__ = f"""
             ---
             summary: Create new {name}
-            description: Creates new {entity_type} object(s) with details provided in the request body
+            description: Creates new {entity_type} object(s) with details provided in
+                the request body
             tags:
                 - {name}
             requestBody:
@@ -84,7 +89,7 @@ def get_endpoint(name, entity_type):
                   schema:
                     type: array
                     items:
-                      $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                      $ref: '#/components/schemas/{entity_schema_name}'
             responses:
                 200:
                     description: Success - returns the created object
@@ -93,21 +98,21 @@ def get_endpoint(name, entity_type):
                         schema:
                           type: array
                           items:
-                            $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                            $ref: '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
         def patch(self):
             return (
                 backend.update(
-                    get_session_id_from_auth_header(), entity_type, request.json
+                    get_session_id_from_auth_header(), entity_type, request.json,
                 ),
                 200,
             )
@@ -115,7 +120,8 @@ def get_endpoint(name, entity_type):
         patch.__doc__ = f"""
             ---
             summary: Update {name}
-            description: Updates {entity_type} object(s) with details provided in the request body
+            description: Updates {entity_type} object(s) with details provided in the
+                request body
             tags:
                 - {name}
             requestBody:
@@ -126,7 +132,7 @@ def get_endpoint(name, entity_type):
                   schema:
                     type: array
                     items:
-                      $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                      $ref: '#/components/schemas/{entity_schema_name}'
             responses:
                 200:
                     description: Success - returns the updated object(s)
@@ -135,15 +141,15 @@ def get_endpoint(name, entity_type):
                         schema:
                           type: array
                           items:
-                            $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                            $ref: '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
     Endpoint.__name__ = name
@@ -161,11 +167,13 @@ def get_id_endpoint(name, entity_type):
     :return: The generated id endpoint class
     """
 
+    entity_schema_name = entity_type.strip("_").upper()
+
     class EndpointWithID(Resource):
         def get(self, id_):
             return (
                 backend.get_with_id(
-                    get_session_id_from_auth_header(), entity_type, id_
+                    get_session_id_from_auth_header(), entity_type, id_,
                 ),
                 200,
             )
@@ -189,15 +197,15 @@ def get_id_endpoint(name, entity_type):
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                                $ref: '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
         def delete(self, id_):
@@ -207,7 +215,8 @@ def get_id_endpoint(name, entity_type):
         delete.__doc__ = f"""
             ---
             summary: Delete {name} by id
-            description: Updates {entity_type} with the specified ID with details provided in the request body
+            description: Updates {entity_type} with the specified ID with details
+                provided in the request body
             tags:
                 - {name}
             parameters:
@@ -223,11 +232,11 @@ def get_id_endpoint(name, entity_type):
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
         def patch(self, id_):
@@ -238,7 +247,8 @@ def get_id_endpoint(name, entity_type):
         patch.__doc__ = f"""
             ---
             summary: Update {name} by id
-            description: Updates {entity_type} with the specified ID with details provided in the request body
+            description: Updates {entity_type} with the specified ID with details
+                provided in the request body
             tags:
                 - {name}
             parameters:
@@ -254,22 +264,22 @@ def get_id_endpoint(name, entity_type):
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                    $ref: '#/components/schemas/{entity_schema_name}'
             responses:
                 200:
                     description: Success - returns the updated object
                     content:
                       application/json:
                         schema:
-                          $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                          $ref: '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
     EndpointWithID.__name__ = f"{name}WithID"
@@ -292,7 +302,7 @@ def get_count_endpoint(name, entity_type):
             filters = get_filters_from_query_string()
             return (
                 backend.count_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters
+                    get_session_id_from_auth_header(), entity_type, filters,
                 ),
                 200,
             )
@@ -300,7 +310,8 @@ def get_count_endpoint(name, entity_type):
         get.__doc__ = f"""
             ---
             summary: Count {name}
-            description: Return the count of the {entity_type} objects that would be retrieved given the filters provided
+            description: Return the count of the {entity_type} objects that would be
+                retrieved given the filters provided
             tags:
                 - {name}
             parameters:
@@ -317,11 +328,11 @@ def get_count_endpoint(name, entity_type):
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
     CountEndpoint.__name__ = f"{name}Count"
@@ -339,12 +350,14 @@ def get_find_one_endpoint(name, entity_type):
     :return: The generated findOne endpoint class
     """
 
+    entity_schema_name = entity_type.strip("_").upper()
+
     class FindOneEndpoint(Resource):
         def get(self):
             filters = get_filters_from_query_string()
             return (
                 backend.get_one_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters
+                    get_session_id_from_auth_header(), entity_type, filters,
                 ),
                 200,
             )
@@ -352,7 +365,8 @@ def get_find_one_endpoint(name, entity_type):
         get.__doc__ = f"""
             ---
             summary: Get single {entity_type}
-            description: Retrieves the first {entity_type} objects that satisfies the filters.
+            description: Retrieves the first {entity_type} objects that satisfies the
+                filters.
             tags:
                 - {name}
             parameters:
@@ -364,19 +378,20 @@ def get_find_one_endpoint(name, entity_type):
                 - INCLUDE_FILTER
             responses:
                 200:
-                    description: Success - a {entity_type} object that satisfies the filters
+                    description: Success - a {entity_type} object that satisfies the
+                        filters
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/{entity_type.strip("_").upper()}'
+                                $ref: '#/components/schemas/{entity_schema_name}'
                 400:
                     description: Bad request - Something was wrong with the request
                 401:
-                    description: Unauthorized - No session ID was found in the HTTP Authorization header
+                    description: Unauthorized - No session ID found in HTTP Auth. header
                 403:
                     description: Forbidden - The session ID provided is invalid
                 404:
-                    description: No such record - Unable to find a record in the database
+                    description: No such record - Unable to find a record in ICAT
             """
 
     FindOneEndpoint.__name__ = f"{name}FindOne"

@@ -146,7 +146,7 @@ nox -s [SESSION/FUNCTION NAME]
 ```
 
 Currently, the following Nox sessions have been created:
-- `format` - this uses [Black](https://black.readthedocs.io/en/stable/) to format Python
+- `black` - this uses [Black](https://black.readthedocs.io/en/stable/) to format Python
   code to a pre-defined style.
 - `lint` - this uses [flake8](https://flake8.pycqa.org/en/latest/) with a number of
   additional plugins (see the included `noxfile.py` to see which plugins are used) to

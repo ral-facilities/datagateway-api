@@ -143,7 +143,7 @@ class Backend(ABC):
 
     @abstractmethod
     def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         """
         Given an instrument_id get facility cycles where the instrument has
@@ -158,7 +158,7 @@ class Backend(ABC):
 
     @abstractmethod
     def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         """
         Given an instrument_id get the facility cycles count where the instrument has
@@ -173,7 +173,7 @@ class Backend(ABC):
 
     @abstractmethod
     def get_investigations_for_instrument_in_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         """
         Given an instrument id and facility cycle id, get investigations that use the
@@ -188,8 +188,8 @@ class Backend(ABC):
         pass
 
     @abstractmethod
-    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+    def get_investigation_count_for_instrument_facility_cycle_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         """
         Given an instrument id and facility cycle id, get the count of the

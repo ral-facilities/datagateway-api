@@ -4,10 +4,10 @@
 import logging
 import re
 
-import yaml
 import apispec
 from apispec import yaml_utils
 from apispec.exceptions import APISpecError
+import yaml
 
 
 def deduce_path(resource, **kwargs):
@@ -31,7 +31,7 @@ def deduce_path(resource, **kwargs):
                     break
             else:
                 raise APISpecError(
-                    "Cannot find blueprint resource {}".format(resource.endpoint)
+                    "Cannot find blueprint resource {}".format(resource.endpoint),
                 )
         else:
             # Application not initialized yet, fallback to path
@@ -59,9 +59,9 @@ def parse_operations(resource, operations):
                 operation = None
             if not operation:
                 logging.getLogger(__name__).warning(
-                    "Cannot load docstring for {}/{}".format(resource, method)
+                    "Cannot load docstring for {}/{}".format(resource, method),
                 )
-            operations[method.lower()] = operation or dict()
+            operations[method.lower()] = operation or {}
 
 
 class RestfulPlugin(apispec.BasePlugin):
@@ -76,7 +76,7 @@ class RestfulPlugin(apispec.BasePlugin):
             return path
         except Exception as exc:
             logging.getLogger(__name__).exception(
-                "Exception parsing APISpec", exc_info=exc
+                "Exception parsing APISpec", exc_info=exc,
             )
             raise
 
@@ -88,6 +88,6 @@ class RestfulPlugin(apispec.BasePlugin):
             parse_operations(resource, operations)
         except Exception as exc:
             logging.getLogger(__name__).exception(
-                "Exception parsing APISpec", exc_info=exc
+                "Exception parsing APISpec", exc_info=exc,
             )
             raise

@@ -1,16 +1,16 @@
 import logging
 
+from datagateway_api.common.constants import Constants
+from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filters import (
-    WhereFilter,
     DistinctFieldFilter,
+    IncludeFilter,
+    LimitFilter,
     OrderFilter,
     SkipFilter,
-    LimitFilter,
-    IncludeFilter,
+    WhereFilter,
 )
-from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.config import config
-from datagateway_api.common.constants import Constants
+
 
 log = logging.getLogger()
 
@@ -21,6 +21,26 @@ class PythonICATWhereFilter(WhereFilter):
         self.field = field
 
     def apply_filter(self, query):
+        try:
+            log.info("Adding ICAT where filter (for %s) to query", self.value)
+            query.addConditions(self.create_filter())
+        except ValueError:
+            raise FilterError(
+                "Something went wrong when adding WHERE filter to ICAT query",
+            )
+
+    def create_filter(self):
+        """
+        Create what's needed for a where filter dependent on the operation provided
+
+        The logic in this function has been abstracted away from `apply_filter()` to
+        make that function used for its named purpose, and no more.
+
+        :return: A where filter (of type :class:`dict`) ready to be applied to a Query
+            object
+        :raises FilterError: If the operation provided to the instance isn't valid
+        """
+
         log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
             where_filter = self.create_condition(self.field, "=", self.value)
@@ -46,13 +66,8 @@ class PythonICATWhereFilter(WhereFilter):
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
         log.debug("ICAT Where Filter: %s", where_filter)
-        try:
-            log.info("Adding ICAT where filter (for %s) to query", self.value)
-            query.addConditions(where_filter)
-        except ValueError:
-            raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query"
-            )
+
+        return where_filter
 
     @staticmethod
     def create_condition(attribute_name, operator, value):
@@ -200,7 +215,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                 if not isinstance(key, str):
                     raise FilterError(
                         "Include Filter: Dictionary key should only be a string, not"
-                        " any other type"
+                        " any other type",
                     )
 
                 if isinstance(value, str):
@@ -213,25 +228,25 @@ class PythonICATIncludeFilter(IncludeFilter):
                     for inner_key, inner_value in value.items():
                         if not isinstance(inner_key, str):
                             raise FilterError(
-                                "Include Filter: Dictionary key should only be a string"
-                                ", not any other type"
+                                "Include Filter: Dictionary key should only be a"
+                                " string, not any other type",
                             )
 
                         # Will end up as: key.inner_key.inner_value
                         self._extract_filter_fields(
-                            {".".join((key, inner_key)): inner_value}
+                            {".".join((key, inner_key)): inner_value},
                         )
                 else:
                     raise FilterError(
                         "Include Filter: Inner field type (inside dictionary) not"
-                        " recognised, cannot interpret input"
+                        " recognised, cannot interpret input",
                     )
         elif isinstance(field, list):
             for element in field:
                 self._extract_filter_fields(element)
         else:
             raise FilterError(
-                "Include Filter: Field type not recognised, cannot interpret input"
+                "Include Filter: Field type not recognised, cannot interpret input",
             )
 
     def apply_filter(self, query):

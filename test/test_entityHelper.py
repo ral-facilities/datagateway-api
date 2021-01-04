@@ -3,8 +3,8 @@ from unittest import TestCase
 
 from datagateway_api.common.database.models import (
     DATAFILE,
-    DATASET,
     DATAFILEFORMAT,
+    DATASET,
     INVESTIGATION,
 )
 
@@ -142,7 +142,7 @@ class TestEntityHelper(TestCase):
             },
         }
         self.assertEqual(
-            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"})
+            expected_dict, self.datafile.to_nested_dict({"DATASET": "INVESTIGATION"}),
         )
 
     def test_get_related_entity(self):

@@ -3,7 +3,6 @@ import tempfile
 
 import nox
 
-
 # Separating Black away from the rest of the sessions
 nox.options.sessions = "lint", "safety"
 code_locations = "datagateway_api", "test", "util", "noxfile.py"
@@ -32,7 +31,7 @@ def install_with_constraints(session, *args, **kwargs):
 
 
 @nox.session(python="3.6", reuse_venv=True)
-def format(session):
+def black(session):
     args = session.posargs or code_locations
 
     install_with_constraints(session, "black")

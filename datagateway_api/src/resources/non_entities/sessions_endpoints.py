@@ -1,18 +1,12 @@
-import uuid
 import logging
 
 from flask import request
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 
-from datagateway_api.common.database.helpers import (
-    insert_row_into_table,
-    delete_row_by_id,
-    get_row_by_id,
-)
-from datagateway_api.common.helpers import get_session_id_from_auth_header
-from datagateway_api.common.database.models import SESSION
 from datagateway_api.common.backends import backend
 from datagateway_api.common.exceptions import AuthenticationError
+from datagateway_api.common.helpers import get_session_id_from_auth_header
+
 
 log = logging.getLogger()
 
@@ -56,9 +50,9 @@ class Sessions(Resource):
                       description: Session ID
                       example: xxxxxx-yyyyyyy-zzzzzz
           400:
-            description: Bad request. User credentials were not provided in request body.
+            description: Bad request - User credentials not provided in request body
           403:
-             description: Forbidden. User credentials were invalid
+             description: Forbidden - User credentials were invalid
         """
         if not (
             request.data and "username" in request.json and "password" in request.json
@@ -87,7 +81,7 @@ class Sessions(Resource):
           400:
             description: Bad request - something was wrong with the request
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
           404:
@@ -126,7 +120,7 @@ class Sessions(Resource):
                       type: string
                       description: Username associated with this session
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
         """
@@ -151,7 +145,7 @@ class Sessions(Resource):
                   description: Session ID
                   example: xxxxxx-yyyyyyy-zzzzzz
           401:
-            description: Unauthorized - No session ID was found in the HTTP Authorization header
+            description: Unauthorized - No session ID found in HTTP Auth. header
           403:
             description: Forbidden - The session ID provided is invalid
         """

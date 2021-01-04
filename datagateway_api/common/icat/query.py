@@ -1,14 +1,14 @@
-import logging
 from datetime import datetime
+import logging
 
 from icat.entity import Entity, EntityList
-from icat.entities import getTypeMap
+from icat.exception import ICATInternalError, ICATValidationError
 from icat.query import Query
-from icat.exception import ICATValidationError, ICATInternalError
 
-from datagateway_api.common.exceptions import PythonICATError, FilterError
-from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.constants import Constants
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.exceptions import FilterError, PythonICATError
+
 
 log = logging.getLogger()
 
@@ -50,7 +50,7 @@ class ICATQuery:
         except ValueError:
             raise PythonICATError(
                 "An issue has occurred while creating a Python ICAT Query object,"
-                " suggesting an invalid argument"
+                " suggesting an invalid argument",
             )
 
     def execute_query(self, client, return_json_formattable=False):
@@ -93,11 +93,11 @@ class ICATQuery:
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
             if distinct_attributes != []:
                 mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
-                    distinct_attributes, flat_query_includes
+                    distinct_attributes, flat_query_includes,
                 )
                 log.debug(
-                    "Attribute names used in the distinct filter, mapped to the entity they"
-                    " are a part of: %s",
+                    "Attribute names used in the distinct filter, mapped to the entity"
+                    " they are a part of: %s",
                     mapped_distinct_fields,
                 )
 
@@ -108,7 +108,7 @@ class ICATQuery:
             for result in query_result:
                 if not count_query:
                     dict_result = self.entity_to_dict(
-                        result, flat_query_includes, mapped_distinct_fields
+                        result, flat_query_includes, mapped_distinct_fields,
                     )
                     data.append(dict_result)
                 else:
@@ -125,11 +125,11 @@ class ICATQuery:
             if isinstance(where_statement, list):
                 for sub_value in where_statement:
                     self.check_attribute_name_for_distinct(
-                        distinct_attributes, attribute_name, sub_value
+                        distinct_attributes, attribute_name, sub_value,
                     )
             elif isinstance(where_statement, str):
                 self.check_attribute_name_for_distinct(
-                    distinct_attributes, attribute_name, where_statement
+                    distinct_attributes, attribute_name, where_statement,
                 )
 
         return distinct_attributes
@@ -176,6 +176,14 @@ class ICATQuery:
         include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
             if key in includes:
+                # Make a copy of distinct_fields when calling this function again later
+                if distinct_fields is not None:
+                    distinct_fields_copy = self.prepare_distinct_fields(
+                        key, distinct_fields,
+                    )
+                else:
+                    distinct_fields_copy = None
+
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
                 includes_copy = includes.copy()
@@ -184,34 +192,20 @@ class ICATQuery:
                 except ValueError:
                     log.warning(
                         "Key couldn't be found to remove from include list, this could"
-                        " cause an issue further on in the request"
+                        " cause an issue further on in the request",
                     )
                 if isinstance(target, Entity):
-                    if distinct_fields is not None:
-                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                            key, distinct_fields
-                        )
-                    else:
-                        distinct_fields_copy = None
-
                     d[key] = self.entity_to_dict(
-                        target, includes_copy, distinct_fields_copy
+                        target, includes_copy, distinct_fields_copy,
                     )
-
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        if distinct_fields is not None:
-                            distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                                key, distinct_fields
-                            )
-                        else:
-                            distinct_fields_copy = None
-
                         d[key].append(
-                            self.entity_to_dict(e, includes_copy, distinct_fields_copy)
+                            self.entity_to_dict(e, includes_copy, distinct_fields_copy),
                         )
+
             # Add actual piece of data to the dictionary
             else:
                 entity_data = None
@@ -287,12 +281,12 @@ class ICATQuery:
                     "A distinct field that has a relationship with another entity does"
                     " not have the included entity within an include filter in this"
                     " request. Please add all related entities which are required for"
-                    " the fields in the distinct filter distinct to an include filter."
+                    " the fields in the distinct filter distinct to an include filter.",
                 )
 
         return distinct_field_dict
 
-    def prepare_distinct_fields_for_recursion(self, entity_name, distinct_fields):
+    def prepare_distinct_fields(self, entity_name, distinct_fields):
         """
         Copy `distinct_fields` and move the data held in `entity_name` portion of the
         dictionary to the "base" section of the dictionary. This function is called in

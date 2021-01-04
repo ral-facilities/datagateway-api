@@ -1,53 +1,53 @@
-import datetime
-import logging
 from abc import ABC, abstractmethod
+import datetime
 from functools import wraps
+import logging
 
 from sqlalchemy.orm import aliased
 
-from datagateway_api.common.exceptions import (
-    ApiError,
-    AuthenticationError,
-    MissingRecordError,
-    FilterError,
-    BadRequestError,
-    MultipleIncludeError,
-)
+from datagateway_api.common.config import config
 from datagateway_api.common.database.models import (
-    INVESTIGATION,
-    INSTRUMENT,
-    FACILITYCYCLE,
-    INVESTIGATIONINSTRUMENT,
     FACILITY,
+    FACILITYCYCLE,
+    INSTRUMENT,
+    INVESTIGATION,
+    INVESTIGATIONINSTRUMENT,
     SESSION,
 )
 from datagateway_api.common.database.session_manager import session_manager
+from datagateway_api.common.exceptions import (
+    ApiError,
+    AuthenticationError,
+    BadRequestError,
+    FilterError,
+    MissingRecordError,
+)
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.common.config import config
+
 
 backend_type = config.get_backend_type()
 if backend_type == "db":
     from datagateway_api.common.database.filters import (
-        DatabaseWhereFilter as WhereFilter,
         DatabaseDistinctFieldFilter as DistinctFieldFilter,
+        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseLimitFilter as LimitFilter,
         DatabaseOrderFilter as OrderFilter,
         DatabaseSkipFilter as SkipFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseIncludeFilter as IncludeFilter,
+        DatabaseWhereFilter as WhereFilter,
     )
 elif backend_type == "python_icat":
     from datagateway_api.common.icat.filters import (
-        PythonICATWhereFilter as WhereFilter,
         PythonICATDistinctFieldFilter as DistinctFieldFilter,
+        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATLimitFilter as LimitFilter,
         PythonICATOrderFilter as OrderFilter,
         PythonICATSkipFilter as SkipFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATIncludeFilter as IncludeFilter,
+        PythonICATWhereFilter as WhereFilter,
     )
 else:
     raise ApiError(
         "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type"
+        " has a valid backend type",
     )
 
 log = logging.getLogger()
@@ -204,7 +204,7 @@ class DeleteQuery(Query):
 
 class QueryFilterFactory(object):
     @staticmethod
-    def get_query_filter(filter):
+    def get_query_filter(request_filter):
         """
         Given a filter return a matching Query filter object
 
@@ -213,29 +213,29 @@ class QueryFilterFactory(object):
         be based off the abstract classes (because they're in the same file) which won't
         enable filters to be unique to the backend
 
-        :param filter: dict - The filter to create the QueryFilter for
+        :param request_filter: dict - The filter to create the QueryFilter for
         :return: The QueryFilter object created
         """
-        filter_name = list(filter)[0].lower()
+        filter_name = list(request_filter)[0].lower()
         if filter_name == "where":
-            field = list(filter[filter_name].keys())[0]
-            operation = list(filter[filter_name][field].keys())[0]
-            value = filter[filter_name][field][operation]
+            field = list(request_filter[filter_name].keys())[0]
+            operation = list(request_filter[filter_name][field].keys())[0]
+            value = request_filter[filter_name][field][operation]
             return WhereFilter(field, value, operation)
         elif filter_name == "order":
-            field = filter["order"].split(" ")[0]
-            direction = filter["order"].split(" ")[1]
+            field = request_filter["order"].split(" ")[0]
+            direction = request_filter["order"].split(" ")[1]
             return OrderFilter(field, direction)
         elif filter_name == "skip":
-            return SkipFilter(filter["skip"])
+            return SkipFilter(request_filter["skip"])
         elif filter_name == "limit":
-            return LimitFilter(filter["limit"])
+            return LimitFilter(request_filter["limit"])
         elif filter_name == "include":
-            return IncludeFilter(filter["include"])
+            return IncludeFilter(request_filter["include"])
         elif filter_name == "distinct":
-            return DistinctFieldFilter(filter["distinct"])
+            return DistinctFieldFilter(request_filter["distinct"])
         else:
-            raise FilterError(f" Bad filter: {filter}")
+            raise FilterError(f" Bad filter: {request_filter}")
 
 
 def insert_row_into_table(table, row):
@@ -521,7 +521,7 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
 
 
 def get_investigations_for_instrument_in_facility_cycle(
-    instrument_id, facility_cycle_id, filters
+    instrument_id, facility_cycle_id, filters,
 ):
     """
     Given an instrument id and facility cycle id, get investigations that use the given
@@ -534,7 +534,7 @@ def get_investigations_for_instrument_in_facility_cycle(
     """
     filter_handler = FilterOrderHandler()
     with InstrumentFacilityCycleInvestigationsQuery(
-        instrument_id, facility_cycle_id
+        instrument_id, facility_cycle_id,
     ) as query:
         return get_filtered_read_query_results(filter_handler, filters, query)
 
@@ -558,7 +558,7 @@ class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(
-    instrument_id, facility_cycle_id, filters
+    instrument_id, facility_cycle_id, filters,
 ):
     """
     Given an instrument id and facility cycle id, get the count of the investigations
@@ -570,7 +570,7 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     :return: The investigations count
     """
     with InstrumentFacilityCycleInvestigationsCountQuery(
-        instrument_id, facility_cycle_id
+        instrument_id, facility_cycle_id,
     ) as query:
         filter_handler = FilterOrderHandler()
         filter_handler.add_filters(filters)

@@ -31,7 +31,7 @@ class WhereFilter(QueryFilter):
             if not isinstance(self.value, list):
                 raise BadRequestError(
                     "When using the 'in' operation for a WHERE filter, the values must"
-                    " be in a list format e.g. [1, 2, 3]"
+                    " be in a list format e.g. [1, 2, 3]",
                 )
 
 

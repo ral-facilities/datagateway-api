@@ -3,14 +3,14 @@ from pathlib import Path
 
 from datagateway_api.common.config import config
 
-log_level = "DEBUG"
-LOG_FILE_NAME = Path(__file__).parent.parent / "logs.log"
+LOG_FILE_NAME = Path(config.get_log_location())
 logger_config = {
     "version": 1,
     "formatters": {
         "default": {
-            "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d} %(levelname)s -%(message)s  ",
-        }
+            "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d}"
+            " %(levelname)s - %(message)s",
+        },
     },
     "handlers": {
         "default": {
@@ -20,7 +20,7 @@ logger_config = {
             "filename": LOG_FILE_NAME,
             "maxBytes": 5000000,
             "backupCount": 10,
-        }
+        },
     },
     "root": {"level": config.get_log_level(), "handlers": ["default"]},
 }

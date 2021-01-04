@@ -1,8 +1,9 @@
 from datetime import datetime
+
 from dateutil.parser import parse
 
-from datagateway_api.common.exceptions import BadRequestError
 from datagateway_api.common.constants import Constants
+from datagateway_api.common.exceptions import BadRequestError
 
 
 class DateHandler:
@@ -55,7 +56,7 @@ class DateHandler:
             raise BadRequestError(
                 "Bad request made, the date entered is not in the correct format. Use"
                 f" the {Constants.ACCEPTED_DATE_FORMAT} format to submit dates to the"
-                " API"
+                " API",
             )
 
         return data

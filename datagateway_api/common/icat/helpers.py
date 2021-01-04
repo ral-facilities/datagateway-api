@@ -1,16 +1,20 @@
+from datetime import datetime, timedelta
 from functools import wraps
 import logging
-from datetime import datetime, timedelta
 
+import icat.client
 from icat.entities import getTypeMap
 from icat.exception import (
+    ICATInternalError,
+    ICATNoObjectError,
+    ICATObjectExistsError,
+    ICATParameterError,
     ICATSessionError,
     ICATValidationError,
-    ICATInternalError,
-    ICATObjectExistsError,
-    ICATNoObjectError,
-    ICATParameterError,
 )
+
+from datagateway_api.common.config import config
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -18,16 +22,12 @@ from datagateway_api.common.exceptions import (
     PythonICATError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.constants import Constants
 from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
 from datagateway_api.common.icat.query import ICATQuery
 
-import icat.client
-from datagateway_api.common.config import config
 
 log = logging.getLogger()
 
@@ -74,7 +74,7 @@ def requires_session_id(method):
 
 def create_client():
     client = icat.client.Client(
-        config.get_icat_url(), checkCert=config.get_icat_check_cert()
+        config.get_icat_url(), checkCert=config.get_icat_check_cert(),
     )
     return client
 
@@ -149,7 +149,7 @@ def get_icat_entity_name_as_camel_case(client, entity_name):
     # Raise a 400 if a valid entity cannot be found
     if python_icat_entity_name is None:
         raise BadRequestError(
-            f"Bad request made, cannot find {entity_name} entity within Python ICAT"
+            f"Bad request made, cannot find {entity_name} entity within Python ICAT",
         )
 
     return python_icat_entity_name
@@ -177,7 +177,7 @@ def update_attributes(old_entity, new_entity):
         except AttributeError:
             raise BadRequestError(
                 f"Bad request made, cannot find attribute '{key}' within the"
-                f" {old_entity.BeanName} entity"
+                f" {old_entity.BeanName} entity",
             )
 
         try:
@@ -185,7 +185,7 @@ def update_attributes(old_entity, new_entity):
         except AttributeError:
             raise BadRequestError(
                 f"Bad request made, cannot modify attribute '{key}' within the"
-                f" {old_entity.BeanName} entity"
+                f" {old_entity.BeanName} entity",
             )
 
     return old_entity
@@ -233,9 +233,9 @@ def get_entity_by_id(
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
-    includes_value = "1" if return_related_entities == True else None
+    includes_value = "1" if return_related_entities else None
     id_query = ICATQuery(
-        client, entity_type, conditions=id_condition, includes=includes_value
+        client, entity_type, conditions=id_condition, includes=includes_value,
     )
     entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
@@ -279,7 +279,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     log.info("Updating %s of ID %s", entity_type, id_)
 
     entity_id_data = get_entity_by_id(
-        client, entity_type, id_, False, return_related_entities=True
+        client, entity_type, id_, False, return_related_entities=True,
     )
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
@@ -374,7 +374,8 @@ def get_first_result_with_filters(client, entity_type, filters):
         result of the query
     """
     log.info(
-        "Getting only first result of %s, making use of filters in request", entity_type
+        "Getting only first result of %s, making use of filters in request",
+        entity_type,
     )
 
     limit_filter = PythonICATLimitFilter(1)
@@ -430,7 +431,7 @@ def update_entities(client, entity_type, data_to_update):
         except KeyError:
             raise BadRequestError(
                 "The new data in the request body must contain the ID (using the key:"
-                " 'id') of the entity you wish to update"
+                " 'id') of the entity you wish to update",
             )
 
     # This separates the local data updates from pushing these updates to icatdb
@@ -451,7 +452,7 @@ def update_entities(client, entity_type, data_to_update):
             raise PythonICATError(e)
 
         updated_data.append(
-            get_entity_by_id(client, entity_type, updated_icat_entity.id, True)
+            get_entity_by_id(client, entity_type, updated_icat_entity.id, True),
         )
 
     return updated_data
@@ -492,9 +493,10 @@ def create_entities(client, entity_type, data):
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
                 if entity_info.relType.lower() == "attribute":
-                    if isinstance(value, str):
-                        if DateHandler.is_str_a_date(value):
-                            value = DateHandler.str_to_datetime_object(value)
+                    # Short circuiting ensures is_str_date() will only be executed if
+                    # value is a string
+                    if isinstance(value, str) and DateHandler.is_str_a_date(value):
+                        value = DateHandler.str_to_datetime_object(value)
 
                     setattr(new_entity, attribute_name, value)
                 else:
@@ -533,7 +535,7 @@ def create_entities(client, entity_type, data):
 
 
 def get_facility_cycles_for_instrument(
-    client, instrument_id, filters, count_query=False
+    client, instrument_id, filters, count_query=False,
 ):
     """
     Given an Instrument ID, get the Facility Cycles where there are Instruments that
@@ -556,7 +558,7 @@ def get_facility_cycles_for_instrument(
     query = ICATQuery(client, "FacilityCycle", aggregate=query_aggregate)
 
     instrument_id_check = PythonICATWhereFilter(
-        "facility.instruments.id", instrument_id, "eq"
+        "facility.instruments.id", instrument_id, "eq",
     )
     investigation_instrument_id_check = PythonICATWhereFilter(
         "facility.investigations.investigationInstruments.instrument.id",
@@ -564,10 +566,10 @@ def get_facility_cycles_for_instrument(
         "eq",
     )
     investigation_start_date_check = PythonICATWhereFilter(
-        "facility.investigations.startDate", "o.startDate", "gte"
+        "facility.investigations.startDate", "o.startDate", "gte",
     )
     investigation_end_date_check = PythonICATWhereFilter(
-        "facility.investigations.startDate", "o.endDate", "lte"
+        "facility.investigations.startDate", "o.endDate", "lte",
     )
 
     facility_cycle_filters = [
@@ -602,15 +604,15 @@ def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
     :return: The number of Facility Cycles that match the query
     """
     log.info(
-        "Getting the number of facility cycles from the specified instrument for ISIS"
+        "Getting the number of facility cycles from the specified instrument for ISIS",
     )
     return get_facility_cycles_for_instrument(
-        client, instrument_id, filters, count_query=True
+        client, instrument_id, filters, count_query=True,
     )[0]
 
 
 def get_investigations_for_instrument_in_facility_cycle(
-    client, instrument_id, facilitycycle_id, filters, count_query=False
+    client, instrument_id, facilitycycle_id, filters, count_query=False,
 ):
     """
     Given Instrument and Facility Cycle IDs, get investigations that use the given
@@ -632,26 +634,26 @@ def get_investigations_for_instrument_in_facility_cycle(
     """
     log.info(
         "Getting a list of investigations from the specified instrument and facility"
-        " cycle, for ISIS"
+        " cycle, for ISIS",
     )
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(client, "Investigation", aggregate=query_aggregate)
 
     instrument_id_check = PythonICATWhereFilter(
-        "facility.instruments.id", instrument_id, "eq"
+        "facility.instruments.id", instrument_id, "eq",
     )
     investigation_instrument_id_check = PythonICATWhereFilter(
         "investigationInstruments.instrument.id", instrument_id, "eq",
     )
     facility_cycle_id_check = PythonICATWhereFilter(
-        "facility.facilityCycles.id", facilitycycle_id, "eq"
+        "facility.facilityCycles.id", facilitycycle_id, "eq",
     )
     facility_cycle_start_date_check = PythonICATWhereFilter(
-        "facility.facilityCycles.startDate", "o.startDate", "lte"
+        "facility.facilityCycles.startDate", "o.startDate", "lte",
     )
     facility_cycle_end_date_check = PythonICATWhereFilter(
-        "facility.facilityCycles.endDate", "o.startDate", "gte"
+        "facility.facilityCycles.endDate", "o.startDate", "gte",
     )
 
     required_filters = [
@@ -674,7 +676,7 @@ def get_investigations_for_instrument_in_facility_cycle(
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(
-    client, instrument_id, facilitycycle_id, filters
+    client, instrument_id, facilitycycle_id, filters,
 ):
     """
     Given Instrument and Facility Cycle IDs, get the number of investigations that use
@@ -692,8 +694,8 @@ def get_investigations_for_instrument_in_facility_cycle_count(
     """
     log.info(
         "Getting the number of investigations from the specified instrument and"
-        " facility cycle, for ISIS"
+        " facility cycle, for ISIS",
     )
     return get_investigations_for_instrument_in_facility_cycle(
-        client, instrument_id, facilitycycle_id, filters, count_query=True
+        client, instrument_id, facilitycycle_id, filters, count_query=True,
     )[0]

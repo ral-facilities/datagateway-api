@@ -1,6 +1,6 @@
+from functools import wraps
 import json
 import logging
-from functools import wraps
 
 from flask import request
 from flask_restful import reqparse
@@ -10,11 +10,9 @@ from datagateway_api.common.database.helpers import QueryFilterFactory
 from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,
-    FilterError,
     BadRequestError,
+    FilterError,
     MissingCredentialsError,
-    MissingRecordError,
-    MultipleIncludeError,
 )
 
 log = logging.getLogger()
@@ -33,16 +31,16 @@ def queries_records(method):
         try:
             return method(*args, **kwargs)
         except ApiError as e:
-            log.exception(e)
+            log.exception(msg=e.args)
             raise e
         except ValueError as e:
-            log.exception(e)
+            log.exception(msg=e.args)
             raise BadRequestError()
         except TypeError as e:
-            log.exception(e)
+            log.exception(e.args)
             raise BadRequestError()
         except IntegrityError as e:
-            log.exception(e)
+            log.exception(e.args)
             raise BadRequestError()
 
     return wrapper_gets_records
@@ -61,10 +59,10 @@ def get_session_id_from_auth_header():
         args["Authorization"].split(" ") if args["Authorization"] is not None else ""
     )
     if auth_header == "":
-        raise MissingCredentialsError(f"No credentials provided in auth header")
+        raise MissingCredentialsError("No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(
-            f" Could not authenticate consumer with auth header {auth_header}"
+            f" Could not authenticate consumer with auth header {auth_header}",
         )
     return auth_header[1]
 
@@ -76,7 +74,7 @@ def is_valid_json(string):
     :return: boolean representing if the string is valid JSON
     """
     try:
-        json_object = json.loads(string)
+        json.loads(string)
     except ValueError:
         return False
     except TypeError:
@@ -97,7 +95,7 @@ def get_filters_from_query_string():
         for arg in request.args:
             for value in request.args.getlist(arg):
                 filters.append(
-                    QueryFilterFactory.get_query_filter({arg: json.loads(value)})
+                    QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
                 )
         return filters
     except Exception as e:

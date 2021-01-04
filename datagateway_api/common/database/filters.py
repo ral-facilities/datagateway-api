@@ -1,16 +1,18 @@
-from datagateway_api.common.filters import (
-    WhereFilter,
-    DistinctFieldFilter,
-    OrderFilter,
-    SkipFilter,
-    LimitFilter,
-    IncludeFilter,
-)
-from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
-from datagateway_api.common.database import models
+import logging
 
 from sqlalchemy import asc, desc
-import logging
+
+from datagateway_api.common.database import models
+from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
+from datagateway_api.common.filters import (
+    DistinctFieldFilter,
+    IncludeFilter,
+    LimitFilter,
+    OrderFilter,
+    SkipFilter,
+    WhereFilter,
+)
+
 
 log = logging.getLogger()
 
@@ -53,14 +55,14 @@ class DatabaseWhereFilter(WhereFilter):
             field = getattr(query.table, self.field)
         except AttributeError:
             raise FilterError(
-                f"Unknown attribute {self.field} on table {query.table.__name__}"
+                f"Unknown attribute {self.field} on table {query.table.__name__}",
             )
 
         if self.included_included_field:
             included_table = getattr(models, self.field)
             included_included_table = getattr(models, self.included_field)
             query.base_query = query.base_query.join(included_table).join(
-                included_included_table
+                included_included_table,
             )
             field = getattr(included_included_table, self.included_included_field)
 
@@ -87,7 +89,7 @@ class DatabaseWhereFilter(WhereFilter):
             query.base_query = query.base_query.filter(field.in_(self.value))
         else:
             raise FilterError(
-                f" Bad operation given to where filter. operation: {self.operation}"
+                f" Bad operation given to where filter. operation: {self.operation}",
             )
 
 

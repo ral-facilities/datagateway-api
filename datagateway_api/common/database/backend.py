@@ -1,27 +1,28 @@
+import datetime
+import logging
+import uuid
+
 from datagateway_api.common.backend import Backend
 from datagateway_api.common.database.helpers import (
+    create_rows_from_json,
+    delete_row_by_id,
     get_facility_cycles_for_instrument,
     get_facility_cycles_for_instrument_count,
-    get_investigations_for_instrument_in_facility_cycle,
-    get_investigations_for_instrument_in_facility_cycle_count,
-    get_rows_by_filter,
-    create_rows_from_json,
-    patch_entities,
-    get_row_by_id,
-    insert_row_into_table,
-    delete_row_by_id,
-    update_row_from_id,
     get_filtered_row_count,
     get_first_filtered_row,
+    get_investigations_for_instrument_in_facility_cycle,
+    get_investigations_for_instrument_in_facility_cycle_count,
+    get_row_by_id,
+    get_rows_by_filter,
+    insert_row_into_table,
+    patch_entities,
     requires_session_id,
+    update_row_from_id,
 )
-from datagateway_api.common.helpers import queries_records
 from datagateway_api.common.database.models import EntityHelper, SESSION
-import uuid
 from datagateway_api.common.exceptions import AuthenticationError
-import datetime
+from datagateway_api.common.helpers import queries_records
 
-import logging
 
 log = logging.getLogger()
 
@@ -110,31 +111,31 @@ class DatabaseBackend(Backend):
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         return get_facility_cycles_for_instrument(instrument_id, filters)
 
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters
+        self, session_id, instrument_id, filters,
     ):
         return get_facility_cycles_for_instrument_count(instrument_id, filters)
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_in_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         return get_investigations_for_instrument_in_facility_cycle(
-            instrument_id, facilitycycle_id, filters
+            instrument_id, facilitycycle_id, filters,
         )
 
     @requires_session_id
     @queries_records
-    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters
+    def get_investigation_count_for_instrument_facility_cycle_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters,
     ):
         return get_investigations_for_instrument_in_facility_cycle_count(
-            instrument_id, facilitycycle_id, filters
+            instrument_id, facilitycycle_id, filters,
         )

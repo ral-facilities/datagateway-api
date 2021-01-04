@@ -11,7 +11,7 @@ def initialise_spec(spec):
     """
 
     spec.components.security_scheme(
-        "session_id", {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"}
+        "session_id", {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
     )
 
     entity_schemas = create_entity_models()
@@ -25,7 +25,10 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "where",
-            "description": "Apply where filters to the query. The possible operators are like, gte, lte, in and eq. Please modify the examples before executing a request if you are having issues with the example values.",
+            "description": "Apply where filters to the query. The possible operators"
+            " are: ne, like, lt, lte, gt, gte, in and eq. Please modify the examples"
+            " before executing a request if you are having issues with the example"
+            " values.",
             "schema": {
                 "type": "array",
                 "items": {
@@ -47,8 +50,8 @@ def initialise_spec(spec):
                                             {"type": "number"},
                                             {"type": "integer"},
                                             {"type": "boolean"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -61,8 +64,8 @@ def initialise_spec(spec):
                                             {"type": "number"},
                                             {"type": "integer"},
                                             {"type": "boolean"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -78,8 +81,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -90,8 +93,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -102,8 +105,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -114,8 +117,8 @@ def initialise_spec(spec):
                                         "oneOf": [
                                             {"type": "number"},
                                             {"type": "integer"},
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 },
                             },
                             {
@@ -129,9 +132,9 @@ def initialise_spec(spec):
                                                 {"type": "string"},
                                                 {"type": "number"},
                                                 {"type": "integer"},
-                                            ]
+                                            ],
                                         },
-                                    }
+                                    },
                                 },
                             },
                         ],
@@ -157,7 +160,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "order",
-            "description": "Apply order filters to the query. Given a field and direction, order the returned entities.",
+            "description": "Apply order filters to the query. Given a field and"
+            " direction, order the returned entities.",
             "schema": {"type": "array", "items": {"type": "string"}},
             "examples": {"asc": {"value": ["id asc"]}, "desc": {"value": ["id desc"]}},
         },
@@ -169,7 +173,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "limit",
-            "description": "Apply limit filter to the query. Limit the number of entities returned.",
+            "description": "Apply limit filter to the query. Limit the number of"
+            " entities returned.",
             "schema": {"type": "integer"},
         },
     )
@@ -180,7 +185,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "skip",
-            "description": "Apply skip filter to the query. Offset the returned entities by a given number.",
+            "description": "Apply skip filter to the query. Offset the returned"
+            " entities by a given number.",
             "schema": {"type": "integer"},
         },
     )
@@ -190,7 +196,8 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "distinct",
-            "description": "Apply distinct filter to the query. Return unique values for the fields requested.",
+            "description": "Apply distinct filter to the query. Return unique values"
+            " for the fields requested.",
             "schema": {"type": "array", "items": {"type": "string"}},
         },
     )
@@ -200,7 +207,9 @@ def initialise_spec(spec):
         {
             "in": "query",
             "name": "include",
-            "description": "Apply include filter to the query. Given the names of related entities, include them in the results. Only one include parameter is allowed.",
+            "description": "Apply include filter to the query. Given the names of"
+            " related entities, include them in the results. Only one include parameter"
+            " is allowed.",
             "schema": {
                 "oneOf": [
                     {"type": "string"},
@@ -218,10 +227,10 @@ def initialise_spec(spec):
                                                 "type": "array",
                                                 "items": [{"type": "string"}],
                                             },
-                                        ]
+                                        ],
                                     },
                                 },
-                            ]
+                            ],
                         },
                     },
                     {
@@ -230,24 +239,24 @@ def initialise_spec(spec):
                             "oneOf": [
                                 {"type": "string"},
                                 {"type": "array", "items": [{"type": "string"}]},
-                            ]
+                            ],
                         },
                     },
-                ]
+                ],
             },
             "examples": {
                 "single": {"value": "RELATED_COLUMN"},
                 "array": {"value": ["RELATED_COLUMN_1", "RELATED_COLUMN_2"]},
                 "multi-level": {
-                    "value": {"RELATED_COLUMN": "RELATED_COLUMN_RELATED_COLUMN"}
+                    "value": {"RELATED_COLUMN": "RELATED_COLUMN_RELATED_COLUMN"},
                 },
                 "multi-level array": {
                     "value": {
                         "RELATED_COLUMN": [
                             "RELATED_COLUMN_RELATED_COLUMN_1",
                             "RELATED_COLUMN_RELATED_COLUMN_2",
-                        ]
-                    }
+                        ],
+                    },
                 },
                 "array of multi-level": {
                     "value": [
@@ -257,9 +266,9 @@ def initialise_spec(spec):
                             "RELATED_COLUMN_3": [
                                 "RELATED_COLUMN_3_RELATED_COLUMN_1",
                                 "RELATED_COLUMN_3_RELATED_COLUMN_2",
-                            ]
+                            ],
                         },
-                    ]
+                    ],
                 },
             },
         },
