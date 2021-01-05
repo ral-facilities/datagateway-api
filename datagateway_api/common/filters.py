@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 
-from datagateway_api.common.exceptions import BadRequestError
+from datagateway_api.common.exceptions import BadRequestError, FilterError
 
 log = logging.getLogger()
 
@@ -55,14 +55,20 @@ class SkipFilter(QueryFilter):
     precedence = 3
 
     def __init__(self, skip_value):
-        self.skip_value = skip_value
+        if skip_value >= 0:
+            self.skip_value = skip_value
+        else:
+            raise FilterError("The value of the skip filter must be positive")
 
 
 class LimitFilter(QueryFilter):
     precedence = 4
 
     def __init__(self, limit_value):
-        self.limit_value = limit_value
+        if limit_value >= 0:
+            self.limit_value = limit_value
+        else:
+            raise FilterError("The value of the limit filter must be positive")
 
 
 class IncludeFilter(QueryFilter):

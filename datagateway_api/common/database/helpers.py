@@ -5,7 +5,10 @@ import logging
 
 from sqlalchemy.orm import aliased
 
-from datagateway_api.common.config import config
+from datagateway_api.common.database.filters import (
+    DatabaseIncludeFilter as IncludeFilter,
+    DatabaseWhereFilter as WhereFilter,
+)
 from datagateway_api.common.database.models import (
     FACILITY,
     FACILITYCYCLE,
@@ -16,39 +19,12 @@ from datagateway_api.common.database.models import (
 )
 from datagateway_api.common.database.session_manager import session_manager
 from datagateway_api.common.exceptions import (
-    ApiError,
     AuthenticationError,
     BadRequestError,
-    FilterError,
     MissingRecordError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 
-
-backend_type = config.get_backend_type()
-if backend_type == "db":
-    from datagateway_api.common.database.filters import (
-        DatabaseDistinctFieldFilter as DistinctFieldFilter,
-        DatabaseIncludeFilter as IncludeFilter,
-        DatabaseLimitFilter as LimitFilter,
-        DatabaseOrderFilter as OrderFilter,
-        DatabaseSkipFilter as SkipFilter,
-        DatabaseWhereFilter as WhereFilter,
-    )
-elif backend_type == "python_icat":
-    from datagateway_api.common.icat.filters import (
-        PythonICATDistinctFieldFilter as DistinctFieldFilter,
-        PythonICATIncludeFilter as IncludeFilter,
-        PythonICATLimitFilter as LimitFilter,
-        PythonICATOrderFilter as OrderFilter,
-        PythonICATSkipFilter as SkipFilter,
-        PythonICATWhereFilter as WhereFilter,
-    )
-else:
-    raise ApiError(
-        "Cannot select which implementation of filters to import, check the config file"
-        " has a valid backend type",
-    )
 
 log = logging.getLogger()
 
@@ -202,42 +178,6 @@ class DeleteQuery(Query):
         self.commit_changes()
 
 
-class QueryFilterFactory(object):
-    @staticmethod
-    def get_query_filter(request_filter):
-        """
-        Given a filter return a matching Query filter object
-
-        This factory is not in common.filters so the created filter can be for the
-        correct backend. Moving the factory into that file would mean the filters would
-        be based off the abstract classes (because they're in the same file) which won't
-        enable filters to be unique to the backend
-
-        :param request_filter: dict - The filter to create the QueryFilter for
-        :return: The QueryFilter object created
-        """
-        filter_name = list(request_filter)[0].lower()
-        if filter_name == "where":
-            field = list(request_filter[filter_name].keys())[0]
-            operation = list(request_filter[filter_name][field].keys())[0]
-            value = request_filter[filter_name][field][operation]
-            return WhereFilter(field, value, operation)
-        elif filter_name == "order":
-            field = request_filter["order"].split(" ")[0]
-            direction = request_filter["order"].split(" ")[1]
-            return OrderFilter(field, direction)
-        elif filter_name == "skip":
-            return SkipFilter(request_filter["skip"])
-        elif filter_name == "limit":
-            return LimitFilter(request_filter["limit"])
-        elif filter_name == "include":
-            return IncludeFilter(request_filter["include"])
-        elif filter_name == "distinct":
-            return DistinctFieldFilter(request_filter["distinct"])
-        else:
-            raise FilterError(f" Bad filter: {request_filter}")
-
-
 def insert_row_into_table(table, row):
     """
     Insert the given row into its table
@@ -285,7 +225,7 @@ def get_row_by_id(table, id_):
     :return: the record retrieved
     """
     with ReadQuery(table) as read_query:
-        log.info(" Querying %s for record with ID: %d", table.__tablename__, id_)
+        log.info(" Querying %s for record with ID: %s", table.__tablename__, id_)
         where_filter = WhereFilter("ID", id_, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
@@ -299,7 +239,7 @@ def delete_row_by_id(table, id_):
     :param table: the table to be searched
     :param id_: the id of the record to delete
     """
-    log.info(" Deleting row from %s with ID: %d", table.__tablename__, id_)
+    log.info(" Deleting row from %s with ID: %s", table.__tablename__, id_)
     row = get_row_by_id(table, id_)
     with DeleteQuery(table, row) as delete_query:
         delete_query.execute_query()
@@ -389,7 +329,11 @@ def get_first_filtered_row(table, filters):
     :return: the first row matching the filter
     """
     log.info(" Getting first filtered row for %s", table.__tablename__)
-    return get_rows_by_filter(table, filters)[0]
+    try:
+        result = get_rows_by_filter(table, filters)[0]
+    except IndexError:
+        raise MissingRecordError()
+    return result
 
 
 def get_filtered_row_count(table, filters):

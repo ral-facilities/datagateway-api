@@ -1,21 +1,24 @@
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.backends import backend
 from datagateway_api.common.helpers import (
     get_filters_from_query_string,
     get_session_id_from_auth_header,
 )
 
 
-def get_endpoint(name, entity_type):
+def get_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated endpoint class
     """
 
@@ -156,14 +159,18 @@ def get_endpoint(name, entity_type):
     return Endpoint
 
 
-def get_id_endpoint(name, entity_type):
+def get_id_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated id endpoint class
     """
 
@@ -286,14 +293,18 @@ def get_id_endpoint(name, entity_type):
     return EndpointWithID
 
 
-def get_count_endpoint(name, entity_type):
+def get_count_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated count endpoint class
     """
 
@@ -339,14 +350,18 @@ def get_count_endpoint(name, entity_type):
     return CountEndpoint
 
 
-def get_find_one_endpoint(name, entity_type):
+def get_find_one_endpoint(name, entity_type, backend):
     """
     Given an entity name generate a flask_restful Resource class.
     In main.py these generated classes are registered with the api e.g
     api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
 
     :param name: The name of the entity
+    :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
+    :type entity_type: :class:`str`
+    :param backend: The backend instance used for processing requests
+    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
     :return: The generated findOne endpoint class
     """
 

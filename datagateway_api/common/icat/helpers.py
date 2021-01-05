@@ -169,6 +169,7 @@ def update_attributes(old_entity, new_entity):
         - typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId &
         modTime)
     """
+    log.debug("Updating entity attributes: %s", list(new_entity.keys()))
     for key in new_entity:
         try:
             original_data_attribute = getattr(old_entity, key)
@@ -194,8 +195,10 @@ def update_attributes(old_entity, new_entity):
 def push_data_updates_to_icat(entity):
     try:
         entity.update()
-    except (ICATValidationError, ICATInternalError) as e:
+    except ICATInternalError as e:
         raise PythonICATError(e)
+    except ICATValidationError as e:
+        raise BadRequestError(e)
 
 
 def get_entity_by_id(
@@ -517,13 +520,13 @@ def create_entities(client, entity_type, data):
     for entity in created_icat_data:
         try:
             entity.create()
-        except (ICATValidationError, ICATInternalError) as e:
+        except ICATInternalError as e:
             for entity_json in created_data:
                 # Delete any data that has been pushed to ICAT before the exception
                 delete_entity_by_id(client, entity_type, entity_json["id"])
 
             raise PythonICATError(e)
-        except (ICATObjectExistsError, ICATParameterError) as e:
+        except (ICATObjectExistsError, ICATParameterError, ICATValidationError) as e:
             for entity_json in created_data:
                 delete_entity_by_id(client, entity_type, entity_json["id"])
 

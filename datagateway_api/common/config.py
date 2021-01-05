@@ -10,17 +10,29 @@ log = logging.getLogger()
 
 
 class Config(object):
-    def __init__(self):
-        config_path = Path(__file__).parent.parent.parent / "config.json"
-        with open(config_path) as target:
+    def __init__(self, path=Path(__file__).parent.parent.parent / "config.json"):
+        self.path = path
+        with open(self.path) as target:
             self.config = json.load(target)
-        target.close()
 
     def get_backend_type(self):
         try:
             return self.config["backend"]
         except KeyError:
             sys.exit("Missing config value, backend")
+
+    def set_backend_type(self, backend_type):
+        """
+        This setter is used as a way for automated tests to set the backend type. The
+        API can detect if the Flask app setup is from an automated test by checking the
+        app's config for a `TEST_BACKEND`. If this value exists (a KeyError will be
+        raised when the API is run normally, which will then grab the backend type from
+        `config.json`), it needs to be set using this function. This is required because
+        creating filters in the `QueryFilterFactory` is backend-specific so the backend
+        type must be fetched. This must be done using this module (rather than directly
+        importing and checking the Flask app's config) to avoid circular import issues.
+        """
+        self.config["backend"] = backend_type
 
     def get_db_url(self):
         try:
@@ -75,6 +87,18 @@ class Config(object):
             return self.config["port"]
         except KeyError:
             sys.exit("Missing config value, port")
+
+    def get_test_user_credentials(self):
+        try:
+            return self.config["test_user_credentials"]
+        except KeyError:
+            sys.exit("Missing config value, test_user_credentials")
+
+    def get_test_mechanism(self):
+        try:
+            return self.config["test_mechanism"]
+        except KeyError:
+            sys.exit("Missing config value, test_mechanism")
 
     def get_icat_properties(self):
         """

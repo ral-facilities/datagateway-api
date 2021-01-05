@@ -4,7 +4,7 @@ import tempfile
 import nox
 
 # Separating Black away from the rest of the sessions
-nox.options.sessions = "lint", "safety"
+nox.options.sessions = "lint", "safety", "tests"
 code_locations = "datagateway_api", "test", "util", "noxfile.py"
 
 
@@ -17,6 +17,7 @@ def install_with_constraints(session, *args, **kwargs):
             "export",
             "--dev",
             "--format=requirements.txt",
+            "--without-hashes",
             f"--output={requirements.name}",
             external=True,
         )
@@ -79,3 +80,10 @@ def safety(session):
             os.unlink(requirements.name)
         except IOError:
             session.log("Error: The temporary requirements file could not be closed")
+
+
+@nox.session(python=["3.6", "3.7", "3.8"], reuse_venv=True)
+def tests(session):
+    args = session.posargs
+    session.run("poetry", "install", external=True)
+    session.run("pytest", *args)
