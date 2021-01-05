@@ -13,7 +13,7 @@ from datagateway_api.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.common.query_filter import QueryFilterFactory
+from datagateway_api.common.query_filter_factory import QueryFilterFactory
 
 log = logging.getLogger()
 

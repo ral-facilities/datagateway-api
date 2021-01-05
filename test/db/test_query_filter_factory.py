@@ -8,7 +8,7 @@ from datagateway_api.common.database.filters import (
     DatabaseSkipFilter,
     DatabaseWhereFilter,
 )
-from datagateway_api.common.query_filter import QueryFilterFactory
+from datagateway_api.common.query_filter_factory import QueryFilterFactory
 
 
 class TestQueryFilterFactory:

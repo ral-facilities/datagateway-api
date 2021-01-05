@@ -16,7 +16,6 @@ def bad_credentials_header():
     return {"Authorization": "Bearer Invalid"}
 
 
-# TODO - Implement this in test_session_handling.py
 @pytest.fixture()
 def invalid_credentials_header():
     return {"Authorization": "Test"}

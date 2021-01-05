@@ -4,7 +4,7 @@ import tempfile
 import nox
 
 # Separating Black away from the rest of the sessions
-nox.options.sessions = "lint", "safety"
+nox.options.sessions = "lint", "safety", "tests"
 code_locations = "datagateway_api", "test", "util", "noxfile.py"
 
 
@@ -17,6 +17,7 @@ def install_with_constraints(session, *args, **kwargs):
             "export",
             "--dev",
             "--format=requirements.txt",
+            "--without-hashes",
             f"--output={requirements.name}",
             external=True,
         )
