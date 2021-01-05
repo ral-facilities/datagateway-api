@@ -277,8 +277,13 @@ pre-commit install
 Depending on the backend you want to use (either `db` or `python_icat`, more details
 about backends [here](#backends)) the connection URL for the backend needs to be set.
 These are set in `config.json` (an example file is provided in the base directory of
-this repository). Copy `config.json.example` to `config.json` and set the values as
-needed.
+this repository). While both `DB_URL` and `ICAT_URL` should have values assigned to them
+(for best practice), `DB_URL` will only be used for the database backend, and `ICAT_URL`
+ will only be used for the Python ICAT backend. Copy `config.json.example` to
+`config.json` and set the values as needed. If you need to create an instance of ICAT,
+there are a number of markdown-formatted tutorials that can be found on the
+[icat.manual](https://github.com/icatproject/icat.manual/tree/master/tutorials)
+repository.
 
 By default, the API will run on `http://localhost:5000` and all requests are made here
 e.g. `http://localhost:5000/sessions`.
