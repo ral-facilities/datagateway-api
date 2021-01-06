@@ -15,11 +15,8 @@ jobs:
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
-      uses: deef0000dragon1/json-edit-action/@v1
-      env:
-        KEY: log_location
-        VALUE: $GITHUB_WORKSPACE/logs.log
-        FILE: config.json
+      run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+        '.log_location=$REPO_DIR' config.json`" > config.json
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
