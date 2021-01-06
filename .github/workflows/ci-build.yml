@@ -18,8 +18,8 @@ jobs:
       uses: deef0000dragon1/json-edit-action/@v1
       env:
         KEY: log_location
-    - name: Test if jq exists
-      run: jq --version
+        VALUE: $GITHUB_WORKSPACE/logs.log
+        FILE: config.json
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
