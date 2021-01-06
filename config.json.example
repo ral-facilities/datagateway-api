@@ -1,7 +1,7 @@
 {
   "backend": "db",
   "DB_URL": "mysql+pymysql://root:rootpw@localhost:13306/icatdb",
-  "ICAT_URL": "https://localhost.localdomain:8181",
+  "ICAT_URL": "https://scigateway-preprod.esc.rl.ac.uk:8181",
   "icat_check_cert": false,
   "log_level": "WARN",
   "log_location": "/home/user1/datagateway-api/logs.log",
