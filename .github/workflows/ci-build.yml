@@ -24,8 +24,11 @@ jobs:
     - name: Run Nox safety session
       run: nox -s safety
     - name: Run Nox lint session
+      if: always()
       run: nox -s lint
     - name: Run Nox black session
+      if: always()
       run: nox -s black
     - name: Run Nox tests session
+      if: always()
       run: nox -s tests
