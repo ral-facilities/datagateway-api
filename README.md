@@ -1,3 +1,6 @@
+[![Build Status](https://github.com/ral-facilities/datagateway-api/workflows/CI/badge.svg?branch=master)](https://github.com/ral-facilities/datagateway-api/actions?query=workflow%3A%22CI%22)
+
+
 # DataGateway API
 This is a Flask-based API that fetches data from an ICAT instance, to interface with
 [DataGateway](https://github.com/ral-facilities/datagateway). This API uses two ways
