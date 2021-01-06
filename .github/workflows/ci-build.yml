@@ -8,11 +8,24 @@ jobs:
         python-version: ['3.6', '3.7', '3.8']
     name: Python ${{ matrix.python-version }}
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Prepare config.json
+      run: cp config.json.example config.json
+    - name: Setup Python
+      uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-    - run: pip install nox==2020.8.22
-    - run: pip install poetry==1.1.4
-    - run: nox
+    - name: Install Nox
+      run: pip install nox==2020.8.22
+    - name: Install Poetry
+      run: pip install poetry==1.1.4
+    - name: Run Nox safety session
+      run: nox -s safety
+    - name: Run Nox lint session
+      run: nox -s lint
+    - name: Run Nox black session
+      run: nox -s black
+    - name: Run Nox tests session
+      run: nox -s tests
