@@ -10,13 +10,13 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
-    - name: Create config.json
-      run: cp config.json.example config.json
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
       run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-        '.log_location=$REPO_DIR' config.json`" > config.json
+        '.log_location=$REPO_DIR' config.json.example`" > config.json.example
+    - name: Create config.json
+      run: cp config.json.example config.json
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
