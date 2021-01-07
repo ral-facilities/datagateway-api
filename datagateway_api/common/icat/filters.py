@@ -48,6 +48,10 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
             where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
+        elif self.operation == "nlike":
+            where_filter = self.create_condition(
+                self.field, "not like", f"%{self.value}%",
+            )
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
         elif self.operation == "lte":
