@@ -64,6 +64,7 @@ class TestQueryFilterFactory:
             pytest.param({"where": {"ID": {"gte": "1"}}}, id="gte operator"),
             pytest.param({"where": {"ID": {"in": ["1", "2", "3"]}}}, id="in operator"),
             pytest.param({"where": {"ID": {"like": "3"}}}, id="like operator"),
+            pytest.param({"where": {"ID": {"nlike": "3"}}}, id="not like operator"),
             pytest.param({"where": {"ID": {"lt": "1"}}}, id="lt operator"),
             pytest.param({"where": {"ID": {"lte": "1"}}}, id="lte operator"),
         ],

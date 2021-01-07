@@ -77,6 +77,8 @@ class DatabaseWhereFilter(WhereFilter):
             query.base_query = query.base_query.filter(field != self.value)
         elif self.operation == "like":
             query.base_query = query.base_query.filter(field.like(f"%{self.value}%"))
+        elif self.operation == "nlike":
+            query.base_query = query.base_query.filter(field.notlike(f"%{self.value}%"))
         elif self.operation == "lt":
             query.base_query = query.base_query.filter(field < self.value)
         elif self.operation == "lte":
