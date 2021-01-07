@@ -9,8 +9,39 @@ jobs:
         python-version: ['3.6', '3.7', '3.8']
     name: Python ${{ matrix.python-version }}
     steps:
-    - name: Checkout repo
+    - name: Setup Java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 8
+        java-package: jdk
+
+    - name: Checkout icat-ansible
+      with:
+        repository: mrichards99/icat-ansible
+        ref: change-payara-setup-script-url
+        path: icat-ansible
+    - name: Create hosts file
+      run: echo -e "[hosts-all]\nlocalhost.localdomain ansible_connection=local" > hosts
+    - name: Prepare vault pass
+      run: echo -e "icattravispw" > vault_pass.txt
+    - name: Move vault to directory it'll get detected by Ansible
+      run: mv vault.yml icat-ansible/group_vars/all
+    - name: Replace default payara user with Actions user
+      run: |
+        'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+
+    - name: Run ICAT Ansible Playbook
+      uses: saubermacherag/ansible-playbook-docker-action@v1.3
+      with:
+        playbookName: './hosts-all.yml'
+        inventoryFile: './hosts'
+        extraVars: "--vault-password-file ./vault_pass.txt"
+        verbosity: "vv"
+
+    - name: Checkout DataGateway API
       uses: actions/checkout@v2
+      with:
+        path: datagateway-api
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
@@ -23,6 +54,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
+
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
