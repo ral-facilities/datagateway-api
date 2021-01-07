@@ -2,13 +2,29 @@ name: CI
 on: push
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     strategy:
       max-parallel: 1
       matrix:
         python-version: ['3.6', '3.7', '3.8']
     name: Python ${{ matrix.python-version }}
     steps:
+    - name: Debug initial ls
+      run: ls -l .
+    - name: Add apt repo
+      run: sudo add-apt-repository universe
+    - name: Test apt-get update
+      run: sudo apt-get update
+    - name: Test if mysql service is installed
+      run: sudo systemctl start mysql.service
+    - name: Check what's in /etc/mysql
+      run: ls -la /etc/mysql
+    - name: Check what's in /etc/mysql/conf.d
+      run: ls -la /etc/mysql/conf.d
+    - name: Check what's in /etc/mysql/mysql.conf.d
+      run: ls -la /etc/mysql/mysql.conf.d
+    - name: Check what's in /var/lib/mysql/
+      run: sudo ls -la /var/lib/mysql/
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
@@ -21,43 +37,55 @@ jobs:
         repository: mrichards99/icat-ansible
         ref: change-payara-setup-script-url
         path: icat-ansible
+    - name: Output hosts-all.yml
+      run: cat icat-ansible/hosts-all.yml
     - name: Create hosts file
-      run: echo -e "[hosts-all]\nlocalhost.localdomain ansible_connection=local" > hosts
+      run: echo -e "[hosts-all]\nlocalhost ansible_connection=local" > icat-ansible/hosts
     - name: Prepare vault pass
-      run: echo -e "icattravispw" > vault_pass.txt
+      run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
     - name: Debug pwd
       run: pwd
+    - name: Debug ls
+      run: ls -l
+    - name: Debug ls parent
+      run: ls -l ..
     - name: Move vault to directory it'll get detected by Ansible
-      run: mv ./vault.yml ./group_vars/all
-    - name: Replace default payara user with Actions user
-      run: |
-        'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+      run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+    - name: Debug group_vars/all ls
+      run: ls -l icat-ansible/group_vars/all
+    #- name: Replace default payara user with Actions user
+      #run: |
+        #'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+    - name: Debug ansible_os_family
+      run: ansible -m setup localhost.localdomain
 
     - name: Run ICAT Ansible Playbook
-      uses: saubermacherag/ansible-playbook-docker-action@v1.3
+      uses: saubermacherag/ansible-playbook-docker-action@v1.4
       with:
-        playbookName: './hosts-all.yml'
-        inventoryFile: './hosts'
-        extraVars: "--vault-password-file ./vault_pass.txt"
+        playbookName: 'icat-ansible/hosts-all.yml'
+        inventoryFile: 'icat-ansible/hosts'
+        extraVars: "--vault-password-file icat-ansible/vault_pass.txt"
         verbosity: "vv"
 
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
       with:
-        path: datagateway-api
+        path: main
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
       run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-        '.log_location=$REPO_DIR' config.json.example`" > config.json.example
+        '.log_location=$REPO_DIR' main/config.json.example`" > main/config.json.example
     - name: Create config.json
-      run: cp config.json.example config.json
+      run: cp main/config.json.example main/config.json
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
+    - name: Move to API repo
+      run: cd main/
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
