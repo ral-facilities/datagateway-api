@@ -25,7 +25,6 @@ jobs:
       run: ls -la /etc/mysql/mysql.conf.d
     - name: Check what's in /var/lib/mysql/
       run: sudo ls -la /var/lib/mysql/
-
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
@@ -42,7 +41,7 @@ jobs:
     - name: Output icatdb-minimal-hosts.yml
       run: cat icat-ansible/icatdb-minimal-hosts.yml
     - name: Create hosts file
-      run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      run: echo -e "[hosts-all]\nlocalhost ansible_connection=local" > icat-ansible/hosts
     - name: Prepare vault pass
       run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
     - name: Debug pwd
@@ -55,46 +54,39 @@ jobs:
       run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
     - name: Debug group_vars/all ls
       run: ls -l icat-ansible/group_vars/all
-    - name: Replace default payara user with Actions user
-      run: |
-        sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+    #- name: Replace default payara user with Actions user
+      #run: |
+        #'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+    - name: Debug ansible_os_family
+      run: ansible -m setup localhost.localdomain
 
-    - name: Run ICAT Ansible Playbook (cmd line)
-      run: |
-        ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+    - name: Run ICAT Ansible Playbook
+      uses: saubermacherag/ansible-playbook-docker-action@v1.4
+      with:
+        playbookName: 'icat-ansible/hosts-all.yml'
+        inventoryFile: 'icat-ansible/hosts'
+        extraVars: "--vault-password-file icat-ansible/vault_pass.txt"
+        verbosity: "vv"
 
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
       with:
-        path: datagateway-api
-    - name: Debug ls1
-      run: |
-        pwd
-        ls -la
+        path: main
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
       run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-        '.log_location=$REPO_DIR' datagateway-api/config.json.example`" > datagateway-api/config.json.example
+        '.log_location=$REPO_DIR' main/config.json.example`" > main/config.json.example
     - name: Create config.json
-      run: cp datagateway-api/config.json.example datagateway-api/config.json
+      run: cp main/config.json.example main/config.json
     - name: Setup Python
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-    - name: Debug ls2
-      run: |
-        pwd
-        ls -la
+
     - name: Move to API repo
-      run: cd datagateway-api/
-    - name: Debug ls3
-      run: |
-        pwd
-        ls -la
-    - name: Debug if icat is running
-      run: curl -k https://localhost:8181/icat/version
+      run: cd main/
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
