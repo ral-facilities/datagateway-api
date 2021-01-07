@@ -25,8 +25,10 @@ jobs:
       run: echo -e "[hosts-all]\nlocalhost.localdomain ansible_connection=local" > hosts
     - name: Prepare vault pass
       run: echo -e "icattravispw" > vault_pass.txt
+    - name: Debug pwd
+      run: pwd
     - name: Move vault to directory it'll get detected by Ansible
-      run: mv vault.yml icat-ansible/group_vars/all
+      run: mv ./vault.yml ./group_vars/all
     - name: Replace default payara user with Actions user
       run: |
         'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
