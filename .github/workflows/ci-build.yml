@@ -16,6 +16,7 @@ jobs:
         java-package: jdk
 
     - name: Checkout icat-ansible
+      uses: actions/checkout@v2
       with:
         repository: mrichards99/icat-ansible
         ref: change-payara-setup-script-url
