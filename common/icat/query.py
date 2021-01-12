@@ -2,10 +2,12 @@ import logging
 from datetime import datetime
 
 from icat.entity import Entity, EntityList
+from icat.entities import getTypeMap
 from icat.query import Query
-from icat.exception import ICATValidationError
+from icat.exception import ICATValidationError, ICATInternalError
 
 from common.exceptions import PythonICATError, FilterError
+from common.date_handler import DateHandler
 from common.constants import Constants
 
 log = logging.getLogger()
@@ -13,7 +15,13 @@ log = logging.getLogger()
 
 class ICATQuery:
     def __init__(
-        self, client, entity_name, conditions=None, aggregate=None, includes=None
+        self,
+        client,
+        entity_name,
+        conditions=None,
+        aggregate=None,
+        includes=None,
+        isis_endpoint=False,
     ):
         """
         Create a Query object within Python ICAT 
@@ -31,6 +39,12 @@ class ICATQuery:
         :param includes: List of related entity names to add to the query so related
             entities (and their data) can be returned with the query result
         :type includes: :class:`str` or iterable of :class:`str`
+        :param isis_endpoint: Flag to determine if the instance will be used for an ISIS
+            specific endpoint. These endpoints require the use of the DISTINCT aggregate
+            which is different to the distinct field filter implemented in this API, so
+            this flag prevents code related to the filter from executing (because it
+            doesn't need to be on a DISTINCT aggregate)
+        :type isis_endpoint: :class:`bool`
         :return: Query object from Python ICAT
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
@@ -51,10 +65,12 @@ class ICATQuery:
                 " suggesting an invalid argument"
             )
 
+        self.isis_endpoint = isis_endpoint
+
     def execute_query(self, client, return_json_formattable=False):
         """
-        Execute a previously created ICAT Query object and return in the format
-        specified by the return_json_formattable flag
+        Execute the ICAT Query object and return in the format specified by the
+        return_json_formattable flag
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
@@ -69,15 +85,26 @@ class ICATQuery:
         """
 
         try:
-            log.debug("Executing ICAT query")
+            log.debug("Executing ICAT query: %s", self.query)
             query_result = client.search(self.query)
-        except ICATValidationError as e:
+        except (ICATValidationError, ICATInternalError) as e:
             raise PythonICATError(e)
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
         mapped_distinct_fields = None
 
-        if self.query.aggregate == "DISTINCT":
+        # If the query has a COUNT function applied to it, some of these steps can be
+        # skipped
+        count_query = False
+        if self.query.aggregate is not None:
+            if "COUNT" in self.query.aggregate:
+                count_query = True
+
+        if (
+            self.query.aggregate == "DISTINCT"
+            and not count_query
+            and not self.isis_endpoint
+        ):
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
@@ -95,10 +122,14 @@ class ICATQuery:
             data = []
 
             for result in query_result:
-                dict_result = self.entity_to_dict(
-                    result, flat_query_includes, mapped_distinct_fields
-                )
-                data.append(dict_result)
+                if not count_query:
+                    dict_result = self.entity_to_dict(
+                        result, flat_query_includes, mapped_distinct_fields
+                    )
+                    data.append(dict_result)
+                else:
+                    data.append(result)
+
             return data
         else:
             log.info("Query results will be returned as ICAT entities")
@@ -133,19 +164,6 @@ class ICATQuery:
         """
         if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
             attribute_list.append(key)
-
-    def datetime_object_to_str(self, date_obj):
-        """
-        Convert a datetime object to a string so it can be outputted in JSON
-
-        There's currently no reason to make this function static, but it could be useful
-        in the future if a use case required this functionality.
-
-        :param date_obj: Datetime object from data from an ICAT entity
-        :type date_obj: :class:`datetime.datetime`
-        :return: Datetime (of type string) in the agreed format
-        """
-        return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
 
     def entity_to_dict(self, entity, includes, distinct_fields=None):
         """
@@ -185,9 +203,13 @@ class ICATQuery:
                         " cause an issue further on in the request"
                     )
                 if isinstance(target, Entity):
-                    distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                        key, distinct_fields
-                    )
+                    if distinct_fields is not None:
+                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                            key, distinct_fields
+                        )
+                    else:
+                        distinct_fields_copy = None
+
                     d[key] = self.entity_to_dict(
                         target, includes_copy, distinct_fields_copy
                     )
@@ -196,9 +218,13 @@ class ICATQuery:
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
-                            key, distinct_fields
-                        )
+                        if distinct_fields is not None:
+                            distinct_fields_copy = self.prepare_distinct_fields_for_recursion(
+                                key, distinct_fields
+                            )
+                        else:
+                            distinct_fields_copy = None
+
                         d[key].append(
                             self.entity_to_dict(e, includes_copy, distinct_fields_copy)
                         )
@@ -211,7 +237,7 @@ class ICATQuery:
                     # Convert datetime objects to strings ready to be outputted as JSON
                     if isinstance(entity_data, datetime):
                         # Remove timezone data which isn't utilised in ICAT
-                        entity_data = self.datetime_object_to_str(entity_data)
+                        entity_data = DateHandler.datetime_object_to_str(entity_data)
 
                     d[key] = entity_data
         return d

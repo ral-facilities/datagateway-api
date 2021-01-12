@@ -74,8 +74,11 @@ class PythonICATWhereFilter(WhereFilter):
         # Removing quote marks when doing conditions with IN expressions or when a
         # distinct filter is used in a request
         jpql_value = (
-            f"{value}" if operator == "in" or operator == "!=" else f"'{value}'"
+            f"{value}"
+            if operator == "in" or operator == "!=" or "o." in str(value)
+            else f"'{value}'"
         )
+
         conditions[attribute_name] = f"{operator} {jpql_value}"
         log.debug("Conditions in ICAT where filter, %s", conditions)
         return conditions
@@ -88,7 +91,15 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
-            query.setAggregate("DISTINCT")
+            if (
+                query.aggregate == "COUNT"
+                or query.aggregate == "AVG"
+                or query.aggregate == "SUM"
+            ):
+                # Distinct can be combined with other aggregate functions
+                query.setAggregate(f"{query.aggregate}:DISTINCT")
+            else:
+                query.setAggregate("DISTINCT")
 
             # Using where filters to identify which fields to apply distinct too
             for field in self.fields:
@@ -163,7 +174,7 @@ class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
         self.included_filters = []
         log.info("Extracting fields for include filter")
-        self._extract_filter_fields(included_filters["include"])
+        self._extract_filter_fields(included_filters)
 
     def _extract_filter_fields(self, field):
         """

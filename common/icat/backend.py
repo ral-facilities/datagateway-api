@@ -15,6 +15,14 @@ from common.icat.helpers import (
     update_entity_by_id,
     delete_entity_by_id,
     get_entity_with_filters,
+    get_count_with_filters,
+    get_first_result_with_filters,
+    update_entities,
+    create_entities,
+    get_facility_cycles_for_instrument,
+    get_facility_cycles_for_instrument_count,
+    get_investigations_for_instrument_in_facility_cycle,
+    get_investigations_for_instrument_in_facility_cycle_count,
 )
 
 from common.config import config
@@ -72,21 +80,25 @@ class PythonICATBackend(Backend):
     @queries_records
     def create(self, session_id, table, data, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return create_entities(client, table.__name__, data)
 
     @requires_session_id
     @queries_records
     def update(self, session_id, table, data, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return update_entities(client, table.__name__, data)
 
     @requires_session_id
     @queries_records
     def get_one_with_filters(self, session_id, table, filters, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return get_first_result_with_filters(client, table.__name__, filters)
 
     @requires_session_id
     @queries_records
     def count_with_filters(self, session_id, table, filters, **kwargs):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return get_count_with_filters(client, table.__name__, filters)
 
     @requires_session_id
     @queries_records
@@ -108,31 +120,36 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycles_with_filters(
-        self, session_id, instrument_id, filters, **kwargs
+    def get_facility_cycles_for_instrument_with_filters(
+        self, session_id, instrument_id, filters, **kwargs,
     ):
         client = kwargs["client"] if kwargs["client"] else create_client()
+        return get_facility_cycles_for_instrument(client, instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_with_filters(
-        self, session_id, instrument_id, filters, **kwargs
+    def get_facility_cycles_for_instrument_count_with_filters(
+        self, session_id, instrument_id, filters, **kwargs,
     ):
         client = kwargs["client"] if kwargs["client"] else create_client()
-        # return get_facility_cycles_for_instrument_count(instrument_id, filters)
+        return get_facility_cycles_for_instrument_count(client, instrument_id, filters)
 
     @requires_session_id
     @queries_records
-    def get_instrument_facilitycycle_investigations_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs
+    def get_investigations_for_instrument_in_facility_cycle_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
     ):
         client = kwargs["client"] if kwargs["client"] else create_client()
-        # return get_investigations_for_instrument_in_facility_cycle(instrument_id, facilitycycle_id, filters)
+        return get_investigations_for_instrument_in_facility_cycle(
+            client, instrument_id, facilitycycle_id, filters
+        )
 
     @requires_session_id
     @queries_records
-    def count_instrument_facilitycycles_investigations_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs
+    def get_investigations_for_instrument_in_facility_cycle_count_with_filters(
+        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
     ):
         client = kwargs["client"] if kwargs["client"] else create_client()
-        # return get_investigations_for_instrument_in_facility_cycle_count(instrument_id, facilitycycle_id, filters)
+        return get_investigations_for_instrument_in_facility_cycle_count(
+            client, instrument_id, facilitycycle_id, filters
+        )
