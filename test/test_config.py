@@ -43,7 +43,7 @@ class TestGetDBURL:
 class TestICATURL:
     def test_valid_icat_url(self, valid_config):
         icat_url = valid_config.get_icat_url()
-        assert icat_url == "https://localhost.localdomain:8181"
+        assert icat_url == "https://localhost:8181"
 
     def test_invalid_icat_url(self, invalid_config):
         with pytest.raises(SystemExit):
