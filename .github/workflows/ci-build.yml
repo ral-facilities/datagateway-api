@@ -102,7 +102,7 @@ jobs:
     - name: Install dependencies
       run: cd datagateway-api/ && poetry install
     - name: Add dummy data to icatdb
-      run: python -m util.icat_db_generator -s 4 -y 3
+      run: poetry run python -m datagateway-api.util.icat_db_generator -s 4 -y 3
     - name: Run Nox safety session
       run: nox -s safety -f datagateway-api/noxfile.py
     - name: Run Nox lint session
