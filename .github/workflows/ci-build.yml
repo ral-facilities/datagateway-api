@@ -99,6 +99,10 @@ jobs:
       run: pip install nox==2020.8.22
     - name: Install Poetry
       run: pip install poetry==1.1.4
+    - name: Install dependencies
+      run: cd datagateway-api/ && poetry install
+    - name: Add dummy data to icatdb
+      run: python -m util.icat_db_generator -s 4 -y 3
     - name: Run Nox safety session
       run: nox -s safety -f datagateway-api/noxfile.py
     - name: Run Nox lint session
