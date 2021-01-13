@@ -95,7 +95,6 @@ jobs:
         ls -la
     - name: Debug if icat is running
       run: curl -k https://localhost.localdomain:8181/icat/version
-    - name:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
