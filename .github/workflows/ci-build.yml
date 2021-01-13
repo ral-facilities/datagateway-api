@@ -94,7 +94,7 @@ jobs:
         pwd
         ls -la
     - name: Debug if icat is running
-      run: curl -k https://localhost.localdomain:8181/icat/version
+      run: curl -k https://localhost:8181/icat/version
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
