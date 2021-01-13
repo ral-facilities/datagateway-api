@@ -33,7 +33,7 @@ class TestGetBackendType:
 class TestGetDBURL:
     def test_valid_db_url(self, valid_config):
         db_url = valid_config.get_db_url()
-        assert db_url == "mysql+pymysql://root:rootpw@localhost:13306/icatdb"
+        assert db_url == "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb"
 
     def test_invalid_db_url(self, invalid_config):
         with pytest.raises(SystemExit):
