@@ -39,10 +39,10 @@ jobs:
         path: icat-ansible
     - name: Install Ansible
       run: pip install -r icat-ansible/requirements.txt
-    - name: Output hosts-all.yml
-      run: cat icat-ansible/hosts-all.yml
+    - name: Output icatdb-minimal-hosts.yml
+      run: cat icat-ansible/icatdb-minimal-hosts.yml
     - name: Create hosts file
-      run: echo -e "[hosts-all]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
     - name: Prepare vault pass
       run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
     - name: Debug pwd
@@ -61,7 +61,7 @@ jobs:
 
     - name: Run ICAT Ansible Playbook (cmd line)
       run: |
-        ansible-playbook icat-ansible/hosts-all.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+        ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
