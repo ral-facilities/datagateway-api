@@ -38,8 +38,8 @@ jobs:
         path: icat-ansible
     - name: Install Ansible
       run: pip install -r icat-ansible/requirements.txt
-    - name: Output icatdb-minimal-hosts.yml
-      run: cat icat-ansible/icatdb-minimal-hosts.yml
+    - name: Output hosts-all.yml
+      run: cat icat-ansible/hosts-all.yml
     - name: Create hosts file
       run: echo -e "[hosts-all]\nlocalhost ansible_connection=local" > icat-ansible/hosts
     - name: Prepare vault pass
@@ -60,13 +60,16 @@ jobs:
     - name: Debug ansible_os_family
       run: ansible -m setup localhost.localdomain
 
-    - name: Run ICAT Ansible Playbook
-      uses: saubermacherag/ansible-playbook-docker-action@v1.4
-      with:
-        playbookName: 'icat-ansible/hosts-all.yml'
-        inventoryFile: 'icat-ansible/hosts'
-        extraVars: "--vault-password-file icat-ansible/vault_pass.txt"
-        verbosity: "vv"
+    - name: Run ICAT Ansible Playbook (cmd line)
+      run: |
+        ansible-playbook icat-ansible/hosts-all.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+    #- name: Run ICAT Ansible Playbook
+      #uses: saubermacherag/ansible-playbook-docker-action@v1.4
+      #with:
+        #playbookName: 'icat-ansible/hosts-all.yml'
+        #inventoryFile: 'icat-ansible/hosts'
+        #extraVars: "--vault-password-file icat-ansible/vault_pass.txt"
+        #verbosity: "vv"
 
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
