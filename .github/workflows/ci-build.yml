@@ -57,7 +57,7 @@ jobs:
       run: ls -l icat-ansible/group_vars/all
     - name: Replace default payara user with Actions user
       run: |
-        'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+        sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
     - name: Run ICAT Ansible Playbook (cmd line)
       run: |
