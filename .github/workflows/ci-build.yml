@@ -55,9 +55,9 @@ jobs:
       run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
     - name: Debug group_vars/all ls
       run: ls -l icat-ansible/group_vars/all
-    #- name: Replace default payara user with Actions user
-      #run: |
-        #'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
+    - name: Replace default payara user with Actions user
+      run: |
+        'sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml'
 
     - name: Run ICAT Ansible Playbook (cmd line)
       run: |
@@ -93,6 +93,9 @@ jobs:
       run: |
         pwd
         ls -la
+    - name: Debug if icat is running
+      run: curl -k https://localhost.localdomain:8181/icat/version
+    - name:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
