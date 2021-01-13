@@ -73,7 +73,9 @@ class TestGetLogLevel:
 class TestGetLogLocation:
     def test_valid_log_location(self, valid_config):
         log_location = valid_config.get_log_location()
-        assert log_location == "/home/user1/datagateway-api/logs.log"
+        assert (
+            log_location == "/home/runner/work/datagateway-api/datagateway-api/logs.log"
+        )
 
     def test_invalid_log_location(self, invalid_config):
         with pytest.raises(SystemExit):
