@@ -98,13 +98,13 @@ jobs:
     - name: Install Poetry
       run: pip install poetry==1.1.4
     - name: Run Nox safety session
-      run: nox -s safety
+      run: nox -s safety -f datagateway-api/noxfile.py
     - name: Run Nox lint session
       if: always()
-      run: nox -s lint
+      run: nox -s lint -f datagateway-api/noxfile.py
     - name: Run Nox black session
       if: always()
-      run: nox -s black
+      run: nox -s black -f datagateway-api/noxfile.py
     - name: Run Nox tests session
       if: always()
-      run: nox -s tests
+      run: nox -s tests -f datagateway-api/noxfile.py
