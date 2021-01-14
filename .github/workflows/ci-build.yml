@@ -9,28 +9,20 @@ jobs:
         python-version: ['3.6', '3.7', '3.8']
     name: Python ${{ matrix.python-version }}
     steps:
-    - name: Debug initial ls
-      run: ls -l .
     - name: Add apt repo
       run: sudo add-apt-repository universe
-    - name: Test apt-get update
-      run: sudo apt-get update
-    - name: Test if mysql service is installed
-      run: sudo systemctl start mysql.service
-    - name: Check what's in /etc/mysql
-      run: ls -la /etc/mysql
-    - name: Check what's in /etc/mysql/conf.d
-      run: ls -la /etc/mysql/conf.d
-    - name: Check what's in /etc/mysql/mysql.conf.d
-      run: ls -la /etc/mysql/mysql.conf.d
-    - name: Check what's in /var/lib/mysql/
-      run: sudo ls -la /var/lib/mysql/
 
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
         java-version: 8
         java-package: jdk
+    - name: Setup Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
     - name: Checkout icat-ansible
       uses: actions/checkout@v2
       with:
@@ -39,27 +31,19 @@ jobs:
         path: icat-ansible
     - name: Install Ansible
       run: pip install -r icat-ansible/requirements.txt
-    - name: Output icatdb-minimal-hosts.yml
-      run: cat icat-ansible/icatdb-minimal-hosts.yml
+
+    # Prep for running the playbook
     - name: Create hosts file
       run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
     - name: Prepare vault pass
       run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-    - name: Debug pwd
-      run: pwd
-    - name: Debug ls
-      run: ls -l
-    - name: Debug ls parent
-      run: ls -l ..
     - name: Move vault to directory it'll get detected by Ansible
       run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-    - name: Debug group_vars/all ls
-      run: ls -l icat-ansible/group_vars/all
     - name: Replace default payara user with Actions user
       run: |
         sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
-    - name: Run ICAT Ansible Playbook (cmd line)
+    - name: Run ICAT Ansible Playbook
       run: |
         ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
@@ -67,10 +51,8 @@ jobs:
       uses: actions/checkout@v2
       with:
         path: datagateway-api
-    - name: Debug ls1
-      run: |
-        pwd
-        ls -la
+
+    # Prep for using the API for tests
     - name: Create log file
       run: touch logs.log
     - name: Configure log file location
@@ -78,23 +60,8 @@ jobs:
         '.log_location=$REPO_DIR' datagateway-api/config.json.example`" > datagateway-api/config.json.example
     - name: Create config.json
       run: cp datagateway-api/config.json.example datagateway-api/config.json
-    - name: Setup Python
-      uses: actions/setup-python@v1
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
-    - name: Debug ls2
-      run: |
-        pwd
-        ls -la
-    - name: Move to API repo
-      run: cd datagateway-api/
-    - name: Debug ls3
-      run: |
-        pwd
-        ls -la
-    - name: Debug if icat is running
-      run: curl -k https://localhost:8181/icat/version
+
+    # Install ____ and API's dependencies
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
