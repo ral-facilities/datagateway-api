@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import QueuePool
 
+from flask_sqlalchemy import SQLAlchemy
 from datagateway_api.common.constants import Constants
 
 engine = create_engine(
@@ -24,3 +25,4 @@ class SessionManager(object):
 
 
 session_manager = SessionManager()
+db = SQLAlchemy()

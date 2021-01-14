@@ -7,10 +7,13 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_sqlalchemy import SQLAlchemy
 
 from datagateway_api.common.backends import create_backend
 from datagateway_api.common.config import config
 from datagateway_api.common.logger_setup import setup_logger
+from datagateway_api.common.database.session_manager import db
+from datagateway_api.common.constants import Constants
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,
@@ -63,6 +66,8 @@ def create_app_infrastructure(flask_app):
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
+    app.config["SQLALCHEMY_DATABASE_URI"] = Constants.DATABASE_URL
+    db.init_app(app)
 
     initialise_spec(spec)
 
@@ -168,10 +173,10 @@ def specs():
     resp.mimetype = "application/json"
     return resp
 
+api, spec = create_app_infrastructure(app)
+create_api_endpoints(app, api, spec)
 
 if __name__ == "__main__":
-    api, spec = create_app_infrastructure(app)
-    create_api_endpoints(app, api, spec)
     openapi_config(spec)
     app.run(
         host=config.get_host(), port=config.get_port(), debug=config.is_debug_mode(),

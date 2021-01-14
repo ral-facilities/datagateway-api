@@ -17,7 +17,7 @@ from datagateway_api.common.database.models import (
     INVESTIGATIONINSTRUMENT,
     SESSION,
 )
-from datagateway_api.common.database.session_manager import session_manager
+from datagateway_api.common.database.session_manager import db
 from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
@@ -41,11 +41,10 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
-        session = session_manager.get_icat_db_session()
+        session = db.session()
         query = session.query(SESSION).filter(SESSION.ID == args[1]).first()
         if query is not None:
             log.info(" Closing DB session")
-            session.close()
             session.close()
             log.info(" Consumer authenticated")
             return method(*args, **kwargs)
@@ -66,7 +65,7 @@ class Query(ABC):
 
     @abstractmethod
     def __init__(self, table):
-        self.session = session_manager.get_icat_db_session()
+        self.session = db.session
         self.table = table
         self.base_query = self.session.query(table)
 
@@ -86,7 +85,12 @@ class Query(ABC):
         Commits all changes to the database and closes the session
         """
         log.info(" Committing changes to %s", self.table)
-        self.session.commit()
+        try:
+            self.session.commit()
+        except Exception as e:
+            log.error(f"Error whilst committing changes to {self.table}, rolling back")
+            self.session.rollback()
+            raise e
 
 
 class CountQuery(Query):
