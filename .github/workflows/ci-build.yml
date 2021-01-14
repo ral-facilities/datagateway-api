@@ -12,6 +12,7 @@ jobs:
     - name: Add apt repo
       run: sudo add-apt-repository universe
 
+    # Setup Java & Python
     - name: Setup Java
       uses: actions/setup-java@v1
       with:
@@ -23,6 +24,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
 
+    # ICAT Ansible clone and install dependencies
     - name: Checkout icat-ansible
       uses: actions/checkout@v2
       with:
@@ -43,6 +45,7 @@ jobs:
       run: |
         sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
+    # Create local instance of ICAT
     - name: Run ICAT Ansible Playbook
       run: |
         ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
@@ -68,9 +71,12 @@ jobs:
       run: pip install poetry==1.1.4
     - name: Install dependencies
       run: cd datagateway-api/ && poetry install
+
     - name: Add dummy data to icatdb
       run: |
         cd datagateway-api && poetry run python -m util.icat_db_generator -s 4 -y 3
+
+    # Run each Nox session one-by-one - each will run regardless if one fails
     - name: Run Nox safety session
       run: nox -s safety -f datagateway-api/noxfile.py
     - name: Run Nox lint session
