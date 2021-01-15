@@ -106,7 +106,6 @@ def logout_icat_client(client):
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
     """
-
     client.logout()
 
 
@@ -141,6 +140,7 @@ def get_python_icat_entity_name(client, database_table_name, camel_case_output=F
         Python ICAT
     :raises BadRequestError: If the entity cannot be found
     """
+    log.debug("Python ICAT entity name camel case flag: %s", camel_case_output)
 
     if camel_case_output:
         entity_names = getTypeMap(client).keys()
@@ -234,6 +234,8 @@ def get_entity_by_id(
     :return: The record of the specified ID from the given entity
     :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
+    log.info("Getting %s of the ID %s", table_name, id_)
+    log.debug("Return related entities set to: %s", return_related_entities)
 
     selected_entity_name = get_python_icat_entity_name(client, table_name)
     # Set query condition for the selected ID
@@ -263,7 +265,7 @@ def delete_entity_by_id(client, table_name, id_):
     :param id_: ID number of the entity to delete
     :type id_: :class:`int`
     """
-
+    log.info("Deleting %s of ID %s", table_name, id_)
     entity_id_data = get_entity_by_id(client, table_name, id_, False)
     client.delete(entity_id_data)
 
@@ -282,6 +284,7 @@ def update_entity_by_id(client, table_name, id_, new_data):
         the specified ID
     :return: The updated record of the specified ID from the given entity
     """
+    log.info("Updating %s of ID %s", table_name, id_)
 
     entity_id_data = get_entity_by_id(
         client, table_name, id_, False, return_related_entities=True
@@ -497,6 +500,7 @@ def create_entities(client, table_name, data):
         )
 
         for attribute_name, value in result.items():
+            log.debug("Preparing data for %s", attribute_name)
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
                 if entity_info.relType.lower() == "attribute":
@@ -562,7 +566,7 @@ def get_facility_cycles_for_instrument(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
-        client, "FacilityCycle", aggregate=query_aggregate, isis_endpoint=True
+        client, "FacilityCycle", aggregate=query_aggregate
     )
 
     instrument_id_check = PythonICATWhereFilter(
@@ -647,7 +651,7 @@ def get_investigations_for_instrument_in_facility_cycle(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(
-        client, "Investigation", aggregate=query_aggregate, isis_endpoint=True
+        client, "Investigation", aggregate=query_aggregate
     )
 
     instrument_id_check = PythonICATWhereFilter(

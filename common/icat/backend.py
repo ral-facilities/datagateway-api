@@ -41,6 +41,7 @@ class PythonICATBackend(Backend):
         pass
 
     def login(self, credentials):
+        log.info("Logging in to get session ID")
         client = create_client()
 
         # Syntax for Python ICAT
@@ -56,17 +57,20 @@ class PythonICATBackend(Backend):
 
     @requires_session_id
     def get_session_details(self, session_id, **kwargs):
+        log.info("Getting session details for session: %s", session_id)
         client = kwargs["client"] if kwargs["client"] else create_client()
         return get_session_details_helper(client)
 
     @requires_session_id
     def refresh(self, session_id, **kwargs):
+        log.info("Refreshing session: %s", session_id)
         client = kwargs["client"] if kwargs["client"] else create_client()
         return refresh_client_session(client)
 
     @requires_session_id
     @queries_records
     def logout(self, session_id, **kwargs):
+        log.info("Logging out of the Python ICAT client")
         client = kwargs["client"] if kwargs["client"] else create_client()
         return logout_icat_client(client)
 

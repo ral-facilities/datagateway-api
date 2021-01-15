@@ -21,7 +21,6 @@ class ICATQuery:
         conditions=None,
         aggregate=None,
         includes=None,
-        isis_endpoint=False,
     ):
         """
         Create a Query object within Python ICAT 
@@ -39,12 +38,6 @@ class ICATQuery:
         :param includes: List of related entity names to add to the query so related
             entities (and their data) can be returned with the query result
         :type includes: :class:`str` or iterable of :class:`str`
-        :param isis_endpoint: Flag to determine if the instance will be used for an ISIS
-            specific endpoint. These endpoints require the use of the DISTINCT aggregate
-            which is different to the distinct field filter implemented in this API, so
-            this flag prevents code related to the filter from executing (because it
-            doesn't need to be on a DISTINCT aggregate)
-        :type isis_endpoint: :class:`bool`
         :return: Query object from Python ICAT
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
@@ -65,7 +58,6 @@ class ICATQuery:
                 " suggesting an invalid argument"
             )
 
-        self.isis_endpoint = isis_endpoint
 
     def execute_query(self, client, return_json_formattable=False):
         """
@@ -99,23 +91,24 @@ class ICATQuery:
         if self.query.aggregate is not None:
             if "COUNT" in self.query.aggregate:
                 count_query = True
+                log.debug("This ICATQuery is used for COUNT purposes")
 
         if (
             self.query.aggregate == "DISTINCT"
             and not count_query
-            and not self.isis_endpoint
         ):
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
-            mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
-                distinct_attributes, flat_query_includes
-            )
-            log.debug(
-                "Attribute names used in the distinct filter, mapped to the entity they"
-                " are a part of: %s",
-                mapped_distinct_fields,
-            )
+            if distinct_attributes != []:
+                mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
+                    distinct_attributes, flat_query_includes
+                )
+                log.debug(
+                    "Attribute names used in the distinct filter, mapped to the entity they"
+                    " are a part of: %s",
+                    mapped_distinct_fields,
+                )
 
         if return_json_formattable:
             log.info("Query results will be returned in a JSON format")
@@ -275,8 +268,7 @@ class ICATQuery:
         """
 
         # Mapping which entities have distinct fields
-        distinct_field_dict = {}
-        distinct_field_dict["base"] = []
+        distinct_field_dict = {"base": []}
 
         for field in distinct_fields:
             split_fields = field.split(".")
