@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9']
-    name: Python ${{ matrix.python-version }} Build
+    name: Python ${{ matrix.python-version }} Build & Tests
     steps:
     - name: Add apt repo
       run: sudo add-apt-repository universe
@@ -63,7 +63,7 @@ jobs:
     - name: Create config.json
       run: cp datagateway-api/config.json.example datagateway-api/config.json
 
-    # Install ____ and API's dependencies
+    # Install Nox, Poetry and API's dependencies
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
@@ -87,3 +87,69 @@ jobs:
     - name: Run Nox tests session
       if: always()
       run: nox -s tests -f datagateway-api/noxfile.py
+
+  linting:
+    runs-on: ubuntu-16.04
+    name: Linting
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+        architecture: x64
+    - name: Checkout DataGateway API
+      uses: actions/checkout@v2
+      with:
+        path: datagateway-api
+
+    - name: Install Nox
+      run: pip install nox==2020.8.22
+    - name: Install Poetry
+      run: pip install poetry==1.1.4
+
+    - name: Run Nox lint session
+      run: nox -s lint -f datagateway-api/noxfile.py
+
+  formatting:
+    runs-on: ubuntu-16.04
+    name: Code Formatting
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+        architecture: x64
+    - name: Checkout DataGateway API
+      uses: actions/checkout@v2
+      with:
+        path: datagateway-api
+
+    - name: Install Nox
+      run: pip install nox==2020.8.22
+    - name: Install Poetry
+      run: pip install poetry==1.1.4
+
+    - name: Run Nox black session
+      run: nox -s black -f datagateway-api/noxfile.py
+
+  safety:
+    runs-on: ubuntu-16.04
+    name: Dependency Safety
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+        architecture: x64
+    - name: Checkout DataGateway API
+      uses: actions/checkout@v2
+      with:
+        path: datagateway-api
+
+    - name: Install Nox
+      run: pip install nox==2020.8.22
+    - name: Install Poetry
+      run: pip install poetry==1.1.4
+
+    - name: Run Nox safety session
+      run: nox -s safety -f datagateway-api/noxfile.py
