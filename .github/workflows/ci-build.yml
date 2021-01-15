@@ -75,15 +75,7 @@ jobs:
       run: |
         cd datagateway-api && poetry run python -m util.icat_db_generator -s 4 -y 3
 
-    # Run each Nox session one-by-one - each will run regardless if one fails
-    - name: Run Nox safety session
-      run: nox -s safety -f datagateway-api/noxfile.py
-    - name: Run Nox lint session
-      if: always()
-      run: nox -s lint -f datagateway-api/noxfile.py
-    - name: Run Nox black session
-      if: always()
-      run: nox -s black -f datagateway-api/noxfile.py
+    # Run each Nox tests session
     - name: Run Nox tests session
       if: always()
       run: nox -s tests -f datagateway-api/noxfile.py
