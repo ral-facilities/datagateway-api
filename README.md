@@ -90,17 +90,23 @@ development environment for this repo. This stage might take some time as each P
 version needs to be downloaded and built individually:
 
 ```bash
+pyenv install 3.4.10
+pyenv install 3.5.10
 pyenv install 3.6.8
 pyenv install 3.7.7
 pyenv install 3.8.2
+pyenv install 3.9.0
 ```
 
 To verify the installation commands worked:
 
 ```bash
+python3.4 --version
+python3.5 --version
 python3.6 --version
 python3.7 --version
 python3.8 --version
+python3.9 --version
 ```
 
 These Python versions need to be made available to local version of the repository. They
@@ -109,7 +115,7 @@ following command will create a `.python-version` file inside the repo (this fil
 currently listed in `.gitignore`):
 
 ```bash
-pyenv local 3.6.8 3.7.7 3.8.2
+pyenv local 3.4.10 3.5.10 3.6.8 3.7.7 3.8.2 3.9.0
 ```
 
 
