@@ -1,3 +1,4 @@
+from abc import ABC
 from datetime import datetime
 from decimal import Decimal
 import enum
@@ -52,7 +53,7 @@ class EnumAsInteger(TypeDecorator):
         return EnumAsInteger(self.enum_type)
 
 
-class EntityHelper(object):
+class EntityHelper(ABC):
     """
     EntityHelper class that contains methods to be shared across all entities
     """
@@ -186,7 +187,19 @@ class EntityHelper(object):
         return self.to_dict()
 
 
-class APPLICATION(Base, EntityHelper):
+class EntityMeta(type(Base), type(EntityHelper)):
+    """
+    This class is used as a way of ensuring classes that inherit from both `Base` and
+    `EntityHelper` don't have metaclass conflicts. `EntityHelper`'s metaclass is
+    `ABCMeta`, but this isn't the case for `Base`. Further explanation regarding this
+    issue (and how this class fixes the problem) can be found here:
+    https://stackoverflow.com/a/28727066/8752408
+    """
+
+    pass
+
+
+class APPLICATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "APPLICATION"
     __table_args__ = (Index("UNQ_APPLICATION_0", "FACILITY_ID", "NAME", "VERSION"),)
 
@@ -206,7 +219,7 @@ class APPLICATION(Base, EntityHelper):
     )
 
 
-class FACILITY(Base, EntityHelper):
+class FACILITY(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITY"
 
     ID = Column(BigInteger, primary_key=True)
@@ -221,7 +234,7 @@ class FACILITY(Base, EntityHelper):
     URL = Column(String(255))
 
 
-class DATACOLLECTION(Base, EntityHelper):
+class DATACOLLECTION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTION"
 
     ID = Column(BigInteger, primary_key=True)
@@ -232,7 +245,7 @@ class DATACOLLECTION(Base, EntityHelper):
     MOD_TIME = Column(DateTime, nullable=False)
 
 
-class DATACOLLECTIONDATAFILE(Base, EntityHelper):
+class DATACOLLECTIONDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONDATAFILE"
     __table_args__ = (
         Index("UNQ_DATACOLLECTIONDATAFILE_0", "DATACOLLECTION_ID", "DATAFILE_ID"),
@@ -258,7 +271,7 @@ class DATACOLLECTIONDATAFILE(Base, EntityHelper):
     )
 
 
-class DATACOLLECTIONDATASET(Base, EntityHelper):
+class DATACOLLECTIONDATASET(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONDATASET"
     __table_args__ = (
         Index("UNQ_DATACOLLECTIONDATASET_0", "DATACOLLECTION_ID", "DATASET_ID"),
@@ -284,7 +297,7 @@ class DATACOLLECTIONDATASET(Base, EntityHelper):
     )
 
 
-class DATACOLLECTIONPARAMETER(Base, EntityHelper):
+class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONPARAMETER"
     __table_args__ = (
         Index(
@@ -320,7 +333,7 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper):
     )
 
 
-class DATAFILE(Base, EntityHelper):
+class DATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILE"
     __table_args__ = (Index("UNQ_DATAFILE_0", "DATASET_ID", "NAME"),)
 
@@ -350,7 +363,7 @@ class DATAFILE(Base, EntityHelper):
     )
 
 
-class DATAFILEFORMAT(Base, EntityHelper):
+class DATAFILEFORMAT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILEFORMAT"
     __table_args__ = (Index("UNQ_DATAFILEFORMAT_0", "FACILITY_ID", "NAME", "VERSION"),)
 
@@ -372,7 +385,7 @@ class DATAFILEFORMAT(Base, EntityHelper):
     )
 
 
-class DATAFILEPARAMETER(Base, EntityHelper):
+class DATAFILEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILEPARAMETER"
     __table_args__ = (
         Index("UNQ_DATAFILEPARAMETER_0", "DATAFILE_ID", "PARAMETER_TYPE_ID"),
@@ -406,7 +419,7 @@ class DATAFILEPARAMETER(Base, EntityHelper):
     )
 
 
-class DATASET(Base, EntityHelper):
+class DATASET(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASET"
     __table_args__ = (Index("UNQ_DATASET_0", "INVESTIGATION_ID", "NAME"),)
 
@@ -441,7 +454,7 @@ class DATASET(Base, EntityHelper):
     )
 
 
-class DATASETPARAMETER(Base, EntityHelper):
+class DATASETPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASETPARAMETER"
     __table_args__ = (
         Index("UNQ_DATASETPARAMETER_0", "DATASET_ID", "PARAMETER_TYPE_ID"),
@@ -475,7 +488,7 @@ class DATASETPARAMETER(Base, EntityHelper):
     )
 
 
-class DATASETTYPE(Base, EntityHelper):
+class DATASETTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASETTYPE"
     __table_args__ = (Index("UNQ_DATASETTYPE_0", "FACILITY_ID", "NAME"),)
 
@@ -495,7 +508,7 @@ class DATASETTYPE(Base, EntityHelper):
     )
 
 
-class FACILITYCYCLE(Base, EntityHelper):
+class FACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITYCYCLE"
     __table_args__ = (Index("UNQ_FACILITYCYCLE_0", "FACILITY_ID", "NAME"),)
 
@@ -517,7 +530,7 @@ class FACILITYCYCLE(Base, EntityHelper):
     )
 
 
-class GROUPING(Base, EntityHelper):
+class GROUPING(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "GROUPING"
 
     ID = Column(BigInteger, primary_key=True)
@@ -528,7 +541,7 @@ class GROUPING(Base, EntityHelper):
     NAME = Column(String(255), nullable=False, unique=True)
 
 
-class INSTRUMENT(Base, EntityHelper):
+class INSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INSTRUMENT"
     __table_args__ = (Index("UNQ_INSTRUMENT_0", "FACILITY_ID", "NAME"),)
 
@@ -551,7 +564,7 @@ class INSTRUMENT(Base, EntityHelper):
     )
 
 
-class INSTRUMENTSCIENTIST(Base, EntityHelper):
+class INSTRUMENTSCIENTIST(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INSTRUMENTSCIENTIST"
     __table_args__ = (Index("UNQ_INSTRUMENTSCIENTIST_0", "USER_ID", "INSTRUMENT_ID"),)
 
@@ -575,7 +588,7 @@ class INSTRUMENTSCIENTIST(Base, EntityHelper):
     )
 
 
-class INVESTIGATION(Base, EntityHelper):
+class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATION"
     __table_args__ = (Index("UNQ_INVESTIGATION_0", "FACILITY_ID", "NAME", "VISIT_ID"),)
 
@@ -607,7 +620,7 @@ class INVESTIGATION(Base, EntityHelper):
     )
 
 
-class INVESTIGATIONGROUP(Base, EntityHelper):
+class INVESTIGATIONGROUP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONGROUP"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONGROUP_0", "GROUP_ID", "INVESTIGATION_ID", "ROLE"),
@@ -636,7 +649,7 @@ class INVESTIGATIONGROUP(Base, EntityHelper):
     )
 
 
-class INVESTIGATIONINSTRUMENT(Base, EntityHelper):
+class INVESTIGATIONINSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONINSTRUMENT"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONINSTRUMENT_0", "INVESTIGATION_ID", "INSTRUMENT_ID"),
@@ -662,7 +675,7 @@ class INVESTIGATIONINSTRUMENT(Base, EntityHelper):
     )
 
 
-class INVESTIGATIONPARAMETER(Base, EntityHelper):
+class INVESTIGATIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONPARAMETER"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONPARAMETER_0", "INVESTIGATION_ID", "PARAMETER_TYPE_ID"),
@@ -696,7 +709,7 @@ class INVESTIGATIONPARAMETER(Base, EntityHelper):
     )
 
 
-class INVESTIGATIONTYPE(Base, EntityHelper):
+class INVESTIGATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONTYPE"
     __table_args__ = (Index("UNQ_INVESTIGATIONTYPE_0", "NAME", "FACILITY_ID"),)
 
@@ -716,7 +729,7 @@ class INVESTIGATIONTYPE(Base, EntityHelper):
     )
 
 
-class INVESTIGATIONUSER(Base, EntityHelper):
+class INVESTIGATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONUSER"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONUSER_0", "USER_ID", "INVESTIGATION_ID", "ROLE"),
@@ -745,7 +758,7 @@ class INVESTIGATIONUSER(Base, EntityHelper):
     )
 
 
-class JOB(Base, EntityHelper):
+class JOB(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "JOB"
 
     ID = Column(BigInteger, primary_key=True)
@@ -770,7 +783,7 @@ class JOB(Base, EntityHelper):
     )
 
 
-class KEYWORD(Base, EntityHelper):
+class KEYWORD(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "KEYWORD"
     __table_args__ = (Index("UNQ_KEYWORD_0", "NAME", "INVESTIGATION_ID"),)
 
@@ -791,7 +804,7 @@ class KEYWORD(Base, EntityHelper):
     )
 
 
-class PARAMETERTYPE(Base, EntityHelper):
+class PARAMETERTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PARAMETERTYPE"
     __table_args__ = (Index("UNQ_PARAMETERTYPE_0", "FACILITY_ID", "NAME", "UNITS"),)
 
@@ -828,7 +841,7 @@ class PARAMETERTYPE(Base, EntityHelper):
     )
 
 
-class PERMISSIBLESTRINGVALUE(Base, EntityHelper):
+class PERMISSIBLESTRINGVALUE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PERMISSIBLESTRINGVALUE"
     __table_args__ = (
         Index("UNQ_PERMISSIBLESTRINGVALUE_0", "VALUE", "PARAMETERTYPE_ID"),
@@ -851,7 +864,7 @@ class PERMISSIBLESTRINGVALUE(Base, EntityHelper):
     )
 
 
-class PUBLICATION(Base, EntityHelper):
+class PUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PUBLICATION"
 
     ID = Column(BigInteger, primary_key=True)
@@ -875,7 +888,7 @@ class PUBLICATION(Base, EntityHelper):
     )
 
 
-class PUBLICSTEP(Base, EntityHelper):
+class PUBLICSTEP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PUBLICSTEP"
     __table_args__ = (Index("UNQ_PUBLICSTEP_0", "ORIGIN", "FIELD"),)
 
@@ -888,7 +901,7 @@ class PUBLICSTEP(Base, EntityHelper):
     ORIGIN = Column(String(32), nullable=False)
 
 
-class RELATEDDATAFILE(Base, EntityHelper):
+class RELATEDDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "RELATEDDATAFILE"
     __table_args__ = (
         Index("UNQ_RELATEDDATAFILE_0", "SOURCE_DATAFILE_ID", "DEST_DATAFILE_ID"),
@@ -910,7 +923,7 @@ class RELATEDDATAFILE(Base, EntityHelper):
     )
 
 
-class RULE(Base, EntityHelper):
+class RULE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "RULE_"
 
     ID = Column(BigInteger, primary_key=True)
@@ -937,7 +950,7 @@ class RULE(Base, EntityHelper):
     )
 
 
-class SAMPLE(Base, EntityHelper):
+class SAMPLE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLE"
     __table_args__ = (Index("UNQ_SAMPLE_0", "INVESTIGATION_ID", "NAME"),)
 
@@ -962,7 +975,7 @@ class SAMPLE(Base, EntityHelper):
     )
 
 
-class SAMPLEPARAMETER(Base, EntityHelper):
+class SAMPLEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLEPARAMETER"
     __table_args__ = (Index("UNQ_SAMPLEPARAMETER_0", "SAMPLE_ID", "PARAMETER_TYPE_ID"),)
 
@@ -994,7 +1007,7 @@ class SAMPLEPARAMETER(Base, EntityHelper):
     )
 
 
-class SESSION(Base, EntityHelper):
+class SESSION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SESSION_"
 
     ID = Column(String(255), primary_key=True)
@@ -1002,7 +1015,7 @@ class SESSION(Base, EntityHelper):
     USERNAME = Column(String(255))
 
 
-class SHIFT(Base, EntityHelper):
+class SHIFT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SHIFT"
     __table_args__ = (Index("UNQ_SHIFT_0", "INVESTIGATION_ID", "STARTDATE", "ENDDATE"),)
 
@@ -1023,7 +1036,7 @@ class SHIFT(Base, EntityHelper):
     )
 
 
-class USER(Base, EntityHelper):
+class USER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "USER_"
 
     ID = Column(BigInteger, primary_key=True)
@@ -1037,7 +1050,7 @@ class USER(Base, EntityHelper):
     ORCIDID = Column(String(255))
 
 
-class USERGROUP(Base, EntityHelper):
+class USERGROUP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "USERGROUP"
     __table_args__ = (Index("UNQ_USERGROUP_0", "USER_ID", "GROUP_ID"),)
 
@@ -1059,7 +1072,7 @@ class USERGROUP(Base, EntityHelper):
     )
 
 
-class STUDYINVESTIGATION(Base, EntityHelper):
+class STUDYINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "STUDYINVESTIGATION"
     __table_args__ = (
         Index("UNQ_STUDYINVESTIGATION_0", "STUDY_ID", "INVESTIGATION_ID"),
@@ -1087,7 +1100,7 @@ class STUDYINVESTIGATION(Base, EntityHelper):
     )
 
 
-class STUDY(Base, EntityHelper):
+class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "STUDY"
 
     ID = Column(BigInteger, primary_key=True)
@@ -1106,7 +1119,7 @@ class STUDY(Base, EntityHelper):
     )
 
 
-class SAMPLETYPE(Base, EntityHelper):
+class SAMPLETYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLETYPE"
     __table_args__ = (
         Index("UNQ_SAMPLETYPE_0", "FACILITY_ID", "NAME", "MOLECULARFORMULA"),
