@@ -87,3 +87,10 @@ def tests(session):
     args = session.posargs
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
+
+
+@nox.session(reuse_venv=True)
+def coverage(session):
+    install_with_constraints(session, "coverage[toml]", "codecov")
+    session.run("coverage", "xml", "--fail-under=0")
+    session.run("codecov", *session.posargs)
