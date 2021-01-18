@@ -1,4 +1,6 @@
 [![Build Status](https://github.com/ral-facilities/datagateway-api/workflows/CI/badge.svg?branch=master)](https://github.com/ral-facilities/datagateway-api/actions?query=workflow%3A%22CI%22)
+[![Codecov](https://codecov.io/gh/ral-facilities/datagateway-api/branch/master/graph/badge.svg)](https://codecov.io/gh/ral-facilities/datagateway-api)
+
 
 
 # DataGateway API
