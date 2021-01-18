@@ -40,7 +40,6 @@ pytest = "^6.1.2"
 coverage = {extras = ["toml"], version = "^5.3"}
 pytest-cov = "^2.10.1"
 pytest-icdiff = "^0.5"
-codecov = "^2.1.11"
 
 [tool.poetry.scripts]
 
