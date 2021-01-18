@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - feature/code-coverage-#167
 jobs:
   tests:
     runs-on: ubuntu-16.04
@@ -81,10 +82,15 @@ jobs:
       run: |
         cd datagateway-api && poetry run python -m util.icat_db_generator -s 4 -y 3
 
-    # Run each Nox tests session
+    # Run Nox tests session, saves and uploads a coverage report to codecov
     - name: Run Nox tests session
-      if: always()
-      run: nox -s tests -f datagateway-api/noxfile.py
+      run: nox -s tests -f datagateway-api/noxfile.py -- --cov=datagateway_api --cov-report=xml
+    - name: Upload code coverage report
+      if: matrix.python-version == '3.6'
+      uses: codecov/codecov-action@v1
+      with:
+        directory: ./datagateway-api
+
 
   linting:
     runs-on: ubuntu-16.04
