@@ -42,7 +42,6 @@ pytest-cov = "^2.10.1"
 pytest-icdiff = "^0.5"
 
 [tool.poetry.scripts]
-datagateway-api = "datagateway_api.src.main:run_api"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
