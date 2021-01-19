@@ -1,3 +1,8 @@
+[![Build Status](https://github.com/ral-facilities/datagateway-api/workflows/CI/badge.svg?branch=master)](https://github.com/ral-facilities/datagateway-api/actions?query=workflow%3A%22CI%22)
+[![Codecov](https://codecov.io/gh/ral-facilities/datagateway-api/branch/master/graph/badge.svg)](https://codecov.io/gh/ral-facilities/datagateway-api)
+
+
+
 # DataGateway API
 This is a Flask-based API that fetches data from an ICAT instance, to interface with
 [DataGateway](https://github.com/ral-facilities/datagateway). This API uses two ways
@@ -90,6 +95,7 @@ version needs to be downloaded and built individually:
 pyenv install 3.6.8
 pyenv install 3.7.7
 pyenv install 3.8.2
+pyenv install 3.9.0
 ```
 
 To verify the installation commands worked:
@@ -98,6 +104,7 @@ To verify the installation commands worked:
 python3.6 --version
 python3.7 --version
 python3.8 --version
+python3.9 --version
 ```
 
 These Python versions need to be made available to local version of the repository. They
@@ -106,7 +113,7 @@ following command will create a `.python-version` file inside the repo (this fil
 currently listed in `.gitignore`):
 
 ```bash
-pyenv local 3.6.8 3.7.7 3.8.2
+pyenv local 3.6.8 3.7.7 3.8.2 3.9.0
 ```
 
 
