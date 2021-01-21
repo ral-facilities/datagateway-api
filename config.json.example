@@ -1,14 +1,15 @@
 {
   "backend": "db",
-  "DB_URL": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
-  "ICAT_URL": "https://localhost:8181",
+  "DB_URL": "mysql+pymysql://root:rootpw@localhost:13306/icatdb",
+  "ICAT_URL": "https://localhost.localdomain:8181",
   "icat_check_cert": false,
   "log_level": "WARN",
-  "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",
   "debug_mode": false,
   "generate_swagger": false,
   "host": "127.0.0.1",
-  "port": "5000",
-  "test_user_credentials": {"username": "root", "password": "pw"},
-  "test_mechanism": "simple"
+  "port": "5000"
 }
+
+
+
+

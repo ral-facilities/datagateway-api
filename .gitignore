@@ -4,7 +4,3 @@ venv/
 logs.log
 config.json
 .vscode/
-.nox/
-.python-version
-.coverage
-coverage.xml
