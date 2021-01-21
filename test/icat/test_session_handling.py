@@ -16,7 +16,7 @@ class TestSessionHandling:
         )
 
         session_expiry_datetime = datetime.strptime(
-            session_details.json["EXPIREDATETIME"], "%Y-%m-%d %H:%M:%S.%f",
+            session_details.json["expireDateTime"], "%Y-%m-%d %H:%M:%S",
         )
         current_datetime = datetime.now()
         time_diff = abs(session_expiry_datetime - current_datetime)
@@ -27,13 +27,13 @@ class TestSessionHandling:
 
         # Check username is correct
         assert (
-            session_details.json["USERNAME"] == f"{config.get_test_mechanism()}/"
+            session_details.json["username"] == f"{config.get_test_mechanism()}/"
             f"{config.get_test_user_credentials()['username']}"
         )
 
         # Check session ID matches the header from the request
         assert (
-            session_details.json["ID"]
+            session_details.json["id"]
             == valid_icat_credentials_header["Authorization"].split()[1]
         )
 
@@ -62,8 +62,8 @@ class TestSessionHandling:
         assert refresh_session.status_code == 200
 
         assert (
-            pre_refresh_session_details.json["EXPIREDATETIME"]
-            != post_refresh_session_details.json["EXPIREDATETIME"]
+            pre_refresh_session_details.json["expireDateTime"]
+            != post_refresh_session_details.json["expireDateTime"]
         )
 
     @pytest.mark.usefixtures("single_investigation_test_data")
