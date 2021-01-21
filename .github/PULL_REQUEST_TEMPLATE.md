@@ -3,13 +3,13 @@ This PR will close #{issue number}
 ## Description
 Enter a description of the changes here
 
-## Testing instructions
+## Testing Instructions
 Add a set up instructions describing how the reviewer should test the code
 
 - [ ] Review code
-- [ ] Check Travis build
+- [ ] Check GitHub Actions build
 - [ ] Review changes to test coverage
 - [ ] {more steps here}
 
-## Agile board tracking
-connect to #{issue number}
+## Agile Board Tracking
+Connect to #{issue number}
