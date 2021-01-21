@@ -88,16 +88,16 @@ def get_session_details_helper(client):
     :return: Details of the user's session, ready to be converted into a JSON response
         body
     """
-    # Remove rounding
     session_time_remaining = client.getRemainingMinutes()
-    session_expiry_time = datetime.now() + timedelta(minutes=session_time_remaining)
-
+    session_expiry_time = (
+        datetime.now() + timedelta(minutes=session_time_remaining)
+    ).replace(microsecond=0)
     username = client.getUserName()
 
     return {
-        "ID": client.sessionId,
-        "EXPIREDATETIME": str(session_expiry_time),
-        "USERNAME": username,
+        "id": client.sessionId,
+        "expireDateTime": DateHandler.datetime_object_to_str(session_expiry_time),
+        "username": username,
     }
 
 
