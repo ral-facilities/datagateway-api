@@ -84,8 +84,20 @@ class EntityHelper(ABC):
         """
         dictionary = {}
         for column in self.__table__.columns:
-            attribute = getattr(self, column.name)
-            dictionary[column.name] = self._make_serializable(attribute)
+            camel_case_column_name = None
+            attribute = None
+
+            # Case insensitive alternative to getattr() - needed because column names
+            # are defined in SNAKE_CASE, class column variables named using camelCase to
+            # match Python ICAT backend
+            for a in dir(self):
+                if a.lower() == column.name.replace("_", "").lower():
+                    attribute = getattr(self, a)
+                    camel_case_column_name = a
+
+            if camel_case_column_name is not None and attribute is not None:
+                dictionary[camel_case_column_name] = self._make_serializable(attribute)
+
         return dictionary
 
     def _make_serializable(self, field):
@@ -183,7 +195,7 @@ class EntityHelper(ABC):
         :returns: The updated dict
         """
         for key in dictionary:
-            setattr(self, key.upper(), dictionary[key])
+            setattr(self, key, dictionary[key])
         return self.to_dict()
 
 
