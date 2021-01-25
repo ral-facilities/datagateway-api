@@ -270,10 +270,10 @@ class DATACOLLECTIONDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     dataCollection = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     datafile = Column(
-        "DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False, index=True
+        "DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False, index=True,
     )
 
     DATACOLLECTION = relationship(
@@ -300,7 +300,7 @@ class DATACOLLECTIONDATASET(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     dataCollection = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     dataset = Column("DATASET_ID", ForeignKey("DATASET.ID"), nullable=False, index=True)
 
@@ -336,7 +336,7 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     rangeTop = Column("RANGETOP", Float(asdecimal=True))
     stringValue = Column("STRING_VALUE", String(4000))
     dataCollection = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     type = Column(
         "PARAMETER_TYPE_ID", ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
@@ -372,7 +372,7 @@ class DATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
     datafileFormat = Column(
-        "DATAFILEFORMAT_ID", ForeignKey("DATAFILEFORMAT.ID"), index=True
+        "DATAFILEFORMAT_ID", ForeignKey("DATAFILEFORMAT.ID"), index=True,
     )
     dataset = Column("DATASET_ID", ForeignKey("DATASET.ID"), nullable=False)
 
@@ -448,7 +448,7 @@ class DATASET(Base, EntityHelper, metaclass=EntityMeta):
 
     id = Column("ID", BigInteger, primary_key=True)
     complete = Column(
-        "COMPLETE", Boolean, nullable=False, server_default=FetchedValue()
+        "COMPLETE", Boolean, nullable=False, server_default=FetchedValue(),
     )
     createId = Column("CREATE_ID", String(255), nullable=False)
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
@@ -461,7 +461,7 @@ class DATASET(Base, EntityHelper, metaclass=EntityMeta):
     name = Column("NAME", String(255), nullable=False)
     startDate = Column("STARTDATE", DateTime)
     investigation = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
     sample = Column("SAMPLE_ID", ForeignKey("SAMPLE.ID"), index=True)
     type = Column("TYPE_ID", ForeignKey("DATASETTYPE.ID"), nullable=False, index=True)
@@ -599,7 +599,7 @@ class INSTRUMENTSCIENTIST(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     instrument = Column(
-        "INSTRUMENT_ID", ForeignKey("INSTRUMENT.ID"), nullable=False, index=True
+        "INSTRUMENT_ID", ForeignKey("INSTRUMENT.ID"), nullable=False, index=True,
     )
     user = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
 
@@ -634,7 +634,7 @@ class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     visitId = Column("VISIT_ID", String(255), nullable=False)
     facility = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
     type = Column(
-        "TYPE_ID", ForeignKey("INVESTIGATIONTYPE.ID"), nullable=False, index=True
+        "TYPE_ID", ForeignKey("INVESTIGATIONTYPE.ID"), nullable=False, index=True,
     )
 
     FACILITY = relationship(
@@ -690,10 +690,10 @@ class INVESTIGATIONINSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     instrument = Column(
-        "INSTRUMENT_ID", ForeignKey("INSTRUMENT.ID"), nullable=False, index=True
+        "INSTRUMENT_ID", ForeignKey("INSTRUMENT.ID"), nullable=False, index=True,
     )
     investigation = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
 
     INSTRUMENT = relationship(
@@ -726,7 +726,7 @@ class INVESTIGATIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     rangeTop = Column("RANGETOP", Float(asdecimal=True))
     stringValue = Column("STRING_VALUE", String(4000))
     investigation = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
     type = Column(
         "PARAMETER_TYPE_ID", ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
@@ -756,7 +756,7 @@ class INVESTIGATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
     facility = Column(
-        "FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False, index=True
+        "FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False, index=True,
     )
 
     FACILITY = relationship(
@@ -805,13 +805,13 @@ class JOB(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     application = Column(
-        "APPLICATION_ID", ForeignKey("APPLICATION.ID"), nullable=False, index=True
+        "APPLICATION_ID", ForeignKey("APPLICATION.ID"), nullable=False, index=True,
     )
     inputDataCollection = Column(
-        "INPUTDATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), index=True
+        "INPUTDATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), index=True,
     )
     outputDataCollection = Column(
-        "OUTPUTDATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), index=True
+        "OUTPUTDATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), index=True,
     )
 
     APPLICATION = relationship(
@@ -856,19 +856,19 @@ class PARAMETERTYPE(Base, EntityHelper, metaclass=EntityMeta):
 
     id = Column("ID", BigInteger, primary_key=True)
     applicableToDataCollection = Column(
-        "APPLICABLETODATACOLLECTION", Boolean, server_default=FetchedValue()
+        "APPLICABLETODATACOLLECTION", Boolean, server_default=FetchedValue(),
     )
     applicableToDatafile = Column(
-        "APPLICABLETODATAFILE", Boolean, server_default=FetchedValue()
+        "APPLICABLETODATAFILE", Boolean, server_default=FetchedValue(),
     )
     applicableToDataset = Column(
-        "APPLICABLETODATASET", Boolean, server_default=FetchedValue()
+        "APPLICABLETODATASET", Boolean, server_default=FetchedValue(),
     )
     applicableToInvestigation = Column(
-        "APPLICABLETOINVESTIGATION", Boolean, server_default=FetchedValue()
+        "APPLICABLETOINVESTIGATION", Boolean, server_default=FetchedValue(),
     )
     applicableToSample = Column(
-        "APPLICABLETOSAMPLE", Boolean, server_default=FetchedValue()
+        "APPLICABLETOSAMPLE", Boolean, server_default=FetchedValue(),
     )
     createId = Column("CREATE_ID", String(255), nullable=False)
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
@@ -965,10 +965,10 @@ class RELATEDDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     relation = Column("RELATION", String(255), nullable=False)
     destDatafile = Column(
-        "DEST_DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False, index=True
+        "DEST_DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False, index=True,
     )
     sourceDatafile = Column(
-        "SOURCE_DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False
+        "SOURCE_DATAFILE_ID", ForeignKey("DATAFILE.ID"), nullable=False,
     )
 
     DATAFILE = relationship(
@@ -1016,7 +1016,7 @@ class SAMPLE(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
     investigation = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
     type = Column("SAMPLETYPE_ID", ForeignKey("SAMPLETYPE.ID"), index=True)
 
@@ -1083,7 +1083,7 @@ class SHIFT(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     startDate = Column("STARTDATE", DateTime, nullable=False)
     investigation = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
 
     INVESTIGATION = relationship(
@@ -1171,7 +1171,7 @@ class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     status = Column("STATUS", Integer)
     user = Column("USER_ID", ForeignKey("USER_.ID"), index=True)
 
-    USER_ = relationship("USER", primaryjoin="STUDY.user == USER.id", backref="STUDY",)
+    USER_ = relationship("USER", primaryjoin="STUDY.user == USER.id", backref="STUDY")
 
 
 class SAMPLETYPE(Base, EntityHelper, metaclass=EntityMeta):
