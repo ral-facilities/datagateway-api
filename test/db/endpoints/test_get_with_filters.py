@@ -9,7 +9,7 @@ class TestDBGetWithFilters:
         single_investigation_test_data_db,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"TITLE": {"like": "Title for DataGateway API'
+            '/investigations?where={"title": {"like": "Title for DataGateway API'
             ' Testing (DB)"}}',
             headers=valid_db_credentials_header,
         )
@@ -20,7 +20,7 @@ class TestDBGetWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"TITLE": {"eq": "This filter should cause a 404 for'
+            '/investigations?where={"title": {"eq": "This filter should cause a 404 for'
             'testing purposes..."}}',
             headers=valid_db_credentials_header,
         )
@@ -32,13 +32,13 @@ class TestDBGetWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"TITLE": {"like": "Title for DataGateway API'
-            ' Testing (DB)"}}&distinct="TITLE"',
+            '/investigations?where={"title": {"like": "Title for DataGateway API'
+            ' Testing (DB)"}}&distinct="title"',
             headers=valid_db_credentials_header,
         )
 
         expected = [
-            {"TITLE": f"Title for DataGateway API Testing (DB) {i}"} for i in range(5)
+            {"title": f"Title for DataGateway API Testing (DB) {i}"} for i in range(5)
         ]
 
         for title in expected:
@@ -54,9 +54,9 @@ class TestDBGetWithFilters:
         limit_value = 2
 
         test_response = flask_test_app_db.get(
-            '/investigations?where={"TITLE": {"like": "Title for DataGateway API'
+            '/investigations?where={"title": {"like": "Title for DataGateway API'
             ' Testing (DB)"}}'
-            f'&skip={skip_value}&limit={limit_value}&order="ID ASC"',
+            f'&skip={skip_value}&limit={limit_value}&order="id ASC"',
             headers=valid_db_credentials_header,
         )
 

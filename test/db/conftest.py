@@ -18,10 +18,10 @@ from datagateway_api.common.database.models import (
 
 def set_meta_attributes(entity):
     db_meta_attributes = {
-        "CREATE_TIME": Constants.TEST_MOD_CREATE_DATETIME,
-        "MOD_TIME": Constants.TEST_MOD_CREATE_DATETIME,
-        "CREATE_ID": "test create id",
-        "MOD_ID": "test mod id",
+        "createTime": Constants.TEST_MOD_CREATE_DATETIME,
+        "modTime": Constants.TEST_MOD_CREATE_DATETIME,
+        "createId": "test create id",
+        "modId": "test mod id",
     }
 
     for attr, value in db_meta_attributes.items():
@@ -33,17 +33,17 @@ def create_investigation_db_data(num_entities=1):
 
     for i in range(num_entities):
         investigation = INVESTIGATION()
-        investigation.NAME = f"Test Data for DataGateway API Testing (DB) {i}"
-        investigation.TITLE = f"Title for DataGateway API Testing (DB) {i}"
-        investigation.STARTDATE = datetime(
+        investigation.name = f"Test Data for DataGateway API Testing (DB) {i}"
+        investigation.title = f"Title for DataGateway API Testing (DB) {i}"
+        investigation.startDate = datetime(
             year=2020, month=1, day=4, hour=1, minute=1, second=1,
         )
-        investigation.ENDDATE = datetime(
+        investigation.endDate = datetime(
             year=2020, month=1, day=8, hour=1, minute=1, second=1,
         )
-        investigation.VISIT_ID = str(uuid.uuid1())
-        investigation.FACILITY_ID = 1
-        investigation.TYPE_ID = 1
+        investigation.visitId = str(uuid.uuid1())
+        investigation.facility = 1
+        investigation.type = 1
 
         set_meta_attributes(investigation)
 
@@ -63,7 +63,7 @@ def single_investigation_test_data_db():
 
     yield investigation
 
-    delete_row_by_id(INVESTIGATION, investigation.ID)
+    delete_row_by_id(INVESTIGATION, investigation.id)
 
 
 @pytest.fixture()
@@ -73,57 +73,57 @@ def multiple_investigation_test_data_db():
     yield investigations
 
     for investigation in investigations:
-        delete_row_by_id(INVESTIGATION, investigation.ID)
+        delete_row_by_id(INVESTIGATION, investigation.id)
 
 
 @pytest.fixture()
 def isis_specific_endpoint_data_db():
     facility_cycle = FACILITYCYCLE()
-    facility_cycle.NAME = "Test cycle for DG API testing (DB)"
-    facility_cycle.STARTDATE = datetime(
+    facility_cycle.name = "Test cycle for DG API testing (DB)"
+    facility_cycle.startDate = datetime(
         year=2020, month=1, day=1, hour=1, minute=1, second=1,
     )
-    facility_cycle.ENDDATE = datetime(
+    facility_cycle.endDate = datetime(
         year=2020, month=2, day=1, hour=1, minute=1, second=1,
     )
-    facility_cycle.FACILITY_ID = 1
+    facility_cycle.facility = 1
     set_meta_attributes(facility_cycle)
     insert_row_into_table(FACILITYCYCLE, facility_cycle)
 
     investigation = create_investigation_db_data()
 
     instrument = INSTRUMENT()
-    instrument.NAME = "Test Instrument for DataGateway API Endpoint Testing (DB)"
-    instrument.FACILITY_ID = 1
+    instrument.name = "Test Instrument for DataGateway API Endpoint Testing (DB)"
+    instrument.facility = 1
     set_meta_attributes(instrument)
     insert_row_into_table(INSTRUMENT, instrument)
 
     investigation_instrument = INVESTIGATIONINSTRUMENT()
-    investigation_instrument.INVESTIGATION_ID = investigation.ID
-    investigation_instrument.INSTRUMENT_ID = instrument.ID
+    investigation_instrument.investigation = investigation.id
+    investigation_instrument.instrument = instrument.id
     set_meta_attributes(investigation_instrument)
 
     insert_row_into_table(INVESTIGATIONINSTRUMENT, investigation_instrument)
 
-    yield (instrument.ID, facility_cycle, investigation)
+    yield (instrument.id, facility_cycle, investigation)
 
-    delete_row_by_id(INVESTIGATIONINSTRUMENT, investigation_instrument.ID)
-    delete_row_by_id(FACILITYCYCLE, facility_cycle.ID)
-    delete_row_by_id(INVESTIGATION, investigation.ID)
-    delete_row_by_id(INSTRUMENT, instrument.ID)
+    delete_row_by_id(INVESTIGATIONINSTRUMENT, investigation_instrument.id)
+    delete_row_by_id(FACILITYCYCLE, facility_cycle.id)
+    delete_row_by_id(INVESTIGATION, investigation.id)
+    delete_row_by_id(INSTRUMENT, instrument.id)
 
 
 @pytest.fixture()
 def final_instrument_id(flask_test_app_db, valid_db_credentials_header):
     final_instrument_result = flask_test_app_db.get(
-        '/instruments/findone?order="ID DESC"', headers=valid_db_credentials_header,
+        '/instruments/findone?order="id DESC"', headers=valid_db_credentials_header,
     )
-    return final_instrument_result.json["ID"]
+    return final_instrument_result.json["id"]
 
 
 @pytest.fixture()
 def final_facilitycycle_id(flask_test_app_db, valid_db_credentials_header):
     final_facilitycycle_result = flask_test_app_db.get(
-        '/facilitycycles/findone?order="ID DESC"', headers=valid_db_credentials_header,
+        '/facilitycycles/findone?order="id DESC"', headers=valid_db_credentials_header,
     )
-    return final_facilitycycle_result.json["ID"]
+    return final_facilitycycle_result.json["id"]

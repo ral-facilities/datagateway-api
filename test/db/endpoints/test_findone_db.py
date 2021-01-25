@@ -6,7 +6,7 @@ class TestDBFindone:
         single_investigation_test_data_db,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations/findone?where={"TITLE": {"like": "Title for DataGateway'
+            '/investigations/findone?where={"title": {"like": "Title for DataGateway'
             ' API Testing (DB)"}}',
             headers=valid_db_credentials_header,
         )
@@ -17,7 +17,7 @@ class TestDBFindone:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations/findone?where={"TITLE": {"eq": "This filter should cause a'
+            '/investigations/findone?where={"title": {"eq": "This filter should cause a'
             '404 for testing purposes..."}}',
             headers=valid_db_credentials_header,
         )

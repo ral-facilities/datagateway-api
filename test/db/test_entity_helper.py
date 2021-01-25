@@ -22,23 +22,23 @@ def dataset_entity():
 def datafile_entity(dataset_entity):
     datafileformat = DATAFILEFORMAT()
     datafile = DATAFILE()
-    datafile.ID = 1
-    datafile.LOCATION = "test location"
+    datafile.id = 1
+    datafile.location = "test location"
     datafile.DATASET = dataset_entity
     datafile.DATAFILEFORMAT = datafileformat
-    datafile.NAME = "test name"
-    datafile.MOD_TIME = Constants.TEST_MOD_CREATE_DATETIME
-    datafile.CREATE_TIME = Constants.TEST_MOD_CREATE_DATETIME
-    datafile.CHECKSUM = "test checksum"
-    datafile.FILESIZE = 64
-    datafile.DATAFILEMODTIME = Constants.TEST_MOD_CREATE_DATETIME
-    datafile.DATAFILECREATETIME = Constants.TEST_MOD_CREATE_DATETIME
-    datafile.DATASET_ID = 1
-    datafile.DOI = "test doi"
-    datafile.DESCRIPTION = "test description"
-    datafile.CREATE_ID = "test create id"
-    datafile.MOD_ID = "test mod id"
-    datafile.DATAFILEFORMAT_ID = 1
+    datafile.name = "test name"
+    datafile.modTime = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.createTime = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.checksum = "test checksum"
+    datafile.fileSize = 64
+    datafile.datafileModTime = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.datafileCreateTime = Constants.TEST_MOD_CREATE_DATETIME
+    datafile.dataset = 1
+    datafile.doi = "test doi"
+    datafile.description = "test description"
+    datafile.createId = "test create id"
+    datafile.modId = "test mod id"
+    datafile.datafileFormat = 1
 
     return datafile
 
@@ -46,21 +46,21 @@ def datafile_entity(dataset_entity):
 class TestEntityHelper:
     def test_valid_to_dict(self, datafile_entity):
         expected_dict = {
-            "ID": 1,
-            "LOCATION": "test location",
-            "NAME": "test name",
-            "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "CHECKSUM": "test checksum",
-            "FILESIZE": 64,
-            "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "DATASET_ID": 1,
-            "DOI": "test doi",
-            "DESCRIPTION": "test description",
-            "CREATE_ID": "test create id",
-            "MOD_ID": "test mod id",
-            "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "id": 1,
+            "location": "test location",
+            "name": "test name",
+            "modTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "checksum": "test checksum",
+            "fileSize": 64,
+            "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "dataset1": 1,
+            "doi": "test doi",
+            "description": "test description",
+            "createId": "test create id",
+            "modId": "test mod id",
+            "datafileFormat1": 1,
+            "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
         test_data = datafile_entity.to_dict()
@@ -72,37 +72,37 @@ class TestEntityHelper:
         [
             pytest.param(
                 {
-                    "ID": 1,
-                    "LOCATION": "test location",
-                    "NAME": "test name",
-                    "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "CHECKSUM": "test checksum",
-                    "FILESIZE": 64,
-                    "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "DATASET_ID": 1,
-                    "DOI": "test doi",
-                    "DESCRIPTION": "test description",
-                    "CREATE_ID": "test create id",
-                    "MOD_ID": "test mod id",
-                    "DATAFILEFORMAT_ID": 1,
-                    "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "id": 1,
+                    "location": "test location",
+                    "name": "test name",
+                    "modTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "checksum": "test checksum",
+                    "fileSize": 64,
+                    "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "dataset": 1,
+                    "doi": "test doi",
+                    "description": "test description",
+                    "createId": "test create id",
+                    "modId": "test mod id",
+                    "datafileFormat": 1,
+                    "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET": {
-                        "ID": None,
-                        "CREATE_TIME": None,
-                        "MOD_TIME": None,
-                        "CREATE_ID": None,
-                        "MOD_ID": None,
-                        "INVESTIGATION_ID": None,
-                        "COMPLETE": None,
-                        "DESCRIPTION": None,
-                        "DOI": None,
-                        "END_DATE": None,
-                        "LOCATION": None,
-                        "NAME": None,
-                        "STARTDATE": None,
-                        "SAMPLE_ID": None,
-                        "TYPE_ID": None,
+                        "id": None,
+                        "createTime": None,
+                        "modTime": None,
+                        "createId": None,
+                        "modId": None,
+                        "investigation": None,
+                        "complete": None,
+                        "description": None,
+                        "doi": None,
+                        "endDate": None,
+                        "location": None,
+                        "name": None,
+                        "startDate": None,
+                        "sample": None,
+                        "type": None,
                     },
                 },
                 "DATASET",
@@ -110,53 +110,53 @@ class TestEntityHelper:
             ),
             pytest.param(
                 {
-                    "ID": 1,
-                    "LOCATION": "test location",
-                    "NAME": "test name",
-                    "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "CHECKSUM": "test checksum",
-                    "FILESIZE": 64,
-                    "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-                    "DATASET_ID": 1,
-                    "DOI": "test doi",
-                    "DESCRIPTION": "test description",
-                    "CREATE_ID": "test create id",
-                    "MOD_ID": "test mod id",
-                    "DATAFILEFORMAT_ID": 1,
-                    "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "id": 1,
+                    "location": "test location",
+                    "name": "test name",
+                    "modTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "checksum": "test checksum",
+                    "fileSize": 64,
+                    "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "dataset": 1,
+                    "doi": "test doi",
+                    "description": "test description",
+                    "createId": "test create id",
+                    "modId": "test mod id",
+                    "datafileFormat": 1,
+                    "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
                     "DATASET": {
-                        "ID": None,
-                        "CREATE_TIME": None,
-                        "MOD_TIME": None,
-                        "CREATE_ID": None,
-                        "MOD_ID": None,
-                        "INVESTIGATION_ID": None,
-                        "COMPLETE": None,
-                        "DESCRIPTION": None,
-                        "DOI": None,
-                        "END_DATE": None,
-                        "LOCATION": None,
-                        "NAME": None,
-                        "STARTDATE": None,
-                        "SAMPLE_ID": None,
-                        "TYPE_ID": None,
+                        "id": None,
+                        "createTime": None,
+                        "modTime": None,
+                        "createId": None,
+                        "modId": None,
+                        "investigation": None,
+                        "complete": None,
+                        "description": None,
+                        "doi": None,
+                        "endDate": None,
+                        "location": None,
+                        "name": None,
+                        "startDate": None,
+                        "sample": None,
+                        "type": None,
                         "INVESTIGATION": {
-                            "ID": None,
-                            "CREATE_ID": None,
-                            "CREATE_TIME": None,
-                            "DOI": None,
-                            "ENDDATE": None,
-                            "MOD_ID": None,
-                            "MOD_TIME": None,
-                            "NAME": None,
-                            "RELEASEDATE": None,
-                            "STARTDATE": None,
-                            "SUMMARY": None,
-                            "TITLE": None,
-                            "VISIT_ID": None,
-                            "FACILITY_ID": None,
-                            "TYPE_ID": None,
+                            "id": None,
+                            "createId": None,
+                            "createTime": None,
+                            "doi": None,
+                            "endDate": None,
+                            "modId": None,
+                            "modTime": None,
+                            "name": None,
+                            "releaseDate": None,
+                            "startDate": None,
+                            "summary": None,
+                            "title": None,
+                            "visitId": None,
+                            "facility": None,
+                            "type": None,
                         },
                     },
                 },
@@ -176,21 +176,21 @@ class TestEntityHelper:
     def test_valid_update_from_dict(self, datafile_entity):
         datafile = DATAFILE()
         test_dict_data = {
-            "ID": 1,
-            "LOCATION": "test location",
-            "NAME": "test name",
-            "MOD_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "CHECKSUM": "test checksum",
-            "FILESIZE": 64,
-            "DATAFILEMODTIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "DATAFILECREATETIME": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "DATASET_ID": 1,
-            "DOI": "test doi",
-            "DESCRIPTION": "test description",
-            "CREATE_ID": "test create id",
-            "MOD_ID": "test mod id",
-            "DATAFILEFORMAT_ID": 1,
-            "CREATE_TIME": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "id": 1,
+            "location": "test location",
+            "name": "test name",
+            "modTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "checksum": "test checksum",
+            "fileSize": 64,
+            "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+            "dataset": 1,
+            "doi": "test doi",
+            "description": "test description",
+            "createId": "test create id",
+            "modId": "test mod id",
+            "datefileFormat": 1,
+            "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
         datafile.update_from_dict(test_dict_data)

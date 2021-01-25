@@ -58,7 +58,7 @@ class TestDBTableEndpoints:
     ):
         test_response = flask_test_app_db.get(
             f"/instruments/{isis_specific_endpoint_data_db[0]}/facilitycycles/"
-            f"{isis_specific_endpoint_data_db[1].to_dict()['ID']}/investigations",
+            f"{isis_specific_endpoint_data_db[1].to_dict()['id']}/investigations",
             headers=valid_db_credentials_header,
         )
 
@@ -87,7 +87,7 @@ class TestDBTableEndpoints:
     ):
         test_response = flask_test_app_db.get(
             f"/instruments/{isis_specific_endpoint_data_db[0]}/facilitycycles/"
-            f"{isis_specific_endpoint_data_db[1].to_dict()['ID']}/investigations/count",
+            f"{isis_specific_endpoint_data_db[1].to_dict()['id']}/investigations/count",
             headers=valid_db_credentials_header,
         )
 
