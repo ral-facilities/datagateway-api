@@ -38,9 +38,9 @@ class DatabaseBackend(Backend):
             insert_row_into_table(
                 SESSION,
                 SESSION(
-                    ID=session_id,
-                    USERNAME=f"{credentials['mechanism']}/root",
-                    EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1),
+                    id=session_id,
+                    username=f"{credentials['mechanism']}/root",
+                    expireDateTime=datetime.datetime.now() + datetime.timedelta(days=1),
                 ),
             )
             return session_id

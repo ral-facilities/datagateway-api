@@ -42,7 +42,7 @@ def requires_session_id(method):
     def wrapper_requires_session(*args, **kwargs):
         log.info(" Authenticating consumer")
         session = session_manager.get_icat_db_session()
-        query = session.query(SESSION).filter(SESSION.ID == args[1]).first()
+        query = session.query(SESSION).filter(SESSION.id == args[1]).first()
         if query is not None:
             log.info(" Closing DB session")
             session.close()
@@ -226,7 +226,7 @@ def get_row_by_id(table, id_):
     """
     with ReadQuery(table) as read_query:
         log.info(" Querying %s for record with ID: %s", table.__tablename__, id_)
-        where_filter = WhereFilter("ID", id_, "eq")
+        where_filter = WhereFilter("id", id_, "eq")
         where_filter.apply_filter(read_query)
         return read_query.get_single_result()
 
@@ -392,10 +392,10 @@ class InstrumentFacilityCyclesQuery(ReadQuery):
             .join(FACILITY.INVESTIGATION)
             .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
             .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.ID == instrument_id)
-            .filter(investigation_instrument.ID == INSTRUMENT.ID)
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
-            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+            .filter(INSTRUMENT.id == instrument_id)
+            .filter(investigation_instrument.id == INSTRUMENT.id)
+            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
+            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
         )
 
 
@@ -423,10 +423,10 @@ class InstrumentFacilityCyclesCountQuery(CountQuery):
             .join(FACILITY.INVESTIGATION)
             .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
             .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.ID == instrument_id)
-            .filter(investigation_instrument.ID == INSTRUMENT.ID)
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
-            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+            .filter(INSTRUMENT.id == instrument_id)
+            .filter(investigation_instrument.id == INSTRUMENT.id)
+            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
+            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
         )
 
 
@@ -456,11 +456,11 @@ class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
             .join(FACILITY.INSTRUMENT)
             .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
             .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.ID == instrument_id)
-            .filter(FACILITYCYCLE.ID == facility_cycle_id)
-            .filter(investigation_instrument.ID == INSTRUMENT.ID)
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
-            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+            .filter(INSTRUMENT.id == instrument_id)
+            .filter(FACILITYCYCLE.id == facility_cycle_id)
+            .filter(investigation_instrument.id == INSTRUMENT.id)
+            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
+            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
         )
 
 
@@ -493,11 +493,11 @@ class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
             .join(FACILITY.INSTRUMENT)
             .join(INVESTIGATION.INVESTIGATIONINSTRUMENT)
             .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.ID == instrument_id)
-            .filter(FACILITYCYCLE.ID == facility_cycle_id)
-            .filter(investigation_instrument.ID == INSTRUMENT.ID)
-            .filter(INVESTIGATION.STARTDATE >= FACILITYCYCLE.STARTDATE)
-            .filter(INVESTIGATION.STARTDATE <= FACILITYCYCLE.ENDDATE)
+            .filter(INSTRUMENT.id == instrument_id)
+            .filter(FACILITYCYCLE.id == facility_cycle_id)
+            .filter(investigation_instrument.id == INSTRUMENT.id)
+            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
+            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
         )
 
 
