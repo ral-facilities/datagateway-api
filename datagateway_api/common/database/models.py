@@ -215,7 +215,6 @@ class APPLICATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "APPLICATION"
     __table_args__ = (Index("UNQ_APPLICATION_0", "FACILITY_ID", "NAME", "VERSION"),)
 
-    # TODO - Disable N815 on this file, document why this is (comment in .flake8?)
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
