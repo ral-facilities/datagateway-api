@@ -144,10 +144,10 @@ class CreateQuery(Query):
         else:
             record = self.table()
             record.update_from_dict(self.row)
-            record.CREATE_TIME = datetime.datetime.now()
-            record.MOD_TIME = datetime.datetime.now()
-            record.CREATE_ID = "user"
-            record.MOD_ID = "user"  # These will need changing
+            record.createTime = datetime.datetime.now()
+            record.modTime = datetime.datetime.now()
+            record.createId = "user"
+            record.modId = "user"  # TODO - These will need changing
         self.session.add(record)
         self.commit_changes()
         self.session.refresh(record)
