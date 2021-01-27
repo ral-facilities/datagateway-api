@@ -1,13 +1,18 @@
+import pytest
+
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
 class TestICATCreateData:
+    investigation_name_prefix = "Test Data for API Testing, Data Creation"
+
+    @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_create_data(
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         create_investigations_json = [
             {
-                "name": f"Test Data for API Testing, Data Creation {i}",
+                "name": f"{self.investigation_name_prefix} {i}",
                 "title": "Test data for the Python ICAT Backend on DataGateway API",
                 "summary": "Test data for DataGateway API testing",
                 "releaseDate": "2020-03-03 08:00:08+00:00",
@@ -27,13 +32,9 @@ class TestICATCreateData:
             json=create_investigations_json,
         )
 
-        test_data_ids = []
-        for investigation_request, investigation_response in zip(
-            create_investigations_json, test_response.json,
-        ):
+        for investigation_request in create_investigations_json:
             investigation_request.pop("facility")
             investigation_request.pop("type")
-            test_data_ids.append(investigation_response["id"])
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json, remove_id=True,
@@ -41,20 +42,14 @@ class TestICATCreateData:
 
         assert create_investigations_json == response_json
 
-        # Delete the entities created by this test
-        for investigation_id in test_data_ids:
-            flask_test_app_icat.delete(
-                f"/investigations/{investigation_id}",
-                headers=valid_icat_credentials_header,
-            )
-
+    @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_boundary_create_data(
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 
         create_investigation_json = {
-            "name": "Test Data for API Testing, Data Creation 0",
+            "name": f"{self.investigation_name_prefix} 0",
             "title": "Test data for the Python ICAT Backend on the API",
             "summary": "Test data for DataGateway API testing",
             "releaseDate": "2020-03-03 08:00:08+00:00",
@@ -74,18 +69,12 @@ class TestICATCreateData:
 
         create_investigation_json.pop("facility")
         create_investigation_json.pop("type")
-        created_test_data_id = test_response.json[0]["id"]
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json, remove_id=True,
         )
 
         assert [create_investigation_json] == response_json
-
-        flask_test_app_icat.delete(
-            f"/investigations/{created_test_data_id}",
-            headers=valid_icat_credentials_header,
-        )
 
     def test_invalid_create_data(
         self, flask_test_app_icat, valid_icat_credentials_header,
