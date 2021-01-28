@@ -54,12 +54,12 @@ class TestEntityHelper:
             "fileSize": 64,
             "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
             "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "dataset1": 1,
+            "dataset": 1,
             "doi": "test doi",
             "description": "test description",
             "createId": "test create id",
             "modId": "test mod id",
-            "datafileFormat1": 1,
+            "datafileFormat": 1,
             "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
@@ -189,7 +189,7 @@ class TestEntityHelper:
             "description": "test description",
             "createId": "test create id",
             "modId": "test mod id",
-            "datefileFormat": 1,
+            "datafileFormat": 1,
             "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 

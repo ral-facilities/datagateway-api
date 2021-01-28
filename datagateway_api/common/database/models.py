@@ -84,19 +84,9 @@ class EntityHelper(ABC):
         """
         dictionary = {}
         for column in self.__table__.columns:
-            camel_case_column_name = None
-            attribute = None
-
-            # Case insensitive alternative to getattr() - needed because column names
-            # are defined in SNAKE_CASE, class column variables named using camelCase to
-            # match Python ICAT backend
-            for a in dir(self):
-                if a.lower() == column.name.replace("_", "").lower():
-                    attribute = getattr(self, a)
-                    camel_case_column_name = a
-
-            if camel_case_column_name is not None and attribute is not None:
-                dictionary[camel_case_column_name] = self._make_serializable(attribute)
+            attribute_field_name = self.__mapper__.get_property_by_column(column).key
+            attribute = getattr(self, attribute_field_name)
+            dictionary[attribute_field_name] = self._make_serializable(attribute)
 
         return dictionary
 
