@@ -67,7 +67,7 @@ class EntityHelper(ABC):
         :param entity_name: Name of the entity to fetch a version from this model
         :type entity_name: :class:`str`
         :return: Object of the entity requested (e.g.
-            :class:`common.database.models.INVESTIGATIONINSTRUMENT`)
+            :class:`datagateway_api.common.database.models.INVESTIGATIONINSTRUMENT`)
         :raises: KeyError: If an entity model cannot be found as a class in this model
         """
         try:
