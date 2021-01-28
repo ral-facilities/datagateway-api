@@ -82,6 +82,10 @@ def create_entity_models():
         endpoint_table = EntityHelper.get_entity_object_from_name(endpoints[endpoint])
         endpoint_inspection = inspect(endpoint_table)
         for column in endpoint_inspection.columns:
+            # Needed to ensure camelCase field names are used, rather than SNAKE_CASE
+            attribute_field_name = endpoint_inspection.get_property_by_column(
+                column,
+            ).key
             python_type = (
                 column.type.impl.python_type
                 if hasattr(column.type, "impl")
@@ -94,8 +98,8 @@ def create_entity_models():
             if column.doc:
                 param["description"] = column.doc
             if not column.nullable:
-                required.append(column.name)
-            params[column.name] = param
+                required.append(attribute_field_name)
+            params[attribute_field_name] = param
 
         for (
             relationship_name,
