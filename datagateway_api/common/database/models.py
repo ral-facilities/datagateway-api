@@ -20,7 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
-from datagateway_api.common.exceptions import ApiError, DatabaseError, FilterError
+from datagateway_api.common.exceptions import DatabaseError, FilterError
 
 Base = declarative_base()
 
@@ -57,25 +57,6 @@ class EntityHelper(ABC):
     """
     EntityHelper class that contains methods to be shared across all entities
     """
-
-    @staticmethod
-    def get_entity_object_from_name(entity_name):
-        """
-        From an entity name, this function gets a Python version of that entity for the
-        database backend
-
-        :param entity_name: Name of the entity to fetch a version from this model
-        :type entity_name: :class:`str`
-        :return: Object of the entity requested (e.g.
-            :class:`datagateway_api.common.database.models.INVESTIGATIONINSTRUMENT`)
-        :raises: KeyError: If an entity model cannot be found as a class in this model
-        """
-        try:
-            return globals()[entity_name.upper()]
-        except KeyError:
-            raise ApiError(
-                f"Entity class cannot be found, missing class for {entity_name}",
-            )
 
     def to_dict(self):
         """

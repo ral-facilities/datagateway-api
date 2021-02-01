@@ -12,6 +12,7 @@ from datagateway_api.common.filters import (
     SkipFilter,
     WhereFilter,
 )
+from datagateway_api.common.helpers import get_entity_object_from_name
 
 
 log = logging.getLogger()
@@ -65,9 +66,8 @@ class DatabaseWhereFilter(WhereFilter):
                 included_included_table,
             )
             field = getattr(included_included_table, self.included_included_field)
-
         elif self.included_field:
-            included_table = getattr(models, self.field)
+            included_table = get_entity_object_from_name(self.field)
             query.base_query = query.base_query.join(included_table)
             field = getattr(included_table, self.included_field)
 

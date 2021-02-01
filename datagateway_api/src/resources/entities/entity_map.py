@@ -2,6 +2,7 @@ import datetime
 
 from sqlalchemy.inspection import inspect
 
+from datagateway_api.common.helpers import get_entity_object_from_name
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 
@@ -36,7 +37,7 @@ def create_entity_models():
     for endpoint in endpoints:
         params = {}
         required = []
-        endpoint_table = EntityHelper.get_entity_object_from_name(endpoints[endpoint])
+        endpoint_table = get_entity_object_from_name(endpoints[endpoint])
         endpoint_inspection = inspect(endpoint_table)
         for column in endpoint_inspection.columns:
             # Needed to ensure camelCase field names are used, rather than SNAKE_CASE

@@ -6,6 +6,7 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
+from datagateway_api.common.database import models
 from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,
@@ -101,3 +102,27 @@ def get_filters_from_query_string():
         return filters
     except Exception as e:
         raise FilterError(e)
+
+
+def get_entity_object_from_name(entity_name):
+    """
+    From an entity name, this function gets a Python version of that entity for the
+    database backend
+
+    :param entity_name: Name of the entity to fetch a version from this model
+    :type entity_name: :class:`str`
+    :return: Object of the entity requested (e.g.
+        :class:`datagateway_api.common.database.models.INVESTIGATIONINSTRUMENT`)
+    :raises: KeyError: If an entity model cannot be found as a class in this model
+    """
+    try:
+        # If a plural is given, fetch the singular field name
+        if entity_name[-1] == "s":
+            entity_name = entity_name[0].upper() + entity_name[1:]
+            entity_name = endpoints[entity_name]
+
+        return getattr(models, entity_name.upper())
+    except KeyError:
+        raise ApiError(
+            f"Entity class cannot be found, missing class for {entity_name}",
+        )
