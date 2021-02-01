@@ -184,6 +184,8 @@ class EntityMeta(type(Base), type(EntityHelper)):
 
 class APPLICATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "APPLICATION"
+    __singularfieldname__ = "application"
+    __pluralfieldname__ = "applications"
     __table_args__ = (Index("UNQ_APPLICATION_0", "FACILITY_ID", "NAME", "VERSION"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -198,12 +200,14 @@ class APPLICATION(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="APPLICATION.facility == FACILITY.id",
-        backref="APPLICATION",
+        backref="applications",
     )
 
 
 class FACILITY(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITY"
+    __singularfieldname__ = "facility"
+    __pluralfieldname__ = "facilities"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -219,6 +223,8 @@ class FACILITY(Base, EntityHelper, metaclass=EntityMeta):
 
 class DATACOLLECTION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTION"
+    __singularfieldname__ = "dataCollection"
+    __pluralfieldname__ = "dataCollections"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -230,6 +236,8 @@ class DATACOLLECTION(Base, EntityHelper, metaclass=EntityMeta):
 
 class DATACOLLECTIONDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONDATAFILE"
+    __singularfieldname__ = "dataCollectionDatafile"
+    __pluralfieldname__ = "dataCollectionDatafiles"
     __table_args__ = (
         Index("UNQ_DATACOLLECTIONDATAFILE_0", "DATACOLLECTION_ID", "DATAFILE_ID"),
     )
@@ -249,17 +257,19 @@ class DATACOLLECTIONDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     DATACOLLECTION = relationship(
         "DATACOLLECTION",
         primaryjoin="DATACOLLECTIONDATAFILE.dataCollection == DATACOLLECTION.id",
-        backref="DATACOLLECTIONDATAFILE",
+        backref="dataCollectionDatafiles",
     )
     DATAFILE = relationship(
         "DATAFILE",
         primaryjoin="DATACOLLECTIONDATAFILE.datafile == DATAFILE.id",
-        backref="DATACOLLECTIONDATAFILE",
+        backref="dataCollectionDatafiles",
     )
 
 
 class DATACOLLECTIONDATASET(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONDATASET"
+    __singularfieldname__ = "dataCollectionDataset"
+    __pluralfieldname__ = "dataCollectionDatasets"
     __table_args__ = (
         Index("UNQ_DATACOLLECTIONDATASET_0", "DATACOLLECTION_ID", "DATASET_ID"),
     )
@@ -277,17 +287,19 @@ class DATACOLLECTIONDATASET(Base, EntityHelper, metaclass=EntityMeta):
     DATACOLLECTION = relationship(
         "DATACOLLECTION",
         primaryjoin="DATACOLLECTIONDATASET.dataCollection == DATACOLLECTION.id",
-        backref="DATACOLLECTIONDATASET",
+        backref="dataCollectionDatasets",
     )
     DATASET = relationship(
         "DATASET",
         primaryjoin="DATACOLLECTIONDATASET.dataset == DATASET.id",
-        backref="DATACOLLECTIONDATASET",
+        backref="dataCollectionDatasets",
     )
 
 
 class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATACOLLECTIONPARAMETER"
+    __singularfieldname__ = "dataCollectionParameter"
+    __pluralfieldname__ = "dataCollectionParameters"
     __table_args__ = (
         Index(
             "UNQ_DATACOLLECTIONPARAMETER_0", "DATACOLLECTION_ID", "PARAMETER_TYPE_ID",
@@ -315,17 +327,19 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     DATACOLLECTION = relationship(
         "DATACOLLECTION",
         primaryjoin="DATACOLLECTIONPARAMETER.dataCollection == DATACOLLECTION.id",
-        backref="DATACOLLECTIONPARAMETER",
+        backref="dataCollectionParameters",
     )
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATACOLLECTIONPARAMETER.type == PARAMETERTYPE.id",
-        backref="DATACOLLECTIONPARAMETER",
+        backref="dataCollectionParameters",
     )
 
 
 class DATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILE"
+    __singularfieldname__ = "datafile"
+    __pluralfieldname__ = "datafiles"
     __table_args__ = (Index("UNQ_DATAFILE_0", "DATASET_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -349,15 +363,17 @@ class DATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     DATAFILEFORMAT = relationship(
         "DATAFILEFORMAT",
         primaryjoin="DATAFILE.datafileFormat == DATAFILEFORMAT.id",
-        backref="DATAFILE",
+        backref="datafiles",
     )
     DATASET = relationship(
-        "DATASET", primaryjoin="DATAFILE.dataset == DATASET.id", backref="DATAFILE",
+        "DATASET", primaryjoin="DATAFILE.dataset == DATASET.id", backref="datafiles",
     )
 
 
 class DATAFILEFORMAT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILEFORMAT"
+    __singularfieldname__ = "datafileFormat"
+    __pluralfieldname__ = "datafileFormats"
     __table_args__ = (Index("UNQ_DATAFILEFORMAT_0", "FACILITY_ID", "NAME", "VERSION"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -374,12 +390,14 @@ class DATAFILEFORMAT(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="DATAFILEFORMAT.facility == FACILITY.id",
-        backref="DATAFILEFORMAT",
+        backref="datafileFormats",
     )
 
 
 class DATAFILEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATAFILEPARAMETER"
+    __singularfieldname__ = "datafileParameter"
+    __pluralfieldname__ = "datafileParameters"
     __table_args__ = (
         Index("UNQ_DATAFILEPARAMETER_0", "DATAFILE_ID", "PARAMETER_TYPE_ID"),
     )
@@ -403,17 +421,19 @@ class DATAFILEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     DATAFILE = relationship(
         "DATAFILE",
         primaryjoin="DATAFILEPARAMETER.datafile == DATAFILE.id",
-        backref="DATAFILEPARAMETER",
+        backref="datafileParameters",
     )
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATAFILEPARAMETER.type == PARAMETERTYPE.id",
-        backref="DATAFILEPARAMETER",
+        backref="datafileParameters",
     )
 
 
 class DATASET(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASET"
+    __singularfieldname__ = "dataset"
+    __pluralfieldname__ = "datasets"
     __table_args__ = (Index("UNQ_DATASET_0", "INVESTIGATION_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -439,18 +459,20 @@ class DATASET(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="DATASET.investigation == INVESTIGATION.id",
-        backref="DATASET",
+        backref="datasets",
     )
     SAMPLE = relationship(
-        "SAMPLE", primaryjoin="DATASET.sample == SAMPLE.id", backref="DATASET",
+        "SAMPLE", primaryjoin="DATASET.sample == SAMPLE.id", backref="datasets",
     )
     DATASETTYPE = relationship(
-        "DATASETTYPE", primaryjoin="DATASET.type == DATASETTYPE.id", backref="DATASET",
+        "DATASETTYPE", primaryjoin="DATASET.type == DATASETTYPE.id", backref="datasets",
     )
 
 
 class DATASETPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASETPARAMETER"
+    __singularfieldname__ = "datasetParameter"
+    __pluralfieldname__ = "datasetParameters"
     __table_args__ = (
         Index("UNQ_DATASETPARAMETER_0", "DATASET_ID", "PARAMETER_TYPE_ID"),
     )
@@ -474,17 +496,19 @@ class DATASETPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     DATASET = relationship(
         "DATASET",
         primaryjoin="DATASETPARAMETER.dataset == DATASET.id",
-        backref="DATASETPARAMETER",
+        backref="datasetParameters",
     )
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATASETPARAMETER.type == PARAMETERTYPE.id",
-        backref="DATASETPARAMETER",
+        backref="datasetParameters",
     )
 
 
 class DATASETTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "DATASETTYPE"
+    __singularfieldname__ = "type"
+    __pluralfieldname__ = "datasetTypes"
     __table_args__ = (Index("UNQ_DATASETTYPE_0", "FACILITY_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -499,12 +523,14 @@ class DATASETTYPE(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="DATASETTYPE.facility == FACILITY.id",
-        backref="DATASETTYPE",
+        backref="datasetTypes",
     )
 
 
 class FACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITYCYCLE"
+    __singularfieldname__ = "facilityCycle"
+    __pluralfieldname__ = "facilityCycles"
     __table_args__ = (Index("UNQ_FACILITYCYCLE_0", "FACILITY_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -521,12 +547,14 @@ class FACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="FACILITYCYCLE.facility == FACILITY.id",
-        backref="FACILITYCYCLE",
+        backref="facilityCycles",
     )
 
 
 class GROUPING(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "GROUPING"
+    __singularfieldname__ = "grouping"
+    __pluralfieldname__ = "groupings"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -538,6 +566,8 @@ class GROUPING(Base, EntityHelper, metaclass=EntityMeta):
 
 class INSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INSTRUMENT"
+    __singularfieldname__ = "instrument"
+    __pluralfieldname__ = "instruments"
     __table_args__ = (Index("UNQ_INSTRUMENT_0", "FACILITY_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -555,12 +585,14 @@ class INSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="INSTRUMENT.facility == FACILITY.id",
-        backref="INSTRUMENT",
+        backref="instruments",
     )
 
 
 class INSTRUMENTSCIENTIST(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INSTRUMENTSCIENTIST"
+    __singularfieldname__ = "instrumentScientist"
+    __pluralfieldname__ = "instrumentScientists"
     __table_args__ = (Index("UNQ_INSTRUMENTSCIENTIST_0", "USER_ID", "INSTRUMENT_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -576,17 +608,19 @@ class INSTRUMENTSCIENTIST(Base, EntityHelper, metaclass=EntityMeta):
     INSTRUMENT = relationship(
         "INSTRUMENT",
         primaryjoin="INSTRUMENTSCIENTIST.instrument == INSTRUMENT.id",
-        backref="INSTRUMENTSCIENTIST",
+        backref="instrumentScientists",
     )
-    USER_ = relationship(
+    USER = relationship(
         "USER",
         primaryjoin="INSTRUMENTSCIENTIST.user == USER.id",
-        backref="INSTRUMENTSCIENTIST",
+        backref="instrumentScientists",
     )
 
 
 class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATION"
+    __singularfieldname__ = "investigation"
+    __pluralfieldname__ = "investigations"
     __table_args__ = (Index("UNQ_INVESTIGATION_0", "FACILITY_ID", "NAME", "VISIT_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -610,17 +644,19 @@ class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="INVESTIGATION.facility == FACILITY.id",
-        backref="INVESTIGATION",
+        backref="investigations",
     )
     INVESTIGATIONTYPE = relationship(
         "INVESTIGATIONTYPE",
         primaryjoin="INVESTIGATION.type == INVESTIGATIONTYPE.id",
-        backref="INVESTIGATION",
+        backref="investigations",
     )
 
 
 class INVESTIGATIONGROUP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONGROUP"
+    __singularfieldname__ = "investigationGroup"
+    __pluralfieldname__ = "investigationGroups"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONGROUP_0", "GROUP_ID", "INVESTIGATION_ID", "ROLE"),
     )
@@ -639,17 +675,19 @@ class INVESTIGATIONGROUP(Base, EntityHelper, metaclass=EntityMeta):
     GROUPING = relationship(
         "GROUPING",
         primaryjoin="INVESTIGATIONGROUP.grouping == GROUPING.id",
-        backref="INVESTIGATIONGROUP",
+        backref="investigationGroups",
     )
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="INVESTIGATIONGROUP.investigation == INVESTIGATION.id",
-        backref="INVESTIGATIONGROUP",
+        backref="investigationGroups",
     )
 
 
 class INVESTIGATIONINSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONINSTRUMENT"
+    __singularfieldname__ = "investigationInstrument"
+    __pluralfieldname__ = "investigationInstruments"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONINSTRUMENT_0", "INVESTIGATION_ID", "INSTRUMENT_ID"),
     )
@@ -669,17 +707,19 @@ class INVESTIGATIONINSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
     INSTRUMENT = relationship(
         "INSTRUMENT",
         primaryjoin="INVESTIGATIONINSTRUMENT.instrument == INSTRUMENT.id",
-        backref="INVESTIGATIONINSTRUMENT",
+        backref="investigationInstruments",
     )
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="INVESTIGATIONINSTRUMENT.investigation == INVESTIGATION.id",
-        backref="INVESTIGATIONINSTRUMENT",
+        backref="investigationInstruments",
     )
 
 
 class INVESTIGATIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONPARAMETER"
+    __singularfieldname__ = "investigationParameter"
+    __pluralfieldname__ = "investigationParameters"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONPARAMETER_0", "INVESTIGATION_ID", "PARAMETER_TYPE_ID"),
     )
@@ -705,17 +745,19 @@ class INVESTIGATIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="INVESTIGATIONPARAMETER.investigation == INVESTIGATION.id",
-        backref="INVESTIGATIONPARAMETER",
+        backref="investigationParameters",
     )
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="INVESTIGATIONPARAMETER.type == PARAMETERTYPE.id",
-        backref="INVESTIGATIONPARAMETER",
+        backref="investigationParameters",
     )
 
 
 class INVESTIGATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONTYPE"
+    __singularfieldname__ = "type"
+    __pluralfieldname__ = "investigationTypes"
     __table_args__ = (Index("UNQ_INVESTIGATIONTYPE_0", "NAME", "FACILITY_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -732,12 +774,14 @@ class INVESTIGATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="INVESTIGATIONTYPE.facility == FACILITY.id",
-        backref="INVESTIGATIONTYPE",
+        backref="investigationTypes",
     )
 
 
 class INVESTIGATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "INVESTIGATIONUSER"
+    __singularfieldname__ = "investigationUser"
+    __pluralfieldname__ = "investigationUsers"
     __table_args__ = (
         Index("UNQ_INVESTIGATIONUSER_0", "USER_ID", "INVESTIGATION_ID", "ROLE"),
     )
@@ -756,17 +800,19 @@ class INVESTIGATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="INVESTIGATIONUSER.investigation == INVESTIGATION.id",
-        backref="INVESTIGATIONUSER",
+        backref="investigationUsers",
     )
-    USER_ = relationship(
+    USER = relationship(
         "USER",
         primaryjoin="INVESTIGATIONUSER.user == USER.id",
-        backref="INVESTIGATIONUSER",
+        backref="investigationUsers",
     )
 
 
 class JOB(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "JOB"
+    __singularfieldname__ = "job"
+    __pluralfieldname__ = "jobs"
 
     id = Column("ID", BigInteger, primary_key=True)
     arguments = Column("ARGUMENTS", String(255))
@@ -785,17 +831,19 @@ class JOB(Base, EntityHelper, metaclass=EntityMeta):
     )
 
     APPLICATION = relationship(
-        "APPLICATION", primaryjoin="JOB.application == APPLICATION.id", backref="JOB",
+        "APPLICATION", primaryjoin="JOB.application == APPLICATION.id", backref="jobs",
     )
     DATACOLLECTION = relationship(
         "DATACOLLECTION",
         primaryjoin="JOB.inputDataCollection == DATACOLLECTION.id",
-        backref="JOB",
+        backref="jobs",
     )
 
 
 class KEYWORD(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "KEYWORD"
+    __singularfieldname__ = "keyword"
+    __pluralfieldname__ = "keywords"
     __table_args__ = (Index("UNQ_KEYWORD_0", "NAME", "INVESTIGATION_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -811,12 +859,14 @@ class KEYWORD(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="KEYWORD.investigation == INVESTIGATION.id",
-        backref="KEYWORD",
+        backref="keywords",
     )
 
 
 class PARAMETERTYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PARAMETERTYPE"
+    __singularfieldname__ = "type"
+    __pluralfieldname__ = "parameterTypes"
     __table_args__ = (Index("UNQ_PARAMETERTYPE_0", "FACILITY_ID", "NAME", "UNITS"),)
 
     class ValueTypeEnum(enum.Enum):
@@ -858,12 +908,14 @@ class PARAMETERTYPE(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="PARAMETERTYPE.facility == FACILITY.id",
-        backref="PARAMETERTYPE",
+        backref="parameterTypes",
     )
 
 
 class PERMISSIBLESTRINGVALUE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PERMISSIBLESTRINGVALUE"
+    __singularfieldname__ = "permissibleStringValue"
+    __pluralfieldname__ = "permissibleStringValues"
     __table_args__ = (
         Index("UNQ_PERMISSIBLESTRINGVALUE_0", "VALUE", "PARAMETERTYPE_ID"),
     )
@@ -881,12 +933,14 @@ class PERMISSIBLESTRINGVALUE(Base, EntityHelper, metaclass=EntityMeta):
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="PERMISSIBLESTRINGVALUE.type == PARAMETERTYPE.id",
-        backref="PERMISSIBLESTRINGVALUE",
+        backref="permissibleStringValues",
     )
 
 
 class PUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PUBLICATION"
+    __singularfieldname__ = "publication"
+    __pluralfieldname__ = "publications"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -905,12 +959,14 @@ class PUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="PUBLICATION.investigation == INVESTIGATION.id",
-        backref="PUBLICATION",
+        backref="publications",
     )
 
 
 class PUBLICSTEP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "PUBLICSTEP"
+    __singularfieldname__ = "publicStep"
+    __pluralfieldname__ = "publicSteps"
     __table_args__ = (Index("UNQ_PUBLICSTEP_0", "ORIGIN", "FIELD"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -924,6 +980,8 @@ class PUBLICSTEP(Base, EntityHelper, metaclass=EntityMeta):
 
 class RELATEDDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "RELATEDDATAFILE"
+    __singularfieldname__ = "relatedDatafile"
+    __pluralfieldname__ = "relatedDatafiles"
     __table_args__ = (
         Index("UNQ_RELATEDDATAFILE_0", "SOURCE_DATAFILE_ID", "DEST_DATAFILE_ID"),
     )
@@ -944,12 +1002,14 @@ class RELATEDDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     DATAFILE = relationship(
         "DATAFILE",
         primaryjoin="RELATEDDATAFILE.destDatafile == DATAFILE.id",
-        backref="RELATEDDATAFILE",
+        backref="relatedDatafiles",
     )
 
 
 class RULE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "RULE_"
+    __singularfieldname__ = "rule"
+    __pluralfieldname__ = "rules"
 
     id = Column("ID", BigInteger, primary_key=True)
     attribute = Column("ATTRIBUTE", String(255))
@@ -971,12 +1031,14 @@ class RULE(Base, EntityHelper, metaclass=EntityMeta):
     grouping = Column("GROUPING_ID", ForeignKey("GROUPING.ID"), index=True)
 
     GROUPING = relationship(
-        "GROUPING", primaryjoin="RULE.grouping == GROUPING.id", backref="RULE",
+        "GROUPING", primaryjoin="RULE.grouping == GROUPING.id", backref="rules",
     )
 
 
 class SAMPLE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLE"
+    __singularfieldname__ = "sample"
+    __pluralfieldname__ = "samples"
     __table_args__ = (Index("UNQ_SAMPLE_0", "INVESTIGATION_ID", "NAME"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -993,15 +1055,17 @@ class SAMPLE(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="SAMPLE.investigation == INVESTIGATION.id",
-        backref="SAMPLE",
+        backref="samples",
     )
     SAMPLETYPE = relationship(
-        "SAMPLETYPE", primaryjoin="SAMPLE.type == SAMPLETYPE.id", backref="SAMPLE",
+        "SAMPLETYPE", primaryjoin="SAMPLE.type == SAMPLETYPE.id", backref="samples",
     )
 
 
 class SAMPLEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLEPARAMETER"
+    __singularfieldname__ = "sampleParameter"
+    __pluralfieldname__ = "sampleParameters"
     __table_args__ = (Index("UNQ_SAMPLEPARAMETER_0", "SAMPLE_ID", "PARAMETER_TYPE_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -1023,12 +1087,12 @@ class SAMPLEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
     PARAMETERTYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="SAMPLEPARAMETER.type == PARAMETERTYPE.id",
-        backref="SAMPLEPARAMETER",
+        backref="sampleParameters",
     )
     SAMPLE = relationship(
         "SAMPLE",
         primaryjoin="SAMPLEPARAMETER.sample == SAMPLE.id",
-        backref="SAMPLEPARAMETER",
+        backref="sampleParameters",
     )
 
 
@@ -1042,6 +1106,8 @@ class SESSION(Base, EntityHelper, metaclass=EntityMeta):
 
 class SHIFT(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SHIFT"
+    __singularfieldname__ = "shift"
+    __pluralfieldname__ = "shifts"
     __table_args__ = (Index("UNQ_SHIFT_0", "INVESTIGATION_ID", "STARTDATE", "ENDDATE"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -1059,12 +1125,14 @@ class SHIFT(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="SHIFT.investigation == INVESTIGATION.id",
-        backref="SHIFT",
+        backref="shifts",
     )
 
 
 class USER(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "USER_"
+    __singularfieldname__ = "user"
+    __pluralfieldname__ = "users"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -1079,6 +1147,8 @@ class USER(Base, EntityHelper, metaclass=EntityMeta):
 
 class USERGROUP(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "USERGROUP"
+    __singularfieldname__ = "userGroup"
+    __pluralfieldname__ = "userGroups"
     __table_args__ = (Index("UNQ_USERGROUP_0", "USER_ID", "GROUP_ID"),)
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -1090,17 +1160,17 @@ class USERGROUP(Base, EntityHelper, metaclass=EntityMeta):
     user = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
 
     GROUPING = relationship(
-        "GROUPING",
-        primaryjoin="USERGROUP.grouping == GROUPING.id",
-        backref="USERGROUP",
+        "GROUPING", primaryjoin="USERGROUP.grouping == GROUPING.id", backref="grouping",
     )
-    USER_ = relationship(
-        "USER", primaryjoin="USERGROUP.user == USER.id", backref="USERGROUP",
+    USER = relationship(
+        "USER", primaryjoin="USERGROUP.user == USER.id", backref="userGroups",
     )
 
 
 class STUDYINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "STUDYINVESTIGATION"
+    __singularfieldname__ = "studyInvestigation"
+    __pluralfieldname__ = "studyInvestigations"
     __table_args__ = (
         Index("UNQ_STUDYINVESTIGATION_0", "STUDY_ID", "INVESTIGATION_ID"),
     )
@@ -1118,17 +1188,19 @@ class STUDYINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     INVESTIGATION = relationship(
         "INVESTIGATION",
         primaryjoin="STUDYINVESTIGATION.investigation == INVESTIGATION.id",
-        backref="STUDYINVESTIGATION",
+        backref="studyInvestigations",
     )
     STUDY = relationship(
         "STUDY",
         primaryjoin="STUDYINVESTIGATION.study == STUDY.id",
-        backref="STUDYINVESTIGATION",
+        backref="studyInvestigations",
     )
 
 
 class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "STUDY"
+    __singularfieldname__ = "study"
+    __pluralfieldname__ = "studies"
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
@@ -1141,11 +1213,13 @@ class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     status = Column("STATUS", Integer)
     user = Column("USER_ID", ForeignKey("USER_.ID"), index=True)
 
-    USER_ = relationship("USER", primaryjoin="STUDY.user == USER.id", backref="STUDY")
+    USER = relationship("USER", primaryjoin="STUDY.user == USER.id", backref="studies")
 
 
 class SAMPLETYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLETYPE"
+    __singularfieldname = "sampleType"
+    __pluralfieldname__ = "sampleTypes"
     __table_args__ = (
         Index("UNQ_SAMPLETYPE_0", "FACILITY_ID", "NAME", "MOLECULARFORMULA"),
     )
@@ -1163,5 +1237,5 @@ class SAMPLETYPE(Base, EntityHelper, metaclass=EntityMeta):
     FACILITY = relationship(
         "FACILITY",
         primaryjoin="SAMPLETYPE.facility == FACILITY.id",
-        backref="SAMPLETYPE",
+        backref="sampleTypes",
     )
