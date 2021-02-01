@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.resources.entities.entity_map import endpoints
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 
 class TestEndpointRules:

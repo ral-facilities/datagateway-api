@@ -14,6 +14,7 @@ from datagateway_api.common.exceptions import (
     MissingCredentialsError,
 )
 from datagateway_api.common.query_filter_factory import QueryFilterFactory
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
 

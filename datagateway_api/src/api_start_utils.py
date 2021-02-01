@@ -15,7 +15,7 @@ from datagateway_api.src.resources.entities.entity_endpoint import (
     get_find_one_endpoint,
     get_id_endpoint,
 )
-from datagateway_api.src.resources.entities.entity_map import endpoints
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )

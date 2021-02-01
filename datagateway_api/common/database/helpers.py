@@ -147,7 +147,7 @@ class CreateQuery(Query):
             record.createTime = datetime.datetime.now()
             record.modTime = datetime.datetime.now()
             record.createId = "user"
-            record.modId = "user"  # TODO - These will need changing
+            record.modId = "user"
         self.session.add(record)
         self.commit_changes()
         self.session.refresh(record)
