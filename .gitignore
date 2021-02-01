@@ -1,7 +1,7 @@
 venv/
 .idea/
 *.pyc
-logs.log
+logs.log*
 config.json
 .vscode/
 .nox/
