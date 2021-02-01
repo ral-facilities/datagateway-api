@@ -114,17 +114,17 @@ class EntityHelper(ABC):
         """
         related_entity = self.get_related_entity(list(include)[0])
         if not isinstance(related_entity, InstrumentedList):
-            dictionary[related_entity.__tablename__] = related_entity.to_nested_dict(
-                include[list(include)[0]],
-            )
+            dictionary[
+                related_entity.__singularfieldname__
+            ] = related_entity.to_nested_dict(include[list(include)[0]])
         else:
             for entity in related_entity:
-                if entity.__tablename__ in dictionary.keys():
-                    dictionary[entity.__tablename__].append(
+                if entity.__pluralfieldname__ in dictionary.keys():
+                    dictionary[entity.__pluralfieldname__].append(
                         entity.to_nested_dict(include[list(include)[0]]),
                     )
                 else:
-                    dictionary[entity.__tablename__] = [
+                    dictionary[entity.__pluralfieldname__] = [
                         entity.to_nested_dict(include[list(include)[0]]),
                     ]
 
@@ -138,13 +138,13 @@ class EntityHelper(ABC):
         """
         related_entity = self.get_related_entity(include)
         if not isinstance(related_entity, InstrumentedList):
-            dictionary[related_entity.__tablename__] = related_entity.to_dict()
+            dictionary[related_entity.__singularfieldname__] = related_entity.to_dict()
         else:
             for entity in related_entity:
-                if entity.__tablename__ in dictionary.keys():
-                    dictionary[entity.__tablename__].append(entity.to_dict())
+                if entity.__pluralfieldname__ in dictionary.keys():
+                    dictionary[entity.__pluralfieldname__].append(entity.to_dict())
                 else:
-                    dictionary[entity.__tablename__] = [entity.to_dict()]
+                    dictionary[entity.__pluralfieldname__] = [entity.to_dict()]
 
     def get_related_entity(self, entity):
         """
@@ -153,7 +153,7 @@ class EntityHelper(ABC):
         :return: The entity
         """
         try:
-            return getattr(self, entity)
+            return getattr(self, entity if entity[-1] == "s" else entity.upper())
         except AttributeError:
             raise FilterError(f" No related entity: {entity}")
 
