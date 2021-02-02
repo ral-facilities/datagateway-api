@@ -97,8 +97,6 @@ jobs:
         architecture: x64
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
-      with:
-        path: datagateway-api
 
     - name: Install Nox
       run: pip install nox==2020.8.22
@@ -106,7 +104,7 @@ jobs:
       run: pip install poetry==1.1.4
 
     - name: Run Nox lint session
-      run: nox -s lint -f datagateway-api/noxfile.py
+      run: nox -s lint
 
   formatting:
     runs-on: ubuntu-16.04
@@ -119,8 +117,6 @@ jobs:
         architecture: x64
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
-      with:
-        path: datagateway-api
 
     - name: Install Nox
       run: pip install nox==2020.8.22
@@ -128,7 +124,7 @@ jobs:
       run: pip install poetry==1.1.4
 
     - name: Run Nox black session
-      run: nox -s black -f datagateway-api/noxfile.py
+      run: nox -s black
 
   safety:
     runs-on: ubuntu-16.04
@@ -141,8 +137,6 @@ jobs:
         architecture: x64
     - name: Checkout DataGateway API
       uses: actions/checkout@v2
-      with:
-        path: datagateway-api
 
     - name: Install Nox
       run: pip install nox==2020.8.22
@@ -150,4 +144,4 @@ jobs:
       run: pip install poetry==1.1.4
 
     - name: Run Nox safety session
-      run: nox -s safety -f datagateway-api/noxfile.py
+      run: nox -s safety
