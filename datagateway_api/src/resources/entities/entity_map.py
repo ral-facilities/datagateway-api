@@ -68,17 +68,25 @@ def create_entity_models():
                 or relationship_class.direction.name == "ONETOONE"
             ):
                 params[relationship_name] = {
-                    "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
+                    "$ref": "#/components/schemas/"
+                    f"{relationship_name.strip('_').upper()}",
                 }
             if (
                 relationship_class.direction.name == "MANYTOMANY"
                 or relationship_class.direction.name == "ONETOMANY"
             ):
+                entity_underscore_strip = relationship_name.strip("_")
+                if entity_underscore_strip[-1] == "s":
+                    pascal_case = (
+                        entity_underscore_strip[0].upper() + entity_underscore_strip[1:]
+                    )
+                    entity_reference_name = endpoints[pascal_case].upper()
+                else:
+                    entity_reference_name = relationship_name.strip("_").upper()
+
                 params[relationship_name] = {
                     "type": "array",
-                    "items": {
-                        "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
-                    },
+                    "items": {"$ref": f"#/components/schemas/{entity_reference_name}"},
                 }
         endpoint_models[endpoint_table.__name__] = {
             "properties": params,

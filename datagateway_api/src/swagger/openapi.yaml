@@ -205,10 +205,6 @@ components:
       properties:
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        JOB:
-          items:
-            $ref: '#/components/schemas/JOB'
-          type: array
         createId:
           type: string
         createTime:
@@ -219,6 +215,10 @@ components:
         id:
           readOnly: true
           type: integer
+        jobs:
+          items:
+            $ref: '#/components/schemas/JOB'
+          type: array
         modId:
           type: string
         modTime:
@@ -239,32 +239,32 @@ components:
       - facility
     DATACOLLECTION:
       properties:
-        DATACOLLECTIONDATAFILE:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
-          type: array
-        DATACOLLECTIONDATASET:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
-          type: array
-        DATACOLLECTIONPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
-          type: array
-        JOB:
-          items:
-            $ref: '#/components/schemas/JOB'
-          type: array
         createId:
           type: string
         createTime:
           format: datetime
           type: string
+        dataCollectionDatafiles:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+          type: array
+        dataCollectionDatasets:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+          type: array
+        dataCollectionParameters:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          type: array
         doi:
           type: string
         id:
           readOnly: true
           type: integer
+        jobs:
+          items:
+            $ref: '#/components/schemas/JOB'
+          type: array
         modId:
           type: string
         modTime:
@@ -384,22 +384,10 @@ components:
       - type
     DATAFILE:
       properties:
-        DATACOLLECTIONDATAFILE:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
-          type: array
         DATAFILEFORMAT:
           $ref: '#/components/schemas/DATAFILEFORMAT'
-        DATAFILEPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATAFILEPARAMETER'
-          type: array
         DATASET:
           $ref: '#/components/schemas/DATASET'
-        RELATEDDATAFILE:
-          items:
-            $ref: '#/components/schemas/RELATEDDATAFILE'
-          type: array
         checksum:
           type: string
         createId:
@@ -407,6 +395,10 @@ components:
         createTime:
           format: datetime
           type: string
+        dataCollectionDatafiles:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
+          type: array
         datafileCreateTime:
           format: datetime
           type: string
@@ -415,6 +407,10 @@ components:
         datafileModTime:
           format: datetime
           type: string
+        datafileParameters:
+          items:
+            $ref: '#/components/schemas/DATAFILEPARAMETER'
+          type: array
         dataset:
           type: integer
         description:
@@ -435,6 +431,10 @@ components:
           type: string
         name:
           type: string
+        relatedDatafiles:
+          items:
+            $ref: '#/components/schemas/RELATEDDATAFILE'
+          type: array
       required:
       - id
       - createId
@@ -445,10 +445,6 @@ components:
       - dataset
     DATAFILEFORMAT:
       properties:
-        DATAFILE:
-          items:
-            $ref: '#/components/schemas/DATAFILE'
-          type: array
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
         createId:
@@ -456,6 +452,10 @@ components:
         createTime:
           format: datetime
           type: string
+        datafiles:
+          items:
+            $ref: '#/components/schemas/DATAFILE'
+          type: array
         description:
           type: string
         facility:
@@ -529,18 +529,6 @@ components:
       - type
     DATASET:
       properties:
-        DATACOLLECTIONDATASET:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
-          type: array
-        DATAFILE:
-          items:
-            $ref: '#/components/schemas/DATAFILE'
-          type: array
-        DATASETPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATASETPARAMETER'
-          type: array
         DATASETTYPE:
           $ref: '#/components/schemas/DATASETTYPE'
         INVESTIGATION:
@@ -554,6 +542,18 @@ components:
         createTime:
           format: datetime
           type: string
+        dataCollectionDatasets:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONDATASET'
+          type: array
+        datafiles:
+          items:
+            $ref: '#/components/schemas/DATAFILE'
+          type: array
+        datasetParameters:
+          items:
+            $ref: '#/components/schemas/DATASETPARAMETER'
+          type: array
         description:
           type: string
         doi:
@@ -638,10 +638,6 @@ components:
       - type
     DATASETTYPE:
       properties:
-        DATASET:
-          items:
-            $ref: '#/components/schemas/DATASET'
-          type: array
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
         createId:
@@ -649,6 +645,10 @@ components:
         createTime:
           format: datetime
           type: string
+        datasets:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
         description:
           type: string
         facility:
@@ -673,56 +673,48 @@ components:
       - facility
     FACILITY:
       properties:
-        APPLICATION:
+        applications:
           items:
             $ref: '#/components/schemas/APPLICATION'
-          type: array
-        DATAFILEFORMAT:
-          items:
-            $ref: '#/components/schemas/DATAFILEFORMAT'
-          type: array
-        DATASETTYPE:
-          items:
-            $ref: '#/components/schemas/DATASETTYPE'
-          type: array
-        FACILITYCYCLE:
-          items:
-            $ref: '#/components/schemas/FACILITYCYCLE'
-          type: array
-        INSTRUMENT:
-          items:
-            $ref: '#/components/schemas/INSTRUMENT'
-          type: array
-        INVESTIGATION:
-          items:
-            $ref: '#/components/schemas/INVESTIGATION'
-          type: array
-        INVESTIGATIONTYPE:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONTYPE'
-          type: array
-        PARAMETERTYPE:
-          items:
-            $ref: '#/components/schemas/PARAMETERTYPE'
-          type: array
-        SAMPLETYPE:
-          items:
-            $ref: '#/components/schemas/SAMPLETYPE'
           type: array
         createId:
           type: string
         createTime:
           format: datetime
           type: string
+        datafileFormats:
+          items:
+            $ref: '#/components/schemas/DATAFILEFORMAT'
+          type: array
+        datasetTypes:
+          items:
+            $ref: '#/components/schemas/DATASETTYPE'
+          type: array
         daysUntilRelease:
           type: integer
         description:
           type: string
+        facilityCycles:
+          items:
+            $ref: '#/components/schemas/FACILITYCYCLE'
+          type: array
         fullName:
           type: string
         id:
           readOnly: true
           type: integer
+        instruments:
+          items:
+            $ref: '#/components/schemas/INSTRUMENT'
+          type: array
+        investigationTypes:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONTYPE'
+          type: array
+        investigations:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
         modId:
           type: string
         modTime:
@@ -730,6 +722,14 @@ components:
           type: string
         name:
           type: string
+        parameterTypes:
+          items:
+            $ref: '#/components/schemas/PARAMETERTYPE'
+          type: array
+        sampleTypes:
+          items:
+            $ref: '#/components/schemas/SAMPLETYPE'
+          type: array
         url:
           type: string
       required:
@@ -778,26 +778,22 @@ components:
       - facility
     GROUPING:
       properties:
-        INVESTIGATIONGROUP:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONGROUP'
-          type: array
-        RULE:
-          items:
-            $ref: '#/components/schemas/RULE'
-          type: array
-        USERGROUP:
-          items:
-            $ref: '#/components/schemas/USERGROUP'
-          type: array
         createId:
           type: string
         createTime:
           format: datetime
           type: string
+        grouping:
+          items:
+            $ref: '#/components/schemas/GROUPING'
+          type: array
         id:
           readOnly: true
           type: integer
+        investigationGroups:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
         modId:
           type: string
         modTime:
@@ -805,6 +801,10 @@ components:
           type: string
         name:
           type: string
+        rules:
+          items:
+            $ref: '#/components/schemas/RULE'
+          type: array
       required:
       - id
       - createId
@@ -816,14 +816,6 @@ components:
       properties:
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        INSTRUMENTSCIENTIST:
-          items:
-            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
-          type: array
-        INVESTIGATIONINSTRUMENT:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-          type: array
         createId:
           type: string
         createTime:
@@ -838,6 +830,14 @@ components:
         id:
           readOnly: true
           type: integer
+        instrumentScientists:
+          items:
+            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          type: array
+        investigationInstruments:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
         modId:
           type: string
         modTime:
@@ -861,7 +861,7 @@ components:
       properties:
         INSTRUMENT:
           $ref: '#/components/schemas/INSTRUMENT'
-        USER_:
+        USER:
           $ref: '#/components/schemas/USER'
         createId:
           type: string
@@ -890,55 +890,19 @@ components:
       - user
     INVESTIGATION:
       properties:
-        DATASET:
-          items:
-            $ref: '#/components/schemas/DATASET'
-          type: array
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        INVESTIGATIONGROUP:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONGROUP'
-          type: array
-        INVESTIGATIONINSTRUMENT:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-          type: array
-        INVESTIGATIONPARAMETER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
-          type: array
         INVESTIGATIONTYPE:
           $ref: '#/components/schemas/INVESTIGATIONTYPE'
-        INVESTIGATIONUSER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONUSER'
-          type: array
-        KEYWORD:
-          items:
-            $ref: '#/components/schemas/KEYWORD'
-          type: array
-        PUBLICATION:
-          items:
-            $ref: '#/components/schemas/PUBLICATION'
-          type: array
-        SAMPLE:
-          items:
-            $ref: '#/components/schemas/SAMPLE'
-          type: array
-        SHIFT:
-          items:
-            $ref: '#/components/schemas/SHIFT'
-          type: array
-        STUDYINVESTIGATION:
-          items:
-            $ref: '#/components/schemas/STUDYINVESTIGATION'
-          type: array
         createId:
           type: string
         createTime:
           format: datetime
           type: string
+        datasets:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
         doi:
           type: string
         endDate:
@@ -949,6 +913,26 @@ components:
         id:
           readOnly: true
           type: integer
+        investigationGroups:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
+        investigationInstruments:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
+        investigationParameters:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          type: array
+        investigationUsers:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONUSER'
+          type: array
+        keywords:
+          items:
+            $ref: '#/components/schemas/KEYWORD'
+          type: array
         modId:
           type: string
         modTime:
@@ -956,12 +940,28 @@ components:
           type: string
         name:
           type: string
+        publications:
+          items:
+            $ref: '#/components/schemas/PUBLICATION'
+          type: array
         releaseDate:
           format: datetime
           type: string
+        samples:
+          items:
+            $ref: '#/components/schemas/SAMPLE'
+          type: array
+        shifts:
+          items:
+            $ref: '#/components/schemas/SHIFT'
+          type: array
         startDate:
           format: datetime
           type: string
+        studyInvestigations:
+          items:
+            $ref: '#/components/schemas/STUDYINVESTIGATION'
+          type: array
         summary:
           type: string
         title:
@@ -1094,10 +1094,6 @@ components:
       properties:
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        INVESTIGATION:
-          items:
-            $ref: '#/components/schemas/INVESTIGATION'
-          type: array
         createId:
           type: string
         createTime:
@@ -1110,6 +1106,10 @@ components:
         id:
           readOnly: true
           type: integer
+        investigations:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
         modId:
           type: string
         modTime:
@@ -1129,7 +1129,7 @@ components:
       properties:
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        USER_:
+        USER:
           $ref: '#/components/schemas/USER'
         createId:
           type: string
@@ -1224,32 +1224,8 @@ components:
       - investigation
     PARAMETERTYPE:
       properties:
-        DATACOLLECTIONPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
-          type: array
-        DATAFILEPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATAFILEPARAMETER'
-          type: array
-        DATASETPARAMETER:
-          items:
-            $ref: '#/components/schemas/DATASETPARAMETER'
-          type: array
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        INVESTIGATIONPARAMETER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
-          type: array
-        PERMISSIBLESTRINGVALUE:
-          items:
-            $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
-          type: array
-        SAMPLEPARAMETER:
-          items:
-            $ref: '#/components/schemas/SAMPLEPARAMETER'
-          type: array
         applicableToDataCollection:
           type: boolean
         applicableToDatafile:
@@ -1265,6 +1241,18 @@ components:
         createTime:
           format: datetime
           type: string
+        dataCollectionParameters:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          type: array
+        datafileParameters:
+          items:
+            $ref: '#/components/schemas/DATAFILEPARAMETER'
+          type: array
+        datasetParameters:
+          items:
+            $ref: '#/components/schemas/DATASETPARAMETER'
+          type: array
         description:
           type: string
         enforced:
@@ -1274,6 +1262,10 @@ components:
         id:
           readOnly: true
           type: integer
+        investigationParameters:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          type: array
         maximumNumericValue:
           type: string
         minimumNumericValue:
@@ -1285,6 +1277,14 @@ components:
           type: string
         name:
           type: string
+        permissibleStringValues:
+          items:
+            $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
+          type: array
+        sampleParameters:
+          items:
+            $ref: '#/components/schemas/SAMPLEPARAMETER'
+          type: array
         units:
           type: string
         unitsFullName:
@@ -1481,16 +1481,8 @@ components:
       - what
     SAMPLE:
       properties:
-        DATASET:
-          items:
-            $ref: '#/components/schemas/DATASET'
-          type: array
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        SAMPLEPARAMETER:
-          items:
-            $ref: '#/components/schemas/SAMPLEPARAMETER'
-          type: array
         SAMPLETYPE:
           $ref: '#/components/schemas/SAMPLETYPE'
         createId:
@@ -1498,6 +1490,10 @@ components:
         createTime:
           format: datetime
           type: string
+        datasets:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
         id:
           readOnly: true
           type: integer
@@ -1510,6 +1506,10 @@ components:
           type: string
         name:
           type: string
+        sampleParameters:
+          items:
+            $ref: '#/components/schemas/SAMPLEPARAMETER'
+          type: array
         type:
           type: integer
       required:
@@ -1568,10 +1568,6 @@ components:
       properties:
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        SAMPLE:
-          items:
-            $ref: '#/components/schemas/SAMPLE'
-          type: array
         createId:
           type: string
         createTime:
@@ -1593,6 +1589,10 @@ components:
           type: string
         safetyInformation:
           type: string
+        samples:
+          items:
+            $ref: '#/components/schemas/SAMPLE'
+          type: array
       required:
       - id
       - createId
@@ -1640,11 +1640,7 @@ components:
       - investigation
     STUDY:
       properties:
-        STUDYINVESTIGATION:
-          items:
-            $ref: '#/components/schemas/STUDYINVESTIGATION'
-          type: array
-        USER_:
+        USER:
           $ref: '#/components/schemas/USER'
         createId:
           type: string
@@ -1668,6 +1664,10 @@ components:
           type: string
         status:
           type: integer
+        studyInvestigations:
+          items:
+            $ref: '#/components/schemas/STUDYINVESTIGATION'
+          type: array
         user:
           type: integer
       required:
@@ -1710,22 +1710,6 @@ components:
       - study
     USER:
       properties:
-        INSTRUMENTSCIENTIST:
-          items:
-            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
-          type: array
-        INVESTIGATIONUSER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONUSER'
-          type: array
-        STUDY:
-          items:
-            $ref: '#/components/schemas/STUDY'
-          type: array
-        USERGROUP:
-          items:
-            $ref: '#/components/schemas/USERGROUP'
-          type: array
         createId:
           type: string
         createTime:
@@ -1738,6 +1722,14 @@ components:
         id:
           readOnly: true
           type: integer
+        instrumentScientists:
+          items:
+            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          type: array
+        investigationUsers:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONUSER'
+          type: array
         modId:
           type: string
         modTime:
@@ -1747,6 +1739,14 @@ components:
           type: string
         orcidId:
           type: string
+        studies:
+          items:
+            $ref: '#/components/schemas/STUDY'
+          type: array
+        userGroups:
+          items:
+            $ref: '#/components/schemas/USERGROUP'
+          type: array
       required:
       - id
       - createId
@@ -1758,7 +1758,7 @@ components:
       properties:
         GROUPING:
           $ref: '#/components/schemas/GROUPING'
-        USER_:
+        USER:
           $ref: '#/components/schemas/USER'
         createId:
           type: string
