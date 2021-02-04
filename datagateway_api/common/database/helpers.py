@@ -3,8 +3,8 @@ import datetime
 from functools import wraps
 import logging
 
-from sqlalchemy.orm import aliased
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import aliased
 
 from datagateway_api.common.database.filters import (
     DatabaseIncludeFilter as IncludeFilter,
@@ -29,6 +29,7 @@ from datagateway_api.common.filter_order_handler import FilterOrderHandler
 log = logging.getLogger()
 
 db = SQLAlchemy()
+
 
 def requires_session_id(method):
     """
@@ -89,7 +90,7 @@ class Query(ABC):
         try:
             self.session.commit()
         except Exception as e:
-            log.error(f"Error whilst committing changes to {self.table}, rolling back")
+            log.error("Error whilst committing changes to %s, rolling back", self.table)
             self.session.rollback()
             raise e
 
