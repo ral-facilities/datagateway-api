@@ -7,7 +7,7 @@ from random import choice, randrange, seed
 from faker import Faker
 
 from datagateway_api.common.database import models
-from datagateway_api.common.database.helper import db
+from datagateway_api.common.database.helpers import db
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
