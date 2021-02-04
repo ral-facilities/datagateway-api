@@ -46,6 +46,7 @@ def flask_test_app_db():
 
     api, spec = create_app_infrastructure(db_app)
     create_api_endpoints(db_app, api, spec)
+    db_app.app_context().push()
 
     yield db_app.test_client()
 
