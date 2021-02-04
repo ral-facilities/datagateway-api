@@ -5,9 +5,12 @@ from multiprocessing import Pool, Process
 from random import choice, randrange, seed
 
 from faker import Faker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.pool import QueuePool
 
+from datagateway_api.common.constants import Constants
 from datagateway_api.common.database import models
-from datagateway_api.common.database.helpers import db
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -33,7 +36,12 @@ faker = Faker()
 faker.seed(SEED)
 seed(a=SEED)
 
-session = db.session
+
+engine = create_engine(
+    Constants.DATABASE_URL, poolclass=QueuePool, pool_size=100, max_overflow=0,
+)
+session_factory = sessionmaker(engine)
+session = scoped_session(session_factory)()
 
 
 def post_entity(entity):
