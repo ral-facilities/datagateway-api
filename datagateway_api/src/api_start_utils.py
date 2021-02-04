@@ -68,6 +68,7 @@ def create_app_infrastructure(flask_app):
 
     if backend_type == "db":
         flask_app.config["SQLALCHEMY_DATABASE_URI"] = Constants.DATABASE_URL
+        flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         db.init_app(flask_app)
 
     initialise_spec(spec)
