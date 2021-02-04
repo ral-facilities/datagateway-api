@@ -605,7 +605,6 @@ python-versions = ">=3.5"
 [package.dependencies]
 packaging = "*"
 pathlib2 = {version = ">=2.2.0", markers = "python_version < \"3.6\""}
-pluggy = ">=0.12,<1.0"
 py = ">=1.8.2"
 iniconfig = "*"
 importlib-metadata = {version = ">=0.12", markers = "python_version < \"3.8\""}
@@ -842,7 +841,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.5"
-content-hash = "db66f1e49ef4c5f9929c189d886b7c6b7d4306044a31e0eed7993d3ab6e9baab"
+content-hash = "3cb90bdb013041464c10d254b247ae5431b025b945b22394e1822bfae30be9b4"
 
 [metadata.files]
 aniso8601 = [

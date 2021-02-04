@@ -7,7 +7,7 @@ from random import choice, randrange, seed
 from faker import Faker
 
 from datagateway_api.common.database import models
-from datagateway_api.common.database.session_manager import session_manager
+from datagateway_api.common.database.helper import db
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -33,7 +33,7 @@ faker = Faker()
 faker.seed(SEED)
 seed(a=SEED)
 
-session = session_manager.get_icat_db_session()
+session = db.session
 
 
 def post_entity(entity):
