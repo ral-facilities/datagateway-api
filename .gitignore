@@ -7,3 +7,4 @@ config.json
 .nox/
 .python-version
 .coverage
+coverage.xml

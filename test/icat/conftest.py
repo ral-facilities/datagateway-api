@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 from flask import Flask
@@ -8,7 +8,11 @@ from icat.query import Query
 import pytest
 
 from datagateway_api.common.config import config
-from datagateway_api.src.main import create_api_endpoints, create_app_infrastructure
+from datagateway_api.src.api_start_utils import (
+    create_api_endpoints,
+    create_app_infrastructure,
+)
+from test.icat.endpoints.test_create_icat import TestICATCreateData
 from test.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -39,10 +43,10 @@ def create_investigation_test_data(client, num_entities=1):
             f"Test data for the Python ICAT Backend on DataGateway API {i}"
         )
         investigation.startDate = datetime(
-            year=2020, month=1, day=4, hour=1, minute=1, second=1,
+            year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=timezone.utc,
         )
         investigation.endDate = datetime(
-            year=2020, month=1, day=8, hour=1, minute=1, second=1,
+            year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=timezone.utc,
         )
         # UUID visit ID means uniquesness constraint should always be met
         investigation.visitId = str(uuid.uuid1())
@@ -102,10 +106,10 @@ def isis_specific_endpoint_data(icat_client):
     facility_cycle = icat_client.new("facilityCycle")
     facility_cycle.name = "Test cycle for DataGateway API testing"
     facility_cycle.startDate = datetime(
-        year=2020, month=1, day=1, hour=1, minute=1, second=1,
+        year=2020, month=1, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc,
     )
     facility_cycle.endDate = datetime(
-        year=2020, month=2, day=1, hour=1, minute=1, second=1,
+        year=2020, month=2, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc,
     )
     facility_cycle.facility = icat_client.get("Facility", 1)
     facility_cycle.create()
@@ -151,3 +155,37 @@ def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
         headers=valid_icat_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
+
+
+@pytest.fixture()
+def remove_test_created_investigation_data(
+    flask_test_app_icat, valid_icat_credentials_header,
+):
+    """
+    This is used to delete the data created inside `test_valid` test functions in
+    TestICATCreateData
+
+    This is done by fetching the data which has been created in
+    those functions (by using the investigation name prefix, as defined in the test
+    class), extracting the IDs from the results, and iterating over those to perform
+    DELETE by ID requests
+    """
+
+    yield
+
+    created_test_data = flask_test_app_icat.get(
+        '/investigations?where={"name":{"like":'
+        f'"{TestICATCreateData.investigation_name_prefix}"'
+        "}}",
+        headers=valid_icat_credentials_header,
+    )
+
+    investigation_ids = []
+    for investigation in created_test_data.json:
+        investigation_ids.append(investigation["id"])
+
+    for investigation_id in investigation_ids:
+        flask_test_app_icat.delete(
+            f"/investigations/{investigation_id}",
+            headers=valid_icat_credentials_header,
+        )

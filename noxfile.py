@@ -31,7 +31,7 @@ def install_with_constraints(session, *args, **kwargs):
             session.log("Error: The temporary requirements file could not be closed")
 
 
-@nox.session(python="3.6", reuse_venv=True)
+@nox.session(reuse_venv=True)
 def black(session):
     args = session.posargs or code_locations
 
@@ -39,7 +39,7 @@ def black(session):
     session.run("black", *args, external=True)
 
 
-@nox.session(python="3.6", reuse_venv=True)
+@nox.session(reuse_venv=True)
 def lint(session):
     args = session.posargs or code_locations
     install_with_constraints(
@@ -59,7 +59,7 @@ def lint(session):
     session.run("flake8", *args)
 
 
-@nox.session(python="3.6", reuse_venv=True)
+@nox.session(reuse_venv=True)
 def safety(session):
     install_with_constraints(session, "safety")
     with tempfile.NamedTemporaryFile(delete=False) as requirements:
@@ -82,7 +82,7 @@ def safety(session):
             session.log("Error: The temporary requirements file could not be closed")
 
 
-@nox.session(python=["3.6", "3.7", "3.8"], reuse_venv=True)
+@nox.session(python=["3.6", "3.7", "3.8", "3.9"], reuse_venv=True)
 def tests(session):
     args = session.posargs
     session.run("poetry", "install", external=True)

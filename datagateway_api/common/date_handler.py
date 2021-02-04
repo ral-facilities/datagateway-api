@@ -1,8 +1,6 @@
-from datetime import datetime
-
 from dateutil.parser import parse
+from icat import helper
 
-from datagateway_api.common.constants import Constants
 from datagateway_api.common.exceptions import BadRequestError
 
 
@@ -41,33 +39,32 @@ class DateHandler:
         elegant solution to this conversion operation since dates are converted into ISO
         format within this file, however, the production instance of this API is
         typically built on Python 3.6, and it doesn't seem of enough value to mandate
-        3.7 for a single line of code
+        3.7 for a single line of code. Instead, a helper function from `python-icat` is
+        used which does the conversion using `suds`. This will convert inputs in the ISO
+        format (i.e. the format which Python ICAT, and therefore DataGateway API outputs
+        data) but also allows for conversion of other "sensible" formats.
 
         :param data: Single data value from the request body
-        :type data: Data type of the data as per user's request body
+        :type data: Data type of the data as per user's request body, :class:`str` is
+            assumed
         :return: Date converted into a :class:`datetime` object
-        :raises BadRequestError: If the date is entered in the incorrect format, as per
-            `Constants.ACCEPTED_DATE_FORMAT`
+        :raises BadRequestError: If there is an issue with the date format
         """
 
         try:
-            data = datetime.strptime(data, Constants.ACCEPTED_DATE_FORMAT)
-        except ValueError:
-            raise BadRequestError(
-                "Bad request made, the date entered is not in the correct format. Use"
-                f" the {Constants.ACCEPTED_DATE_FORMAT} format to submit dates to the"
-                " API",
-            )
+            datetime_obj = helper.parse_attr_string(data, "Date")
+        except ValueError as e:
+            raise BadRequestError(e)
 
-        return data
+        return datetime_obj
 
     @staticmethod
-    def datetime_object_to_str(date_obj):
+    def datetime_object_to_str(datetime_obj):
         """
         Convert a datetime object to a string so it can be outputted in JSON
 
-        :param date_obj: Datetime object from data from an ICAT entity
-        :type date_obj: :class:`datetime.datetime`
+        :param datetime_obj: Datetime object from data from an ICAT entity
+        :type datetime_obj: :class:`datetime.datetime`
         :return: Datetime (of type string) in the agreed format
         """
-        return date_obj.replace(tzinfo=None).strftime(Constants.ACCEPTED_DATE_FORMAT)
+        return datetime_obj.isoformat(" ")

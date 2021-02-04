@@ -33,7 +33,7 @@ class TestGetBackendType:
 class TestGetDBURL:
     def test_valid_db_url(self, valid_config):
         db_url = valid_config.get_db_url()
-        assert db_url == "mysql+pymysql://root:rootpw@localhost:13306/icatdb"
+        assert db_url == "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb"
 
     def test_invalid_db_url(self, invalid_config):
         with pytest.raises(SystemExit):
@@ -43,7 +43,7 @@ class TestGetDBURL:
 class TestICATURL:
     def test_valid_icat_url(self, valid_config):
         icat_url = valid_config.get_icat_url()
-        assert icat_url == "https://localhost.localdomain:8181"
+        assert icat_url == "https://localhost:8181"
 
     def test_invalid_icat_url(self, invalid_config):
         with pytest.raises(SystemExit):
@@ -73,7 +73,9 @@ class TestGetLogLevel:
 class TestGetLogLocation:
     def test_valid_log_location(self, valid_config):
         log_location = valid_config.get_log_location()
-        assert log_location == "/home/user1/datagateway-api/logs.log"
+        assert (
+            log_location == "/home/runner/work/datagateway-api/datagateway-api/logs.log"
+        )
 
     def test_invalid_log_location(self, invalid_config):
         with pytest.raises(SystemExit):

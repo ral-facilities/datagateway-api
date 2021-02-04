@@ -8,7 +8,10 @@ from datagateway_api.common.database.helpers import (
     insert_row_into_table,
 )
 from datagateway_api.common.database.models import SESSION
-from datagateway_api.src.main import create_api_endpoints, create_app_infrastructure
+from datagateway_api.src.api_start_utils import (
+    create_api_endpoints,
+    create_app_infrastructure,
+)
 
 
 @pytest.fixture()
@@ -33,6 +36,10 @@ def flask_test_app():
 
 @pytest.fixture(scope="package")
 def flask_test_app_db():
+    """
+    This is in the common conftest file because this test app is also used in
+    non-backend specific tests
+    """
     db_app = Flask(__name__)
     db_app.config["TESTING"] = True
     db_app.config["TEST_BACKEND"] = "db"
