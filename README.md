@@ -429,6 +429,7 @@ illustrated below:
 ├── README.md
 ├── datagateway_api
 │   ├── config.json.example
+│   ├── wsgi.py
 │   ├── common
 │   │   ├── backend.py
 │   │   ├── backends.py
