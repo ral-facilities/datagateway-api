@@ -9,7 +9,7 @@ from datagateway_api.common.config import Config
 @pytest.fixture()
 def valid_config():
     return Config(
-        path=Path(__file__).parent.parent / "datagateway_api" / "config.json.example"
+        path=Path(__file__).parent.parent / "datagateway_api" / "config.json.example",
     )
 
 
