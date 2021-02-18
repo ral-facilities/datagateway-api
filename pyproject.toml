@@ -19,6 +19,7 @@ flask-swagger-ui = "3.25.0"
 PyYAML = "5.3.1"
 python-icat = "0.17.0"
 suds-community = "^0.8.4"
+Flask-SQLAlchemy = "^2.4.4"
 
 [tool.poetry.dev-dependencies]
 pip-tools = "5.3.1"
