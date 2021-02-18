@@ -9,6 +9,8 @@ from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.common.backends import create_backend
 from datagateway_api.common.config import config
+from datagateway_api.common.constants import Constants
+from datagateway_api.common.database.helpers import db
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,
@@ -57,6 +59,17 @@ def create_app_infrastructure(flask_app):
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
+
+    try:
+        backend_type = flask_app.config["TEST_BACKEND"]
+        config.set_backend_type(backend_type)
+    except KeyError:
+        backend_type = config.get_backend_type()
+
+    if backend_type == "db":
+        flask_app.config["SQLALCHEMY_DATABASE_URI"] = Constants.DATABASE_URL
+        flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+        db.init_app(flask_app)
 
     initialise_spec(spec)
 
