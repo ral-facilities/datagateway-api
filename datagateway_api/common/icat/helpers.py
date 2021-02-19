@@ -317,10 +317,7 @@ def get_entity_with_filters(client, entity_type, filters):
 
     data = query.execute_query(client, True)
 
-    if not data:
-        raise MissingRecordError("No results found")
-    else:
-        return data
+    return data
 
 
 def get_count_with_filters(client, entity_type, filters):
@@ -350,11 +347,8 @@ def get_count_with_filters(client, entity_type, filters):
 
     data = query.execute_query(client, True)
 
-    if not data:
-        raise MissingRecordError("No results found")
-    else:
-        # Only ever 1 element in a count query result
-        return data[0]
+    # Only ever 1 element in a count query result
+    return data[0]
 
 
 def get_first_result_with_filters(client, entity_type, filters):
@@ -587,10 +581,7 @@ def get_facility_cycles_for_instrument(
 
     data = query.execute_query(client, True)
 
-    if not data:
-        raise MissingRecordError("No results found")
-    else:
-        return data
+    return data
 
 
 def get_facility_cycles_for_instrument_count(client, instrument_id, filters):
@@ -672,10 +663,7 @@ def get_investigations_for_instrument_in_facility_cycle(
 
     data = query.execute_query(client, True)
 
-    if not data:
-        raise MissingRecordError("No results found")
-    else:
-        return data
+    return data
 
 
 def get_investigations_for_instrument_in_facility_cycle_count(
