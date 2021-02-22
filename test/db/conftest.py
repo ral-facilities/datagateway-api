@@ -42,8 +42,8 @@ def create_investigation_db_data(num_entities=1):
             year=2020, month=1, day=8, hour=1, minute=1, second=1,
         )
         investigation.visitId = str(uuid.uuid1())
-        investigation.facility = 1
-        investigation.type = 1
+        investigation.facilityID = 1
+        investigation.typeID = 1
 
         set_meta_attributes(investigation)
 
@@ -86,7 +86,7 @@ def isis_specific_endpoint_data_db():
     facility_cycle.endDate = datetime(
         year=2020, month=2, day=1, hour=1, minute=1, second=1,
     )
-    facility_cycle.facility = 1
+    facility_cycle.facilityID = 1
     set_meta_attributes(facility_cycle)
     insert_row_into_table(FACILITYCYCLE, facility_cycle)
 
@@ -94,13 +94,13 @@ def isis_specific_endpoint_data_db():
 
     instrument = INSTRUMENT()
     instrument.name = "Test Instrument for DataGateway API Endpoint Testing (DB)"
-    instrument.facility = 1
+    instrument.facilityID = 1
     set_meta_attributes(instrument)
     insert_row_into_table(INSTRUMENT, instrument)
 
     investigation_instrument = INVESTIGATIONINSTRUMENT()
-    investigation_instrument.investigation = investigation.id
-    investigation_instrument.instrument = instrument.id
+    investigation_instrument.investigationID = investigation.id
+    investigation_instrument.instrumentID = instrument.id
     set_meta_attributes(investigation_instrument)
 
     insert_row_into_table(INVESTIGATIONINSTRUMENT, investigation_instrument)

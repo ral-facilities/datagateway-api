@@ -33,12 +33,12 @@ def datafile_entity(dataset_entity):
     datafile.fileSize = 64
     datafile.datafileModTime = Constants.TEST_MOD_CREATE_DATETIME
     datafile.datafileCreateTime = Constants.TEST_MOD_CREATE_DATETIME
-    datafile.dataset = 1
+    datafile.datasetID = 1
     datafile.doi = "test doi"
     datafile.description = "test description"
     datafile.createId = "test create id"
     datafile.modId = "test mod id"
-    datafile.datafileFormat = 1
+    datafile.datafileFormatID = 1
 
     return datafile
 
@@ -54,12 +54,12 @@ class TestEntityHelper:
             "fileSize": 64,
             "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
             "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "dataset": 1,
+            "datasetID": 1,
             "doi": "test doi",
             "description": "test description",
             "createId": "test create id",
             "modId": "test mod id",
-            "datafileFormat": 1,
+            "datafileFormatID": 1,
             "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
@@ -84,15 +84,16 @@ class TestEntityHelper:
                     "description": "test description",
                     "createId": "test create id",
                     "modId": "test mod id",
-                    "datafileFormat": 1,
+                    "datafileFormatID": 1,
                     "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "datasetID": 1,
                     "dataset": {
                         "id": None,
                         "createTime": None,
                         "modTime": None,
                         "createId": None,
                         "modId": None,
-                        "investigation": None,
+                        "investigationID": None,
                         "complete": None,
                         "description": None,
                         "doi": None,
@@ -100,8 +101,8 @@ class TestEntityHelper:
                         "location": None,
                         "name": None,
                         "startDate": None,
-                        "sample": None,
-                        "type": None,
+                        "sampleID": None,
+                        "typeID": None,
                     },
                 },
                 "dataset",
@@ -121,8 +122,9 @@ class TestEntityHelper:
                     "description": "test description",
                     "createId": "test create id",
                     "modId": "test mod id",
-                    "datafileFormat": 1,
+                    "datafileFormatID": 1,
                     "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
+                    "datasetID": 1,
                     "dataset": {
                         "id": None,
                         "createTime": None,
@@ -136,8 +138,9 @@ class TestEntityHelper:
                         "location": None,
                         "name": None,
                         "startDate": None,
-                        "sample": None,
-                        "type": None,
+                        "sampleID": None,
+                        "typeID": None,
+                        "investigationID": None,
                         "investigation": {
                             "id": None,
                             "createId": None,
@@ -152,8 +155,8 @@ class TestEntityHelper:
                             "summary": None,
                             "title": None,
                             "visitId": None,
-                            "facility": None,
-                            "type": None,
+                            "facilityID": None,
+                            "typeID": None,
                         },
                     },
                 },
@@ -181,12 +184,12 @@ class TestEntityHelper:
             "fileSize": 64,
             "datafileModTime": str(Constants.TEST_MOD_CREATE_DATETIME),
             "datafileCreateTime": str(Constants.TEST_MOD_CREATE_DATETIME),
-            "dataset": 1,
+            "datasetID": 1,
             "doi": "test doi",
             "description": "test description",
             "createId": "test create id",
             "modId": "test mod id",
-            "datafileFormat": 1,
+            "datafileFormatID": 1,
             "createTime": str(Constants.TEST_MOD_CREATE_DATETIME),
         }
 
