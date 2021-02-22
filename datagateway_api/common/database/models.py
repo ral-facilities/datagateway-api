@@ -283,7 +283,7 @@ class DATACOLLECTIONDATASET(Base, EntityHelper, metaclass=EntityMeta):
         "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     datasetID = Column(
-        "DATASET_ID", ForeignKey("DATASET.ID"), nullable=False, index=True
+        "DATASET_ID", ForeignKey("DATASET.ID"), nullable=False, index=True,
     )
 
     DATACOLLECTION = relationship(
@@ -1222,7 +1222,7 @@ class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     userID = Column("USER_ID", ForeignKey("USER_.ID"), index=True)
 
     USER = relationship(
-        "USER", primaryjoin="STUDY.userID == USER.id", backref="studies"
+        "USER", primaryjoin="STUDY.userID == USER.id", backref="studies",
     )
 
 
