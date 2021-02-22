@@ -210,7 +210,7 @@ components:
         createTime:
           format: datetime
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -236,7 +236,7 @@ components:
       - modTime
       - name
       - version
-      - facility
+      - facilityID
     DATACOLLECTION:
       properties:
         createId:
@@ -287,9 +287,9 @@ components:
         createTime:
           format: datetime
           type: string
-        dataCollection:
+        dataCollectionID:
           type: integer
-        datafile:
+        datafileID:
           type: integer
         id:
           readOnly: true
@@ -305,8 +305,8 @@ components:
       - createTime
       - modId
       - modTime
-      - dataCollection
-      - datafile
+      - dataCollectionID
+      - datafileID
     DATACOLLECTIONDATASET:
       properties:
         DATACOLLECTION:
@@ -318,9 +318,9 @@ components:
         createTime:
           format: datetime
           type: string
-        dataCollection:
+        dataCollectionID:
           type: integer
-        dataset:
+        datasetID:
           type: integer
         id:
           readOnly: true
@@ -336,8 +336,8 @@ components:
       - createTime
       - modId
       - modTime
-      - dataCollection
-      - dataset
+      - dataCollectionID
+      - datasetID
     DATACOLLECTIONPARAMETER:
       properties:
         DATACOLLECTION:
@@ -349,7 +349,7 @@ components:
         createTime:
           format: datetime
           type: string
-        dataCollection:
+        dataCollectionID:
           type: integer
         dateTimeValue:
           format: datetime
@@ -366,22 +366,22 @@ components:
           type: string
         numericValue:
           type: string
+        parameterTypeID:
+          type: integer
         rangeBottom:
           type: string
         rangeTop:
           type: string
         stringValue:
           type: string
-        type:
-          type: integer
       required:
       - id
       - createId
       - createTime
       - modId
       - modTime
-      - dataCollection
-      - type
+      - dataCollectionID
+      - parameterTypeID
     DATAFILE:
       properties:
         DATAFILEFORMAT:
@@ -402,7 +402,7 @@ components:
         datafileCreateTime:
           format: datetime
           type: string
-        datafileFormat:
+        datafileFormatID:
           type: integer
         datafileModTime:
           format: datetime
@@ -411,7 +411,7 @@ components:
           items:
             $ref: '#/components/schemas/DATAFILEPARAMETER'
           type: array
-        dataset:
+        datasetID:
           type: integer
         description:
           type: string
@@ -442,7 +442,7 @@ components:
       - modId
       - modTime
       - name
-      - dataset
+      - datasetID
     DATAFILEFORMAT:
       properties:
         FACILITY:
@@ -458,7 +458,7 @@ components:
           type: array
         description:
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -482,7 +482,7 @@ components:
       - modTime
       - name
       - version
-      - facility
+      - facilityID
     DATAFILEPARAMETER:
       properties:
         DATAFILE:
@@ -494,7 +494,7 @@ components:
         createTime:
           format: datetime
           type: string
-        datafile:
+        datafileID:
           type: integer
         dateTimeValue:
           format: datetime
@@ -511,22 +511,22 @@ components:
           type: string
         numericValue:
           type: string
+        parameterTypeID:
+          type: integer
         rangeBottom:
           type: string
         rangeTop:
           type: string
         stringValue:
           type: string
-        type:
-          type: integer
       required:
       - id
       - createId
       - createTime
       - modId
       - modTime
-      - datafile
-      - type
+      - datafileID
+      - parameterTypeID
     DATASET:
       properties:
         DATASETTYPE:
@@ -564,7 +564,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         location:
           type: string
@@ -575,12 +575,12 @@ components:
           type: string
         name:
           type: string
-        sample:
+        sampleID:
           type: integer
         startDate:
           format: datetime
           type: string
-        type:
+        typeID:
           type: integer
       required:
       - id
@@ -590,8 +590,8 @@ components:
       - modId
       - modTime
       - name
-      - investigation
-      - type
+      - investigationID
+      - typeID
     DATASETPARAMETER:
       properties:
         DATASET:
@@ -603,7 +603,7 @@ components:
         createTime:
           format: datetime
           type: string
-        dataset:
+        datasetID:
           type: integer
         dateTimeValue:
           format: datetime
@@ -620,22 +620,22 @@ components:
           type: string
         numericValue:
           type: string
+        parameterTypeID:
+          type: integer
         rangeBottom:
           type: string
         rangeTop:
           type: string
         stringValue:
           type: string
-        type:
-          type: integer
       required:
       - id
       - createId
       - createTime
       - modId
       - modTime
-      - dataset
-      - type
+      - datasetID
+      - parameterTypeID
     DATASETTYPE:
       properties:
         FACILITY:
@@ -651,7 +651,7 @@ components:
           type: array
         description:
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -670,7 +670,7 @@ components:
       - modId
       - modTime
       - name
-      - facility
+      - facilityID
     FACILITY:
       properties:
         applications:
@@ -753,7 +753,7 @@ components:
         endDate:
           format: datetime
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -775,7 +775,7 @@ components:
       - modId
       - modTime
       - name
-      - facility
+      - facilityID
     GROUPING:
       properties:
         createId:
@@ -823,7 +823,7 @@ components:
           type: string
         description:
           type: string
-        facility:
+        facilityID:
           type: integer
         fullName:
           type: string
@@ -856,7 +856,7 @@ components:
       - modId
       - modTime
       - name
-      - facility
+      - facilityID
     INSTRUMENTSCIENTIST:
       properties:
         INSTRUMENT:
@@ -871,14 +871,14 @@ components:
         id:
           readOnly: true
           type: integer
-        instrument:
+        instrumentID:
           type: integer
         modId:
           type: string
         modTime:
           format: datetime
           type: string
-        user:
+        userID:
           type: integer
       required:
       - id
@@ -886,8 +886,8 @@ components:
       - createTime
       - modId
       - modTime
-      - instrument
-      - user
+      - instrumentID
+      - userID
     INVESTIGATION:
       properties:
         FACILITY:
@@ -908,7 +908,7 @@ components:
         endDate:
           format: datetime
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -966,7 +966,7 @@ components:
           type: string
         title:
           type: string
-        type:
+        typeID:
           type: integer
         visitId:
           type: string
@@ -979,8 +979,8 @@ components:
       - name
       - title
       - visitId
-      - facility
-      - type
+      - facilityID
+      - typeID
     INVESTIGATIONGROUP:
       properties:
         GROUPING:
@@ -992,12 +992,12 @@ components:
         createTime:
           format: datetime
           type: string
-        grouping:
+        groupID:
           type: integer
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1013,8 +1013,8 @@ components:
       - modId
       - modTime
       - role
-      - grouping
-      - investigation
+      - groupID
+      - investigationID
     INVESTIGATIONINSTRUMENT:
       properties:
         INSTRUMENT:
@@ -1029,9 +1029,9 @@ components:
         id:
           readOnly: true
           type: integer
-        instrument:
+        instrumentID:
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1044,8 +1044,8 @@ components:
       - createTime
       - modId
       - modTime
-      - instrument
-      - investigation
+      - instrumentID
+      - investigationID
     INVESTIGATIONPARAMETER:
       properties:
         INVESTIGATION:
@@ -1065,7 +1065,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1074,22 +1074,22 @@ components:
           type: string
         numericValue:
           type: string
+        parameterTypeID:
+          type: integer
         rangeBottom:
           type: string
         rangeTop:
           type: string
         stringValue:
           type: string
-        type:
-          type: integer
       required:
       - id
       - createId
       - createTime
       - modId
       - modTime
-      - investigation
-      - type
+      - investigationID
+      - parameterTypeID
     INVESTIGATIONTYPE:
       properties:
         FACILITY:
@@ -1101,7 +1101,7 @@ components:
           type: string
         description:
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -1124,7 +1124,7 @@ components:
       - modId
       - modTime
       - name
-      - facility
+      - facilityID
     INVESTIGATIONUSER:
       properties:
         INVESTIGATION:
@@ -1139,7 +1139,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1148,7 +1148,7 @@ components:
           type: string
         role:
           type: string
-        user:
+        userID:
           type: integer
       required:
       - id
@@ -1157,15 +1157,15 @@ components:
       - modId
       - modTime
       - role
-      - investigation
-      - user
+      - investigationID
+      - userID
     JOB:
       properties:
         APPLICATION:
           $ref: '#/components/schemas/APPLICATION'
         DATACOLLECTION:
           $ref: '#/components/schemas/DATACOLLECTION'
-        application:
+        applicationID:
           type: integer
         arguments:
           type: string
@@ -1177,14 +1177,14 @@ components:
         id:
           readOnly: true
           type: integer
-        inputDataCollection:
+        inputDataCollectionID:
           type: integer
         modId:
           type: string
         modTime:
           format: datetime
           type: string
-        outputDataCollection:
+        outputDataCollectionID:
           type: integer
       required:
       - id
@@ -1192,7 +1192,7 @@ components:
       - createTime
       - modId
       - modTime
-      - application
+      - applicationID
     KEYWORD:
       properties:
         INVESTIGATION:
@@ -1205,7 +1205,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1221,7 +1221,7 @@ components:
       - modId
       - modTime
       - name
-      - investigation
+      - investigationID
     PARAMETERTYPE:
       properties:
         FACILITY:
@@ -1257,7 +1257,7 @@ components:
           type: string
         enforced:
           type: boolean
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -1302,7 +1302,7 @@ components:
       - name
       - units
       - valueType
-      - facility
+      - facilityID
     PERMISSIBLESTRINGVALUE:
       properties:
         PARAMETERTYPE:
@@ -1320,7 +1320,7 @@ components:
         modTime:
           format: datetime
           type: string
-        type:
+        parameterTypeID:
           type: integer
         value:
           type: string
@@ -1331,7 +1331,7 @@ components:
       - modId
       - modTime
       - value
-      - type
+      - parameterTypeID
     PUBLICATION:
       properties:
         INVESTIGATION:
@@ -1348,7 +1348,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1368,7 +1368,7 @@ components:
       - fullReference
       - modId
       - modTime
-      - investigation
+      - investigationID
     PUBLICSTEP:
       properties:
         createId:
@@ -1405,7 +1405,7 @@ components:
         createTime:
           format: datetime
           type: string
-        destDatafile:
+        destDatafileID:
           type: integer
         id:
           readOnly: true
@@ -1417,7 +1417,7 @@ components:
           type: string
         relation:
           type: string
-        sourceDatafile:
+        sourceDatafileID:
           type: integer
       required:
       - id
@@ -1426,8 +1426,8 @@ components:
       - modId
       - modTime
       - relation
-      - destDatafile
-      - sourceDatafile
+      - destDatafileID
+      - sourceDatafileID
     RULE:
       properties:
         GROUPING:
@@ -1449,7 +1449,7 @@ components:
           type: string
         d:
           type: integer
-        grouping:
+        groupingID:
           type: integer
         id:
           readOnly: true
@@ -1497,7 +1497,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1510,7 +1510,7 @@ components:
           items:
             $ref: '#/components/schemas/SAMPLEPARAMETER'
           type: array
-        type:
+        sampleTypeID:
           type: integer
       required:
       - id
@@ -1519,7 +1519,7 @@ components:
       - modId
       - modTime
       - name
-      - investigation
+      - investigationID
     SAMPLEPARAMETER:
       properties:
         PARAMETERTYPE:
@@ -1546,24 +1546,24 @@ components:
           type: string
         numericValue:
           type: string
+        parameterTypeID:
+          type: integer
         rangeBottom:
           type: string
         rangeTop:
           type: string
-        sample:
+        sampleID:
           type: integer
         stringValue:
           type: string
-        type:
-          type: integer
       required:
       - id
       - createId
       - createTime
       - modId
       - modTime
-      - sample
-      - type
+      - sampleID
+      - parameterTypeID
     SAMPLETYPE:
       properties:
         FACILITY:
@@ -1573,7 +1573,7 @@ components:
         createTime:
           format: datetime
           type: string
-        facility:
+        facilityID:
           type: integer
         id:
           readOnly: true
@@ -1601,7 +1601,7 @@ components:
       - modTime
       - molecularFormula
       - name
-      - facility
+      - facilityID
     SHIFT:
       properties:
         INVESTIGATION:
@@ -1619,7 +1619,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
@@ -1637,7 +1637,7 @@ components:
       - modId
       - modTime
       - startDate
-      - investigation
+      - investigationID
     STUDY:
       properties:
         USER:
@@ -1668,7 +1668,7 @@ components:
           items:
             $ref: '#/components/schemas/STUDYINVESTIGATION'
           type: array
-        user:
+        userID:
           type: integer
       required:
       - id
@@ -1691,14 +1691,14 @@ components:
         id:
           readOnly: true
           type: integer
-        investigation:
+        investigationID:
           type: integer
         modId:
           type: string
         modTime:
           format: datetime
           type: string
-        study:
+        studyID:
           type: integer
       required:
       - id
@@ -1706,8 +1706,8 @@ components:
       - createTime
       - modId
       - modTime
-      - investigation
-      - study
+      - investigationID
+      - studyID
     USER:
       properties:
         createId:
@@ -1765,7 +1765,7 @@ components:
         createTime:
           format: datetime
           type: string
-        grouping:
+        groupID:
           type: integer
         id:
           readOnly: true
@@ -1775,7 +1775,7 @@ components:
         modTime:
           format: datetime
           type: string
-        user:
+        userID:
           type: integer
       required:
       - id
@@ -1783,8 +1783,8 @@ components:
       - createTime
       - modId
       - modTime
-      - grouping
-      - user
+      - groupID
+      - userID
   securitySchemes:
     session_id:
       bearerFormat: uuid
