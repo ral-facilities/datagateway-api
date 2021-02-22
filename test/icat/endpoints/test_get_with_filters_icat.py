@@ -28,7 +28,7 @@ class TestICATGetWithFilters:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.json == []
 
     @pytest.mark.usefixtures("multiple_investigation_test_data")
     def test_valid_get_with_filters_distinct(

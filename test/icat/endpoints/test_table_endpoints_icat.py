@@ -30,7 +30,7 @@ class TestICATableEndpoints:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.json == []
 
     def test_valid_get_facility_cycles_count_with_filters(
         self,
@@ -84,7 +84,7 @@ class TestICATableEndpoints:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.json == []
 
     def test_valid_get_investigations_count_with_filters(
         self,
