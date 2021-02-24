@@ -160,9 +160,9 @@ def openapi_config(spec):
             for endpoint_name in sorted(entity_data.keys()):
                 entity_data.move_to_end(endpoint_name)
 
-    openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
-    with open(openapi_spec_path, "w") as f:
-        f.write(spec.to_yaml())
+        openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
+        with open(openapi_spec_path, "w") as f:
+            f.write(spec.to_yaml())
 
 
 def create_openapi_endpoint(app, api_spec):
