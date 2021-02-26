@@ -427,8 +427,9 @@ illustrated below:
 ├── .pre-commit-config.yaml
 ├── LICENSE
 ├── README.md
-├── config.json.example
 ├── datagateway_api
+│   ├── config.json.example
+│   ├── wsgi.py
 │   ├── common
 │   │   ├── backend.py
 │   │   ├── backends.py
