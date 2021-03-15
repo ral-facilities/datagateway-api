@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from functools import wraps
+from functools import lru_cache, wraps
 import logging
 
 import icat.client
@@ -54,8 +54,8 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         try:
-            client = create_client()
-            client.sessionId = args[1]
+            client = get_cached_client(args[1])
+
             # Client object put into kwargs so it can be accessed by backend functions
             kwargs["client"] = client
 
@@ -70,6 +70,18 @@ def requires_session_id(method):
             raise AuthenticationError("Forbidden")
 
     return wrapper_requires_session
+
+
+@lru_cache(maxsize=28)
+def get_cached_client(session_id):
+    """
+    TODO - Add docstring
+    """
+    log.debug(f"Caching, session ID: {session_id}")
+    client = create_client()
+    client.sessionId = session_id
+
+    return client
 
 
 def create_client():
