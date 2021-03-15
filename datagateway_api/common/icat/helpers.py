@@ -77,9 +77,13 @@ def get_cached_client(session_id):
     """
     TODO - Add docstring
     """
-    log.debug(f"Caching, session ID: {session_id}")
     client = create_client()
-    client.sessionId = session_id
+
+    # `session_id` of None suggests this function is being called from an endpoint that
+    # doesn't use the `requires_session_id` decorator (e.g. POST /sessions)
+    log.info("Caching, session ID: %s", session_id)
+    if session_id:
+        client.sessionId = session_id
 
     return client
 

@@ -9,6 +9,7 @@ from datagateway_api.common.icat.helpers import (
     create_client,
     create_entities,
     delete_entity_by_id,
+    get_cached_client,
     get_count_with_filters,
     get_entity_by_id,
     get_entity_with_filters,
@@ -39,7 +40,9 @@ class PythonICATBackend(Backend):
 
     def login(self, credentials):
         log.info("Logging in to get session ID")
-        client = create_client()
+        # There is no session ID required for this endpoint, a client object will be
+        # fetched from cache with a blank `sessionId` attribute
+        client = get_cached_client(None)
 
         # Syntax for Python ICAT
         login_details = {
@@ -48,6 +51,11 @@ class PythonICATBackend(Backend):
         }
         try:
             session_id = client.login(credentials["mechanism"], login_details)
+            # Flushing client's session ID so the session ID returned in this request
+            # won't be logged out next time `client.login()` is used in this function.
+            # `login()` calls `self.logout()` if `sessionId` is set
+            client.sessionId = None
+
             return session_id
         except ICATSessionError:
             raise AuthenticationError("User credentials are incorrect")
