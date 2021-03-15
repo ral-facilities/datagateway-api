@@ -1,5 +1,6 @@
 {
   "backend": "db",
+  "client_cache_size": 28,
   "DB_URL": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
   "ICAT_URL": "https://localhost:8181",
   "icat_check_cert": false,

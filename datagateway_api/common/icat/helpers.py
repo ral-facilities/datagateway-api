@@ -72,7 +72,7 @@ def requires_session_id(method):
     return wrapper_requires_session
 
 
-@lru_cache(maxsize=28)
+@lru_cache(maxsize=config.get_client_cache_size())
 def get_cached_client(session_id):
     """
     TODO - Add docstring

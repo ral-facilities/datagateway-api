@@ -30,6 +30,16 @@ class TestGetBackendType:
             invalid_config.get_backend_type()
 
 
+class TestGetClientCacheSize:
+    def test_valid_client_cache_size(self, valid_config):
+        cache_size = valid_config.get_client_cache_size()
+        assert cache_size == 28
+
+    def test_invalid_client_cache_size(self, invalid_config):
+        with pytest.raises(SystemExit):
+            invalid_config.get_client_cache_size()
+
+
 class TestGetDBURL:
     def test_valid_db_url(self, valid_config):
         db_url = valid_config.get_db_url()
