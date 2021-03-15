@@ -66,8 +66,8 @@ def requires_session_id(method):
                 raise AuthenticationError("Forbidden")
             else:
                 return method(*args, **kwargs)
-        except ICATSessionError:
-            raise AuthenticationError("Forbidden")
+        except ICATSessionError as e:
+            raise AuthenticationError(e)
 
     return wrapper_requires_session
 
