@@ -101,13 +101,34 @@ class TestICATQuery:
                 "dataset",
                 {"base": ["id"]},
                 {"base": []},
-                id="Include filter used but no included attributes on distinct filter",
+                id="Include filter used but no included attributes on distinct filter,"
+                " no entity name match",
+            ),
+            pytest.param(
+                "no match",
+                {"base": ["id"], "dataset": ["name"]},
+                {"base": [], "dataset": ["name"]},
+                id="Distinct filter contains included attributes, no entity name match",
             ),
             pytest.param(
                 "dataset",
                 {"base": ["id"], "dataset": ["name"]},
                 {"base": ["name"], "dataset": ["name"]},
-                id="Distinct filter contains included attributes",
+                id="Distinct filter contains included attributes, entity name match",
+            ),
+            pytest.param(
+                "dataset",
+                {"base": ["id"], "dataset": [], "investigation": ["name"]},
+                {"base": [], "dataset": [], "investigation": ["name"]},
+                id="Distinct filter contains nested included attributes, no entity name"
+                " match",
+            ),
+            pytest.param(
+                "investigation",
+                {"base": ["id"], "dataset": [], "investigation": ["name"]},
+                {"base": ["name"], "dataset": [], "investigation": ["name"]},
+                id="Distinct filter contains nested included attributes, entity name"
+                " match",
             ),
         ],
     )
