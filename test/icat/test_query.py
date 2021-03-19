@@ -94,6 +94,45 @@ class TestICATQuery:
 
         assert query_output_json == single_investigation_test_data
 
+    @pytest.mark.parametrize(
+        "included_entity_name, input_fields, expected_fields",
+        [
+            pytest.param(
+                "dataset",
+                {"base": ["id"]},
+                {"base": []},
+                id="Include filter used but no included attributes on distinct filter",
+            ),
+            pytest.param(
+                "dataset",
+                {"base": ["id"], "dataset": ["name"]},
+                {"base": ["name"], "dataset": ["name"]},
+                id="Distinct filter contains included attributes",
+            ),
+        ],
+    )
+    def test_prepare_distinct_fields(
+        self, icat_client, included_entity_name, input_fields, expected_fields,
+    ):
+        """
+        The function tested here should move the list from
+        `input_fields[included_entity_name]` to `input_fields["base"]` ready for when
+        `entity_to_dict()` is called as part of a recursive call, but the original
+        `input_fields` should not be modified. This caused a bug previously
+        """
+        unmodded_distinct_fields = input_fields.copy()
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        distinct_fields_for_recursive_call = test_query.prepare_distinct_fields(
+            included_entity_name, input_fields
+        )
+        print(distinct_fields_for_recursive_call)
+        print(input_fields)
+
+        assert distinct_fields_for_recursive_call == expected_fields
+        # prepare_distinct_fields() should not modify the original `distinct_fields`
+        assert input_fields == unmodded_distinct_fields
+
     def test_include_fields_list_flatten(self, icat_client):
         included_field_set = {
             "investigationUsers.investigation.datasets",
