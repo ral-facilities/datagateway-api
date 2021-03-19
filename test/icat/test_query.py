@@ -4,7 +4,7 @@ from icat.entity import Entity
 import pytest
 
 from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import PythonICATError
+from datagateway_api.common.exceptions import FilterError, PythonICATError
 from datagateway_api.common.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
@@ -95,6 +95,91 @@ class TestICATQuery:
         assert query_output_json == single_investigation_test_data
 
     @pytest.mark.parametrize(
+        "input_distinct_fields, included_fields, expected_output",
+        [
+            pytest.param(
+                ["id"],
+                [],
+                {"base": ["id"]},
+                id="Base only distinct attribute, no included attributes",
+            ),
+            pytest.param(
+                ["id", "doi", "name", "createTime"],
+                [],
+                {"base": ["id", "doi", "name", "createTime"]},
+                id="Multiple base only distinct attributes, no included attributes",
+            ),
+            pytest.param(
+                ["id"],
+                ["investigation"],
+                {"base": ["id"]},
+                id="Base only distinct attribute, single, unnested included attributes",
+            ),
+            pytest.param(
+                ["id"],
+                ["investigation", "parameters", "type"],
+                {"base": ["id"]},
+                id="Base only distinct attribute, multiple, unnested included"
+                " attributes",
+            ),
+            pytest.param(
+                ["dataset.investigation.name"],
+                ["dataset", "investigation"],
+                {"base": [], "dataset": [], "investigation": ["name"]},
+                id="Single nested-include distinct attribute",
+            ),
+            pytest.param(
+                ["dataset.investigation.name", "datafileFormat.facility.url"],
+                ["dataset", "investigation", "datafileFormat", "facility"],
+                {
+                    "base": [],
+                    "dataset": [],
+                    "investigation": ["name"],
+                    "datafileFormat": [],
+                    "facility": ["url"],
+                },
+                id="Multiple nested-include distinct attributes",
+            ),
+        ],
+    )
+    def test_valid_distinct_attribute_mapping(
+        self, icat_client, input_distinct_fields, included_fields, expected_output,
+    ):
+        # Entity name passed to ICATQuery is irrelevant for this test
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        mapped_attributes = test_query.map_distinct_attributes_to_entity_names(
+            input_distinct_fields, included_fields,
+        )
+
+        assert mapped_attributes == expected_output
+
+    @pytest.mark.parametrize(
+        "input_distinct_fields, included_fields",
+        [
+            pytest.param(
+                ["investigation.id"],
+                [],
+                id="Single nested-include distinct attribute, included entity not"
+                " added",
+            ),
+        ],
+    )
+    def test_invalid_distinct_attribute_mapping(
+        self, icat_client, input_distinct_fields, included_fields,
+    ):
+        """
+        Test that when the appropriate included fields are not present, a `FilterError`
+        will be raised
+        """
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        with pytest.raises(FilterError):
+            test_query.map_distinct_attributes_to_entity_names(
+                input_distinct_fields, included_fields,
+            )
+
+    @pytest.mark.parametrize(
         "included_entity_name, input_fields, expected_fields",
         [
             pytest.param(
@@ -145,7 +230,7 @@ class TestICATQuery:
         test_query = ICATQuery(icat_client, "Datafile")
 
         distinct_fields_for_recursive_call = test_query.prepare_distinct_fields(
-            included_entity_name, input_fields
+            included_entity_name, input_fields,
         )
         print(distinct_fields_for_recursive_call)
         print(input_fields)
