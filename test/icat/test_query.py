@@ -4,7 +4,7 @@ from icat.entity import Entity
 import pytest
 
 from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import PythonICATError
+from datagateway_api.common.exceptions import FilterError, PythonICATError
 from datagateway_api.common.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
@@ -93,6 +93,151 @@ class TestICATQuery:
         query_output_json = prepare_icat_data_for_assertion(query_data)
 
         assert query_output_json == single_investigation_test_data
+
+    @pytest.mark.parametrize(
+        "input_distinct_fields, included_fields, expected_output",
+        [
+            pytest.param(
+                ["id"],
+                [],
+                {"base": ["id"]},
+                id="Base only distinct attribute, no included attributes",
+            ),
+            pytest.param(
+                ["id", "doi", "name", "createTime"],
+                [],
+                {"base": ["id", "doi", "name", "createTime"]},
+                id="Multiple base only distinct attributes, no included attributes",
+            ),
+            pytest.param(
+                ["id"],
+                ["investigation"],
+                {"base": ["id"]},
+                id="Base only distinct attribute, single, unnested included attributes",
+            ),
+            pytest.param(
+                ["id"],
+                ["investigation", "parameters", "type"],
+                {"base": ["id"]},
+                id="Base only distinct attribute, multiple, unnested included"
+                " attributes",
+            ),
+            pytest.param(
+                ["dataset.investigation.name"],
+                ["dataset", "investigation"],
+                {"base": [], "dataset": [], "investigation": ["name"]},
+                id="Single nested-include distinct attribute",
+            ),
+            pytest.param(
+                ["dataset.investigation.name", "datafileFormat.facility.url"],
+                ["dataset", "investigation", "datafileFormat", "facility"],
+                {
+                    "base": [],
+                    "dataset": [],
+                    "investigation": ["name"],
+                    "datafileFormat": [],
+                    "facility": ["url"],
+                },
+                id="Multiple nested-include distinct attributes",
+            ),
+        ],
+    )
+    def test_valid_distinct_attribute_mapping(
+        self, icat_client, input_distinct_fields, included_fields, expected_output,
+    ):
+        # Entity name passed to ICATQuery is irrelevant for this test
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        mapped_attributes = test_query.map_distinct_attributes_to_entity_names(
+            input_distinct_fields, included_fields,
+        )
+
+        assert mapped_attributes == expected_output
+
+    @pytest.mark.parametrize(
+        "input_distinct_fields, included_fields",
+        [
+            pytest.param(
+                ["investigation.id"],
+                [],
+                id="Single nested-include distinct attribute, included entity not"
+                " added",
+            ),
+        ],
+    )
+    def test_invalid_distinct_attribute_mapping(
+        self, icat_client, input_distinct_fields, included_fields,
+    ):
+        """
+        Test that when the appropriate included fields are not present, a `FilterError`
+        will be raised
+        """
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        with pytest.raises(FilterError):
+            test_query.map_distinct_attributes_to_entity_names(
+                input_distinct_fields, included_fields,
+            )
+
+    @pytest.mark.parametrize(
+        "included_entity_name, input_fields, expected_fields",
+        [
+            pytest.param(
+                "dataset",
+                {"base": ["id"]},
+                {"base": []},
+                id="Include filter used but no included attributes on distinct filter,"
+                " no entity name match",
+            ),
+            pytest.param(
+                "no match",
+                {"base": ["id"], "dataset": ["name"]},
+                {"base": [], "dataset": ["name"]},
+                id="Distinct filter contains included attributes, no entity name match",
+            ),
+            pytest.param(
+                "dataset",
+                {"base": ["id"], "dataset": ["name"]},
+                {"base": ["name"], "dataset": ["name"]},
+                id="Distinct filter contains included attributes, entity name match",
+            ),
+            pytest.param(
+                "dataset",
+                {"base": ["id"], "dataset": [], "investigation": ["name"]},
+                {"base": [], "dataset": [], "investigation": ["name"]},
+                id="Distinct filter contains nested included attributes, no entity name"
+                " match",
+            ),
+            pytest.param(
+                "investigation",
+                {"base": ["id"], "dataset": [], "investigation": ["name"]},
+                {"base": ["name"], "dataset": [], "investigation": ["name"]},
+                id="Distinct filter contains nested included attributes, entity name"
+                " match",
+            ),
+        ],
+    )
+    def test_prepare_distinct_fields(
+        self, icat_client, included_entity_name, input_fields, expected_fields,
+    ):
+        """
+        The function tested here should move the list from
+        `input_fields[included_entity_name]` to `input_fields["base"]` ready for when
+        `entity_to_dict()` is called as part of a recursive call, but the original
+        `input_fields` should not be modified. This caused a bug previously
+        """
+        unmodded_distinct_fields = input_fields.copy()
+        test_query = ICATQuery(icat_client, "Datafile")
+
+        distinct_fields_for_recursive_call = test_query.prepare_distinct_fields(
+            included_entity_name, input_fields,
+        )
+        print(distinct_fields_for_recursive_call)
+        print(input_fields)
+
+        assert distinct_fields_for_recursive_call == expected_fields
+        # prepare_distinct_fields() should not modify the original `distinct_fields`
+        assert input_fields == unmodded_distinct_fields
 
     def test_include_fields_list_flatten(self, icat_client):
         included_field_set = {
