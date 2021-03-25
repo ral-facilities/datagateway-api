@@ -148,7 +148,15 @@ class EntityHelper(ABC):
 
     def get_related_entity(self, entity):
         """
-        Given a string for the related entity name, return the related entity
+        Given a string for the related entity name, return the related entity. This
+        function is used to retrieve a related entity as a result of an include filter.
+
+        Some related entities have a plural name (so end with an 's') so this is
+        checked. If `entity` contains a name which is a singular, `entity` is
+        uppercased (table names are defined in upper case, as seen in `__tablename__` in
+        the entity classes lower down in this file). Both related entity name types
+        (singular and plural) are used to retrieve the actual related entity.
+
         :param entity: String - The name of the entity
         :return: The entity
         """
