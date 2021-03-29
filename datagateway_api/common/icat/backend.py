@@ -38,11 +38,13 @@ class PythonICATBackend(Backend):
     def __init__(self):
         pass
 
-    def login(self, credentials):
+    def login(self, credentials, **kwargs):
         log.info("Logging in to get session ID")
+        client_pool = kwargs.get("client_pool")
+
         # There is no session ID required for this endpoint, a client object will be
         # fetched from cache with a blank `sessionId` attribute
-        client = get_cached_client(None)
+        client = get_cached_client(None, client_pool)
 
         # Syntax for Python ICAT
         login_details = {
@@ -82,7 +84,12 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, entity_type, filters, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
+        # TODO - Pool only needed for logging
+        client_pool = kwargs.get("client_pool")
+        log.debug(f"Pool Size: {client_pool.get_pool_size()}")
+
+        client = kwargs.get("client")
+        client.sessionId = session_id
         return get_entity_with_filters(client, entity_type, filters)
 
     @requires_session_id

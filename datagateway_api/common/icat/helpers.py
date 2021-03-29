@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
-from functools import lru_cache, wraps
+from functools import wraps
 import logging
 
+from cachetools import cached
 import icat.client
 from icat.entities import getTypeMap
 from icat.exception import (
@@ -26,6 +27,7 @@ from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.common.icat.icat_client_pool import ExtendedLRUCache
 from datagateway_api.common.icat.query import ICATQuery
 
 
@@ -54,8 +56,10 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         try:
-            client = get_cached_client(args[1])
+            client_pool = kwargs.get("client_pool")
 
+            client = get_cached_client(args[1], client_pool)
+            client.sessionId = args[1]
             # Client object put into kwargs so it can be accessed by backend functions
             kwargs["client"] = client
 
@@ -72,12 +76,14 @@ def requires_session_id(method):
     return wrapper_requires_session
 
 
-@lru_cache(maxsize=config.get_client_cache_size())
-def get_cached_client(session_id):
+@cached(cache=ExtendedLRUCache())
+def get_cached_client(session_id, client_pool):
     """
     TODO - Add docstring
     """
-    client = create_client()
+
+    # Get a client from the pool
+    client, stats = client_pool._get_resource()
 
     # `session_id` of None suggests this function is being called from an endpoint that
     # doesn't use the `requires_session_id` decorator (e.g. POST /sessions)

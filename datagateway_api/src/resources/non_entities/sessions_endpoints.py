@@ -10,7 +10,7 @@ from datagateway_api.common.helpers import get_session_id_from_auth_header
 log = logging.getLogger()
 
 
-def session_endpoints(backend):
+def session_endpoints(backend, **kwargs):
     """
     Generate a flask_restful Resource class using the configured backend. In main.py
     these generated classes are registered with the api e.g.
@@ -74,7 +74,7 @@ def session_endpoints(backend):
             if not ("mechanism" in request.json):
                 request.json["mechanism"] = "simple"
             try:
-                return {"sessionID": backend.login(request.json)}, 201
+                return {"sessionID": backend.login(request.json, **kwargs)}, 201
             except AuthenticationError:
                 return "Forbidden", 403
 
@@ -99,7 +99,7 @@ def session_endpoints(backend):
               404:
                 description: Not Found - Unable to find session ID
             """
-            backend.logout(get_session_id_from_auth_header())
+            backend.logout(get_session_id_from_auth_header(), **kwargs)
             return "", 200
 
         def get(self):
@@ -136,7 +136,12 @@ def session_endpoints(backend):
               403:
                 description: Forbidden - The session ID provided is invalid
             """
-            return backend.get_session_details(get_session_id_from_auth_header()), 200
+            return (
+                backend.get_session_details(
+                    get_session_id_from_auth_header(), **kwargs
+                ),
+                200,
+            )
 
         def put(self):
             """
@@ -161,6 +166,6 @@ def session_endpoints(backend):
               403:
                 description: Forbidden - The session ID provided is invalid
             """
-            return backend.refresh(get_session_id_from_auth_header()), 200
+            return backend.refresh(get_session_id_from_auth_header(), **kwargs), 200
 
     return Sessions
