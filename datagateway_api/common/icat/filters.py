@@ -65,6 +65,13 @@ class PythonICATWhereFilter(WhereFilter):
             # Cannot convert straight to tuple as single element tuples contain a
             # trailing comma which Python ICAT/JPQL doesn't accept
             self.value = str(self.value).replace("[", "(").replace("]", ")")
+
+            # DataGateway Search can send requests with blank lists. Adding NULL to the
+            # filter prevents the API from returning a 500. An empty list will be
+            # returned instead, equivalent to the DB backend
+            if self.value == "()":
+                self.value = "(NULL)"
+
             where_filter = self.create_condition(self.field, "in", self.value)
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")

@@ -2,50 +2,8 @@ import datetime
 
 from sqlalchemy.inspection import inspect
 
-from datagateway_api.common.database.models import EntityHelper
-
-
-# endpoint_name: entity_name
-endpoints = {
-    "Applications": "Application",
-    "DataCollectionDatafiles": "DataCollectionDatafile",
-    "DataCollectionDatasets": "DataCollectionDataset",
-    "DataCollectionParameters": "DataCollectionParameter",
-    "DataCollections": "DataCollection",
-    "DatafileFormats": "DatafileFormat",
-    "DatafileParameters": "DatafileParameter",
-    "Datafiles": "Datafile",
-    "DatasetParameters": "DatasetParameter",
-    "DatasetTypes": "DatasetType",
-    "Datasets": "Dataset",
-    "Facilities": "Facility",
-    "FacilityCycles": "FacilityCycle",
-    "Groupings": "Grouping",
-    "InstrumentScientists": "InstrumentScientist",
-    "Instruments": "Instrument",
-    "InvestigationGroups": "InvestigationGroup",
-    "InvestigationInstruments": "InvestigationInstrument",
-    "InvestigationParameters": "InvestigationParameter",
-    "InvestigationTypes": "InvestigationType",
-    "InvestigationUsers": "InvestigationUser",
-    "Investigations": "Investigation",
-    "Jobs": "Job",
-    "Keywords": "Keyword",
-    "ParameterTypes": "ParameterType",
-    "PermissibleStringValues": "PermissibleStringValue",
-    "PublicSteps": "PublicStep",
-    "Publications": "Publication",
-    "RelatedDatafiles": "RelatedDatafile",
-    "Rules": "Rule",
-    "SampleParameters": "SampleParameter",
-    "SampleTypes": "SampleType",
-    "Samples": "Sample",
-    "Shifts": "Shift",
-    "Studies": "Study",
-    "StudyInvestigations": "StudyInvestigation",
-    "UserGroups": "UserGroup",
-    "Users": "User",
-}
+from datagateway_api.common.helpers import get_entity_object_from_name
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 
 def type_conversion(python_type):
@@ -79,9 +37,13 @@ def create_entity_models():
     for endpoint in endpoints:
         params = {}
         required = []
-        endpoint_table = EntityHelper.get_entity_object_from_name(endpoints[endpoint])
+        endpoint_table = get_entity_object_from_name(endpoints[endpoint])
         endpoint_inspection = inspect(endpoint_table)
         for column in endpoint_inspection.columns:
+            # Needed to ensure camelCase field names are used, rather than SNAKE_CASE
+            attribute_field_name = endpoint_inspection.get_property_by_column(
+                column,
+            ).key
             python_type = (
                 column.type.impl.python_type
                 if hasattr(column.type, "impl")
@@ -94,8 +56,8 @@ def create_entity_models():
             if column.doc:
                 param["description"] = column.doc
             if not column.nullable:
-                required.append(column.name)
-            params[column.name] = param
+                required.append(attribute_field_name)
+            params[attribute_field_name] = param
 
         for (
             relationship_name,
@@ -106,17 +68,26 @@ def create_entity_models():
                 or relationship_class.direction.name == "ONETOONE"
             ):
                 params[relationship_name] = {
-                    "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
+                    "$ref": "#/components/schemas/"
+                    f"{relationship_name.strip('_').upper()}",
                 }
             if (
                 relationship_class.direction.name == "MANYTOMANY"
                 or relationship_class.direction.name == "ONETOMANY"
             ):
+                entity_underscore_strip = relationship_name.strip("_")
+                # Checking for plurals on a related ICAT entity
+                if entity_underscore_strip[-1] == "s":
+                    pascal_case = (
+                        entity_underscore_strip[0].upper() + entity_underscore_strip[1:]
+                    )
+                    entity_reference_name = endpoints[pascal_case].upper()
+                else:
+                    entity_reference_name = relationship_name.strip("_").upper()
+
                 params[relationship_name] = {
                     "type": "array",
-                    "items": {
-                        "$ref": f"#/components/schemas/{relationship_name.strip('_')}",
-                    },
+                    "items": {"$ref": f"#/components/schemas/{entity_reference_name}"},
                 }
         endpoint_models[endpoint_table.__name__] = {
             "properties": params,

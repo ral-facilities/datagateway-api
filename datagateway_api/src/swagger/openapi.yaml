@@ -203,1588 +203,1588 @@ components:
   schemas:
     APPLICATION:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         FACILITY:
           $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        facilityID:
           type: integer
-        ID:
+        id:
           readOnly: true
           type: integer
-        JOB:
+        jobs:
           items:
             $ref: '#/components/schemas/JOB'
           type: array
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        VERSION:
+        version:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - VERSION
-      - FACILITY_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - version
+      - facilityID
     DATACOLLECTION:
       properties:
-        CREATE_ID:
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATACOLLECTIONDATAFILE:
+        dataCollectionDatafiles:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
           type: array
-        DATACOLLECTIONDATASET:
+        dataCollectionDatasets:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONDATASET'
           type: array
-        DATACOLLECTIONPARAMETER:
+        dataCollectionParameters:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
           type: array
-        DOI:
+        doi:
           type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        JOB:
+        jobs:
           items:
             $ref: '#/components/schemas/JOB'
           type: array
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
     DATACOLLECTIONDATAFILE:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATACOLLECTION:
           $ref: '#/components/schemas/DATACOLLECTION'
-        DATACOLLECTION_ID:
-          type: integer
         DATAFILE:
           $ref: '#/components/schemas/DATAFILE'
-        DATAFILE_ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataCollectionID:
           type: integer
-        ID:
+        datafileID:
+          type: integer
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - DATACOLLECTION_ID
-      - DATAFILE_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - dataCollectionID
+      - datafileID
     DATACOLLECTIONDATASET:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATACOLLECTION:
           $ref: '#/components/schemas/DATACOLLECTION'
-        DATACOLLECTION_ID:
-          type: integer
         DATASET:
           $ref: '#/components/schemas/DATASET'
-        DATASET_ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataCollectionID:
           type: integer
-        ID:
+        datasetID:
+          type: integer
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - DATACOLLECTION_ID
-      - DATASET_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - dataCollectionID
+      - datasetID
     DATACOLLECTIONPARAMETER:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATACOLLECTION:
           $ref: '#/components/schemas/DATACOLLECTION'
-        DATACOLLECTION_ID:
-          type: integer
-        DATETIME_VALUE:
-          format: datetime
-          type: string
-        ERROR:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NUMERIC_VALUE:
-          type: string
         PARAMETERTYPE:
           $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETER_TYPE_ID:
-          type: integer
-        RANGEBOTTOM:
+        createId:
           type: string
-        RANGETOP:
-          type: string
-        STRING_VALUE:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - DATACOLLECTION_ID
-      - PARAMETER_TYPE_ID
-    DATAFILE:
-      properties:
-        CHECKSUM:
-          type: string
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATACOLLECTIONDATAFILE:
+        dataCollectionID:
+          type: integer
+        dateTimeValue:
+          format: datetime
+          type: string
+        error:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        numericValue:
+          type: string
+        parameterTypeID:
+          type: integer
+        rangeBottom:
+          type: string
+        rangeTop:
+          type: string
+        stringValue:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - dataCollectionID
+      - parameterTypeID
+    DATAFILE:
+      properties:
+        DATAFILEFORMAT:
+          $ref: '#/components/schemas/DATAFILEFORMAT'
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        checksum:
+          type: string
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataCollectionDatafiles:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONDATAFILE'
           type: array
-        DATAFILECREATETIME:
+        datafileCreateTime:
           format: datetime
           type: string
-        DATAFILEFORMAT:
-          $ref: '#/components/schemas/DATAFILEFORMAT'
-        DATAFILEFORMAT_ID:
+        datafileFormatID:
           type: integer
-        DATAFILEMODTIME:
+        datafileModTime:
           format: datetime
           type: string
-        DATAFILEPARAMETER:
+        datafileParameters:
           items:
             $ref: '#/components/schemas/DATAFILEPARAMETER'
           type: array
-        DATASET:
-          $ref: '#/components/schemas/DATASET'
-        DATASET_ID:
+        datasetID:
           type: integer
-        DESCRIPTION:
+        description:
           type: string
-        DOI:
+        doi:
           type: string
-        FILESIZE:
+        fileSize:
           type: integer
-        ID:
+        id:
           readOnly: true
           type: integer
-        LOCATION:
+        location:
           type: string
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        RELATEDDATAFILE:
+        relatedDatafiles:
           items:
             $ref: '#/components/schemas/RELATEDDATAFILE'
           type: array
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - DATASET_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - datasetID
     DATAFILEFORMAT:
       properties:
-        CREATE_ID:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATAFILE:
+        datafiles:
           items:
             $ref: '#/components/schemas/DATAFILE'
           type: array
-        DESCRIPTION:
+        description:
           type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
+        facilityID:
           type: integer
-        ID:
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        TYPE:
+        type:
           type: string
-        VERSION:
+        version:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - VERSION
-      - FACILITY_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - version
+      - facilityID
     DATAFILEPARAMETER:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATAFILE:
           $ref: '#/components/schemas/DATAFILE'
-        DATAFILE_ID:
-          type: integer
-        DATETIME_VALUE:
-          format: datetime
-          type: string
-        ERROR:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NUMERIC_VALUE:
-          type: string
         PARAMETERTYPE:
           $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETER_TYPE_ID:
-          type: integer
-        RANGEBOTTOM:
+        createId:
           type: string
-        RANGETOP:
-          type: string
-        STRING_VALUE:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - DATAFILE_ID
-      - PARAMETER_TYPE_ID
-    DATASET:
-      properties:
-        COMPLETE:
-          type: boolean
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATACOLLECTIONDATASET:
+        datafileID:
+          type: integer
+        dateTimeValue:
+          format: datetime
+          type: string
+        error:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        numericValue:
+          type: string
+        parameterTypeID:
+          type: integer
+        rangeBottom:
+          type: string
+        rangeTop:
+          type: string
+        stringValue:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datafileID
+      - parameterTypeID
+    DATASET:
+      properties:
+        DATASETTYPE:
+          $ref: '#/components/schemas/DATASETTYPE'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        SAMPLE:
+          $ref: '#/components/schemas/SAMPLE'
+        complete:
+          type: boolean
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataCollectionDatasets:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONDATASET'
           type: array
-        DATAFILE:
+        datafiles:
           items:
             $ref: '#/components/schemas/DATAFILE'
           type: array
-        DATASETPARAMETER:
+        datasetParameters:
           items:
             $ref: '#/components/schemas/DATASETPARAMETER'
           type: array
-        DATASETTYPE:
-          $ref: '#/components/schemas/DATASETTYPE'
-        DESCRIPTION:
+        description:
           type: string
-        DOI:
+        doi:
           type: string
-        END_DATE:
+        endDate:
           format: datetime
           type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
+        investigationID:
           type: integer
-        LOCATION:
+        location:
           type: string
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        SAMPLE:
-          $ref: '#/components/schemas/SAMPLE'
-        SAMPLE_ID:
+        sampleID:
           type: integer
-        STARTDATE:
+        startDate:
           format: datetime
           type: string
-        TYPE_ID:
+        typeID:
           type: integer
       required:
-      - ID
-      - COMPLETE
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - INVESTIGATION_ID
-      - TYPE_ID
+      - id
+      - complete
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - investigationID
+      - typeID
     DATASETPARAMETER:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATASET:
           $ref: '#/components/schemas/DATASET'
-        DATASET_ID:
-          type: integer
-        DATETIME_VALUE:
-          format: datetime
-          type: string
-        ERROR:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NUMERIC_VALUE:
-          type: string
         PARAMETERTYPE:
           $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETER_TYPE_ID:
-          type: integer
-        RANGEBOTTOM:
+        createId:
           type: string
-        RANGETOP:
-          type: string
-        STRING_VALUE:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - DATASET_ID
-      - PARAMETER_TYPE_ID
-    DATASETTYPE:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATASET:
+        datasetID:
+          type: integer
+        dateTimeValue:
+          format: datetime
+          type: string
+        error:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        numericValue:
+          type: string
+        parameterTypeID:
+          type: integer
+        rangeBottom:
+          type: string
+        rangeTop:
+          type: string
+        stringValue:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datasetID
+      - parameterTypeID
+    DATASETTYPE:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datasets:
           items:
             $ref: '#/components/schemas/DATASET'
           type: array
-        DESCRIPTION:
+        description:
           type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
+        facilityID:
           type: integer
-        ID:
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - FACILITY_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - facilityID
     FACILITY:
       properties:
-        APPLICATION:
+        applications:
           items:
             $ref: '#/components/schemas/APPLICATION'
           type: array
-        CREATE_ID:
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATAFILEFORMAT:
+        datafileFormats:
           items:
             $ref: '#/components/schemas/DATAFILEFORMAT'
           type: array
-        DATASETTYPE:
+        datasetTypes:
           items:
             $ref: '#/components/schemas/DATASETTYPE'
           type: array
-        DAYSUNTILRELEASE:
+        daysUntilRelease:
           type: integer
-        DESCRIPTION:
+        description:
           type: string
-        FACILITYCYCLE:
+        facilityCycles:
           items:
             $ref: '#/components/schemas/FACILITYCYCLE'
           type: array
-        FULLNAME:
+        fullName:
           type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        INSTRUMENT:
+        instruments:
           items:
             $ref: '#/components/schemas/INSTRUMENT'
           type: array
-        INVESTIGATION:
-          items:
-            $ref: '#/components/schemas/INVESTIGATION'
-          type: array
-        INVESTIGATIONTYPE:
+        investigationTypes:
           items:
             $ref: '#/components/schemas/INVESTIGATIONTYPE'
           type: array
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NAME:
-          type: string
-        PARAMETERTYPE:
-          items:
-            $ref: '#/components/schemas/PARAMETERTYPE'
-          type: array
-        SAMPLETYPE:
-          items:
-            $ref: '#/components/schemas/SAMPLETYPE'
-          type: array
-        URL:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-    FACILITYCYCLE:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DESCRIPTION:
-          type: string
-        ENDDATE:
-          format: datetime
-          type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NAME:
-          type: string
-        STARTDATE:
-          format: datetime
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - FACILITY_ID
-    GROUPING:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        INVESTIGATIONGROUP:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONGROUP'
-          type: array
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NAME:
-          type: string
-        RULE:
-          items:
-            $ref: '#/components/schemas/RULE'
-          type: array
-        USERGROUP:
-          items:
-            $ref: '#/components/schemas/USERGROUP'
-          type: array
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-    INSTRUMENT:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DESCRIPTION:
-          type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
-          type: integer
-        FULLNAME:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        INSTRUMENTSCIENTIST:
-          items:
-            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
-          type: array
-        INVESTIGATIONINSTRUMENT:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-          type: array
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NAME:
-          type: string
-        TYPE:
-          type: string
-        URL:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - FACILITY_ID
-    INSTRUMENTSCIENTIST:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        INSTRUMENT:
-          $ref: '#/components/schemas/INSTRUMENT'
-        INSTRUMENT_ID:
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        USER_:
-          $ref: '#/components/schemas/USER'
-        USER_ID:
-          type: integer
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - INSTRUMENT_ID
-      - USER_ID
-    INVESTIGATION:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DATASET:
-          items:
-            $ref: '#/components/schemas/DATASET'
-          type: array
-        DOI:
-          type: string
-        ENDDATE:
-          format: datetime
-          type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        INVESTIGATIONGROUP:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONGROUP'
-          type: array
-        INVESTIGATIONINSTRUMENT:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
-          type: array
-        INVESTIGATIONPARAMETER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
-          type: array
-        INVESTIGATIONTYPE:
-          $ref: '#/components/schemas/INVESTIGATIONTYPE'
-        INVESTIGATIONUSER:
-          items:
-            $ref: '#/components/schemas/INVESTIGATIONUSER'
-          type: array
-        KEYWORD:
-          items:
-            $ref: '#/components/schemas/KEYWORD'
-          type: array
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NAME:
-          type: string
-        PUBLICATION:
-          items:
-            $ref: '#/components/schemas/PUBLICATION'
-          type: array
-        RELEASEDATE:
-          format: datetime
-          type: string
-        SAMPLE:
-          items:
-            $ref: '#/components/schemas/SAMPLE'
-          type: array
-        SHIFT:
-          items:
-            $ref: '#/components/schemas/SHIFT'
-          type: array
-        STARTDATE:
-          format: datetime
-          type: string
-        STUDYINVESTIGATION:
-          items:
-            $ref: '#/components/schemas/STUDYINVESTIGATION'
-          type: array
-        SUMMARY:
-          type: string
-        TITLE:
-          type: string
-        TYPE_ID:
-          type: integer
-        VISIT_ID:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - TITLE
-      - VISIT_ID
-      - FACILITY_ID
-      - TYPE_ID
-    INVESTIGATIONGROUP:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        GROUPING:
-          $ref: '#/components/schemas/GROUPING'
-        GROUP_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        ROLE:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - ROLE
-      - GROUP_ID
-      - INVESTIGATION_ID
-    INVESTIGATIONINSTRUMENT:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        INSTRUMENT:
-          $ref: '#/components/schemas/INSTRUMENT'
-        INSTRUMENT_ID:
-          type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - INSTRUMENT_ID
-      - INVESTIGATION_ID
-    INVESTIGATIONPARAMETER:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DATETIME_VALUE:
-          format: datetime
-          type: string
-        ERROR:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NUMERIC_VALUE:
-          type: string
-        PARAMETERTYPE:
-          $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETER_TYPE_ID:
-          type: integer
-        RANGEBOTTOM:
-          type: string
-        RANGETOP:
-          type: string
-        STRING_VALUE:
-          type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - INVESTIGATION_ID
-      - PARAMETER_TYPE_ID
-    INVESTIGATIONTYPE:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DESCRIPTION:
-          type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        INVESTIGATION:
+        investigations:
           items:
             $ref: '#/components/schemas/INVESTIGATION'
           type: array
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
+          type: string
+        parameterTypes:
+          items:
+            $ref: '#/components/schemas/PARAMETERTYPE'
+          type: array
+        sampleTypes:
+          items:
+            $ref: '#/components/schemas/SAMPLETYPE'
+          type: array
+        url:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - FACILITY_ID
-    INVESTIGATIONUSER:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+    FACILITYCYCLE:
       properties:
-        CREATE_ID:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        ID:
+        description:
+          type: string
+        endDate:
+          format: datetime
+          type: string
+        facilityID:
+          type: integer
+        id:
           readOnly: true
           type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        ROLE:
+        name:
           type: string
-        USER_:
+        startDate:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - facilityID
+    GROUPING:
+      properties:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        grouping:
+          items:
+            $ref: '#/components/schemas/GROUPING'
+          type: array
+        id:
+          readOnly: true
+          type: integer
+        investigationGroups:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+        rules:
+          items:
+            $ref: '#/components/schemas/RULE'
+          type: array
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+    INSTRUMENT:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        description:
+          type: string
+        facilityID:
+          type: integer
+        fullName:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        instrumentScientists:
+          items:
+            $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
+          type: array
+        investigationInstruments:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - facilityID
+    INSTRUMENTSCIENTIST:
+      properties:
+        INSTRUMENT:
+          $ref: '#/components/schemas/INSTRUMENT'
+        USER:
           $ref: '#/components/schemas/USER'
-        USER_ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        instrumentID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        userID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - ROLE
-      - INVESTIGATION_ID
-      - USER_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - instrumentID
+      - userID
+    INVESTIGATION:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        INVESTIGATIONTYPE:
+          $ref: '#/components/schemas/INVESTIGATIONTYPE'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datasets:
+          items:
+            $ref: '#/components/schemas/DATASET'
+          type: array
+        doi:
+          type: string
+        endDate:
+          format: datetime
+          type: string
+        facilityID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigationGroups:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONGROUP'
+          type: array
+        investigationInstruments:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONINSTRUMENT'
+          type: array
+        investigationParameters:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
+          type: array
+        investigationUsers:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONUSER'
+          type: array
+        keywords:
+          items:
+            $ref: '#/components/schemas/KEYWORD'
+          type: array
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+        publications:
+          items:
+            $ref: '#/components/schemas/PUBLICATION'
+          type: array
+        releaseDate:
+          format: datetime
+          type: string
+        samples:
+          items:
+            $ref: '#/components/schemas/SAMPLE'
+          type: array
+        shifts:
+          items:
+            $ref: '#/components/schemas/SHIFT'
+          type: array
+        startDate:
+          format: datetime
+          type: string
+        studyInvestigations:
+          items:
+            $ref: '#/components/schemas/STUDYINVESTIGATION'
+          type: array
+        summary:
+          type: string
+        title:
+          type: string
+        typeID:
+          type: integer
+        visitId:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - title
+      - visitId
+      - facilityID
+      - typeID
+    INVESTIGATIONGROUP:
+      properties:
+        GROUPING:
+          $ref: '#/components/schemas/GROUPING'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        groupID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        role:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - role
+      - groupID
+      - investigationID
+    INVESTIGATIONINSTRUMENT:
+      properties:
+        INSTRUMENT:
+          $ref: '#/components/schemas/INSTRUMENT'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        instrumentID:
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - instrumentID
+      - investigationID
+    INVESTIGATIONPARAMETER:
+      properties:
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        PARAMETERTYPE:
+          $ref: '#/components/schemas/PARAMETERTYPE'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dateTimeValue:
+          format: datetime
+          type: string
+        error:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        numericValue:
+          type: string
+        parameterTypeID:
+          type: integer
+        rangeBottom:
+          type: string
+        rangeTop:
+          type: string
+        stringValue:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - investigationID
+      - parameterTypeID
+    INVESTIGATIONTYPE:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        description:
+          type: string
+        facilityID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigations:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - facilityID
+    INVESTIGATIONUSER:
+      properties:
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        USER:
+          $ref: '#/components/schemas/USER'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        role:
+          type: string
+        userID:
+          type: integer
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - role
+      - investigationID
+      - userID
     JOB:
       properties:
         APPLICATION:
           $ref: '#/components/schemas/APPLICATION'
-        APPLICATION_ID:
-          type: integer
-        ARGUMENTS:
-          type: string
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATACOLLECTION:
           $ref: '#/components/schemas/DATACOLLECTION'
-        ID:
-          readOnly: true
+        applicationID:
           type: integer
-        INPUTDATACOLLECTION_ID:
-          type: integer
-        MOD_ID:
+        arguments:
           type: string
-        MOD_TIME:
+        createId:
+          type: string
+        createTime:
           format: datetime
           type: string
-        OUTPUTDATACOLLECTION_ID:
+        id:
+          readOnly: true
+          type: integer
+        inputDataCollectionID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        outputDataCollectionID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - APPLICATION_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - applicationID
     KEYWORD:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
+        createId:
           type: string
-        MOD_TIME:
+        createTime:
           format: datetime
           type: string
-        NAME:
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - INVESTIGATION_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - investigationID
     PARAMETERTYPE:
       properties:
-        APPLICABLETODATACOLLECTION:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        applicableToDataCollection:
           type: boolean
-        APPLICABLETODATAFILE:
+        applicableToDatafile:
           type: boolean
-        APPLICABLETODATASET:
+        applicableToDataset:
           type: boolean
-        APPLICABLETOINVESTIGATION:
+        applicableToInvestigation:
           type: boolean
-        APPLICABLETOSAMPLE:
+        applicableToSample:
           type: boolean
-        CREATE_ID:
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATACOLLECTIONPARAMETER:
+        dataCollectionParameters:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
           type: array
-        DATAFILEPARAMETER:
+        datafileParameters:
           items:
             $ref: '#/components/schemas/DATAFILEPARAMETER'
           type: array
-        DATASETPARAMETER:
+        datasetParameters:
           items:
             $ref: '#/components/schemas/DATASETPARAMETER'
           type: array
-        DESCRIPTION:
+        description:
           type: string
-        ENFORCED:
+        enforced:
           type: boolean
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
+        facilityID:
           type: integer
-        ID:
+        id:
           readOnly: true
           type: integer
-        INVESTIGATIONPARAMETER:
+        investigationParameters:
           items:
             $ref: '#/components/schemas/INVESTIGATIONPARAMETER'
           type: array
-        MAXIMUMNUMERICVALUE:
+        maximumNumericValue:
           type: string
-        MINIMUMNUMERICVALUE:
+        minimumNumericValue:
           type: string
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        PERMISSIBLESTRINGVALUE:
+        permissibleStringValues:
           items:
             $ref: '#/components/schemas/PERMISSIBLESTRINGVALUE'
           type: array
-        SAMPLEPARAMETER:
+        sampleParameters:
           items:
             $ref: '#/components/schemas/SAMPLEPARAMETER'
           type: array
-        UNITS:
+        units:
           type: string
-        UNITSFULLNAME:
+        unitsFullName:
           type: string
-        VALUETYPE:
+        valueType:
           type: integer
-        VERIFIED:
+        verified:
           type: boolean
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - UNITS
-      - VALUETYPE
-      - FACILITY_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - units
+      - valueType
+      - facilityID
     PERMISSIBLESTRINGVALUE:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
         PARAMETERTYPE:
           $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETERTYPE_ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        id:
+          readOnly: true
           type: integer
-        VALUE:
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        parameterTypeID:
+          type: integer
+        value:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - VALUE
-      - PARAMETERTYPE_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - value
+      - parameterTypeID
     PUBLICATION:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DOI:
-          type: string
-        FULLREFERENCE:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
+        createId:
           type: string
-        MOD_TIME:
+        createTime:
           format: datetime
           type: string
-        REPOSITORY:
+        doi:
           type: string
-        REPOSITORYID:
+        fullReference:
           type: string
-        URL:
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        repository:
+          type: string
+        repositoryId:
+          type: string
+        url:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - FULLREFERENCE
-      - MOD_ID
-      - MOD_TIME
-      - INVESTIGATION_ID
+      - id
+      - createId
+      - createTime
+      - fullReference
+      - modId
+      - modTime
+      - investigationID
     PUBLICSTEP:
       properties:
-        CREATE_ID:
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        FIELD:
+        field:
           type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        ORIGIN:
+        origin:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - FIELD
-      - MOD_ID
-      - MOD_TIME
-      - ORIGIN
+      - id
+      - createId
+      - createTime
+      - field
+      - modId
+      - modTime
+      - origin
     RELATEDDATAFILE:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         DATAFILE:
           $ref: '#/components/schemas/DATAFILE'
-        DEST_DATAFILE_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
+        createId:
           type: string
-        MOD_TIME:
+        createTime:
           format: datetime
           type: string
-        RELATION:
+        destDatafileID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
           type: string
-        SOURCE_DATAFILE_ID:
+        modTime:
+          format: datetime
+          type: string
+        relation:
+          type: string
+        sourceDatafileID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - RELATION
-      - DEST_DATAFILE_ID
-      - SOURCE_DATAFILE_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - relation
+      - destDatafileID
+      - sourceDatafileID
     RULE:
       properties:
-        ATTRIBUTE:
-          type: string
-        BEAN:
-          type: string
-        C:
-          type: integer
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        CRUDFLAGS:
-          type: string
-        CRUDJPQL:
-          type: string
-        D:
-          type: integer
         GROUPING:
           $ref: '#/components/schemas/GROUPING'
-        GROUPING_ID:
+        attribute:
+          type: string
+        bean:
+          type: string
+        c:
           type: integer
-        ID:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        crudFlags:
+          type: string
+        crudJPQL:
+          type: string
+        d:
+          type: integer
+        groupingID:
+          type: integer
+        id:
           readOnly: true
           type: integer
-        INCLUDEJPQL:
+        includeJPQL:
           type: string
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        R:
+        r:
           type: integer
-        RESTRICTED:
+        restricted:
           type: integer
-        SEARCHJPQL:
+        searchJPQL:
           type: string
-        U:
+        u:
           type: integer
-        WHAT:
+        what:
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - CRUDFLAGS
-      - MOD_ID
-      - MOD_TIME
-      - WHAT
+      - id
+      - createId
+      - createTime
+      - crudFlags
+      - modId
+      - modTime
+      - what
     SAMPLE:
       properties:
-        CREATE_ID:
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        SAMPLETYPE:
+          $ref: '#/components/schemas/SAMPLETYPE'
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DATASET:
+        datasets:
           items:
             $ref: '#/components/schemas/DATASET'
           type: array
-        ID:
+        id:
           readOnly: true
           type: integer
-        INVESTIGATION:
-          $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
+        investigationID:
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        SAMPLEPARAMETER:
+        sampleParameters:
           items:
             $ref: '#/components/schemas/SAMPLEPARAMETER'
           type: array
-        SAMPLETYPE:
-          $ref: '#/components/schemas/SAMPLETYPE'
-        SAMPLETYPE_ID:
+        sampleTypeID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
-      - INVESTIGATION_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - investigationID
     SAMPLEPARAMETER:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        DATETIME_VALUE:
-          format: datetime
-          type: string
-        ERROR:
-          type: string
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
-        NUMERIC_VALUE:
-          type: string
         PARAMETERTYPE:
           $ref: '#/components/schemas/PARAMETERTYPE'
-        PARAMETER_TYPE_ID:
-          type: integer
-        RANGEBOTTOM:
-          type: string
-        RANGETOP:
-          type: string
         SAMPLE:
           $ref: '#/components/schemas/SAMPLE'
-        SAMPLE_ID:
-          type: integer
-        STRING_VALUE:
+        createId:
           type: string
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - SAMPLE_ID
-      - PARAMETER_TYPE_ID
-    SAMPLETYPE:
-      properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        FACILITY:
-          $ref: '#/components/schemas/FACILITY'
-        FACILITY_ID:
-          type: integer
-        ID:
+        dateTimeValue:
+          format: datetime
+          type: string
+        error:
+          type: string
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        MOLECULARFORMULA:
+        numericValue:
           type: string
-        NAME:
+        parameterTypeID:
+          type: integer
+        rangeBottom:
           type: string
-        SAFETYINFORMATION:
+        rangeTop:
           type: string
-        SAMPLE:
+        sampleID:
+          type: integer
+        stringValue:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - sampleID
+      - parameterTypeID
+    SAMPLETYPE:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        facilityID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        molecularFormula:
+          type: string
+        name:
+          type: string
+        safetyInformation:
+          type: string
+        samples:
           items:
             $ref: '#/components/schemas/SAMPLE'
           type: array
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - MOLECULARFORMULA
-      - NAME
-      - FACILITY_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - molecularFormula
+      - name
+      - facilityID
     SHIFT:
       properties:
-        COMMENT:
-          type: string
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ENDDATE:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
+        comment:
           type: string
-        MOD_TIME:
+        createId:
+          type: string
+        createTime:
           format: datetime
           type: string
-        STARTDATE:
+        endDate:
+          format: datetime
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        startDate:
           format: datetime
           type: string
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - ENDDATE
-      - MOD_ID
-      - MOD_TIME
-      - STARTDATE
-      - INVESTIGATION_ID
+      - id
+      - createId
+      - createTime
+      - endDate
+      - modId
+      - modTime
+      - startDate
+      - investigationID
     STUDY:
       properties:
-        CREATE_ID:
+        USER:
+          $ref: '#/components/schemas/USER'
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        DESCRIPTION:
+        description:
           type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        STARTDATE:
+        startDate:
           format: datetime
           type: string
-        STATUS:
+        status:
           type: integer
-        STUDYINVESTIGATION:
+        studyInvestigations:
           items:
             $ref: '#/components/schemas/STUDYINVESTIGATION'
           type: array
-        USER_:
-          $ref: '#/components/schemas/USER'
-        USER_ID:
+        userID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
     STUDYINVESTIGATION:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
-        ID:
-          readOnly: true
-          type: integer
         INVESTIGATION:
           $ref: '#/components/schemas/INVESTIGATION'
-        INVESTIGATION_ID:
-          type: integer
-        MOD_ID:
-          type: string
-        MOD_TIME:
-          format: datetime
-          type: string
         STUDY:
           $ref: '#/components/schemas/STUDY'
-        STUDY_ID:
-          type: integer
-      required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - INVESTIGATION_ID
-      - STUDY_ID
-    USER:
-      properties:
-        CREATE_ID:
+        createId:
           type: string
-        CREATE_TIME:
+        createTime:
           format: datetime
           type: string
-        EMAIL:
-          type: string
-        FULLNAME:
-          type: string
-        ID:
+        id:
           readOnly: true
           type: integer
-        INSTRUMENTSCIENTIST:
+        investigationID:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        studyID:
+          type: integer
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - investigationID
+      - studyID
+    USER:
+      properties:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        instrumentScientists:
           items:
             $ref: '#/components/schemas/INSTRUMENTSCIENTIST'
           type: array
-        INVESTIGATIONUSER:
+        investigationUsers:
           items:
             $ref: '#/components/schemas/INVESTIGATIONUSER'
           type: array
-        MOD_ID:
+        modId:
           type: string
-        MOD_TIME:
+        modTime:
           format: datetime
           type: string
-        NAME:
+        name:
           type: string
-        ORCIDID:
+        orcidId:
           type: string
-        STUDY:
+        studies:
           items:
             $ref: '#/components/schemas/STUDY'
           type: array
-        USERGROUP:
+        userGroups:
           items:
             $ref: '#/components/schemas/USERGROUP'
           type: array
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - NAME
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
     USERGROUP:
       properties:
-        CREATE_ID:
-          type: string
-        CREATE_TIME:
-          format: datetime
-          type: string
         GROUPING:
           $ref: '#/components/schemas/GROUPING'
-        GROUP_ID:
-          type: integer
-        ID:
-          readOnly: true
-          type: integer
-        MOD_ID:
+        USER:
+          $ref: '#/components/schemas/USER'
+        createId:
           type: string
-        MOD_TIME:
+        createTime:
           format: datetime
           type: string
-        USER_:
-          $ref: '#/components/schemas/USER'
-        USER_ID:
+        groupID:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        userID:
           type: integer
       required:
-      - ID
-      - CREATE_ID
-      - CREATE_TIME
-      - MOD_ID
-      - MOD_TIME
-      - GROUP_ID
-      - USER_ID
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - groupID
+      - userID
   securitySchemes:
     session_id:
       bearerFormat: uuid

@@ -19,9 +19,9 @@ from datagateway_api.common.database.helpers import (
     requires_session_id,
     update_row_from_id,
 )
-from datagateway_api.common.database.models import EntityHelper, SESSION
+from datagateway_api.common.database.models import SESSION
 from datagateway_api.common.exceptions import AuthenticationError
-from datagateway_api.common.helpers import queries_records
+from datagateway_api.common.helpers import get_entity_object_from_name, queries_records
 
 
 log = logging.getLogger()
@@ -38,9 +38,9 @@ class DatabaseBackend(Backend):
             insert_row_into_table(
                 SESSION,
                 SESSION(
-                    ID=session_id,
-                    USERNAME=f"{credentials['mechanism']}/root",
-                    EXPIREDATETIME=datetime.datetime.now() + datetime.timedelta(days=1),
+                    id=session_id,
+                    username=f"{credentials['mechanism']}/root",
+                    expireDateTime=datetime.datetime.now() + datetime.timedelta(days=1),
                 ),
             )
             return session_id
@@ -63,49 +63,49 @@ class DatabaseBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, entity_type, filters):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return get_rows_by_filter(table, filters)
 
     @requires_session_id
     @queries_records
     def create(self, session_id, entity_type, data):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return create_rows_from_json(table, data)
 
     @requires_session_id
     @queries_records
     def update(self, session_id, entity_type, data):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return patch_entities(table, data)
 
     @requires_session_id
     @queries_records
     def get_one_with_filters(self, session_id, entity_type, filters):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return get_first_filtered_row(table, filters)
 
     @requires_session_id
     @queries_records
     def count_with_filters(self, session_id, entity_type, filters):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return get_filtered_row_count(table, filters)
 
     @requires_session_id
     @queries_records
     def get_with_id(self, session_id, entity_type, id_):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return get_row_by_id(table, id_).to_dict()
 
     @requires_session_id
     @queries_records
     def delete_with_id(self, session_id, entity_type, id_):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return delete_row_by_id(table, id_)
 
     @requires_session_id
     @queries_records
     def update_with_id(self, session_id, entity_type, id_, data):
-        table = EntityHelper.get_entity_object_from_name(entity_type)
+        table = get_entity_object_from_name(entity_type)
         return update_row_from_id(table, id_, data)
 
     @requires_session_id

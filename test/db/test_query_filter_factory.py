@@ -45,7 +45,7 @@ class TestQueryFilterFactory:
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_order_filter(self):
         assert isinstance(
-            QueryFilterFactory.get_query_filter({"order": "ID DESC"}),
+            QueryFilterFactory.get_query_filter({"order": "id DESC"}),
             DatabaseOrderFilter,
         )
 
@@ -59,14 +59,14 @@ class TestQueryFilterFactory:
     @pytest.mark.parametrize(
         "filter_input",
         [
-            pytest.param({"where": {"ID": {"eq": "1"}}}, id="eq operator"),
-            pytest.param({"where": {"ID": {"gt": "1"}}}, id="gt operator"),
-            pytest.param({"where": {"ID": {"gte": "1"}}}, id="gte operator"),
-            pytest.param({"where": {"ID": {"in": ["1", "2", "3"]}}}, id="in operator"),
-            pytest.param({"where": {"ID": {"like": "3"}}}, id="like operator"),
-            pytest.param({"where": {"ID": {"nlike": "3"}}}, id="not like operator"),
-            pytest.param({"where": {"ID": {"lt": "1"}}}, id="lt operator"),
-            pytest.param({"where": {"ID": {"lte": "1"}}}, id="lte operator"),
+            pytest.param({"where": {"id": {"eq": "1"}}}, id="eq operator"),
+            pytest.param({"where": {"id": {"gt": "1"}}}, id="gt operator"),
+            pytest.param({"where": {"id": {"gte": "1"}}}, id="gte operator"),
+            pytest.param({"where": {"id": {"in": ["1", "2", "3"]}}}, id="in operator"),
+            pytest.param({"where": {"id": {"like": "3"}}}, id="like operator"),
+            pytest.param({"where": {"id": {"nlike": "3"}}}, id="not like operator"),
+            pytest.param({"where": {"id": {"lt": "1"}}}, id="lt operator"),
+            pytest.param({"where": {"id": {"lte": "1"}}}, id="lte operator"),
         ],
     )
     def test_valid_where_filter(self, filter_input):
