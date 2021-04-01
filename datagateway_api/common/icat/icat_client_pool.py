@@ -1,8 +1,5 @@
 import logging
 
-from cachetools.func import _cache
-from cachetools.lru import LRUCache
-
 from icat.client import Client
 from object_pool import ObjectPool
 
@@ -16,6 +13,7 @@ class ICATClient(Client):
 
     def __init__(self):
         super().__init__(config.get_icat_url(), checkCert=config.get_icat_check_cert())
+        # When clients are cleaned up, sessions won't be logged out
         self.autoLogout = False
 
     def clean_up(self):
@@ -27,6 +25,12 @@ class ICATClient(Client):
 
 
 def create_client_pool():
+    """
+    Function to create an object pool for ICAT client objects
+
+    The ObjectPool class uses the singleton design pattern
+    """
+
     return ObjectPool(
         ICATClient, min_init=5, max_capacity=20, max_reusable=0, expires=0,
     )
@@ -50,20 +54,3 @@ class ClientPoolExecutor(ObjectPool.Executor):
 
 def get_executor(client_pool):
     return ClientPoolExecutor(client_pool)
-
-
-class ExtendedLRUCache(LRUCache):
-    def __init__(self):
-        super().__init__(maxsize=8)
-
-    def popitem(self):
-        key, client = super().popitem()
-        session_id, client_pool = key
-        log.debug(f"Item popped from LRU cache: {key}, {client}")
-        # Put client back into pool
-        # Passes in default stats for now, though these aren't used in the API
-        client_pool._queue_resource(client, client_pool._get_default_stats())
-
-
-def my_lru_cache():
-    return _cache(ExtendedLRUCache())
