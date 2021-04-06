@@ -46,11 +46,11 @@ class Config(object):
         except KeyError:
             sys.exit("Missing config value, client_pool_init_size")
 
-    def get_client_pool_max_capacity(self):
+    def get_client_pool_max_size(self):
         try:
-            return self.config["client_pool_max_capacity"]
+            return self.config["client_pool_max_size"]
         except KeyError:
-            sys.exit("Missing config value, client_pool_max_capacity")
+            sys.exit("Missing config value, client_pool_max_size")
 
     def get_db_url(self):
         try:

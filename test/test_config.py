@@ -50,14 +50,14 @@ class TestGetClientPoolInitSize:
             invalid_config.get_client_pool_init_size()
 
 
-class TestGetClientPoolMaxCapacity:
+class TestGetClientPoolMaxSize:
     def test_valid_client_pool_init_size(self, valid_config):
-        pool_max_capacity = valid_config.get_client_pool_max_capacity()
-        assert pool_max_capacity == 5
+        pool_max_size = valid_config.get_client_pool_max_size()
+        assert pool_max_size == 5
 
     def test_invalid_client_cache_size(self, invalid_config):
         with pytest.raises(SystemExit):
-            invalid_config.get_client_pool_max_capacity()
+            invalid_config.get_client_pool_max_size()
 
 
 class TestGetDBURL:
