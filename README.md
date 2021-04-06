@@ -37,6 +37,7 @@ sqlalchemy to communicate directly with ICAT's database.
   - [Database Backend](#database-backend)
     - [Mapped Classes](#mapped-classes)
   - [Python ICAT Backend](#python-icat-backend)
+    - [Client Handling](#client-handling)
     - [ICATQuery](#icatquery)
   - [Generating the OpenAPI Specification](#generating-the-openapi-specification)
 - [Utilities](#utilities)
