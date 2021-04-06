@@ -38,23 +38,3 @@ def create_client_pool():
         max_reusable=0,
         expires=0,
     )
-
-
-class ClientPoolExecutor(ObjectPool.Executor):
-    """TODO"""
-
-    def __init__(self, klass):
-        # klass is the instance of object pool
-        self.__pool = klass
-        self.client, self.resource_stats = None
-
-    def get_client(self):
-        self.client, self.resource_stats = self.__pool._get_resource()
-        return self.client
-
-    def release_client(self):
-        self.__pool._queue_resource(self.client, self.resource_stats)
-
-
-def get_executor(client_pool):
-    return ClientPoolExecutor(client_pool)
