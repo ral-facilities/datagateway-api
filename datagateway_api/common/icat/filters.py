@@ -117,6 +117,8 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
+            log.debug("Fields for distinct filter: %s", self.fields)
+
             if (
                 query.aggregate == "COUNT"
                 or query.aggregate == "AVG"
@@ -127,12 +129,9 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
             else:
                 query.setAggregate("DISTINCT")
 
-            # Using where filters to identify which fields to apply distinct too
-            for field in self.fields:
-                where_filter = PythonICATWhereFilter(field, "null", "ne")
-                where_filter.apply_filter(query)
+            # TODO - Remove 'distinct where' logic in query class
+            query.setAttributes(self.fields)
 
-            log.debug("Fields for distinct filter: %s", self.fields)
         except ValueError as e:
             raise FilterError(e)
 
