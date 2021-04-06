@@ -73,9 +73,9 @@ def create_api_endpoints(flask_app, api, spec):
 
     backend = create_backend(backend_type)
 
+    icat_client_pool = None
     if backend_type == "python_icat":
         # Create client pool
-        # TODO - Protect against other backends
         icat_client_pool = create_client_pool()
 
     for entity_name in endpoints:
@@ -112,7 +112,7 @@ def create_api_endpoints(flask_app, api, spec):
 
     # Table specific endpoints
     instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
-        backend, client_pool=icat_client_pool
+        backend, client_pool=icat_client_pool,
     )
     api.add_resource(
         instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles",
