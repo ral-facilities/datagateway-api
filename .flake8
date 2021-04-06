@@ -9,5 +9,6 @@ import-order-style = google
 per-file-ignores =
   test/*: S101
   util/icat_db_generator.py: S311
+  datagateway_api/wsgi.py:E402,F401
   datagateway_api/common/database/models.py: N815,A003
 enable-extensions=G

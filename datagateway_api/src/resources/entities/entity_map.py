@@ -76,6 +76,7 @@ def create_entity_models():
                 or relationship_class.direction.name == "ONETOMANY"
             ):
                 entity_underscore_strip = relationship_name.strip("_")
+                # Checking for plurals on a related ICAT entity
                 if entity_underscore_strip[-1] == "s":
                     pascal_case = (
                         entity_underscore_strip[0].upper() + entity_underscore_strip[1:]

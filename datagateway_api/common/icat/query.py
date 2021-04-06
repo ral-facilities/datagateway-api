@@ -264,8 +264,15 @@ class ICATQuery:
                 # range of a list with a single element
                 split_fields.insert(0, "base")
 
-            # If a key doesn't exist in the dictionary, create it and assign an empty
-            # list to it
+            # Check that only an entity name, and attribute name exist
+            # Code within loop is used for when `split_fields` =
+            # ['dataset', 'investigation', 'name'] for example
+            while len(split_fields) > 2:
+                # If a key doesn't exist in the dictionary, create it and assign an
+                # empty list to it
+                distinct_field_dict.setdefault(split_fields[0], [])
+                split_fields.pop(0)
+
             distinct_field_dict.setdefault(split_fields[0], [])
             distinct_field_dict[split_fields[0]].append(split_fields[-1])
 
@@ -303,10 +310,12 @@ class ICATQuery:
         :return: A copy of `distinct_fields`, with the data from the entity name put
             into the base portion of the dictionary
         """
-        # Reset base fields
-        distinct_fields["base"] = []
+        log.debug("Entity Name: %s, Distinct Fields: %s", entity_name, distinct_fields)
 
         distinct_fields_copy = distinct_fields.copy()
+
+        # Reset base fields
+        distinct_fields_copy["base"] = []
         if entity_name in distinct_fields_copy.keys():
             distinct_fields_copy["base"] = distinct_fields_copy[entity_name]
 

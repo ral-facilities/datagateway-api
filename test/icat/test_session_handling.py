@@ -67,15 +67,30 @@ class TestSessionHandling:
         )
 
     @pytest.mark.usefixtures("single_investigation_test_data")
-    def test_valid_login(self, flask_test_app_icat, icat_client, icat_query):
-        user_credentials = config.get_test_user_credentials()
-
-        login_json = {
-            "username": user_credentials["username"],
-            "password": user_credentials["password"],
-            "mechanism": config.get_test_mechanism(),
-        }
-        login_response = flask_test_app_icat.post("/sessions", json=login_json)
+    @pytest.mark.parametrize(
+        "request_body",
+        [
+            pytest.param(
+                {
+                    "username": config.get_test_user_credentials()["username"],
+                    "password": config.get_test_user_credentials()["password"],
+                    "mechanism": config.get_test_mechanism(),
+                },
+                id="Normal request body",
+            ),
+            pytest.param(
+                {
+                    "username": config.get_test_user_credentials()["username"],
+                    "password": config.get_test_user_credentials()["password"],
+                },
+                id="Missing mechanism in request body",
+            ),
+        ],
+    )
+    def test_valid_login(
+        self, flask_test_app_icat, icat_client, icat_query, request_body,
+    ):
+        login_response = flask_test_app_icat.post("/sessions", json=request_body)
 
         icat_client.sessionId = login_response.json["sessionID"]
         icat_query.setAggregate("COUNT")
@@ -88,15 +103,27 @@ class TestSessionHandling:
 
         assert test_query == [1] and login_response.status_code == 201
 
-    def test_invalid_login(self, flask_test_app_icat):
-        login_json = {
-            "username": "Invalid Username",
-            "password": "InvalidPassword",
-            "mechanism": config.get_test_mechanism(),
-        }
-        login_response = flask_test_app_icat.post("/sessions", json=login_json)
+    @pytest.mark.parametrize(
+        "request_body, expected_response_code",
+        [
+            pytest.param(
+                {
+                    "username": "Invalid Username",
+                    "password": "InvalidPassword",
+                    "mechanism": config.get_test_mechanism(),
+                },
+                403,
+                id="Invalid credentials",
+            ),
+            pytest.param({}, 400, id="Missing credentials"),
+        ],
+    )
+    def test_invalid_login(
+        self, flask_test_app_icat, request_body, expected_response_code,
+    ):
+        login_response = flask_test_app_icat.post("/sessions", json=request_body)
 
-        assert login_response.status_code == 403
+        assert login_response.status_code == expected_response_code
 
     def test_valid_logout(self, flask_test_app_icat):
         client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
