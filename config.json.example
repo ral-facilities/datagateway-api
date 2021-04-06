@@ -1,6 +1,8 @@
 {
   "backend": "db",
-  "client_cache_size": 28,
+  "client_cache_size": 5,
+  "client_pool_init_size": 2,
+  "client_pool_max_capacity": 5,
   "DB_URL": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
   "ICAT_URL": "https://localhost:8181",
   "icat_check_cert": false,

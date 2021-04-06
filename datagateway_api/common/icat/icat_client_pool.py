@@ -32,7 +32,11 @@ def create_client_pool():
     """
 
     return ObjectPool(
-        ICATClient, min_init=5, max_capacity=20, max_reusable=0, expires=0,
+        ICATClient,
+        min_init=config.get_client_pool_init_size(),
+        max_capacity=config.get_client_pool_max_capacity(),
+        max_reusable=0,
+        expires=0,
     )
 
 
