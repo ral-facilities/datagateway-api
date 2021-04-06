@@ -85,8 +85,6 @@ def get_cached_client(session_id, client_pool):
     session ID is flushed and the client is returned to the pool. More details about
     client handling can be found in the README
 
-    TODO - Add details of client handling in the README
-
     :param session_id: The user's session ID
     :type session_id: :class:`str`
     :param client_pool: Client object pool used to fetch an unused client
