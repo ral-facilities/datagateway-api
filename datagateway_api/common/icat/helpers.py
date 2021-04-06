@@ -3,7 +3,6 @@ from functools import wraps
 import logging
 
 from cachetools import cached
-import icat.client
 from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
@@ -14,7 +13,6 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.common.config import config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -104,13 +102,6 @@ def get_cached_client(session_id, client_pool):
     if session_id:
         client.sessionId = session_id
 
-    return client
-
-
-def create_client():
-    client = icat.client.Client(
-        config.get_icat_url(), checkCert=config.get_icat_check_cert(),
-    )
     return client
 
 
