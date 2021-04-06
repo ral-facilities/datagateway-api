@@ -25,7 +25,10 @@ class ExtendedLRUCache(LRUCache):
         key, client = super().popitem()
         session_id, client_pool = key
         log.debug(f"Item popped from LRU cache: {key}, {client}")
-        # TODO - Session ID should probably get flushed here?
-        # Put client back into pool
-        # Passes in default stats for now, though these aren't used in the API
+
+        # Flushing session ID so next time the client object is used, there's no issues
+        client.sessionId = None
+
+        # Put client back into pool - resource stats aren't used in the API, so defaults
+        # are passed in
         client_pool._queue_resource(client, client_pool._get_default_stats())
