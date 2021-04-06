@@ -138,7 +138,7 @@ def session_endpoints(backend, **kwargs):
             """
             return (
                 backend.get_session_details(
-                    get_session_id_from_auth_header(), **kwargs
+                    get_session_id_from_auth_header(), **kwargs,
                 ),
                 200,
             )

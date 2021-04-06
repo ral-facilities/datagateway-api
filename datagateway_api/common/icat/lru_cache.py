@@ -24,7 +24,7 @@ class ExtendedLRUCache(LRUCache):
     def popitem(self):
         key, client = super().popitem()
         session_id, client_pool = key
-        log.debug(f"Item popped from LRU cache: {key}, {client}")
+        log.debug("Client popped from LRU cache with session: %s", session_id)
 
         # Flushing session ID so next time the client object is used, there's no issues
         client.sessionId = None

@@ -260,7 +260,7 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
             backend.update_with_id(
                 session_id, entity_type, id_, request.json, **kwargs,
             )
-            return backend.get_with_id(session_id, entity_type, id_, **kwargs,), 200
+            return backend.get_with_id(session_id, entity_type, id_, **kwargs), 200
 
         patch.__doc__ = f"""
             ---

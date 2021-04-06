@@ -84,10 +84,6 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, entity_type, filters, **kwargs):
-        # TODO - Pool only needed for logging
-        client_pool = kwargs.get("client_pool")
-        log.debug(f"Pool Size: {client_pool.get_pool_size()}")
-
         client = kwargs.get("client")
         client.sessionId = session_id
         return get_entity_with_filters(client, entity_type, filters)
