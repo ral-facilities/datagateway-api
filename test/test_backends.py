@@ -20,7 +20,9 @@ class TestBackends:
         assert type(test_backend) == backend_type
 
     def test_abstract_class(self):
-        """Test the `Backend` abstract class has all the required classes for the API"""
+        """
+        Test the `Backend` abstract class has all required abstract methods for the API
+        """
         Backend.__abstractmethods__ = set()
 
         class DummyBackend(Backend):

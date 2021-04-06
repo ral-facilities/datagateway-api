@@ -24,7 +24,6 @@ def create_backend(backend_type):
     elif backend_type == "python_icat":
         backend = PythonICATBackend()
     else:
-        # Might turn to a warning so the abstract class can be tested?
         sys.exit(f"Invalid config value '{backend_type}' for config option backend")
 
     return backend
