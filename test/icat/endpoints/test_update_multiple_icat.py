@@ -111,3 +111,44 @@ class TestUpdateMultipleEntities:
         )
 
         assert test_response.status_code == 400
+
+    def test_valid_rollback_behaviour(
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
+        multiple_investigation_test_data,
+    ):
+        """
+        Testing the rollback functionality when an `ICATValidationError` is thrown when
+        trying to update data as per the request body.
+
+        In this test, the first dictionary in the request body contains valid data. This
+        record should be successfully updated. The second dictionary contains data that
+        will throw an ICAT related exception. At this point, the rollback behaviour
+        should execute, restoring the state of the first record (i.e. un-updating it)
+        """
+
+        request_body = [
+            {
+                "id": multiple_investigation_test_data[0]["id"],
+                "summary": "An example summary for an investigation used for testing.",
+            },
+            {"id": multiple_investigation_test_data[1]["id"], "doi": "_" * 256,},
+        ]
+
+        update_response = flask_test_app_icat.patch(
+            "/investigations", headers=valid_icat_credentials_header, json=request_body,
+        )
+
+        # Get first entity that would've been successfully updated to ensure the changes
+        # were rolled back when the ICATValidationError occurred for the second entity
+        # in the request body
+        get_response = flask_test_app_icat.get(
+            f"/investigations/{multiple_investigation_test_data[0]['id']}",
+            headers=valid_icat_credentials_header,
+        )
+        get_response_json = prepare_icat_data_for_assertion([get_response.json])
+
+        assert update_response.status_code == 500
+        # RHS encased in a list as prepare_icat_data_for_assertion() always returns list
+        assert get_response_json == [multiple_investigation_test_data[0]]
