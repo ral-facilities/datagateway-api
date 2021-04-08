@@ -133,7 +133,7 @@ class TestUpdateMultipleEntities:
                 "id": multiple_investigation_test_data[0]["id"],
                 "summary": "An example summary for an investigation used for testing.",
             },
-            {"id": multiple_investigation_test_data[1]["id"], "doi": "_" * 256,},
+            {"id": multiple_investigation_test_data[1]["id"], "doi": "_" * 256},
         ]
 
         update_response = flask_test_app_icat.patch(
