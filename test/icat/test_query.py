@@ -155,31 +155,6 @@ class TestICATQuery:
         assert mapped_attributes == expected_output
 
     @pytest.mark.parametrize(
-        "input_distinct_fields, included_fields",
-        [
-            pytest.param(
-                ["investigation.id"],
-                [],
-                id="Single nested-include distinct attribute, included entity not"
-                " added",
-            ),
-        ],
-    )
-    def test_invalid_distinct_attribute_mapping(
-        self, icat_client, input_distinct_fields, included_fields,
-    ):
-        """
-        Test that when the appropriate included fields are not present, a `FilterError`
-        will be raised
-        """
-        test_query = ICATQuery(icat_client, "Datafile")
-
-        with pytest.raises(FilterError):
-            test_query.map_distinct_attributes_to_entity_names(
-                input_distinct_fields, included_fields,
-            )
-
-    @pytest.mark.parametrize(
         "included_entity_name, input_fields, expected_fields",
         [
             pytest.param(
