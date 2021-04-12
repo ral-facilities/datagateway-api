@@ -5,9 +5,8 @@ from icat.entity import Entity, EntityList
 from icat.exception import ICATInternalError, ICATValidationError
 from icat.query import Query
 
-from datagateway_api.common.constants import Constants
 from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import FilterError, PythonICATError
+from datagateway_api.common.exceptions import PythonICATError
 
 
 log = logging.getLogger()
@@ -140,36 +139,6 @@ class ICATQuery:
 
     def get_distinct_attributes(self):
         return self.query.attributes
-
-    def iterate_query_conditions_for_distinctiveness(self):
-        distinct_attributes = []
-        for attribute_name, where_statement in self.query.conditions.items():
-            if isinstance(where_statement, list):
-                for sub_value in where_statement:
-                    self.check_attribute_name_for_distinct(
-                        distinct_attributes, attribute_name, sub_value,
-                    )
-            elif isinstance(where_statement, str):
-                self.check_attribute_name_for_distinct(
-                    distinct_attributes, attribute_name, where_statement,
-                )
-
-        return distinct_attributes
-
-    def check_attribute_name_for_distinct(self, attribute_list, key, value):
-        """
-        Check the attribute name to see if its associated value is used to signify the
-        attribute is requested in a distinct filter and if so, append it to the list of
-        attribute names
-
-        :param key: Name of an attribute
-        :type key: :class:`str`
-        :param value: Expression that should be applied to the associated attribute
-            e.g. "= 'Metadata'"
-        :type value: :class:`str`
-        """
-        if value == Constants.PYTHON_ICAT_DISTNCT_CONDITION:
-            attribute_list.append(key)
 
     def entity_to_dict(self, entity, includes, distinct_fields=None):
         """
