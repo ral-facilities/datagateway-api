@@ -38,8 +38,8 @@ class TestICATCountWithFilters:
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         test_response = flask_test_app_icat.get(
-            '/investigations/count?where={"title": {"like": "This filter should cause a'
-            '404 for testing purposes..."}}',
+            '/investigations/count?where={"title": {"like": "This filter should cause 0'
+            ' results to be found for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 
