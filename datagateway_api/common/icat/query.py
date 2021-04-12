@@ -220,6 +220,31 @@ class ICATQuery:
                     d[key] = entity_data
         return d
 
+    def map_distinct_attributes_to_results(self, distinct_attributes, query_result):
+        """
+        Maps the attribute names from a distinct filter onto the results given by the
+        query constructed and executed using Python ICAT
+
+        When selecting multiple (but not all) attributes in a JPQL query, the results
+        are returned in a list and not mapped to an entity object. As a result,
+        `entity_to_dict()` cannot be used as that function assumes an entity object
+        input. Within the API, selecting multiple attributes happens when a distinct
+        filter is applied to a request. This function is the alternative for processing
+        data ready for output
+
+        :param distinct_attributes: List of disetinct attributes from the distinct
+            filter of the incoming request
+        :type distinct_attributes: :class:`list`
+        :param query_result: List of results fetched from Python ICAT
+        :type query_result: :class:`list`
+        :return: Dictionary of attribute names paired with the results, ready to be
+            returned to the user
+        """
+        return {
+            attr_name: data
+            for attr_name, data in zip(distinct_attributes, query_result)
+        }
+
     def map_distinct_attributes_to_entity_names(self, distinct_fields, included_fields):
         """
         This function looks at a list of dot-separated fields and maps them to which
