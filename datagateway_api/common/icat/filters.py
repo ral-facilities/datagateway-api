@@ -119,13 +119,22 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
             log.info("Adding ICAT distinct filter to ICAT query")
             log.debug("Fields for distinct filter: %s", self.fields)
 
-            if (
-                query.aggregate == "COUNT"
-                or query.aggregate == "AVG"
-                or query.aggregate == "SUM"
-            ):
+            # These aggregate keywords not currently used in the API, but conditional
+            # present in case they're used in the future
+            if query.aggregate == "AVG" or query.aggregate == "SUM":
                 # Distinct can be combined with other aggregate functions
                 query.setAggregate(f"{query.aggregate}:DISTINCT")
+            elif query.aggregate == "COUNT":
+                # When count and distinct keywords are used together when selecting
+                # multiple attributes, Python ICAT will always throw an error on query
+                # execution (more info:
+                # https://github.com/icatproject/python-icat/issues/76). This appears to
+                # be a JPQL limitation, something that cannot be fixed in Python ICAT.
+                # As a result, the API will get the distinct results and manually
+                # perform `len()` on the list, using `manual_count` as a flag to
+                # recognise this situation
+                query.setAggregate("DISTINCT")
+                query.manual_count = True
             else:
                 query.setAggregate("DISTINCT")
 

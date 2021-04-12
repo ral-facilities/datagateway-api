@@ -37,6 +37,8 @@ class ICATQuery:
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
         """
+        # Flag for a count request that uses a distinct filter
+        self.manual_count = False
 
         try:
             log.info("Creating ICATQuery for entity: %s", entity_name)
