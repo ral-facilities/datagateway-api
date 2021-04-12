@@ -147,6 +147,45 @@ class TestICATQuery:
 
         assert query_output_json == single_investigation_test_data
 
+    def test_valid_get_distinct_attributes(self, icat_client):
+        test_query = ICATQuery(icat_client, "Investigation")
+        test_query.query.setAttributes(["summary", "name"])
+
+        assert test_query.get_distinct_attributes() == ["summary", "name"]
+
+    @pytest.mark.parametrize(
+        "distinct_attrs, result, expected_output",
+        [
+            pytest.param(
+                ["summary"],
+                ["Summary 1"],
+                {"summary": "Summary 1"},
+                id="Single attribute",
+            ),
+            pytest.param(
+                ["summary", "title"],
+                ["Summary 1", "Title 1"],
+                {"summary": "Summary 1", "title": "Title 1"},
+                id="Multiple attributes",
+            ),
+            pytest.param(
+                ["summary", "investigationUsers.role"],
+                ["Summary 1", "PI"],
+                {"summary": "Summary 1", "investigationUsers": {"role": "PI"}},
+                id="Multiple attributes with related attribute",
+            ),
+        ],
+    )
+    def test_valid_map_distinct_attributes_to_results(
+        self, icat_client, distinct_attrs, result, expected_output,
+    ):
+        test_query = ICATQuery(icat_client, "Investigation")
+        test_output = test_query.map_distinct_attributes_to_results(
+            distinct_attrs, result,
+        )
+
+        assert test_output == expected_output
+
     @pytest.mark.parametrize(
         "input_distinct_fields, included_fields, expected_output",
         [
