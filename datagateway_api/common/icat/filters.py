@@ -134,6 +134,7 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
                 # perform `len()` on the list, using `manual_count` as a flag to
                 # recognise this situation
                 query.setAggregate("DISTINCT")
+                log.debug("Manual count flag enabled")
                 query.manual_count = True
             else:
                 query.setAggregate("DISTINCT")

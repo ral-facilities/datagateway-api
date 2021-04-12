@@ -37,8 +37,6 @@ class ICATQuery:
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
         """
-        # Flag for a count request that uses a distinct filter
-        self.manual_count = False
 
         try:
             log.info("Creating ICATQuery for entity: %s", entity_name)
@@ -49,6 +47,8 @@ class ICATQuery:
                 aggregate=aggregate,
                 includes=includes,
             )
+            # Initialising flag for distinct filter on count endpoints
+            self.query.manual_count = False
         except ValueError:
             raise PythonICATError(
                 "An issue has occurred while creating a Python ICAT Query object,"
@@ -89,7 +89,13 @@ class ICATQuery:
                 count_query = True
                 log.debug("This ICATQuery is used for COUNT purposes")
 
-        if self.query.aggregate == "DISTINCT" and not count_query:
+        distinct_query = False
+        if (
+            self.query.aggregate == "DISTINCT"
+            and not count_query
+            and not self.query.manual_count
+        ):
+            distinct_query = True
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.get_distinct_attributes()
@@ -108,7 +114,18 @@ class ICATQuery:
             data = []
 
             for result in query_result:
-                if not count_query:
+                if self.query.manual_count:
+                    # Manually count the number of results
+                    data.append(len(query_result))
+                    break
+                elif distinct_query:
+                    # Map distinct attributes and result
+                    data.append(
+                        self.map_distinct_attributes_to_results(
+                            distinct_attributes, result,
+                        ),
+                    )
+                elif not count_query:
                     dict_result = self.entity_to_dict(
                         result, flat_query_includes, mapped_distinct_fields,
                     )
