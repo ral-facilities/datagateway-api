@@ -131,7 +131,7 @@ class TestGetPort:
 
     def test_invalid_port(self, invalid_config):
         with pytest.raises(SystemExit):
-            invalid_config.get_icat_url()
+            invalid_config.get_port()
 
 
 class TestGetTestUserCredentials:
