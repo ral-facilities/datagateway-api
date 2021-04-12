@@ -139,7 +139,6 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
             else:
                 query.setAggregate("DISTINCT")
 
-            # TODO - Remove 'distinct where' logic in query class
             query.setAttributes(self.fields)
 
         except ValueError as e:
