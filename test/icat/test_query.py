@@ -45,11 +45,64 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
 
 
 class TestICATQuery:
-    def test_valid_query_creation(self, icat_client):
-        # Paramatise and add inputs for conditions, aggregate and includes
-        test_query = ICATQuery(icat_client, "User")
+    @pytest.mark.parametrize(
+        "input_conditions, input_aggregate, input_includes, expected_conditions,"
+        " expected_aggregate, expected_includes",
+        [
+            pytest.param(
+                {"fullName": "like Bob"},
+                None,
+                None,
+                {"fullName": "like Bob"},
+                None,
+                set(),
+                id="Query with condition",
+            ),
+            pytest.param(
+                None, "DISTINCT", None, {}, "DISTINCT", set(), id="Query with aggregate"
+            ),
+            pytest.param(
+                None,
+                None,
+                ["instrumentScientists"],
+                {},
+                None,
+                set(["instrumentScientists"]),
+                id="Query with included entity",
+            ),
+        ],
+    )
+    def test_valid_query_creation(
+        self,
+        icat_client,
+        input_conditions,
+        input_aggregate,
+        input_includes,
+        expected_conditions,
+        expected_aggregate,
+        expected_includes,
+    ):
+        test_query = ICATQuery(
+            icat_client,
+            "User",
+            conditions=input_conditions,
+            aggregate=input_aggregate,
+            includes=input_includes,
+        )
 
         assert test_query.query.entity == icat_client.getEntityClass("User")
+        assert test_query.query.conditions == expected_conditions
+        assert test_query.query.aggregate == expected_aggregate
+        assert test_query.query.includes == expected_includes
+
+    def test_valid_manual_count_flag_init(self, icat_client):
+        """
+        Flag required for distinct filters used on count endpoints should be initialised
+        in `__init__()` of ICATQuery`
+        """
+        test_query = ICATQuery(icat_client, "User")
+
+        assert not test_query.query.manual_count
 
     def test_invalid_query_creation(self, icat_client):
         with pytest.raises(PythonICATError):
