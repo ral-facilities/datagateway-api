@@ -327,17 +327,6 @@ class ICATQuery:
         distinct_entities = list(distinct_field_dict.keys())
         distinct_entities.remove("base")
 
-        # Search through entity names that have distinct fields for the request and
-        # ensure these same entity names are in the query's includes
-        for entity in distinct_entities:
-            if entity not in included_fields:
-                raise FilterError(
-                    "A distinct field that has a relationship with another entity does"
-                    " not have the included entity within an include filter in this"
-                    " request. Please add all related entities which are required for"
-                    " the fields in the distinct filter distinct to an include filter.",
-                )
-
         return distinct_field_dict
 
     def prepare_distinct_fields(self, entity_name, distinct_fields):
