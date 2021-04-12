@@ -92,7 +92,7 @@ class ICATQuery:
         if self.query.aggregate == "DISTINCT" and not count_query:
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
-            distinct_attributes = self.iterate_query_conditions_for_distinctiveness()
+            distinct_attributes = self.get_distinct_attributes()
             if distinct_attributes != []:
                 mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
                     distinct_attributes, flat_query_includes,
@@ -120,6 +120,9 @@ class ICATQuery:
         else:
             log.info("Query results will be returned as ICAT entities")
             return query_result
+
+    def get_distinct_attributes(self):
+        return self.query.attributes
 
     def iterate_query_conditions_for_distinctiveness(self):
         distinct_attributes = []
