@@ -42,6 +42,16 @@ class TestGetDBURL:
             invalid_config.get_db_url()
 
 
+class TestIsFlaskReloader:
+    def test_valid_flask_reloader(self, valid_config):
+        flask_reloader = valid_config.is_flask_reloader()
+        assert flask_reloader is False
+
+    def test_invalid_flask_reloader(self, invalid_config):
+        with pytest.raises(SystemExit):
+            invalid_config.is_flask_reloader()
+
+
 class TestICATURL:
     def test_valid_icat_url(self, valid_config):
         icat_url = valid_config.get_icat_url()

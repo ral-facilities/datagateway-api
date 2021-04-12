@@ -334,6 +334,13 @@ PowerShell:
 > flask run
 ```
 
+The Flask app can be configured so that code changes are monitored and the server will
+reload itself when a change is detected. This setting can be toggled using
+`flask_reloader` in `config.json`. This is useful for development purposes. It should be
+noted that when this setting is enabled, the API will go through the startup process
+twice. In the case of the ICAT backend, this could dramatically increase startup time if
+the API is configured with a large initial client pool size.
+
 
 ## Authentication
 Each request requires a valid session ID to be provided in the Authorization header.
