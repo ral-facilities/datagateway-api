@@ -108,19 +108,194 @@ class TestICATQuery:
         with pytest.raises(PythonICATError):
             ICATQuery(icat_client, "User", conditions={"invalid": "invalid"})
 
+    @pytest.mark.parametrize(
+        "query_conditions, query_aggregate, query_includes, query_attributes"
+        ", manual_count, return_json_format_flag, expected_query_result",
+        [
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                None,
+                None,
+                False,
+                True,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Ordinary query",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                ["facility"],
+                None,
+                False,
+                True,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                        "facility": {
+                            "createId": "user",
+                            "createTime": "2011-01-29 06:19:43+00:00",
+                            "daysUntilRelease": 10,
+                            "description": "Lorem ipsum light source",
+                            "fullName": None,
+                            "id": 1,
+                            "modId": "user",
+                            "modTime": "2008-10-15 12:05:09+00:00",
+                            "name": "LILS",
+                            "url": None,
+                        },
+                    },
+                ],
+                id="Query with included entity",
+            ),
+            # pytest.param(id="Query with included entity"),  # facility?
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "COUNT",
+                None,
+                None,
+                False,
+                True,
+                [1],
+                id="Count query",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                None,
+                None,
+                False,
+                False,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Data returned as entity objects",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                "title",
+                False,
+                True,
+                [
+                    {
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Single distinct field",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                False,
+                True,
+                [
+                    {
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                        "name": "Test Data for DataGateway API Testing 0",
+                    },
+                ],
+                id="Multiple distinct fields",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                True,
+                True,
+                [1],
+                id="Multiple distinct fields on count query",
+            ),
+        ],
+    )
+    @pytest.mark.usefixtures("single_investigation_test_data")
     def test_valid_query_exeuction(
-        self, icat_client, single_investigation_test_data,
+        self,
+        icat_client,
+        query_conditions,
+        query_aggregate,
+        query_includes,
+        query_attributes,
+        manual_count,
+        return_json_format_flag,
+        expected_query_result,
     ):
-        test_query = ICATQuery(icat_client, "Investigation")
-        test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
+        test_query = ICATQuery(
+            icat_client,
+            "Investigation",
+            conditions=query_conditions,
+            aggregate=query_aggregate,
+            includes=query_includes,
         )
-        test_data_filter.apply_filter(test_query.query)
-        query_data = test_query.execute_query(icat_client)
+        test_query.query.setAttributes(query_attributes)
+        test_query.query.manual_count = manual_count
+        query_data = test_query.execute_query(
+            icat_client, return_json_formattable=return_json_format_flag,
+        )
 
-        query_output_dicts = prepare_icat_data_for_assertion(query_data)
+        if (
+            test_query.query.aggregate != "COUNT"
+            and test_query.query.aggregate != "DISTINCT"
+        ):
+            query_data = prepare_icat_data_for_assertion(
+                query_data, remove_id=True, remove_visit_id=True,
+            )
 
-        assert query_output_dicts == single_investigation_test_data
+        assert query_data == expected_query_result
 
     def test_invalid_query_execution(self, icat_client):
         test_query = ICATQuery(icat_client, "Investigation")
