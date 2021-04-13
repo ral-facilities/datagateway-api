@@ -122,6 +122,14 @@ class ICATQuery:
                     data.append(len(query_result))
                     break
                 elif distinct_query:
+                    # When multiple attributes are given in a distinct filter, Python
+                    # ICAT returns the results in a nested list. This doesn't happen
+                    # when a single attribute is given, so the result is encased in a
+                    # list as `map_distinct_attributes_to_results()` assumes a list as
+                    # input
+                    if not isinstance(result, list):
+                        result = [result]
+
                     # Map distinct attributes and result
                     data.append(
                         self.map_distinct_attributes_to_results(
