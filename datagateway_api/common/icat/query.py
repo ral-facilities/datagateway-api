@@ -116,12 +116,13 @@ class ICATQuery:
             log.info("Query results will be returned in a JSON format")
             data = []
 
+            if self.query.manual_count:
+                # Manually count the number of results
+                data.append(len(query_result))
+                return data
+
             for result in query_result:
-                if self.query.manual_count:
-                    # Manually count the number of results
-                    data.append(len(query_result))
-                    break
-                elif distinct_query:
+                if distinct_query:
                     # When multiple attributes are given in a distinct filter, Python
                     # ICAT returns the results in a nested list. This doesn't happen
                     # when a single attribute is given, so the result is encased in a

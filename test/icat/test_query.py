@@ -4,7 +4,7 @@ from icat.entity import Entity
 import pytest
 
 from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import FilterError, PythonICATError
+from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.common.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
@@ -12,7 +12,7 @@ from datagateway_api.common.icat.filters import (
 from datagateway_api.common.icat.query import ICATQuery
 
 
-def prepare_icat_data_for_assertion(data, remove_id=False):
+def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False):
     """
     Remove meta attributes from ICAT data. Meta attributes contain data about data
     creation/modification, and should be removed to ensure correct assertion values
@@ -38,6 +38,8 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
         # meta_attributes is immutable
         if remove_id:
             entity.pop("id")
+        if remove_visit_id:
+            entity.pop("visitId")
 
         assertable_data.append(entity)
 
@@ -172,7 +174,6 @@ class TestICATQuery:
                 ],
                 id="Query with included entity",
             ),
-            # pytest.param(id="Query with included entity"),  # facility?
             pytest.param(
                 {
                     "title": "like '%Test data for the Python ICAT Backend on"
@@ -259,6 +260,16 @@ class TestICATQuery:
                 True,
                 [1],
                 id="Multiple distinct fields on count query",
+            ),
+            pytest.param(
+                {"title": "like '%Unknown testing data for DG API%'",},
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                True,
+                True,
+                [0],
+                id="Multiple distinct fields on count query to return 0 matches",
             ),
         ],
     )
