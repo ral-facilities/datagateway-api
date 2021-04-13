@@ -81,7 +81,6 @@ class ICATQuery:
             raise PythonICATError(e)
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
-        mapped_distinct_fields = None
 
         # If the query has a COUNT function applied to it, some of these steps can be
         # skipped
@@ -262,7 +261,7 @@ class ICATQuery:
         else:
             nested_dict[attr_name_pop] = {}
             self.map_nested_attrs(
-                nested_dict[attr_name_pop], split_attr_name, query_data
+                nested_dict[attr_name_pop], split_attr_name, query_data,
             )
 
         return nested_dict

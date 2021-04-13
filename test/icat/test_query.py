@@ -61,7 +61,13 @@ class TestICATQuery:
                 id="Query with condition",
             ),
             pytest.param(
-                None, "DISTINCT", None, {}, "DISTINCT", set(), id="Query with aggregate"
+                None,
+                "DISTINCT",
+                None,
+                {},
+                "DISTINCT",
+                set(),
+                id="Query with aggregate",
             ),
             pytest.param(
                 None,
@@ -69,7 +75,7 @@ class TestICATQuery:
                 ["instrumentScientists"],
                 {},
                 None,
-                set(["instrumentScientists"]),
+                {"instrumentScientists"},
                 id="Query with included entity",
             ),
         ],
@@ -359,7 +365,7 @@ class TestICATQuery:
                         minute=1,
                         second=1,
                         tzinfo=timezone.utc,
-                    )
+                    ),
                 ],
                 {"startDate": "2020-01-04 01:01:01+00:00"},
                 id="Single date attribute",
@@ -382,7 +388,7 @@ class TestICATQuery:
                 {
                     "summary": "Summary 1",
                     "investigationUsers": {
-                        "investigation": {"name": "Investigation Name 1"}
+                        "investigation": {"name": "Investigation Name 1"},
                     },
                 },
                 id="Multiple attributes with 2-level nested related attribute",
