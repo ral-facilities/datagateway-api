@@ -118,7 +118,7 @@ class ICATQuery:
                     # when a single attribute is given, so the result is encased in a
                     # list as `map_distinct_attributes_to_results()` assumes a list as
                     # input
-                    if not isinstance(result, list):
+                    if not isinstance(result, tuple):
                         result = [result]
 
                     # Map distinct attributes and result
@@ -210,11 +210,12 @@ class ICATQuery:
         filter is applied to a request. This function is the alternative for processing
         data ready for output
 
-        :param distinct_attributes: List of disetinct attributes from the distinct
+        :param distinct_attributes: List of distinct attributes from the distinct
             filter of the incoming request
         :type distinct_attributes: :class:`list`
-        :param query_result: List of results fetched from Python ICAT
-        :type query_result: :class:`list`
+        :param query_result: Results fetched from Python ICAT
+        :type query_result: :class:`tuple` or :class:`list` when a single attribute is
+            given
         :return: Dictionary of attribute names paired with the results, ready to be
             returned to the user
         """

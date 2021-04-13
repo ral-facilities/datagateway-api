@@ -356,7 +356,7 @@ class TestICATQuery:
             ),
             pytest.param(
                 ["startDate"],
-                [
+                (
                     datetime(
                         year=2020,
                         month=1,
@@ -366,25 +366,25 @@ class TestICATQuery:
                         second=1,
                         tzinfo=timezone.utc,
                     ),
-                ],
+                ),
                 {"startDate": "2020-01-04 01:01:01+00:00"},
                 id="Single date attribute",
             ),
             pytest.param(
                 ["summary", "title"],
-                ["Summary 1", "Title 1"],
+                ("Summary 1", "Title 1"),
                 {"summary": "Summary 1", "title": "Title 1"},
                 id="Multiple attributes",
             ),
             pytest.param(
                 ["summary", "investigationUsers.role"],
-                ["Summary 1", "PI"],
+                ("Summary 1", "PI"),
                 {"summary": "Summary 1", "investigationUsers": {"role": "PI"}},
                 id="Multiple attributes with related attribute",
             ),
             pytest.param(
                 ["summary", "investigationUsers.investigation.name"],
-                ["Summary 1", "Investigation Name 1"],
+                ("Summary 1", "Investigation Name 1"),
                 {
                     "summary": "Summary 1",
                     "investigationUsers": {
