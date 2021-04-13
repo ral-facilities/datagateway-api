@@ -102,15 +102,6 @@ class ICATQuery:
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter
             distinct_attributes = self.get_distinct_attributes()
-            if distinct_attributes != []:
-                mapped_distinct_fields = self.map_distinct_attributes_to_entity_names(
-                    distinct_attributes, flat_query_includes,
-                )
-                log.debug(
-                    "Attribute names used in the distinct filter, mapped to the entity"
-                    " they are a part of: %s",
-                    mapped_distinct_fields,
-                )
 
         if return_json_formattable:
             log.info("Query results will be returned in a JSON format")
@@ -138,9 +129,7 @@ class ICATQuery:
                         ),
                     )
                 elif not count_query:
-                    dict_result = self.entity_to_dict(
-                        result, flat_query_includes, mapped_distinct_fields,
-                    )
+                    dict_result = self.entity_to_dict(result, flat_query_includes)
                     data.append(dict_result)
                 else:
                     data.append(result)
@@ -153,7 +142,7 @@ class ICATQuery:
     def get_distinct_attributes(self):
         return self.query.attributes
 
-    def entity_to_dict(self, entity, includes, distinct_fields=None):
+    def entity_to_dict(self, entity, includes):
         """
         This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
         to use set operators to create a version of the entity as a dictionary
@@ -180,13 +169,6 @@ class ICATQuery:
         include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
             if key in includes:
-                # Make a copy of distinct_fields when calling this function again later
-                if distinct_fields is not None:
-                    distinct_fields_copy = self.prepare_distinct_fields(
-                        key, distinct_fields,
-                    )
-                else:
-                    distinct_fields_copy = None
 
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
@@ -199,29 +181,22 @@ class ICATQuery:
                         " cause an issue further on in the request",
                     )
                 if isinstance(target, Entity):
-                    d[key] = self.entity_to_dict(
-                        target, includes_copy, distinct_fields_copy,
-                    )
+                    d[key] = self.entity_to_dict(target, includes_copy)
                 # Related fields with one-many relationships are stored as EntityLists
                 elif isinstance(target, EntityList):
                     d[key] = []
                     for e in target:
-                        d[key].append(
-                            self.entity_to_dict(e, includes_copy, distinct_fields_copy),
-                        )
+                        d[key].append(self.entity_to_dict(e, includes_copy))
 
             # Add actual piece of data to the dictionary
             else:
-                entity_data = None
+                entity_data = getattr(entity, key)
+                # Convert datetime objects to strings ready to be outputted as JSON
+                if isinstance(entity_data, datetime):
+                    # Remove timezone data which isn't utilised in ICAT
+                    entity_data = DateHandler.datetime_object_to_str(entity_data)
 
-                if distinct_fields is None or key in distinct_fields["base"]:
-                    entity_data = getattr(entity, key)
-                    # Convert datetime objects to strings ready to be outputted as JSON
-                    if isinstance(entity_data, datetime):
-                        # Remove timezone data which isn't utilised in ICAT
-                        entity_data = DateHandler.datetime_object_to_str(entity_data)
-
-                    d[key] = entity_data
+                d[key] = entity_data
         return d
 
     def map_distinct_attributes_to_results(self, distinct_attributes, query_result):
@@ -291,96 +266,6 @@ class ICATQuery:
             )
 
         return nested_dict
-
-    def map_distinct_attributes_to_entity_names(self, distinct_fields, included_fields):
-        """
-        This function looks at a list of dot-separated fields and maps them to which
-        entity they belong to
-
-        The result of this function will be a dictionary that has a data structure
-        similar to the example below. The values assigned to the 'base' key are the
-        fields that belong to the entity the request is being sent to (e.g. the base
-        values of `/users` would be fields belonging to the User entity).
-
-        Example return value:
-        `{'base': ['id', 'modTime'], 'userGroups': ['id', 'fullName'],
-         'investigationUser': ['id', 'role']}`
-
-        For distinct fields that are part of included entities (e.g. userGroups.id), it
-        is assumed that the relevant entities have been specified in an include filter.
-        This is checked, and a suitable exception is thrown. Without this, the query
-        would execute, and the user would get a 200 response, but they wouldn't receive
-        the data they're expecting, hence it's more sensible to raise a 400 to alert
-        them to their probable mistake, rather than to just log a warning.
-
-        :param distinct_fields: List of fields that should be distinctive in the request
-            response, as per the distinct filters in the request
-        :type distinct_fields: :class:`list`
-        :param included_fields: List of fields that have been included in the ICAT
-            query. It is assumed each element has been checked for multiple fields
-            separated by dots, split them accordingly and flattened the resulting list.
-            Note: ICATQuery.flatten_query_included_fields performs this functionality.
-        :type included_fields: :class:`list`
-        :return: Dictionary of fields, where the key denotes which entity they belong to
-        """
-
-        # Mapping which entities have distinct fields
-        distinct_field_dict = {"base": []}
-
-        for field in distinct_fields:
-            split_fields = field.split(".")
-            # Single element list means the field belongs to the entity which the
-            # request has been sent to
-            if len(split_fields) == 1:
-                # Conventional list assignment causes IndexError because -2 is out of
-                # range of a list with a single element
-                split_fields.insert(0, "base")
-
-            # Check that only an entity name, and attribute name exist
-            # Code within loop is used for when `split_fields` =
-            # ['dataset', 'investigation', 'name'] for example
-            while len(split_fields) > 2:
-                # If a key doesn't exist in the dictionary, create it and assign an
-                # empty list to it
-                distinct_field_dict.setdefault(split_fields[0], [])
-                split_fields.pop(0)
-
-            distinct_field_dict.setdefault(split_fields[0], [])
-            distinct_field_dict[split_fields[0]].append(split_fields[-1])
-
-        # Remove "base" key as this isn't a valid entity name in Python ICAT
-        distinct_entities = list(distinct_field_dict.keys())
-        distinct_entities.remove("base")
-
-        return distinct_field_dict
-
-    def prepare_distinct_fields(self, entity_name, distinct_fields):
-        """
-        Copy `distinct_fields` and move the data held in `entity_name` portion of the
-        dictionary to the "base" section of the dictionary. This function is called in
-        preparation for recursive calls occurring in entity_to_dict()
-
-        See map_distinct_attribute_to_entity_names() for an explanation regarding
-        `distinct_fields` and its data structure
-
-        :param entity_name: Name of the Python ICAT entity
-        :type entity_name: :class:`str`
-        :param distinct_fields: Names of fields in Python ICAT which should be outputted
-            in the response, separated by which entities they belong to as the keys
-        :type distinct_fields: :class:`dict`
-        :return: A copy of `distinct_fields`, with the data from the entity name put
-            into the base portion of the dictionary
-        """
-        log.debug("Entity Name: %s, Distinct Fields: %s", entity_name, distinct_fields)
-
-        distinct_fields_copy = distinct_fields.copy()
-
-        # Reset base fields
-        distinct_fields_copy["base"] = []
-        if entity_name in distinct_fields_copy.keys():
-            distinct_fields_copy["base"] = distinct_fields_copy[entity_name]
-
-        return distinct_fields_copy
 
     def flatten_query_included_fields(self, includes):
         """
