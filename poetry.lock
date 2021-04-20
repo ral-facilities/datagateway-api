@@ -663,7 +663,7 @@ six = ">=1.5"
 
 [[package]]
 name = "python-icat"
-version = "0.17.0"
+version = "0.18.1"
 description = "Python interface to ICAT and IDS"
 category = "main"
 optional = false
@@ -863,7 +863,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "8544fcdd39d43fefe311167bd7981c5518ae5e0f39a8be5524bf924cb1510278"
+content-hash = "8e6c3af6795dbb3c0d0f27e870b4d895cf399ca51418ebbb2636ccc561caf293"
 
 [metadata.files]
 aniso8601 = [
@@ -1230,7 +1230,7 @@ python-dateutil = [
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
 ]
 python-icat = [
-    {file = "python-icat-0.17.0.tar.gz", hash = "sha256:92942ce5e4b4c7b7db8179b78c07c58b56091a1d275385f69dd99d19a58a9396"},
+    {file = "python-icat-0.18.1.tar.gz", hash = "sha256:d8b8fc1a535a78e1aac263594851c2dada798b027c60cc9bb20411fb6835650c"},
 ]
 pytz = [
     {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},

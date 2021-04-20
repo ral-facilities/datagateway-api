@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from icat.entity import Entity
 import pytest
 
 from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import FilterError, PythonICATError
+from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.common.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
@@ -12,7 +12,7 @@ from datagateway_api.common.icat.filters import (
 from datagateway_api.common.icat.query import ICATQuery
 
 
-def prepare_icat_data_for_assertion(data, remove_id=False):
+def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False):
     """
     Remove meta attributes from ICAT data. Meta attributes contain data about data
     creation/modification, and should be removed to ensure correct assertion values
@@ -38,6 +38,8 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
         # meta_attributes is immutable
         if remove_id:
             entity.pop("id")
+        if remove_visit_id:
+            entity.pop("visitId")
 
         assertable_data.append(entity)
 
@@ -45,29 +47,272 @@ def prepare_icat_data_for_assertion(data, remove_id=False):
 
 
 class TestICATQuery:
-    def test_valid_query_creation(self, icat_client):
-        # Paramatise and add inputs for conditions, aggregate and includes
-        test_query = ICATQuery(icat_client, "User")
+    @pytest.mark.parametrize(
+        "input_conditions, input_aggregate, input_includes, expected_conditions,"
+        " expected_aggregate, expected_includes",
+        [
+            pytest.param(
+                {"fullName": "like Bob"},
+                None,
+                None,
+                {"fullName": "like Bob"},
+                None,
+                set(),
+                id="Query with condition",
+            ),
+            pytest.param(
+                None,
+                "DISTINCT",
+                None,
+                {},
+                "DISTINCT",
+                set(),
+                id="Query with aggregate",
+            ),
+            pytest.param(
+                None,
+                None,
+                ["instrumentScientists"],
+                {},
+                None,
+                {"instrumentScientists"},
+                id="Query with included entity",
+            ),
+        ],
+    )
+    def test_valid_query_creation(
+        self,
+        icat_client,
+        input_conditions,
+        input_aggregate,
+        input_includes,
+        expected_conditions,
+        expected_aggregate,
+        expected_includes,
+    ):
+        test_query = ICATQuery(
+            icat_client,
+            "User",
+            conditions=input_conditions,
+            aggregate=input_aggregate,
+            includes=input_includes,
+        )
 
         assert test_query.query.entity == icat_client.getEntityClass("User")
+        assert test_query.query.conditions == expected_conditions
+        assert test_query.query.aggregate == expected_aggregate
+        assert test_query.query.includes == expected_includes
+
+    def test_valid_manual_count_flag_init(self, icat_client):
+        """
+        Flag required for distinct filters used on count endpoints should be initialised
+        in `__init__()` of ICATQuery`
+        """
+        test_query = ICATQuery(icat_client, "User")
+
+        assert not test_query.query.manual_count
 
     def test_invalid_query_creation(self, icat_client):
         with pytest.raises(PythonICATError):
             ICATQuery(icat_client, "User", conditions={"invalid": "invalid"})
 
+    @pytest.mark.parametrize(
+        "query_conditions, query_aggregate, query_includes, query_attributes"
+        ", manual_count, return_json_format_flag, expected_query_result",
+        [
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                None,
+                None,
+                False,
+                True,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Ordinary query",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                ["facility"],
+                None,
+                False,
+                True,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                        "facility": {
+                            "createId": "user",
+                            "createTime": "2011-01-29 06:19:43+00:00",
+                            "daysUntilRelease": 10,
+                            "description": "Lorem ipsum light source",
+                            "fullName": None,
+                            "id": 1,
+                            "modId": "user",
+                            "modTime": "2008-10-15 12:05:09+00:00",
+                            "name": "LILS",
+                            "url": None,
+                        },
+                    },
+                ],
+                id="Query with included entity",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "COUNT",
+                None,
+                None,
+                False,
+                True,
+                [1],
+                id="Count query",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                None,
+                None,
+                None,
+                False,
+                False,
+                [
+                    {
+                        "doi": None,
+                        "endDate": "2020-01-08 01:01:01+00:00",
+                        "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
+                        "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Data returned as entity objects",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                "title",
+                False,
+                True,
+                [
+                    {
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                    },
+                ],
+                id="Single distinct field",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                False,
+                True,
+                [
+                    {
+                        "title": "Test data for the Python ICAT Backend on DataGateway"
+                        " API 0",
+                        "name": "Test Data for DataGateway API Testing 0",
+                    },
+                ],
+                id="Multiple distinct fields",
+            ),
+            pytest.param(
+                {
+                    "title": "like '%Test data for the Python ICAT Backend on"
+                    " DataGateway API%'",
+                },
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                True,
+                True,
+                [1],
+                id="Multiple distinct fields on count query",
+            ),
+            pytest.param(
+                {"title": "like '%Unknown testing data for DG API%'"},
+                "DISTINCT",
+                None,
+                ["title", "name"],
+                True,
+                True,
+                [0],
+                id="Multiple distinct fields on count query to return 0 matches",
+            ),
+        ],
+    )
+    @pytest.mark.usefixtures("single_investigation_test_data")
     def test_valid_query_exeuction(
-        self, icat_client, single_investigation_test_data,
+        self,
+        icat_client,
+        query_conditions,
+        query_aggregate,
+        query_includes,
+        query_attributes,
+        manual_count,
+        return_json_format_flag,
+        expected_query_result,
     ):
-        test_query = ICATQuery(icat_client, "Investigation")
-        test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
+        test_query = ICATQuery(
+            icat_client,
+            "Investigation",
+            conditions=query_conditions,
+            aggregate=query_aggregate,
+            includes=query_includes,
         )
-        test_data_filter.apply_filter(test_query.query)
-        query_data = test_query.execute_query(icat_client)
+        test_query.query.setAttributes(query_attributes)
+        test_query.query.manual_count = manual_count
+        query_data = test_query.execute_query(
+            icat_client, return_json_formattable=return_json_format_flag,
+        )
 
-        query_output_dicts = prepare_icat_data_for_assertion(query_data)
+        if (
+            test_query.query.aggregate != "COUNT"
+            and test_query.query.aggregate != "DISTINCT"
+        ):
+            query_data = prepare_icat_data_for_assertion(
+                query_data, remove_id=True, remove_visit_id=True,
+            )
 
-        assert query_output_dicts == single_investigation_test_data
+        assert query_data == expected_query_result
 
     def test_invalid_query_execution(self, icat_client):
         test_query = ICATQuery(icat_client, "Investigation")
@@ -94,150 +339,71 @@ class TestICATQuery:
 
         assert query_output_json == single_investigation_test_data
 
+    def test_valid_get_distinct_attributes(self, icat_client):
+        test_query = ICATQuery(icat_client, "Investigation")
+        test_query.query.setAttributes(["summary", "name"])
+
+        assert test_query.get_distinct_attributes() == ["summary", "name"]
+
     @pytest.mark.parametrize(
-        "input_distinct_fields, included_fields, expected_output",
+        "distinct_attrs, result, expected_output",
         [
             pytest.param(
-                ["id"],
-                [],
-                {"base": ["id"]},
-                id="Base only distinct attribute, no included attributes",
+                ["summary"],
+                ["Summary 1"],
+                {"summary": "Summary 1"},
+                id="Single attribute",
             ),
             pytest.param(
-                ["id", "doi", "name", "createTime"],
-                [],
-                {"base": ["id", "doi", "name", "createTime"]},
-                id="Multiple base only distinct attributes, no included attributes",
+                ["startDate"],
+                (
+                    datetime(
+                        year=2020,
+                        month=1,
+                        day=4,
+                        hour=1,
+                        minute=1,
+                        second=1,
+                        tzinfo=timezone.utc,
+                    ),
+                ),
+                {"startDate": "2020-01-04 01:01:01+00:00"},
+                id="Single date attribute",
             ),
             pytest.param(
-                ["id"],
-                ["investigation"],
-                {"base": ["id"]},
-                id="Base only distinct attribute, single, unnested included attributes",
+                ["summary", "title"],
+                ("Summary 1", "Title 1"),
+                {"summary": "Summary 1", "title": "Title 1"},
+                id="Multiple attributes",
             ),
             pytest.param(
-                ["id"],
-                ["investigation", "parameters", "type"],
-                {"base": ["id"]},
-                id="Base only distinct attribute, multiple, unnested included"
-                " attributes",
+                ["summary", "investigationUsers.role"],
+                ("Summary 1", "PI"),
+                {"summary": "Summary 1", "investigationUsers": {"role": "PI"}},
+                id="Multiple attributes with related attribute",
             ),
             pytest.param(
-                ["dataset.investigation.name"],
-                ["dataset", "investigation"],
-                {"base": [], "dataset": [], "investigation": ["name"]},
-                id="Single nested-include distinct attribute",
-            ),
-            pytest.param(
-                ["dataset.investigation.name", "datafileFormat.facility.url"],
-                ["dataset", "investigation", "datafileFormat", "facility"],
+                ["summary", "investigationUsers.investigation.name"],
+                ("Summary 1", "Investigation Name 1"),
                 {
-                    "base": [],
-                    "dataset": [],
-                    "investigation": ["name"],
-                    "datafileFormat": [],
-                    "facility": ["url"],
+                    "summary": "Summary 1",
+                    "investigationUsers": {
+                        "investigation": {"name": "Investigation Name 1"},
+                    },
                 },
-                id="Multiple nested-include distinct attributes",
+                id="Multiple attributes with 2-level nested related attribute",
             ),
         ],
     )
-    def test_valid_distinct_attribute_mapping(
-        self, icat_client, input_distinct_fields, included_fields, expected_output,
+    def test_valid_map_distinct_attributes_to_results(
+        self, icat_client, distinct_attrs, result, expected_output,
     ):
-        # Entity name passed to ICATQuery is irrelevant for this test
-        test_query = ICATQuery(icat_client, "Datafile")
-
-        mapped_attributes = test_query.map_distinct_attributes_to_entity_names(
-            input_distinct_fields, included_fields,
+        test_query = ICATQuery(icat_client, "Investigation")
+        test_output = test_query.map_distinct_attributes_to_results(
+            distinct_attrs, result,
         )
 
-        assert mapped_attributes == expected_output
-
-    @pytest.mark.parametrize(
-        "input_distinct_fields, included_fields",
-        [
-            pytest.param(
-                ["investigation.id"],
-                [],
-                id="Single nested-include distinct attribute, included entity not"
-                " added",
-            ),
-        ],
-    )
-    def test_invalid_distinct_attribute_mapping(
-        self, icat_client, input_distinct_fields, included_fields,
-    ):
-        """
-        Test that when the appropriate included fields are not present, a `FilterError`
-        will be raised
-        """
-        test_query = ICATQuery(icat_client, "Datafile")
-
-        with pytest.raises(FilterError):
-            test_query.map_distinct_attributes_to_entity_names(
-                input_distinct_fields, included_fields,
-            )
-
-    @pytest.mark.parametrize(
-        "included_entity_name, input_fields, expected_fields",
-        [
-            pytest.param(
-                "dataset",
-                {"base": ["id"]},
-                {"base": []},
-                id="Include filter used but no included attributes on distinct filter,"
-                " no entity name match",
-            ),
-            pytest.param(
-                "no match",
-                {"base": ["id"], "dataset": ["name"]},
-                {"base": [], "dataset": ["name"]},
-                id="Distinct filter contains included attributes, no entity name match",
-            ),
-            pytest.param(
-                "dataset",
-                {"base": ["id"], "dataset": ["name"]},
-                {"base": ["name"], "dataset": ["name"]},
-                id="Distinct filter contains included attributes, entity name match",
-            ),
-            pytest.param(
-                "dataset",
-                {"base": ["id"], "dataset": [], "investigation": ["name"]},
-                {"base": [], "dataset": [], "investigation": ["name"]},
-                id="Distinct filter contains nested included attributes, no entity name"
-                " match",
-            ),
-            pytest.param(
-                "investigation",
-                {"base": ["id"], "dataset": [], "investigation": ["name"]},
-                {"base": ["name"], "dataset": [], "investigation": ["name"]},
-                id="Distinct filter contains nested included attributes, entity name"
-                " match",
-            ),
-        ],
-    )
-    def test_prepare_distinct_fields(
-        self, icat_client, included_entity_name, input_fields, expected_fields,
-    ):
-        """
-        The function tested here should move the list from
-        `input_fields[included_entity_name]` to `input_fields["base"]` ready for when
-        `entity_to_dict()` is called as part of a recursive call, but the original
-        `input_fields` should not be modified. This caused a bug previously
-        """
-        unmodded_distinct_fields = input_fields.copy()
-        test_query = ICATQuery(icat_client, "Datafile")
-
-        distinct_fields_for_recursive_call = test_query.prepare_distinct_fields(
-            included_entity_name, input_fields,
-        )
-        print(distinct_fields_for_recursive_call)
-        print(input_fields)
-
-        assert distinct_fields_for_recursive_call == expected_fields
-        # prepare_distinct_fields() should not modify the original `distinct_fields`
-        assert input_fields == unmodded_distinct_fields
+        assert test_output == expected_output
 
     def test_include_fields_list_flatten(self, icat_client):
         included_field_set = {

@@ -5,12 +5,19 @@ from datagateway_api.common.icat.filters import PythonICATDistinctFieldFilter
 
 
 class TestICATDistinctFilter:
-    def test_valid_str_field_input(self, icat_query):
-        test_filter = PythonICATDistinctFieldFilter("name")
+    @pytest.mark.parametrize(
+        "attribute_name",
+        [
+            pytest.param("name", id="Attribute for own entity"),
+            pytest.param("investigationUsers.role", id="Related attribute name"),
+        ],
+    )
+    def test_valid_str_field_input(self, icat_query, attribute_name):
+        test_filter = PythonICATDistinctFieldFilter(attribute_name)
         test_filter.apply_filter(icat_query)
 
         assert (
-            icat_query.conditions == {"name": "!= null"}
+            icat_query.attributes == [attribute_name]
             and icat_query.aggregate == "DISTINCT"
         )
 
@@ -19,8 +26,7 @@ class TestICATDistinctFilter:
         test_filter.apply_filter(icat_query)
 
         assert (
-            icat_query.conditions
-            == {"doi": "!= null", "name": "!= null", "title": "!= null"}
+            icat_query.attributes == ["doi", "name", "title"]
             and icat_query.aggregate == "DISTINCT"
         )
 
@@ -35,11 +41,30 @@ class TestICATDistinctFilter:
 
         assert icat_query.aggregate == "DISTINCT"
 
-    @pytest.mark.parametrize("existing_aggregate", ["COUNT", "AVG", "SUM"])
-    def test_existing_aggregate_appended(self, icat_query, existing_aggregate):
+    @pytest.mark.parametrize(
+        "existing_aggregate, expected_instance_aggregate",
+        [
+            pytest.param(
+                "COUNT", "DISTINCT", id="Existing count aggregate (count endpoints)",
+            ),
+            pytest.param("AVG", "AVG:DISTINCT", id="Existing avg aggregate"),
+            pytest.param("SUM", "SUM:DISTINCT", id="Existing sum aggregate"),
+        ],
+    )
+    def test_existing_aggregate_on_query(
+        self, icat_query, existing_aggregate, expected_instance_aggregate,
+    ):
         icat_query.setAggregate(existing_aggregate)
 
         test_filter = PythonICATDistinctFieldFilter("name")
         test_filter.apply_filter(icat_query)
 
-        assert icat_query.aggregate == f"{existing_aggregate}:DISTINCT"
+        assert icat_query.aggregate == expected_instance_aggregate
+
+    def test_manual_count_flag(self, icat_query):
+        icat_query.setAggregate("COUNT")
+
+        test_filter = PythonICATDistinctFieldFilter("name")
+        test_filter.apply_filter(icat_query)
+
+        assert icat_query.manual_count
