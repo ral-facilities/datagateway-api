@@ -15,6 +15,48 @@ class Config(object):
         with open(self.path) as target:
             self.config = json.load(target)
 
+        self._check_config_items_exist()
+
+    def _check_config_items_exist(self):
+        """
+        A function to check that all config options exist before getting too far into
+        the setup of the API. This check takes the backend into account, meaning only
+        the config options for the backend used is required
+
+        Config options used for testing are not checked here as they should only be used
+        during tests, not in the typical running of the API
+
+        If a config option is missing, this will be picked up in `get_config_value()` by
+        exiting the application
+        """
+        # These keys are non-backend specific and therefore are mandatory for all uses
+        config_keys = [
+            "backend",
+            "debug_mode",
+            "flask_reloader",
+            "generate_swagger",
+            "host",
+            "log_level",
+            "log_location",
+            "port",
+        ]
+
+        if self.get_config_value("backend") == "python_icat":
+            icat_backend_specific_config_keys = [
+                "client_cache_size",
+                "client_pool_init_size",
+                "client_pool_max_size",
+                "icat_check_cert",
+                "icat_url",
+            ]
+            config_keys.extend(icat_backend_specific_config_keys)
+        elif self.get_config_value("backend") == "db":
+            db_backend_specific_config_keys = ["db_url"]
+            config_keys.extend(db_backend_specific_config_keys)
+
+        for key in config_keys:
+            self.get_config_value(key)
+
     def get_config_value(self, config_key):
         """
         Given a config key, the corresponding config value is returned
