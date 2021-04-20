@@ -15,6 +15,19 @@ class Config(object):
         with open(self.path) as target:
             self.config = json.load(target)
 
+    def get_config_value(self, config_key):
+        """
+        Given a config key, the corresponding config value is returned
+
+        :param config_key: Configuration key that matches the contents of `config.json`
+        :type config_key: :class:`str`
+        :return: Config value of the given key
+        """
+        try:
+            return self.config[config_key]
+        except KeyError:
+            sys.exit(f"Missing config value: {config_key}")
+
     def get_backend_type(self):
         try:
             return self.config["backend"]
