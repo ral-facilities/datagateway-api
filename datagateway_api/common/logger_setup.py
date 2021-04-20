@@ -1,9 +1,9 @@
 import logging.config
 from pathlib import Path
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 
-LOG_FILE_NAME = Path(config.get_config_value("log_location"))
+LOG_FILE_NAME = Path(config.get_config_value(APIConfigOptions.LOG_LOCATION))
 logger_config = {
     "version": 1,
     "formatters": {
@@ -14,7 +14,7 @@ logger_config = {
     },
     "handlers": {
         "default": {
-            "level": config.get_config_value("log_level"),
+            "level": config.get_config_value(APIConfigOptions.LOG_LEVEL),
             "formatter": "default",
             "class": "logging.handlers.RotatingFileHandler",
             "filename": LOG_FILE_NAME,
@@ -22,7 +22,10 @@ logger_config = {
             "backupCount": 10,
         },
     },
-    "root": {"level": config.get_config_value("log_level"), "handlers": ["default"]},
+    "root": {
+        "level": config.get_config_value(APIConfigOptions.LOG_LEVEL),
+        "handlers": ["default"],
+    },
 }
 
 

@@ -56,27 +56,27 @@ class Config(object):
         """
         # These keys are non-backend specific and therefore are mandatory for all uses
         config_keys = [
-            "backend",
-            "debug_mode",
-            "flask_reloader",
-            "generate_swagger",
-            "host",
-            "log_level",
-            "log_location",
-            "port",
+            APIConfigOptions.BACKEND,
+            APIConfigOptions.DEBUG_MODE,
+            APIConfigOptions.FLASK_RELOADER,
+            APIConfigOptions.GENERATE_SWAGGER,
+            APIConfigOptions.HOST,
+            APIConfigOptions.LOG_LEVEL,
+            APIConfigOptions.LOG_LOCATION,
+            APIConfigOptions.PORT,
         ]
 
-        if self.get_config_value("backend") == "python_icat":
+        if self.get_config_value(APIConfigOptions.BACKEND) == "python_icat":
             icat_backend_specific_config_keys = [
-                "client_cache_size",
-                "client_pool_init_size",
-                "client_pool_max_size",
-                "icat_check_cert",
-                "icat_url",
+                APIConfigOptions.CLIENT_CACHE_SIZE,
+                APIConfigOptions.CLIENT_POOL_INIT_SIZE,
+                APIConfigOptions.CLIENT_POOL_MAX_SIZE,
+                APIConfigOptions.ICAT_CHECK_CERT,
+                APIConfigOptions.ICAT_URL,
             ]
             config_keys.extend(icat_backend_specific_config_keys)
-        elif self.get_config_value("backend") == "db":
-            db_backend_specific_config_keys = ["db_url"]
+        elif self.get_config_value(APIConfigOptions.BACKEND) == "db":
+            db_backend_specific_config_keys = [APIConfigOptions.DB_URL]
             config_keys.extend(db_backend_specific_config_keys)
 
         for key in config_keys:
@@ -86,12 +86,12 @@ class Config(object):
         """
         Given a config key, the corresponding config value is returned
 
-        :param config_key: Configuration key that matches the contents of `config.json`
-        :type config_key: :class:`str`
+        :param config_key: Enum of a configuration key that's in `config.json`
+        :type config_key: :class:`APIConfigOptions`
         :return: Config value of the given key
         """
         try:
-            return self.config[config_key]
+            return self.config[config_key.value]
         except KeyError:
             sys.exit(f"Missing config value: {config_key}")
 
@@ -114,9 +114,13 @@ class Config(object):
         requires the client object to be authenticated which may not always be the case
         when requesting these properties, hence a HTTP request is sent as an alternative
         """
-        properties_url = f"{config.get_config_value('icat_url')}/icat/properties"
+        properties_url = (
+            f"{config.get_config_value(APIConfigOptions.ICAT_URL)}/icat/properties"
+        )
         r = requests.request(
-            "GET", properties_url, verify=config.get_config_value("icat_check_cert")
+            "GET",
+            properties_url,
+            verify=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
         )
         icat_properties = r.json()
 

@@ -13,7 +13,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -74,8 +74,8 @@ def requires_session_id(method):
 
 def create_client():
     client = icat.client.Client(
-        config.get_config_value("icat_url"),
-        checkCert=config.get_config_value("icat_check_cert"),
+        config.get_config_value(APIConfigOptions.ICAT_URL),
+        checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
     )
     return client
 

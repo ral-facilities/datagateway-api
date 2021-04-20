@@ -3,7 +3,7 @@ from datetime import datetime
 from icat.client import Client
 import pytest
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.icat.filters import PythonICATWhereFilter
 
 
@@ -28,8 +28,8 @@ class TestSessionHandling:
         # Check username is correct
         assert (
             session_details.json["username"]
-            == f"{config.get_config_value('test_mechanism')}/"
-            f"{config.get_config_value('test_user_credentials')['username']}"
+            == f"{config.get_config_value(APIConfigOptions.TEST_MECHANISM)}/"
+            f"{config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS)['username']}"
         )
 
         # Check session ID matches the header from the request
@@ -73,24 +73,26 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": config.get_config_value("test_user_credentials")[
-                        "username"
-                    ],
-                    "password": config.get_config_value("test_user_credentials")[
-                        "password"
-                    ],
-                    "mechanism": config.get_config_value("test_mechanism"),
+                    "username": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS
+                    )["username"],
+                    "password": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS
+                    )["password"],
+                    "mechanism": config.get_config_value(
+                        APIConfigOptions.TEST_MECHANISM
+                    ),
                 },
                 id="Normal request body",
             ),
             pytest.param(
                 {
-                    "username": config.get_config_value("test_user_credentials")[
-                        "username"
-                    ],
-                    "password": config.get_config_value("test_user_credentials")[
-                        "password"
-                    ],
+                    "username": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS
+                    )["username"],
+                    "password": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS
+                    )["password"],
                 },
                 id="Missing mechanism in request body",
             ),
@@ -99,6 +101,7 @@ class TestSessionHandling:
     def test_valid_login(
         self, flask_test_app_icat, icat_client, icat_query, request_body,
     ):
+        print(request_body)
         login_response = flask_test_app_icat.post("/sessions", json=request_body)
 
         icat_client.sessionId = login_response.json["sessionID"]
@@ -119,7 +122,9 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": config.get_config_value("test_mechanism"),
+                    "mechanism": config.get_config_value(
+                        APIConfigOptions.TEST_MECHANISM
+                    ),
                 },
                 403,
                 id="Invalid credentials",
@@ -136,12 +141,12 @@ class TestSessionHandling:
 
     def test_valid_logout(self, flask_test_app_icat):
         client = Client(
-            config.get_config_value("icat_url"),
-            checkCert=config.get_config_value("icat_check_cert"),
+            config.get_config_value(APIConfigOptions.ICAT_URL),
+            checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
         )
         client.login(
-            config.get_config_value("test_mechanism"),
-            config.get_config_value("test_user_credentials"),
+            config.get_config_value(APIConfigOptions.TEST_MECHANISM),
+            config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS),
         )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
