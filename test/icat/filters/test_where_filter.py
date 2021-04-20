@@ -18,6 +18,7 @@ class TestICATWhereFilter:
             pytest.param("gt", 5, "> '5'", id="greater than"),
             pytest.param("gte", 5, ">= '5'", id="greater than or equal"),
             pytest.param("in", [1, 2, 3, 4], "in (1, 2, 3, 4)", id="in a list"),
+            pytest.param("in", [], "in (NULL)", id="empty list"),
         ],
     )
     def test_valid_operations(

@@ -118,3 +118,39 @@ class TestICATCreateData:
         )
 
         assert test_response.status_code == 400
+
+    def test_valid_rollback_behaviour(
+        self, flask_test_app_icat, valid_icat_credentials_header,
+    ):
+        request_body = [
+            {
+                "name": "Test Investigation DG API Testing Name Test",
+                "title": "My New Investigation with Title",
+                "visitId": "Visit ID for Testing",
+                "facility": 1,
+                "type": 1,
+            },
+            {
+                "name": "Invalid Investigation for testing",
+                "title": "My New Investigation with Title",
+                "visitId": "Visit ID for Testing",
+                "doi": "_" * 256,
+                "facility": 1,
+                "type": 1,
+            },
+        ]
+
+        create_response = flask_test_app_icat.post(
+            "/investigations", headers=valid_icat_credentials_header, json=request_body,
+        )
+
+        get_response = flask_test_app_icat.get(
+            '/investigations?where={"title": {"eq": "'
+            f'{request_body[0]["title"]}'
+            '"}}',
+            headers=valid_icat_credentials_header,
+        )
+        get_response_json = prepare_icat_data_for_assertion(get_response.json)
+
+        assert create_response.status_code == 400
+        assert get_response_json == []

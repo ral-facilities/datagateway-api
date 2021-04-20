@@ -14,13 +14,19 @@ class TestBackends:
             pytest.param("python_icat", PythonICATBackend, id="Python ICAT Backend"),
         ],
     )
-    def test_backend_creation(self, backend_name, backend_type):
+    def test_valid_backend_creation(self, backend_name, backend_type):
         test_backend = create_backend(backend_name)
 
         assert type(test_backend) == backend_type
 
+    def test_invalid_backend_creation(self):
+        with pytest.raises(SystemExit):
+            create_backend("invalid_backend_name")
+
     def test_abstract_class(self):
-        """Test the `Backend` abstract class has all the required classes for the API"""
+        """
+        Test the `Backend` abstract class has all required abstract methods for the API
+        """
         Backend.__abstractmethods__ = set()
 
         class DummyBackend(Backend):

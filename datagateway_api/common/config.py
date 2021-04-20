@@ -58,6 +58,12 @@ class Config(object):
         except KeyError:
             sys.exit("Missing config value, DB_URL")
 
+    def is_flask_reloader(self):
+        try:
+            return self.config["flask_reloader"]
+        except KeyError:
+            sys.exit("Missing config value, flask_reloader")
+
     def get_icat_url(self):
         try:
             return self.config["ICAT_URL"]
