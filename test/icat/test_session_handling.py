@@ -26,11 +26,11 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
         # Check username is correct
-        assert (
-            session_details.json["username"]
-            == f"{config.get_config_value(APIConfigOptions.TEST_MECHANISM)}/"
-            f"{config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS)['username']}"
-        )
+        test_mechanism = config.get_config_value(APIConfigOptions.TEST_MECHANISM)
+        test_username = config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS)[
+            "username"
+        ]
+        assert session_details.json["username"] == f"{test_mechanism}/{test_username}"
 
         # Check session ID matches the header from the request
         assert (
@@ -74,13 +74,13 @@ class TestSessionHandling:
             pytest.param(
                 {
                     "username": config.get_config_value(
-                        APIConfigOptions.TEST_USER_CREDENTIALS
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
                     )["username"],
                     "password": config.get_config_value(
-                        APIConfigOptions.TEST_USER_CREDENTIALS
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
                     )["password"],
                     "mechanism": config.get_config_value(
-                        APIConfigOptions.TEST_MECHANISM
+                        APIConfigOptions.TEST_MECHANISM,
                     ),
                 },
                 id="Normal request body",
@@ -88,10 +88,10 @@ class TestSessionHandling:
             pytest.param(
                 {
                     "username": config.get_config_value(
-                        APIConfigOptions.TEST_USER_CREDENTIALS
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
                     )["username"],
                     "password": config.get_config_value(
-                        APIConfigOptions.TEST_USER_CREDENTIALS
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
                     )["password"],
                 },
                 id="Missing mechanism in request body",
@@ -123,7 +123,7 @@ class TestSessionHandling:
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
                     "mechanism": config.get_config_value(
-                        APIConfigOptions.TEST_MECHANISM
+                        APIConfigOptions.TEST_MECHANISM,
                     ),
                 },
                 403,
