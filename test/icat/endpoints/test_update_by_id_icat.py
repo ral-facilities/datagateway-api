@@ -11,6 +11,7 @@ class TestUpdateByID:
         update_data_json = {
             "doi": "Test Data Identifier",
             "summary": "Test Summary",
+            "startDate": "2019-01-04 01:01:01+00:00",
         }
         single_investigation_test_data[0].update(update_data_json)
 
