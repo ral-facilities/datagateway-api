@@ -17,9 +17,6 @@ class APIConfigOptions(Enum):
     """
 
     BACKEND = "backend"
-    CLIENT_CACHE_SIZE = "client_cache_size"
-    CLIENT_POOL_INIT_SIZE = "client_pool_init_size"
-    CLIENT_POOL_MAX_SIZE = "client_pool_max_size"
     DB_URL = "db_url"
     DEBUG_MODE = "debug_mode"
     FLASK_RELOADER = "flask_reloader"
@@ -68,9 +65,6 @@ class Config(object):
 
         if self.get_config_value(APIConfigOptions.BACKEND) == "python_icat":
             icat_backend_specific_config_keys = [
-                APIConfigOptions.CLIENT_CACHE_SIZE,
-                APIConfigOptions.CLIENT_POOL_INIT_SIZE,
-                APIConfigOptions.CLIENT_POOL_MAX_SIZE,
                 APIConfigOptions.ICAT_CHECK_CERT,
                 APIConfigOptions.ICAT_URL,
             ]
