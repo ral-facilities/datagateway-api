@@ -1,6 +1,6 @@
 import logging
 
-from datagateway_api.common.constants import Constants
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filters import (
     DistinctFieldFilter,
@@ -163,7 +163,7 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_properties = Constants.ICAT_PROPERTIES
+        icat_properties = config.get_icat_properties()
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 

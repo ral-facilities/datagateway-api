@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import QueuePool
 
-from datagateway_api.common.constants import Constants
+from datagateway_api.common.config import config
 from datagateway_api.common.database import models
 
 parser = argparse.ArgumentParser()
@@ -38,7 +38,7 @@ seed(a=SEED)
 
 
 engine = create_engine(
-    Constants.DATABASE_URL, poolclass=QueuePool, pool_size=100, max_overflow=0,
+    config.get_db_url(), poolclass=QueuePool, pool_size=100, max_overflow=0,
 )
 session_factory = sessionmaker(engine)
 session = scoped_session(session_factory)()
