@@ -1,3 +1,4 @@
+from enum import Enum
 import json
 import logging
 from pathlib import Path
@@ -7,6 +8,30 @@ import requests
 
 
 log = logging.getLogger()
+
+
+class APIConfigOptions(Enum):
+    """
+    Class to map config keys to variables in Python - implemented for ease of
+    development (IntelliSense in IDEs)
+    """
+
+    BACKEND = "backend"
+    CLIENT_CACHE_SIZE = "client_cache_size"
+    CLIENT_POOL_INIT_SIZE = "client_pool_init_size"
+    CLIENT_POOL_MAX_SIZE = "client_pool_max_size"
+    DB_URL = "db_url"
+    DEBUG_MODE = "debug_mode"
+    FLASK_RELOADER = "flask_reloader"
+    GENERATE_SWAGGER = "generate_swagger"
+    HOST = "host"
+    ICAT_CHECK_CERT = "icat_check_cert"
+    ICAT_URL = "icat_url"
+    LOG_LEVEL = "log_level"
+    LOG_LOCATION = "log_location"
+    PORT = "port"
+    TEST_MECHANISM = "test_mechanism"
+    TEST_USER_CREDENTIALS = "test_user_credentials"
 
 
 class Config(object):
