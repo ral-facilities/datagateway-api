@@ -38,7 +38,10 @@ seed(a=SEED)
 
 
 engine = create_engine(
-    config.get_db_url(), poolclass=QueuePool, pool_size=100, max_overflow=0,
+    config.get_config_value("db_url"),
+    poolclass=QueuePool,
+    pool_size=100,
+    max_overflow=0,
 )
 session_factory = sessionmaker(engine)
 session = scoped_session(session_factory)()

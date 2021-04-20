@@ -18,8 +18,14 @@ from test.icat.test_query import prepare_icat_data_for_assertion
 
 @pytest.fixture(scope="package")
 def icat_client():
-    client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
-    client.login(config.get_test_mechanism(), config.get_test_user_credentials())
+    client = Client(
+        config.get_config_value("icat_url"),
+        checkCert=config.get_config_value("icat_check_cert"),
+    )
+    client.login(
+        config.get_config_value("test_mechanism"),
+        config.get_config_value("test_user_credentials"),
+    )
     return client
 
 

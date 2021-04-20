@@ -27,8 +27,9 @@ class TestSessionHandling:
 
         # Check username is correct
         assert (
-            session_details.json["username"] == f"{config.get_test_mechanism()}/"
-            f"{config.get_test_user_credentials()['username']}"
+            session_details.json["username"]
+            == f"{config.get_config_value('test_mechanism')}/"
+            f"{config.get_config_value('test_user_credentials')['username']}"
         )
 
         # Check session ID matches the header from the request
@@ -72,16 +73,24 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": config.get_test_user_credentials()["username"],
-                    "password": config.get_test_user_credentials()["password"],
-                    "mechanism": config.get_test_mechanism(),
+                    "username": config.get_config_value("test_user_credentials")[
+                        "username"
+                    ],
+                    "password": config.get_config_value("test_user_credentials")[
+                        "password"
+                    ],
+                    "mechanism": config.get_config_value("test_mechanism"),
                 },
                 id="Normal request body",
             ),
             pytest.param(
                 {
-                    "username": config.get_test_user_credentials()["username"],
-                    "password": config.get_test_user_credentials()["password"],
+                    "username": config.get_config_value("test_user_credentials")[
+                        "username"
+                    ],
+                    "password": config.get_config_value("test_user_credentials")[
+                        "password"
+                    ],
                 },
                 id="Missing mechanism in request body",
             ),
@@ -110,7 +119,7 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": config.get_test_mechanism(),
+                    "mechanism": config.get_config_value("test_mechanism"),
                 },
                 403,
                 id="Invalid credentials",
@@ -126,8 +135,14 @@ class TestSessionHandling:
         assert login_response.status_code == expected_response_code
 
     def test_valid_logout(self, flask_test_app_icat):
-        client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
-        client.login(config.get_test_mechanism(), config.get_test_user_credentials())
+        client = Client(
+            config.get_config_value("icat_url"),
+            checkCert=config.get_config_value("icat_check_cert"),
+        )
+        client.login(
+            config.get_config_value("test_mechanism"),
+            config.get_config_value("test_user_credentials"),
+        )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = flask_test_app_icat.delete("/sessions", headers=creds_header)

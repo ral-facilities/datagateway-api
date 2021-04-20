@@ -23,8 +23,8 @@ create_openapi_endpoint(app, spec)
 
 if __name__ == "__main__":
     app.run(
-        host=config.get_host(),
-        port=config.get_port(),
-        debug=config.is_debug_mode(),
-        use_reloader=config.is_flask_reloader(),
+        host=config.get_config_value("host"),
+        port=config.get_config_value("port"),
+        debug=config.get_config_value("debug_mode"),
+        use_reloader=config.get_config_value("flask_reloader"),
     )

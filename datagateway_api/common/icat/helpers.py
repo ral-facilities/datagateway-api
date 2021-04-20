@@ -74,7 +74,8 @@ def requires_session_id(method):
 
 def create_client():
     client = icat.client.Client(
-        config.get_icat_url(), checkCert=config.get_icat_check_cert(),
+        config.get_config_value("icat_url"),
+        checkCert=config.get_config_value("icat_check_cert"),
     )
     return client
 

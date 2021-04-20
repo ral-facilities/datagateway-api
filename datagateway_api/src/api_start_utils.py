@@ -63,10 +63,10 @@ def create_app_infrastructure(flask_app):
         backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
     except KeyError:
-        backend_type = config.get_backend_type()
+        backend_type = config.get_config_value("backend")
 
     if backend_type == "db":
-        flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.get_db_url()
+        flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.get_config_value("db_url")
         flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         db.init_app(flask_app)
 
@@ -80,7 +80,7 @@ def create_api_endpoints(flask_app, api, spec):
         backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
     except KeyError:
-        backend_type = config.get_backend_type()
+        backend_type = config.get_config_value("backend")
 
     backend = create_backend(backend_type)
 
@@ -153,7 +153,7 @@ def create_api_endpoints(flask_app, api, spec):
 def openapi_config(spec):
     # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
     # change to the Swagger docs, rather than changing on each startup
-    if config.is_generate_swagger():
+    if config.get_config_value("generate_swagger"):
         log.debug("Reordering OpenAPI docs to alphabetical order")
         for entity_data in spec._paths.values():
             for endpoint_name in sorted(entity_data.keys()):
