@@ -38,7 +38,7 @@ class Config(object):
     def __init__(self, path=Path(__file__).parent.parent / "config.json"):
         self.path = path
         with open(self.path) as target:
-            self.config = json.load(target)
+            self._config = json.load(target)
 
         self._check_config_items_exist()
 
@@ -91,7 +91,7 @@ class Config(object):
         :return: Config value of the given key
         """
         try:
-            return self.config[config_key.value]
+            return self._config[config_key.value]
         except KeyError:
             sys.exit(f"Missing config value: {config_key}")
 
@@ -106,7 +106,7 @@ class Config(object):
         type must be fetched. This must be done using this module (rather than directly
         importing and checking the Flask app's config) to avoid circular import issues.
         """
-        self.config["backend"] = backend_type
+        self._config["backend"] = backend_type
 
     def get_icat_properties(self):
         """

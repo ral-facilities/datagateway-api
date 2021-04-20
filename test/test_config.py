@@ -19,7 +19,7 @@ class TestConfig:
         assert backend_type == "db"
 
     def test_invalid_get_config_value(self, test_config):
-        del test_config.config["backend"]
+        del test_config._config["backend"]
         with pytest.raises(SystemExit):
             test_config.get_config_value(APIConfigOptions.BACKEND)
 
@@ -36,7 +36,7 @@ class TestConfig:
             / "datagateway_api"
             / "config.json.example",
         )
-        test_config.config["backend"] = backend_type
+        test_config._config["backend"] = backend_type
 
         # Just want to check no SysExit's, so no assert is needed
         test_config._check_config_items_exist()
@@ -52,7 +52,7 @@ class TestConfig:
     def test_valid_set_backend_type(self, test_config):
         test_config.set_backend_type("backend_name_changed")
 
-        assert test_config.config["backend"] == "backend_name_changed"
+        assert test_config._config["backend"] == "backend_name_changed"
 
     def test_valid_icat_properties(self, test_config):
         example_icat_properties = {
