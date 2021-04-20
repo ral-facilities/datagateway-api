@@ -49,9 +49,9 @@ class Config(object):
 
     def get_db_url(self):
         try:
-            return self.config["DB_URL"]
+            return self.config["db_url"]
         except KeyError:
-            sys.exit("Missing config value, DB_URL")
+            sys.exit("Missing config value, db_url")
 
     def is_flask_reloader(self):
         try:
@@ -61,9 +61,9 @@ class Config(object):
 
     def get_icat_url(self):
         try:
-            return self.config["ICAT_URL"]
+            return self.config["icat_url"]
         except KeyError:
-            sys.exit("Missing config value, ICAT_URL")
+            sys.exit("Missing config value, icat_url")
 
     def get_icat_check_cert(self):
         try:

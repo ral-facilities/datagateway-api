@@ -284,8 +284,8 @@ pre-commit install
 Depending on the backend you want to use (either `db` or `python_icat`, more details
 about backends [here](#backends)) the connection URL for the backend needs to be set.
 These are set in `config.json` (an example file is provided in the base directory of
-this repository). While both `DB_URL` and `ICAT_URL` should have values assigned to them
-(for best practice), `DB_URL` will only be used for the database backend, and `ICAT_URL`
+this repository). While both `db_url` and `icat_url` should have values assigned to them
+(for best practice), `db_url` will only be used for the database backend, and `icat_url`
  will only be used for the Python ICAT backend. Copy `config.json.example` to
 `config.json` and set the values as needed. If you need to create an instance of ICAT,
 there are a number of markdown-formatted tutorials that can be found on the
@@ -706,7 +706,7 @@ flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of yea
 example: `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and
 generate 10 years of data.
 
-This uses code from the API's Database Backend, so a suitable `DB_URL` should be
+This uses code from the API's Database Backend, so a suitable `db_url` should be
 configured in `config.json`.
 
 

@@ -1,8 +1,8 @@
 {
   "backend": "db",
-  "DB_URL": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
+  "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
   "flask_reloader": false,
-  "ICAT_URL": "https://localhost:8181",
+  "icat_url": "https://localhost:8181",
   "icat_check_cert": false,
   "log_level": "WARN",
   "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",

@@ -27,7 +27,7 @@ class QueryFilterFactory(object):
         :raises FilterError: If the filter name is not recognised
         """
 
-        backend_type = config.get_backend_type()
+        backend_type = config.get_config_value("backend")
         if backend_type == "db":
             from datagateway_api.common.database.filters import (
                 DatabaseDistinctFieldFilter as DistinctFieldFilter,
