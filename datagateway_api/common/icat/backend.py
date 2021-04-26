@@ -6,9 +6,9 @@ from datagateway_api.common.backend import Backend
 from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.common.helpers import queries_records
 from datagateway_api.common.icat.helpers import (
-    create_client,
     create_entities,
     delete_entity_by_id,
+    get_cached_client,
     get_count_with_filters,
     get_entity_by_id,
     get_entity_with_filters,
@@ -37,9 +37,13 @@ class PythonICATBackend(Backend):
     def __init__(self):
         pass
 
-    def login(self, credentials):
+    def login(self, credentials, **kwargs):
         log.info("Logging in to get session ID")
-        client = create_client()
+        client_pool = kwargs.get("client_pool")
+
+        # There is no session ID required for this endpoint, a client object will be
+        # fetched from cache with a blank `sessionId` attribute
+        client = get_cached_client(None, client_pool)
 
         # Syntax for Python ICAT
         login_details = {
@@ -48,6 +52,11 @@ class PythonICATBackend(Backend):
         }
         try:
             session_id = client.login(credentials["mechanism"], login_details)
+            # Flushing client's session ID so the session ID returned in this request
+            # won't be logged out next time `client.login()` is used in this function.
+            # `login()` calls `self.logout()` if `sessionId` is set
+            client.sessionId = None
+
             return session_id
         except ICATSessionError:
             raise AuthenticationError("User credentials are incorrect")
@@ -55,94 +64,84 @@ class PythonICATBackend(Backend):
     @requires_session_id
     def get_session_details(self, session_id, **kwargs):
         log.info("Getting session details for session: %s", session_id)
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_session_details_helper(client)
+        return get_session_details_helper(kwargs.get("client"))
 
     @requires_session_id
     def refresh(self, session_id, **kwargs):
         log.info("Refreshing session: %s", session_id)
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return refresh_client_session(client)
+        return refresh_client_session(kwargs.get("client"))
 
     @requires_session_id
     @queries_records
     def logout(self, session_id, **kwargs):
         log.info("Logging out of the Python ICAT client")
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return logout_icat_client(client)
+        return logout_icat_client(kwargs.get("client"))
 
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, entity_type, filters, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_entity_with_filters(client, entity_type, filters)
+        return get_entity_with_filters(kwargs.get("client"), entity_type, filters)
 
     @requires_session_id
     @queries_records
     def create(self, session_id, entity_type, data, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return create_entities(client, entity_type, data)
+        return create_entities(kwargs.get("client"), entity_type, data)
 
     @requires_session_id
     @queries_records
     def update(self, session_id, entity_type, data, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return update_entities(client, entity_type, data)
+        return update_entities(kwargs.get("client"), entity_type, data)
 
     @requires_session_id
     @queries_records
     def get_one_with_filters(self, session_id, entity_type, filters, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_first_result_with_filters(client, entity_type, filters)
+        return get_first_result_with_filters(kwargs.get("client"), entity_type, filters)
 
     @requires_session_id
     @queries_records
     def count_with_filters(self, session_id, entity_type, filters, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_count_with_filters(client, entity_type, filters)
+        return get_count_with_filters(kwargs.get("client"), entity_type, filters)
 
     @requires_session_id
     @queries_records
     def get_with_id(self, session_id, entity_type, id_, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_entity_by_id(client, entity_type, id_, True)
+        return get_entity_by_id(kwargs.get("client"), entity_type, id_, True)
 
     @requires_session_id
     @queries_records
     def delete_with_id(self, session_id, entity_type, id_, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return delete_entity_by_id(client, entity_type, id_)
+        return delete_entity_by_id(kwargs.get("client"), entity_type, id_)
 
     @requires_session_id
     @queries_records
     def update_with_id(self, session_id, entity_type, id_, data, **kwargs):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return update_entity_by_id(client, entity_type, id_, data)
+        return update_entity_by_id(kwargs.get("client"), entity_type, id_, data)
 
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_with_filters(
         self, session_id, instrument_id, filters, **kwargs,
     ):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_facility_cycles_for_instrument(client, instrument_id, filters)
+        return get_facility_cycles_for_instrument(
+            kwargs.get("client"), instrument_id, filters,
+        )
 
     @requires_session_id
     @queries_records
     def get_facility_cycles_for_instrument_count_with_filters(
         self, session_id, instrument_id, filters, **kwargs,
     ):
-        client = kwargs["client"] if kwargs["client"] else create_client()
-        return get_facility_cycles_for_instrument_count(client, instrument_id, filters)
+        return get_facility_cycles_for_instrument_count(
+            kwargs.get("client"), instrument_id, filters,
+        )
 
     @requires_session_id
     @queries_records
     def get_investigations_for_instrument_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
     ):
-        client = kwargs["client"] if kwargs["client"] else create_client()
         return get_investigations_for_instrument_in_facility_cycle(
-            client, instrument_id, facilitycycle_id, filters,
+            kwargs.get("client"), instrument_id, facilitycycle_id, filters,
         )
 
     @requires_session_id
@@ -150,7 +149,6 @@ class PythonICATBackend(Backend):
     def get_investigation_count_instrument_facility_cycle_with_filters(
         self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
     ):
-        client = kwargs["client"] if kwargs["client"] else create_client()
         return get_investigations_for_instrument_in_facility_cycle_count(
-            client, instrument_id, facilitycycle_id, filters,
+            kwargs.get("client"), instrument_id, facilitycycle_id, filters,
         )

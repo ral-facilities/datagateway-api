@@ -34,6 +34,24 @@ class Config(object):
         """
         self.config["backend"] = backend_type
 
+    def get_client_cache_size(self):
+        try:
+            return self.config["client_cache_size"]
+        except KeyError:
+            sys.exit("Missing config value, client_cache_size")
+
+    def get_client_pool_init_size(self):
+        try:
+            return self.config["client_pool_init_size"]
+        except KeyError:
+            sys.exit("Missing config value, client_pool_init_size")
+
+    def get_client_pool_max_size(self):
+        try:
+            return self.config["client_pool_max_size"]
+        except KeyError:
+            sys.exit("Missing config value, client_pool_max_size")
+
     def get_db_url(self):
         try:
             return self.config["DB_URL"]

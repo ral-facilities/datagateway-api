@@ -32,6 +32,36 @@ class TestGetBackendType:
             invalid_config.get_backend_type()
 
 
+class TestGetClientCacheSize:
+    def test_valid_client_cache_size(self, valid_config):
+        cache_size = valid_config.get_client_cache_size()
+        assert cache_size == 5
+
+    def test_invalid_client_cache_size(self, invalid_config):
+        with pytest.raises(SystemExit):
+            invalid_config.get_client_cache_size()
+
+
+class TestGetClientPoolInitSize:
+    def test_valid_client_pool_init_size(self, valid_config):
+        pool_init_size = valid_config.get_client_pool_init_size()
+        assert pool_init_size == 2
+
+    def test_invalid_client_cache_size(self, invalid_config):
+        with pytest.raises(SystemExit):
+            invalid_config.get_client_pool_init_size()
+
+
+class TestGetClientPoolMaxSize:
+    def test_valid_client_pool_init_size(self, valid_config):
+        pool_max_size = valid_config.get_client_pool_max_size()
+        assert pool_max_size == 5
+
+    def test_invalid_client_cache_size(self, invalid_config):
+        with pytest.raises(SystemExit):
+            invalid_config.get_client_pool_max_size()
+
+
 class TestGetDBURL:
     def test_valid_db_url(self, valid_config):
         db_url = valid_config.get_db_url()

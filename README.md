@@ -37,6 +37,7 @@ sqlalchemy to communicate directly with ICAT's database.
   - [Database Backend](#database-backend)
     - [Mapped Classes](#mapped-classes)
   - [Python ICAT Backend](#python-icat-backend)
+    - [Client Handling](#client-handling)
     - [ICATQuery](#icatquery)
   - [Generating the OpenAPI Specification](#generating-the-openapi-specification)
 - [Utilities](#utilities)
@@ -658,11 +659,74 @@ the API supporting multiple authentication mechanisms. Meta attributes such as `
 are dealt by Python ICAT, rather than the API.
 
 
+### Client Handling
+Python ICAT uses
+[client objects](https://python-icat.readthedocs.io/en/stable/client.html) to
+authenticate users and provide interaction to ICAT (e.g. querying icatdb). A client
+object has a high creation cost (often taking several seconds), so it's unsuitable to
+create a new client object at the start of each request. In a similar vein, it would
+also be unsuitable to use a single client object for the entire API due to collisions
+between different users.
+
+Client objects are handled using an
+[LRU cache](https://docs.python.org/3/library/functools.html#functools.lru_cache),
+fetching clients from an [object pool](https://object-pool.readthedocs.io/en/latest/)
+when a new client is requested for the cache.
+
+#### Caching
+The cache is extended from Cachetools' implementation (although the documentation for
+the builtin LRU cache is more detailed, hence that's linked above) to allow for a client
+object to be placed back into the object pool once it becomes 'least recently used' and
+therefore is removed from the cache (in place of another item). Each cache item is
+differentiated by the arguments of the function it's applied to which in this case is
+the session ID. The client pool object is also passed into the function, but this is a
+singleton object (mandated by the library it's implemented from) so this won't change
+throughout the lifetime of the API.
+
+#### Pooling
+The object pool has an initial pool size that will be created at startup, and a maximum
+size that the pool can grow to if needed, where both values are configurable. The
+clients within the pool do not expire and have unlimited reuses, so clients created at
+startup can be used for the lifespan of the API. Python ICAT's `Client` class is
+extended (to `ICATClient`) to rename `cleanup()` to a function name that the object pool
+will recognise to clean up resources and will disable the auto logout feature to prevent
+sessions from being logged out when the client is reused.
+
+#### Attributes of the Design
+Combining caching and pooling into one design gives the following high-level results.
+There is a 1 client to 1 session ID ratio, which will prevent collision between users
+and doesn't require an excessive amount of resources (such as a 1 client to 1 request
+ratio would). Since the object pool is created at startup, this design can cause the API
+to be slow to start as the pool of object needs to be created. A rough guide would be to
+multiply the configured initial pool size by around 5 or 6 seconds to get a time
+estimate for pool creation.
+
+#### Configuring Client Handling
+When configuring the cache size and the client pool, the following should be considered.
+The pool's max size should be configured to the maximum number of concurrent users
+expected for the API. The cache size must not exceed the pool's maximum size. If
+this does happen, the cache could attempt to acquire a client from an empty pool that
+cannot grow, causing the request to never respond because the API will wait
+indefinitely. The pool's initial size should be configured to strike a balance of
+reasonable startup time and not slowing down requests when the pool grows beyond its
+initial size. NOTE: when the pool exceeds the initial size and a client is requested by
+the cache, a client is created on the fly, so that request (and any others sent before
+the client is created and in the cache) WILL be slow. For development, the following
+settings (as also set in the example config) would allow for an acceptable startup time
+but allow for multiple session IDs to be used if required.
+
+```json
+"client_cache_size": 5,
+"client_pool_init_size": 2,
+"client_pool_max_size": 5,
+```
+
+
 ### ICATQuery
 The ICATQuery classed is in `datagateway_api.common.icat.query`. This class stores a
 query created with Python ICAT
-[documentation for the query](https://python-icat.readthedocs.io/en/stable/query.html).
-The `execute_query()` function executes the query and returns either results in either a
+([documentation](https://python-icat.readthedocs.io/en/stable/query.html)). The
+`execute_query()` function executes the query and returns either results in either a
 JSON format, or a list of
 [Python ICAT entity's](https://python-icat.readthedocs.io/en/stable/entity.html) (this
 is defined using the `return_json_formattable` flag). Other functions within that class
