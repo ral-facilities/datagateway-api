@@ -6,7 +6,7 @@ from datagateway_api.common.helpers import (
 )
 
 
-def instrument_facility_cycles_endpoint(backend):
+def instrument_facility_cycles_endpoint(backend, **kwargs):
     """
     Generate a flask_restful Resource class using the configured backend. In main.py
     these generated classes are registered with the api e.g.
@@ -66,6 +66,7 @@ def instrument_facility_cycles_endpoint(backend):
                     get_session_id_from_auth_header(),
                     id_,
                     get_filters_from_query_string(),
+                    **kwargs,
                 ),
                 200,
             )
@@ -73,7 +74,7 @@ def instrument_facility_cycles_endpoint(backend):
     return InstrumentsFacilityCycles
 
 
-def count_instrument_facility_cycles_endpoint(backend):
+def count_instrument_facility_cycles_endpoint(backend, **kwargs):
     """
     Generate a flask_restful Resource class using the configured backend. In main.py
     these generated classes are registered with the api e.g.
@@ -126,6 +127,7 @@ def count_instrument_facility_cycles_endpoint(backend):
                     get_session_id_from_auth_header(),
                     id_,
                     get_filters_from_query_string(),
+                    **kwargs,
                 ),
                 200,
             )
@@ -133,7 +135,7 @@ def count_instrument_facility_cycles_endpoint(backend):
     return InstrumentsFacilityCyclesCount
 
 
-def instrument_investigation_endpoint(backend):
+def instrument_investigation_endpoint(backend, **kwargs):
     """
     Generate a flask_restful Resource class using the configured backend. In main.py
     these generated classes are registered with the api e.g.
@@ -201,6 +203,7 @@ def instrument_investigation_endpoint(backend):
                     instrument_id,
                     cycle_id,
                     get_filters_from_query_string(),
+                    **kwargs,
                 ),
                 200,
             )
@@ -208,7 +211,7 @@ def instrument_investigation_endpoint(backend):
     return InstrumentsFacilityCyclesInvestigations
 
 
-def count_instrument_investigation_endpoint(backend):
+def count_instrument_investigation_endpoint(backend, **kwargs):
     """
     Generate a flask_restful Resource class using the configured backend. In main.py
     these generated classes are registered with the api e.g.
@@ -270,6 +273,7 @@ def count_instrument_investigation_endpoint(backend):
                     instrument_id,
                     cycle_id,
                     get_filters_from_query_string(),
+                    **kwargs,
                 ),
                 200,
             )

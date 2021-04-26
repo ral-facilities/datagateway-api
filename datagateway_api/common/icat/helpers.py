@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 import logging
 
-import icat.client
+from cachetools import cached
 from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
@@ -13,7 +13,6 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -26,6 +25,7 @@ from datagateway_api.common.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.common.icat.lru_cache import ExtendedLRUCache
 from datagateway_api.common.icat.query import ICATQuery
 
 
@@ -54,7 +54,9 @@ def requires_session_id(method):
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         try:
-            client = create_client()
+            client_pool = kwargs.get("client_pool")
+
+            client = get_cached_client(args[1], client_pool)
             client.sessionId = args[1]
             # Client object put into kwargs so it can be accessed by backend functions
             kwargs["client"] = client
@@ -66,17 +68,38 @@ def requires_session_id(method):
                 raise AuthenticationError("Forbidden")
             else:
                 return method(*args, **kwargs)
-        except ICATSessionError:
-            raise AuthenticationError("Forbidden")
+        except ICATSessionError as e:
+            raise AuthenticationError(e)
 
     return wrapper_requires_session
 
 
-def create_client():
-    client = icat.client.Client(
-        config.get_config_value(APIConfigOptions.ICAT_URL),
-        checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
-    )
+@cached(cache=ExtendedLRUCache())
+def get_cached_client(session_id, client_pool):
+    """
+    Get a client from cache using session ID as the cache parameter (client_pool will
+    always be given the same object, so won't impact on argument hashing)
+
+    An available client is fetched from the object pool, given a session ID, and kept
+    around in this cache until it becomes 'least recently used'. At this point, the
+    session ID is flushed and the client is returned to the pool. More details about
+    client handling can be found in the README
+
+    :param session_id: The user's session ID
+    :type session_id: :class:`str`
+    :param client_pool: Client object pool used to fetch an unused client
+    :type client_pool: :class:`ObjectPool`
+    """
+
+    # Get a client from the pool
+    client, stats = client_pool._get_resource()
+
+    # `session_id` of None suggests this function is being called from an endpoint that
+    # doesn't use the `requires_session_id` decorator (e.g. POST /sessions)
+    log.info("Caching, session ID: %s", session_id)
+    if session_id:
+        client.sessionId = session_id
+
     return client
 
 
@@ -554,6 +577,7 @@ def get_facility_cycles_for_instrument(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(client, "FacilityCycle", aggregate=query_aggregate)
+    query.isis_endpoint = True
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq",
@@ -634,6 +658,7 @@ def get_investigations_for_instrument_in_facility_cycle(
 
     query_aggregate = "COUNT:DISTINCT" if count_query else "DISTINCT"
     query = ICATQuery(client, "Investigation", aggregate=query_aggregate)
+    query.isis_endpoint = True
 
     instrument_id_check = PythonICATWhereFilter(
         "facility.instruments.id", instrument_id, "eq",

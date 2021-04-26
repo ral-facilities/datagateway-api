@@ -117,22 +117,30 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
     def apply_filter(self, query):
         try:
             log.info("Adding ICAT distinct filter to ICAT query")
-            if (
-                query.aggregate == "COUNT"
-                or query.aggregate == "AVG"
-                or query.aggregate == "SUM"
-            ):
+            log.debug("Fields for distinct filter: %s", self.fields)
+
+            # These aggregate keywords not currently used in the API, but conditional
+            # present in case they're used in the future
+            if query.aggregate == "AVG" or query.aggregate == "SUM":
                 # Distinct can be combined with other aggregate functions
                 query.setAggregate(f"{query.aggregate}:DISTINCT")
+            elif query.aggregate == "COUNT":
+                # When count and distinct keywords are used together when selecting
+                # multiple attributes, Python ICAT will always throw an error on query
+                # execution (more info:
+                # https://github.com/icatproject/python-icat/issues/76). This appears to
+                # be a JPQL limitation, something that cannot be fixed in Python ICAT.
+                # As a result, the API will get the distinct results and manually
+                # perform `len()` on the list, using `manual_count` as a flag to
+                # recognise this situation
+                query.setAggregate("DISTINCT")
+                log.debug("Manual count flag enabled")
+                query.manual_count = True
             else:
                 query.setAggregate("DISTINCT")
 
-            # Using where filters to identify which fields to apply distinct too
-            for field in self.fields:
-                where_filter = PythonICATWhereFilter(field, "null", "ne")
-                where_filter.apply_filter(query)
+            query.setAttributes(self.fields)
 
-            log.debug("Fields for distinct filter: %s", self.fields)
         except ValueError as e:
             raise FilterError(e)
 
