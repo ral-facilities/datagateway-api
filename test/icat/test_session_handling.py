@@ -101,7 +101,6 @@ class TestSessionHandling:
     def test_valid_login(
         self, flask_test_app_icat, icat_client, icat_query, request_body,
     ):
-        print(request_body)
         login_response = flask_test_app_icat.post("/sessions", json=request_body)
 
         icat_client.sessionId = login_response.json["sessionID"]

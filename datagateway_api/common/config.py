@@ -87,7 +87,7 @@ class Config(object):
         try:
             return self._config[config_key.value]
         except KeyError:
-            sys.exit(f"Missing config value: {config_key}")
+            sys.exit(f"Missing config value: {config_key.value}")
 
     def set_backend_type(self, backend_type):
         """
