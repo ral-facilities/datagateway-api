@@ -30,12 +30,7 @@ class TestConfig:
             pytest.param("db", id="Database Backend"),
         ],
     )
-    def test_valid_config_items_exist(self, backend_type):
-        test_config = Config(
-            path=Path(__file__).parent.parent
-            / "datagateway_api"
-            / "config.json.example",
-        )
+    def test_valid_config_items_exist(self, test_config, backend_type):
         test_config._config["backend"] = backend_type
 
         # Just want to check no SysExit's, so no assert is needed
