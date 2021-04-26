@@ -1,3 +1,4 @@
+from enum import Enum
 import json
 import logging
 from pathlib import Path
@@ -9,17 +10,90 @@ import requests
 log = logging.getLogger()
 
 
+class APIConfigOptions(Enum):
+    """
+    Class to map config keys to variables in Python - implemented for ease of
+    development (IntelliSense in IDEs)
+    """
+
+    BACKEND = "backend"
+    CLIENT_CACHE_SIZE = "client_cache_size"
+    CLIENT_POOL_INIT_SIZE = "client_pool_init_size"
+    CLIENT_POOL_MAX_SIZE = "client_pool_max_size"
+    DB_URL = "db_url"
+    DEBUG_MODE = "debug_mode"
+    FLASK_RELOADER = "flask_reloader"
+    GENERATE_SWAGGER = "generate_swagger"
+    HOST = "host"
+    ICAT_CHECK_CERT = "icat_check_cert"
+    ICAT_URL = "icat_url"
+    LOG_LEVEL = "log_level"
+    LOG_LOCATION = "log_location"
+    PORT = "port"
+    TEST_MECHANISM = "test_mechanism"
+    TEST_USER_CREDENTIALS = "test_user_credentials"
+
+
 class Config(object):
     def __init__(self, path=Path(__file__).parent.parent / "config.json"):
         self.path = path
         with open(self.path) as target:
-            self.config = json.load(target)
+            self._config = json.load(target)
 
-    def get_backend_type(self):
+        self._check_config_items_exist()
+
+    def _check_config_items_exist(self):
+        """
+        A function to check that all config options exist before getting too far into
+        the setup of the API. This check takes the backend into account, meaning only
+        the config options for the backend used is required
+
+        Config options used for testing are not checked here as they should only be used
+        during tests, not in the typical running of the API
+
+        If a config option is missing, this will be picked up in `get_config_value()` by
+        exiting the application
+        """
+        # These keys are non-backend specific and therefore are mandatory for all uses
+        config_keys = [
+            APIConfigOptions.BACKEND,
+            APIConfigOptions.DEBUG_MODE,
+            APIConfigOptions.FLASK_RELOADER,
+            APIConfigOptions.GENERATE_SWAGGER,
+            APIConfigOptions.HOST,
+            APIConfigOptions.LOG_LEVEL,
+            APIConfigOptions.LOG_LOCATION,
+            APIConfigOptions.PORT,
+        ]
+
+        if self.get_config_value(APIConfigOptions.BACKEND) == "python_icat":
+            icat_backend_specific_config_keys = [
+                APIConfigOptions.CLIENT_CACHE_SIZE,
+                APIConfigOptions.CLIENT_POOL_INIT_SIZE,
+                APIConfigOptions.CLIENT_POOL_MAX_SIZE,
+                APIConfigOptions.ICAT_CHECK_CERT,
+                APIConfigOptions.ICAT_URL,
+            ]
+            config_keys.extend(icat_backend_specific_config_keys)
+        elif self.get_config_value(APIConfigOptions.BACKEND) == "db":
+            db_backend_specific_config_keys = [APIConfigOptions.DB_URL]
+            config_keys.extend(db_backend_specific_config_keys)
+
+        for key in config_keys:
+            self.get_config_value(key)
+
+    def get_config_value(self, config_key):
+        """
+        Given a config key, the corresponding config value is returned
+
+        :param config_key: Enum of a configuration key that's in `config.json`
+        :type config_key: :class:`APIConfigOptions`
+        :return: Config value of the given key
+        """
         try:
-            return self.config["backend"]
+            return self._config[config_key.value]
         except KeyError:
-            sys.exit("Missing config value, backend")
+            sys.exit(f"Missing config value: {config_key.value}")
 
     def set_backend_type(self, backend_type):
         """
@@ -32,97 +106,7 @@ class Config(object):
         type must be fetched. This must be done using this module (rather than directly
         importing and checking the Flask app's config) to avoid circular import issues.
         """
-        self.config["backend"] = backend_type
-
-    def get_client_cache_size(self):
-        try:
-            return self.config["client_cache_size"]
-        except KeyError:
-            sys.exit("Missing config value, client_cache_size")
-
-    def get_client_pool_init_size(self):
-        try:
-            return self.config["client_pool_init_size"]
-        except KeyError:
-            sys.exit("Missing config value, client_pool_init_size")
-
-    def get_client_pool_max_size(self):
-        try:
-            return self.config["client_pool_max_size"]
-        except KeyError:
-            sys.exit("Missing config value, client_pool_max_size")
-
-    def get_db_url(self):
-        try:
-            return self.config["DB_URL"]
-        except KeyError:
-            sys.exit("Missing config value, DB_URL")
-
-    def is_flask_reloader(self):
-        try:
-            return self.config["flask_reloader"]
-        except KeyError:
-            sys.exit("Missing config value, flask_reloader")
-
-    def get_icat_url(self):
-        try:
-            return self.config["ICAT_URL"]
-        except KeyError:
-            sys.exit("Missing config value, ICAT_URL")
-
-    def get_icat_check_cert(self):
-        try:
-            return self.config["icat_check_cert"]
-        except KeyError:
-            sys.exit("Missing config value, icat_check_cert")
-
-    def get_log_level(self):
-        try:
-            return self.config["log_level"]
-        except KeyError:
-            sys.exit("Missing config value, log_level")
-
-    def get_log_location(self):
-        try:
-            return self.config["log_location"]
-        except KeyError:
-            sys.exit("Missing config value, log_location")
-
-    def is_debug_mode(self):
-        try:
-            return self.config["debug_mode"]
-        except KeyError:
-            sys.exit("Missing config value, debug_mode")
-
-    def is_generate_swagger(self):
-        try:
-            return self.config["generate_swagger"]
-        except KeyError:
-            sys.exit("Missing config value, generate_swagger")
-
-    def get_host(self):
-        try:
-            return self.config["host"]
-        except KeyError:
-            sys.exit("Missing config value, host")
-
-    def get_port(self):
-        try:
-            return self.config["port"]
-        except KeyError:
-            sys.exit("Missing config value, port")
-
-    def get_test_user_credentials(self):
-        try:
-            return self.config["test_user_credentials"]
-        except KeyError:
-            sys.exit("Missing config value, test_user_credentials")
-
-    def get_test_mechanism(self):
-        try:
-            return self.config["test_mechanism"]
-        except KeyError:
-            sys.exit("Missing config value, test_mechanism")
+        self._config["backend"] = backend_type
 
     def get_icat_properties(self):
         """
@@ -130,8 +114,14 @@ class Config(object):
         requires the client object to be authenticated which may not always be the case
         when requesting these properties, hence a HTTP request is sent as an alternative
         """
-        properties_url = f"{config.get_icat_url()}/icat/properties"
-        r = requests.request("GET", properties_url, verify=config.get_icat_check_cert())
+        properties_url = (
+            f"{config.get_config_value(APIConfigOptions.ICAT_URL)}/icat/properties"
+        )
+        r = requests.request(
+            "GET",
+            properties_url,
+            verify=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
+        )
         icat_properties = r.json()
 
         return icat_properties

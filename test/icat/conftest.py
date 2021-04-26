@@ -7,7 +7,7 @@ from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
@@ -18,8 +18,14 @@ from test.icat.test_query import prepare_icat_data_for_assertion
 
 @pytest.fixture(scope="package")
 def icat_client():
-    client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
-    client.login(config.get_test_mechanism(), config.get_test_user_credentials())
+    client = Client(
+        config.get_config_value(APIConfigOptions.ICAT_URL),
+        checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
+    )
+    client.login(
+        config.get_config_value(APIConfigOptions.TEST_MECHANISM),
+        config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS),
+    )
     return client
 
 

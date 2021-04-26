@@ -8,8 +8,7 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.common.backends import create_backend
-from datagateway_api.common.config import config
-from datagateway_api.common.constants import Constants
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.database.helpers import db
 from datagateway_api.common.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.resources.entities.entity_endpoint import (
@@ -65,10 +64,12 @@ def create_app_infrastructure(flask_app):
         backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
     except KeyError:
-        backend_type = config.get_backend_type()
+        backend_type = config.get_config_value(APIConfigOptions.BACKEND)
 
     if backend_type == "db":
-        flask_app.config["SQLALCHEMY_DATABASE_URI"] = Constants.DATABASE_URL
+        flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.get_config_value(
+            APIConfigOptions.DB_URL,
+        )
         flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         db.init_app(flask_app)
 
@@ -82,7 +83,7 @@ def create_api_endpoints(flask_app, api, spec):
         backend_type = flask_app.config["TEST_BACKEND"]
         config.set_backend_type(backend_type)
     except KeyError:
-        backend_type = config.get_backend_type()
+        backend_type = config.get_config_value(APIConfigOptions.BACKEND)
 
     backend = create_backend(backend_type)
 
@@ -164,7 +165,7 @@ def create_api_endpoints(flask_app, api, spec):
 def openapi_config(spec):
     # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
     # change to the Swagger docs, rather than changing on each startup
-    if config.is_generate_swagger():
+    if config.get_config_value(APIConfigOptions.GENERATE_SWAGGER):
         log.debug("Reordering OpenAPI docs to alphabetical order")
         for entity_data in spec._paths.values():
             for endpoint_name in sorted(entity_data.keys()):

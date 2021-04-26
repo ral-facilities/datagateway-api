@@ -2,7 +2,7 @@ import logging
 
 from cachetools.lru import LRUCache
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 
 log = logging.getLogger()
 
@@ -19,7 +19,9 @@ class ExtendedLRUCache(LRUCache):
     """
 
     def __init__(self):
-        super().__init__(maxsize=config.get_client_cache_size())
+        super().__init__(
+            maxsize=config.get_config_value(APIConfigOptions.CLIENT_CACHE_SIZE),
+        )
 
     def popitem(self):
         key, client = super().popitem()

@@ -2,7 +2,7 @@ import logging
 
 from flask import Flask
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.logger_setup import setup_logger
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
@@ -23,8 +23,8 @@ create_openapi_endpoint(app, spec)
 
 if __name__ == "__main__":
     app.run(
-        host=config.get_host(),
-        port=config.get_port(),
-        debug=config.is_debug_mode(),
-        use_reloader=config.is_flask_reloader(),
+        host=config.get_config_value(APIConfigOptions.HOST),
+        port=config.get_config_value(APIConfigOptions.PORT),
+        debug=config.get_config_value(APIConfigOptions.DEBUG_MODE),
+        use_reloader=config.get_config_value(APIConfigOptions.FLASK_RELOADER),
     )

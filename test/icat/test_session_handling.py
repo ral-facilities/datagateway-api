@@ -3,7 +3,7 @@ from datetime import datetime
 from icat.client import Client
 import pytest
 
-from datagateway_api.common.config import config
+from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.icat.filters import PythonICATWhereFilter
 
 
@@ -26,10 +26,11 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
         # Check username is correct
-        assert (
-            session_details.json["username"] == f"{config.get_test_mechanism()}/"
-            f"{config.get_test_user_credentials()['username']}"
-        )
+        test_mechanism = config.get_config_value(APIConfigOptions.TEST_MECHANISM)
+        test_username = config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS)[
+            "username"
+        ]
+        assert session_details.json["username"] == f"{test_mechanism}/{test_username}"
 
         # Check session ID matches the header from the request
         assert (
@@ -72,16 +73,26 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": config.get_test_user_credentials()["username"],
-                    "password": config.get_test_user_credentials()["password"],
-                    "mechanism": config.get_test_mechanism(),
+                    "username": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
+                    )["username"],
+                    "password": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
+                    )["password"],
+                    "mechanism": config.get_config_value(
+                        APIConfigOptions.TEST_MECHANISM,
+                    ),
                 },
                 id="Normal request body",
             ),
             pytest.param(
                 {
-                    "username": config.get_test_user_credentials()["username"],
-                    "password": config.get_test_user_credentials()["password"],
+                    "username": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
+                    )["username"],
+                    "password": config.get_config_value(
+                        APIConfigOptions.TEST_USER_CREDENTIALS,
+                    )["password"],
                 },
                 id="Missing mechanism in request body",
             ),
@@ -110,7 +121,9 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": config.get_test_mechanism(),
+                    "mechanism": config.get_config_value(
+                        APIConfigOptions.TEST_MECHANISM,
+                    ),
                 },
                 403,
                 id="Invalid credentials",
@@ -126,8 +139,14 @@ class TestSessionHandling:
         assert login_response.status_code == expected_response_code
 
     def test_valid_logout(self, flask_test_app_icat):
-        client = Client(config.get_icat_url(), checkCert=config.get_icat_check_cert())
-        client.login(config.get_test_mechanism(), config.get_test_user_credentials())
+        client = Client(
+            config.get_config_value(APIConfigOptions.ICAT_URL),
+            checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
+        )
+        client.login(
+            config.get_config_value(APIConfigOptions.TEST_MECHANISM),
+            config.get_config_value(APIConfigOptions.TEST_USER_CREDENTIALS),
+        )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = flask_test_app_icat.delete("/sessions", headers=creds_header)
