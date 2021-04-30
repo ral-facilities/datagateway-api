@@ -46,24 +46,27 @@ class Config(object):
         """
         A function to check that all config options exist before getting too far into
         the setup of the API. This check takes the backend into account, meaning only
-        the config options for the backend used is required
-
-        Config options used for testing are not checked here as they should only be used
-        during tests, not in the typical running of the API
+        the config options for the backend used is required.
 
         If a config option is missing, this will be picked up in `get_config_value()` by
         exiting the application
+
+        Config options used for testing are not checked here as they should only be used
+        during tests, not in the typical running of the API.
+
+        Some options used when running the API (host, debug_mode etc.) aren't mandatory
+        when running the API in production (these options aren't used in the `wsgi.py`
+        entrypoint). As a result, they're not present in `config_keys`. However, they
+        are required when using `main.py` as an entrypoint. In any case of these
+        specific missing config options when using that entrypoint, they are checked at
+        API startup so any missing options will be caught quickly.
         """
         # These keys are non-backend specific and therefore are mandatory for all uses
         config_keys = [
             APIConfigOptions.BACKEND,
-            APIConfigOptions.DEBUG_MODE,
-            APIConfigOptions.FLASK_RELOADER,
             APIConfigOptions.GENERATE_SWAGGER,
-            APIConfigOptions.HOST,
             APIConfigOptions.LOG_LEVEL,
             APIConfigOptions.LOG_LOCATION,
-            APIConfigOptions.PORT,
         ]
 
         if self.get_config_value(APIConfigOptions.BACKEND) == "python_icat":
