@@ -1,6 +1,7 @@
-from datetime import datetime, timezone
+from datetime import datetime
 import uuid
 
+from dateutil.tz import tzlocal
 from flask import Flask
 from icat.client import Client
 from icat.exception import ICATNoObjectError
@@ -49,10 +50,10 @@ def create_investigation_test_data(client, num_entities=1):
             f"Test data for the Python ICAT Backend on DataGateway API {i}"
         )
         investigation.startDate = datetime(
-            year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=timezone.utc,
+            year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=tzlocal(),
         )
         investigation.endDate = datetime(
-            year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=timezone.utc,
+            year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=tzlocal(),
         )
         # UUID visit ID means uniquesness constraint should always be met
         investigation.visitId = str(uuid.uuid1())
@@ -112,10 +113,10 @@ def isis_specific_endpoint_data(icat_client):
     facility_cycle = icat_client.new("facilityCycle")
     facility_cycle.name = "Test cycle for DataGateway API testing"
     facility_cycle.startDate = datetime(
-        year=2020, month=1, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc,
+        year=2020, month=1, day=1, hour=1, minute=1, second=1, tzinfo=tzlocal(),
     )
     facility_cycle.endDate = datetime(
-        year=2020, month=2, day=1, hour=1, minute=1, second=1, tzinfo=timezone.utc,
+        year=2020, month=2, day=1, hour=1, minute=1, second=1, tzinfo=tzlocal(),
     )
     facility_cycle.facility = icat_client.get("Facility", 1)
     facility_cycle.create()
