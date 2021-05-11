@@ -1,3 +1,5 @@
+from datagateway_api.common.date_handler import DateHandler
+from datetime import datetime
 from functools import wraps
 import json
 import logging
@@ -126,3 +128,73 @@ def get_entity_object_from_name(entity_name):
         raise ApiError(
             f"Entity class cannot be found, missing class for {entity_name}",
         )
+
+
+def map_distinct_attributes_to_results(distinct_attributes, query_result):
+    """
+    Maps the attribute names from a distinct filter onto the results given by the result
+    of a query
+
+    When selecting multiple (but not all) attributes in a database query, the results
+    are returned in a list and not mapped to an entity object. This means the 'normal'
+    functions used to process data ready for output (`entity_to_dict()` for the ICAT
+    backend) cannot be used, as the structure of the query result is different.
+
+    :param distinct_attributes: List of distinct attributes from the distinct
+        filter of the incoming request
+    :type distinct_attributes: :class:`list`
+    :param query_result: Results fetched from a database query (backend independent due
+        to the data structure of this parameter)
+    :type query_result: :class:`tuple` or :class:`list` when a single attribute is
+        given from ICAT backend, TODO
+    :return: Dictionary of attribute names paired with the results, ready to be
+        returned to the user
+    """
+    log.debug(f"Query Result Type: {type(query_result)}")
+
+    result_dict = {}
+    for attr_name, data in zip(distinct_attributes, query_result):
+        # Splitting attribute names in case it's from a related entity
+        split_attr_name = attr_name.split(".")
+
+        if isinstance(data, datetime):
+            data = DateHandler.datetime_object_to_str(data)
+
+        # Attribute name is from the 'origin' entity (i.e. not a related entity)
+        if len(split_attr_name) == 1:
+            result_dict[attr_name] = data
+        # Attribute name is a related entity, dictionary needs to be nested
+        else:
+            result_dict.update(map_nested_attrs({}, split_attr_name, data))
+
+    return result_dict
+
+
+def map_nested_attrs(nested_dict, split_attr_name, query_data):
+    """
+    A function that can be called recursively to map attributes from related
+    entities to the associated data
+
+    :param nested_dict: Dictionary to insert data into
+    :type nested_dict: :class:`dict`
+    :param split_attr_name: List of parts to an attribute name, that have been split
+        by "."
+    :type split_attr_name: :class:`list`
+    :param query_data: Data to be added to the dictionary
+    :type query_data: :class:`str` or :class:`str`
+    :return: Dictionary to be added to the result dictionary
+    """
+    # Popping LHS of related attribute name to see if it's an attribute name or part
+    # of a path to a related entity
+    attr_name_pop = split_attr_name.pop(0)
+
+    # Related attribute name, ready to insert data into dictionary
+    if len(split_attr_name) == 0:
+        # at role, so put data in
+        nested_dict[attr_name_pop] = query_data
+    # Part of the path for related entity, need to recurse to get to attribute name
+    else:
+        nested_dict[attr_name_pop] = {}
+        map_nested_attrs(nested_dict[attr_name_pop], split_attr_name, query_data)
+
+    return nested_dict
