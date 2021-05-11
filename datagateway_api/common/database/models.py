@@ -3,6 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 import enum
 
+from dateutil.tz import tzlocal
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -20,6 +21,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import DatabaseError, FilterError
 
 Base = declarative_base()
@@ -78,7 +80,9 @@ class EntityHelper(ABC):
         :return: The converted field
         """
         if isinstance(field, datetime):
-            return str(field)
+            # Add timezone info to match ICAT backend
+            field = field.replace(tzinfo=tzlocal())
+            return DateHandler.datetime_object_to_str(field)
         elif isinstance(field, Decimal):
             return float(field)
         else:
