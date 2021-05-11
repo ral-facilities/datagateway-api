@@ -146,12 +146,11 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
     :param query_result: Results fetched from a database query (backend independent due
         to the data structure of this parameter)
     :type query_result: :class:`tuple` or :class:`list` when a single attribute is
-        given from ICAT backend, TODO
+        given from ICAT backend, or :class:`sqlalchemy.engine.row.Row` when used on the
+        DB backend
     :return: Dictionary of attribute names paired with the results, ready to be
         returned to the user
     """
-    log.debug(f"Query Result Type: {type(query_result)}")
-
     result_dict = {}
     for attr_name, data in zip(distinct_attributes, query_result):
         # Splitting attribute names in case it's from a related entity
