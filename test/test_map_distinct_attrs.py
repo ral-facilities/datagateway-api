@@ -1,7 +1,8 @@
-from datagateway_api.common.helpers import map_distinct_attributes_to_results
 from datetime import datetime, timezone
 
 import pytest
+
+from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
 class TestMapDistinctAttrs:

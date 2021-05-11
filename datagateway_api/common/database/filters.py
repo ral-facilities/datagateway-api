@@ -2,7 +2,6 @@ import logging
 
 from sqlalchemy import asc, desc
 
-from datagateway_api.common.database import models
 from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
 from datagateway_api.common.filters import (
     DistinctFieldFilter,

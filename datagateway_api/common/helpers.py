@@ -1,4 +1,3 @@
-from datagateway_api.common.date_handler import DateHandler
 from datetime import datetime
 from functools import wraps
 import json
@@ -9,6 +8,7 @@ from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
 from datagateway_api.common.database import models
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     ApiError,
     AuthenticationError,

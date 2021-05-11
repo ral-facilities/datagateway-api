@@ -1,4 +1,3 @@
-from datagateway_api.common.helpers import map_distinct_attributes_to_results
 from datetime import datetime
 import logging
 
@@ -8,6 +7,7 @@ from icat.query import Query
 
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import PythonICATError
+from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
 log = logging.getLogger()

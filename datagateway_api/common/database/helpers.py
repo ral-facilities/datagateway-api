@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from datagateway_api.common.helpers import map_distinct_attributes_to_results
 import datetime
 from functools import wraps
 import logging
@@ -26,6 +25,7 @@ from datagateway_api.common.exceptions import (
     MissingRecordError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
 log = logging.getLogger()
