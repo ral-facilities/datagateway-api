@@ -79,10 +79,36 @@ class TestDatabaseFilterUtilities:
             expected_table = table
 
         with ReadQuery(table) as test_query:
-            output_field = test_utility._add_query_join(test_query)
+            test_utility._add_query_join(test_query)
 
         # Check the JOIN has been applied
         assert str(test_query.base_query) == str(expected_query.base_query)
+
+    @pytest.mark.parametrize(
+        "input_field",
+        [
+            pytest.param("name", id="No related fields"),
+            pytest.param("facility.daysUntilRelease", id="Related field"),
+            pytest.param(
+                "investigationUsers.user.fullName", id="Related related field",
+            ),
+        ],
+    )
+    def test_valid_get_entity_model_for_filter(self, input_field):
+        table = get_entity_object_from_name("Investigation")
+
+        test_utility = DatabaseFilterUtilities()
+        test_utility._extract_filter_fields(input_field)
+
+        if test_utility.related_related_field:
+            expected_table = get_entity_object_from_name(test_utility.related_field)
+        elif test_utility.related_field:
+            expected_table = get_entity_object_from_name(test_utility.field)
+        else:
+            expected_table = table
+
+        with ReadQuery(table) as test_query:
+            output_field = test_utility._get_entity_model_for_filter(test_query)
 
         # Check the output is correct
         field_name_to_fetch = input_field.split(".")[-1]
