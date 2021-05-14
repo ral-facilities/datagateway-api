@@ -31,6 +31,7 @@ class DatabaseFilterUtilities:
     """
 
     def __init__(self):
+        self.field = None
         self.related_field = None
         self.related_related_field = None
 
@@ -42,6 +43,11 @@ class DatabaseFilterUtilities:
         :type field: :class:`str`
         :raises ValueError: If the maximum related/included depth is exceeded
         """
+
+        # Flushing fields in case they have been previously set
+        self.field = None
+        self.related_field = None
+        self.related_related_field = None
 
         fields = field.split(".")
         related_depth = len(fields)
@@ -62,14 +68,11 @@ class DatabaseFilterUtilities:
 
     def _add_query_join(self, query):
         """
-        Fetches the appropriate entity model based on the contents of `self.field` and
-        adds any required JOINs to the query if any related fields have been used in the
+        Adds any required JOINs to the query if any related fields have been used in the
         filter
 
         :param query: The query to have filters applied to
         :type query: :class:`datagateway_api.common.database.helpers.[QUERY]`
-        :return: Entity model of the field (usually the field relating to the endpoint
-            the request is coming from)
         """
 
         if self.related_related_field:
@@ -78,10 +81,25 @@ class DatabaseFilterUtilities:
             query.base_query = query.base_query.join(included_table).join(
                 included_included_table,
             )
-            field = self._get_field(included_included_table, self.related_related_field)
         elif self.related_field:
             included_table = get_entity_object_from_name(self.field)
             query.base_query = query.base_query.join(included_table)
+
+    def _get_entity_model_for_filter(self, query):
+        """
+        Fetches the appropriate entity model based on the contents of the instance
+        variables of this class
+
+        :param query: The query to have filters applied to
+        :type query: :class:`datagateway_api.common.database.helpers.[QUERY]`
+        :return: Entity model of the field (usually the field relating to the endpoint
+            the request is coming from)
+        """
+        if self.related_related_field:
+            included_included_table = get_entity_object_from_name(self.related_field)
+            field = self._get_field(included_included_table, self.related_related_field)
+        elif self.related_field:
+            included_table = get_entity_object_from_name(self.field)
             field = self._get_field(included_table, self.related_field)
         else:
             # No related fields
@@ -105,7 +123,8 @@ class DatabaseWhereFilter(WhereFilter, DatabaseFilterUtilities):
         self._extract_filter_fields(field)
 
     def apply_filter(self, query):
-        field = self._add_query_join(query)
+        self._add_query_join(query)
+        field = self._get_entity_model_for_filter(query)
 
         if self.operation == "eq":
             query.base_query = query.base_query.filter(field == self.value)
@@ -140,15 +159,23 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
 
     def apply_filter(self, query):
         query.is_distinct_fields_query = True
+
         try:
             distinct_fields = []
             for field_name in self.fields:
                 self._extract_filter_fields(field_name)
-                field = self._add_query_join(query)
-                distinct_fields.append(field)
+                distinct_fields.append(self._get_entity_model_for_filter(query))
+
+            # Base query must be set to a DISTINCT query before adding JOINs - if these
+            # actions are done in the opposite order, the JOINs will overwrite the
+            # SELECT multiple and effectively turn the query into a `SELECT *`
+            query.base_query = query.session.query(*distinct_fields).distinct()
+
+            for field_name in self.fields:
+                self._extract_filter_fields(field_name)
+                self._add_query_join(query)
         except AttributeError:
             raise FilterError("Bad field requested")
-        query.base_query = query.session.query(*distinct_fields).distinct()
 
 
 class DatabaseOrderFilter(OrderFilter):
