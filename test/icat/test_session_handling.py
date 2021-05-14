@@ -1,9 +1,11 @@
 from datetime import datetime
 
+from dateutil.tz import tzlocal
 from icat.client import Client
 import pytest
 
 from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.icat.filters import PythonICATWhereFilter
 
 
@@ -15,10 +17,11 @@ class TestSessionHandling:
             "/sessions", headers=valid_icat_credentials_header,
         )
 
-        session_expiry_datetime = datetime.strptime(
-            session_details.json["expireDateTime"], "%Y-%m-%d %H:%M:%S",
+        session_expiry_datetime = DateHandler.str_to_datetime_object(
+            session_details.json["expireDateTime"],
         )
-        current_datetime = datetime.now()
+
+        current_datetime = datetime.now(tzlocal())
         time_diff = abs(session_expiry_datetime - current_datetime)
         time_diff_minutes = time_diff.seconds / 60
 

@@ -3,6 +3,7 @@ from functools import wraps
 import logging
 
 from cachetools import cached
+from dateutil.tz import tzlocal
 from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
@@ -114,7 +115,7 @@ def get_session_details_helper(client):
     """
     session_time_remaining = client.getRemainingMinutes()
     session_expiry_time = (
-        datetime.now() + timedelta(minutes=session_time_remaining)
+        datetime.now(tzlocal()) + timedelta(minutes=session_time_remaining)
     ).replace(microsecond=0)
     username = client.getUserName()
 
