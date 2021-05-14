@@ -3,6 +3,7 @@ from functools import wraps
 import json
 import logging
 
+from dateutil.tz.tz import tzlocal
 from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
@@ -157,6 +158,10 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         split_attr_name = attr_name.split(".")
 
         if isinstance(data, datetime):
+            # Workaround for when this function is used on DB backend, where usually
+            # `_make_serializable()` would fix tzinfo
+            if data.tzinfo is None:
+                data = data.replace(tzinfo=tzlocal())
             data = DateHandler.datetime_object_to_str(data)
 
         # Attribute name is from the 'origin' entity (i.e. not a related entity)

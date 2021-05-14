@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from dateutil.tz import tzlocal
 from icat.entity import Entity
 import pytest
 

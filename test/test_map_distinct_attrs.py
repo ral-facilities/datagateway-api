@@ -1,5 +1,6 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
+from dateutil.tz import tzlocal
 import pytest
 
 from datagateway_api.common.helpers import map_distinct_attributes_to_results
@@ -25,7 +26,7 @@ class TestMapDistinctAttrs:
                         hour=1,
                         minute=1,
                         second=1,
-                        tzinfo=timezone.utc,
+                        tzinfo=tzlocal(),
                     ),
                 ),
                 {"startDate": "2020-01-04 01:01:01+00:00"},
