@@ -28,7 +28,7 @@ class TestDBGetWithFilters:
         assert test_response.json == []
 
     @pytest.mark.usefixtures("multiple_investigation_test_data_db")
-    def test_valid_get_with_filters_distinct(
+    def test_valid_get_with_filters_multiple_distinct(
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
@@ -41,8 +41,7 @@ class TestDBGetWithFilters:
             {"title": f"Title for DataGateway API Testing (DB) {i}"} for i in range(5)
         ]
 
-        for title in expected:
-            assert title in test_response.json
+        assert test_response.json == expected
 
     def test_limit_skip_merge_get_with_filters(
         self,
