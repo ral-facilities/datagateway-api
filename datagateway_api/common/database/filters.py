@@ -31,9 +31,16 @@ class DatabaseFilterUtilities:
     """
 
     def __init__(self):
+        """
+        The `distinct_join_flag` tracks if JOINs need to be added to the query - on a
+        distinct filter, if there's no unrelated fields (i.e. no fields with a
+        `related_depth` of 1), adding JOINs to the query (using `_add_query_join()`)
+        will result in a `sqlalchemy.exc.InvalidRequestError`
+        """
         self.field = None
         self.related_field = None
         self.related_related_field = None
+        self.distinct_join_flag = False
 
     def _extract_filter_fields(self, field):
         """
@@ -56,6 +63,7 @@ class DatabaseFilterUtilities:
 
         if related_depth == 1:
             self.field = fields[0]
+            self.distinct_join_flag = True
         elif related_depth == 2:
             self.field = fields[0]
             self.related_field = fields[1]
@@ -171,9 +179,10 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
             # SELECT multiple and effectively turn the query into a `SELECT *`
             query.base_query = query.session.query(*distinct_fields).distinct()
 
-            for field_name in self.fields:
-                self._extract_filter_fields(field_name)
-                self._add_query_join(query)
+            if self.distinct_join_flag:
+                for field_name in self.fields:
+                    self._extract_filter_fields(field_name)
+                    self._add_query_join(query)
         except AttributeError:
             raise FilterError("Bad field requested")
 
