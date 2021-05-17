@@ -450,7 +450,7 @@ class TestEntityRelationships:
         relationship,
     ):
         test_response = flask_test_app_db.get(
-            f'/{endpoint_type}?include="{input_include_field}"&limit=1',
+            f'/{endpoint_type}?include="{input_include_field}"',
             headers=valid_db_credentials_header,
         )
         print(test_response)
@@ -458,6 +458,15 @@ class TestEntityRelationships:
         if test_response.json == []:
             warnings.warn(f"No data returned from: {endpoint_type}")
         else:
+
+            # Some results won't have the relationship being tested for, so iterate
+            # through the results and remove the ones which don't have a relationship
+            for result in list(test_response.json):
+                try:
+                    result[input_include_field]
+                except KeyError:
+                    test_response.json.remove(result)
+
             print(test_response.json[0])
             assert input_include_field in test_response.json[0].keys()
 
