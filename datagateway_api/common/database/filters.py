@@ -31,12 +31,6 @@ class DatabaseFilterUtilities:
     """
 
     def __init__(self):
-        """
-        The `distinct_join_flag` tracks if JOINs need to be added to the query - on a
-        distinct filter, if there's no unrelated fields (i.e. no fields with a
-        `related_depth` of 1), adding JOINs to the query (using `add_query_join()`)
-        will result in a `sqlalchemy.exc.InvalidRequestError`
-        """
         self.field = None
         self.related_field = None
         self.related_related_field = None
