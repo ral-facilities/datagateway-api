@@ -55,6 +55,19 @@ class TestDBGetWithFilters:
                 id="Single unrelated distinct field",
             ),
             pytest.param(
+                '"investigationInstruments.createTime"',
+                [
+                    {
+                        "investigationInstruments": {
+                            "createTime": DateHandler.datetime_object_to_str(
+                                Constants.TEST_MOD_CREATE_DATETIME,
+                            ),
+                        },
+                    },
+                ],
+                id="Single related distinct field",
+            ),
+            pytest.param(
                 '["createTime", "investigationInstruments.createTime"]',
                 [
                     {
@@ -68,7 +81,21 @@ class TestDBGetWithFilters:
                         },
                     },
                 ],
-                id="List containing related distinct field",
+                id="Single related distinct field with unrelated field",
+            ),
+            pytest.param(
+                '["investigationInstruments.createTime", "facility.id"]',
+                [
+                    {
+                        "facility": {"id": 1},
+                        "investigationInstruments": {
+                            "createTime": DateHandler.datetime_object_to_str(
+                                Constants.TEST_MOD_CREATE_DATETIME,
+                            ),
+                        },
+                    },
+                ],
+                id="Multiple related distinct fields",
             ),
             pytest.param(
                 '["createTime", "investigationInstruments.createTime", "facility.id"]',
@@ -85,7 +112,7 @@ class TestDBGetWithFilters:
                         },
                     },
                 ],
-                id="Multiple related distinct fields",
+                id="Multiple related distinct fields with unrelated field",
             ),
         ],
     )
