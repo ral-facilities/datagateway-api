@@ -124,7 +124,6 @@ class DatabaseFilterUtilities:
 
 class DatabaseWhereFilter(WhereFilter, DatabaseFilterUtilities):
     def __init__(self, field, value, operation):
-        # TODO - Apply any 'pythonic' solution here too
         WhereFilter.__init__(self, field, value, operation)
         DatabaseFilterUtilities.__init__(self)
 
@@ -160,8 +159,6 @@ class DatabaseWhereFilter(WhereFilter, DatabaseFilterUtilities):
 
 class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
     def __init__(self, fields):
-        # TODO - what's the Pythonic solution here?
-        # super().__init__(fields)
         DistinctFieldFilter.__init__(self, fields)
         DatabaseFilterUtilities.__init__(self)
 
