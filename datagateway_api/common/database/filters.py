@@ -34,14 +34,14 @@ class DatabaseFilterUtilities:
         """
         The `distinct_join_flag` tracks if JOINs need to be added to the query - on a
         distinct filter, if there's no unrelated fields (i.e. no fields with a
-        `related_depth` of 1), adding JOINs to the query (using `_add_query_join()`)
+        `related_depth` of 1), adding JOINs to the query (using `add_query_join()`)
         will result in a `sqlalchemy.exc.InvalidRequestError`
         """
         self.field = None
         self.related_field = None
         self.related_related_field = None
 
-    def _extract_filter_fields(self, field):
+    def extract_filter_fields(self, field):
         """
         Extract the related fields names and put them into separate variables
 
@@ -73,7 +73,7 @@ class DatabaseFilterUtilities:
         else:
             raise ValueError(f"Maximum related depth exceeded. {field}'s depth > 3")
 
-    def _add_query_join(self, query):
+    def add_query_join(self, query):
         """
         Adds any required JOINs to the query if any related fields have been used in the
         filter
@@ -92,7 +92,7 @@ class DatabaseFilterUtilities:
             included_table = get_entity_object_from_name(self.field)
             query.base_query = query.base_query.join(included_table)
 
-    def _get_entity_model_for_filter(self, query):
+    def get_entity_model_for_filter(self, query):
         """
         Fetches the appropriate entity model based on the contents of the instance
         variables of this class
@@ -126,11 +126,11 @@ class DatabaseWhereFilter(WhereFilter, DatabaseFilterUtilities):
         WhereFilter.__init__(self, field, value, operation)
         DatabaseFilterUtilities.__init__(self)
 
-        self._extract_filter_fields(field)
+        self.extract_filter_fields(field)
 
     def apply_filter(self, query):
-        self._add_query_join(query)
-        field = self._get_entity_model_for_filter(query)
+        self.add_query_join(query)
+        field = self.get_entity_model_for_filter(query)
 
         if self.operation == "eq":
             query.base_query = query.base_query.filter(field == self.value)
@@ -167,8 +167,8 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
         try:
             distinct_fields = []
             for field_name in self.fields:
-                self._extract_filter_fields(field_name)
-                distinct_fields.append(self._get_entity_model_for_filter(query))
+                self.extract_filter_fields(field_name)
+                distinct_fields.append(self.get_entity_model_for_filter(query))
 
             # Base query must be set to a DISTINCT query before adding JOINs - if these
             # actions are done in the opposite order, the JOINs will overwrite the
@@ -180,8 +180,8 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
             )
 
             for field_name in self.fields:
-                self._extract_filter_fields(field_name)
-                self._add_query_join(query)
+                self.extract_filter_fields(field_name)
+                self.add_query_join(query)
         except AttributeError:
             raise FilterError("Bad field requested")
 

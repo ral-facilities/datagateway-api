@@ -30,7 +30,7 @@ class TestDatabaseFilterUtilities:
     )
     def test_valid_extract_filter_fields(self, input_field, expected_fields):
         test_utility = DatabaseFilterUtilities()
-        test_utility._extract_filter_fields(input_field)
+        test_utility.extract_filter_fields(input_field)
 
         assert test_utility.field == expected_fields[0]
         assert test_utility.related_field == expected_fields[1]
@@ -40,7 +40,7 @@ class TestDatabaseFilterUtilities:
         test_utility = DatabaseFilterUtilities()
 
         with pytest.raises(ValueError):
-            test_utility._extract_filter_fields(
+            test_utility.extract_filter_fields(
                 "user.investigationUsers.investigation.summary",
             )
 
@@ -60,7 +60,7 @@ class TestDatabaseFilterUtilities:
         table = get_entity_object_from_name("Investigation")
 
         test_utility = DatabaseFilterUtilities()
-        test_utility._extract_filter_fields(input_field)
+        test_utility.extract_filter_fields(input_field)
 
         expected_query = ReadQuery(table)
         if test_utility.related_related_field:
@@ -79,7 +79,7 @@ class TestDatabaseFilterUtilities:
             expected_table = table
 
         with ReadQuery(table) as test_query:
-            test_utility._add_query_join(test_query)
+            test_utility.add_query_join(test_query)
 
         # Check the JOIN has been applied
         assert str(test_query.base_query) == str(expected_query.base_query)
@@ -98,7 +98,7 @@ class TestDatabaseFilterUtilities:
         table = get_entity_object_from_name("Investigation")
 
         test_utility = DatabaseFilterUtilities()
-        test_utility._extract_filter_fields(input_field)
+        test_utility.extract_filter_fields(input_field)
 
         if test_utility.related_related_field:
             expected_table = get_entity_object_from_name(test_utility.related_field)
@@ -108,7 +108,7 @@ class TestDatabaseFilterUtilities:
             expected_table = table
 
         with ReadQuery(table) as test_query:
-            output_field = test_utility._get_entity_model_for_filter(test_query)
+            output_field = test_utility.get_entity_model_for_filter(test_query)
 
         # Check the output is correct
         field_name_to_fetch = input_field.split(".")[-1]
