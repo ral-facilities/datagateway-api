@@ -40,7 +40,6 @@ class DatabaseFilterUtilities:
         self.field = None
         self.related_field = None
         self.related_related_field = None
-        self.distinct_join_flag = False
 
     def _extract_filter_fields(self, field):
         """
@@ -174,12 +173,15 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
             # Base query must be set to a DISTINCT query before adding JOINs - if these
             # actions are done in the opposite order, the JOINs will overwrite the
             # SELECT multiple and effectively turn the query into a `SELECT *`
-            query.base_query = query.session.query(*distinct_fields).distinct()
+            query.base_query = (
+                query.session.query(*distinct_fields)
+                .select_from(query.table)
+                .distinct()
+            )
 
-            if self.distinct_join_flag:
-                for field_name in self.fields:
-                    self._extract_filter_fields(field_name)
-                    self._add_query_join(query)
+            for field_name in self.fields:
+                self._extract_filter_fields(field_name)
+                self._add_query_join(query)
         except AttributeError:
             raise FilterError("Bad field requested")
 
