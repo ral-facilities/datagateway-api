@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import aliased
 
 from datagateway_api.common.database.filters import (
+    DatabaseDistinctFieldFilter,
     DatabaseIncludeFilter as IncludeFilter,
     DatabaseWhereFilter as WhereFilter,
 )
@@ -24,6 +25,7 @@ from datagateway_api.common.exceptions import (
     MissingRecordError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
 log = logging.getLogger()
@@ -278,7 +280,7 @@ def get_filtered_read_query_results(filter_handler, filters, query):
     filter_handler.apply_filters(query)
     results = query.get_all_results()
     if query.is_distinct_fields_query:
-        return _get_distinct_fields_as_dicts(results)
+        return _get_distinct_fields_as_dicts(filters, results)
     if query.include_related_entities:
         return _get_results_with_include(filters, results)
     return list(map(lambda x: x.to_dict(), results))
@@ -298,7 +300,7 @@ def _get_results_with_include(filters, results):
             return [x.to_nested_dict(query_filter.included_filters) for x in results]
 
 
-def _get_distinct_fields_as_dicts(results):
+def _get_distinct_fields_as_dicts(filters, results):
     """
     Given a list of column results return a list of dictionaries where each column name
     is the key and the column value is the dictionary key value
@@ -306,10 +308,16 @@ def _get_distinct_fields_as_dicts(results):
     :param results: A list of sql alchemy result objects
     :return: A list of dictionary representations of the sqlalchemy result objects
     """
+    distinct_fields = []
+    for query_filter in filters:
+        if type(query_filter) is DatabaseDistinctFieldFilter:
+            distinct_fields.extend(query_filter.fields)
+
     dictionaries = []
     for result in results:
-        dictionary = {k: getattr(result, k) for k in result.keys()}
+        dictionary = map_distinct_attributes_to_results(distinct_fields, result)
         dictionaries.append(dictionary)
+
     return dictionaries
 
 

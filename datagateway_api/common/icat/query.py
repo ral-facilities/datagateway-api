@@ -7,6 +7,7 @@ from icat.query import Query
 
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import PythonICATError
+from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
 log = logging.getLogger()
@@ -123,9 +124,7 @@ class ICATQuery:
 
                     # Map distinct attributes and result
                     data.append(
-                        self.map_distinct_attributes_to_results(
-                            distinct_attributes, result,
-                        ),
+                        map_distinct_attributes_to_results(distinct_attributes, result),
                     )
                 elif not count_query:
                     dict_result = self.entity_to_dict(result, flat_query_includes)
@@ -197,75 +196,6 @@ class ICATQuery:
 
                 d[key] = entity_data
         return d
-
-    def map_distinct_attributes_to_results(self, distinct_attributes, query_result):
-        """
-        Maps the attribute names from a distinct filter onto the results given by the
-        query constructed and executed using Python ICAT
-
-        When selecting multiple (but not all) attributes in a JPQL query, the results
-        are returned in a list and not mapped to an entity object. As a result,
-        `entity_to_dict()` cannot be used as that function assumes an entity object
-        input. Within the API, selecting multiple attributes happens when a distinct
-        filter is applied to a request. This function is the alternative for processing
-        data ready for output
-
-        :param distinct_attributes: List of distinct attributes from the distinct
-            filter of the incoming request
-        :type distinct_attributes: :class:`list`
-        :param query_result: Results fetched from Python ICAT
-        :type query_result: :class:`tuple` or :class:`list` when a single attribute is
-            given
-        :return: Dictionary of attribute names paired with the results, ready to be
-            returned to the user
-        """
-        result_dict = {}
-        for attr_name, data in zip(distinct_attributes, query_result):
-            # Splitting attribute names in case it's from a related entity
-            split_attr_name = attr_name.split(".")
-
-            if isinstance(data, datetime):
-                data = DateHandler.datetime_object_to_str(data)
-
-            # Attribute name is from the 'origin' entity (i.e. not a related entity)
-            if len(split_attr_name) == 1:
-                result_dict[attr_name] = data
-            # Attribute name is a related entity, dictionary needs to be nested
-            else:
-                result_dict.update(self.map_nested_attrs({}, split_attr_name, data))
-
-        return result_dict
-
-    def map_nested_attrs(self, nested_dict, split_attr_name, query_data):
-        """
-        A function that can be called recursively to map attributes from related
-        entities to the associated data
-
-        :param nested_dict: Dictionary to insert data into
-        :type nested_dict: :class:`dict`
-        :param split_attr_name: List of parts to an attribute name, that have been split
-            by "."
-        :type split_attr_name: :class:`list`
-        :param query_data: Data to be added to the dictionary
-        :type query_data: :class:`str` or :class:`str`
-        :return: Dictionary to be added to the result dictionary
-        """
-        # Popping LHS of related attribute name to see if it's an attribute name or part
-        # of a path to a related entity
-        attr_name_pop = split_attr_name.pop(0)
-
-        # Related attribute name, ready to insert data into dictionary
-        if len(split_attr_name) == 0:
-            # at role, so put data in
-            nested_dict[attr_name_pop] = query_data
-        # Part of the path for related entity, need to recurse to get to attribute name
-        else:
-            nested_dict[attr_name_pop] = {}
-            self.map_nested_attrs(
-                nested_dict[attr_name_pop], split_attr_name, query_data,
-            )
-
-        return nested_dict
 
     def flatten_query_included_fields(self, includes):
         """
