@@ -450,7 +450,7 @@ class TestEntityRelationships:
         relationship,
     ):
         test_response = flask_test_app_db.get(
-            f'/{endpoint_type}?include="{input_include_field}"',
+            f'/{endpoint_type}?include="{input_include_field}"&limit=3000',
             headers=valid_db_credentials_header,
         )
         print(test_response)

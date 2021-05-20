@@ -343,7 +343,7 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="DATACOLLECTIONPARAMETER.dataCollectionID == DATACOLLECTION.id",
         backref="dataCollectionParameters",
     )
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATACOLLECTIONPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="dataCollectionParameters",
@@ -437,7 +437,7 @@ class DATAFILEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="DATAFILEPARAMETER.datafileID == DATAFILE.id",
         backref="datafileParameters",
     )
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATAFILEPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="datafileParameters",
@@ -478,7 +478,7 @@ class DATASET(Base, EntityHelper, metaclass=EntityMeta):
     SAMPLE = relationship(
         "SAMPLE", primaryjoin="DATASET.sampleID == SAMPLE.id", backref="datasets",
     )
-    DATASETTYPE = relationship(
+    TYPE = relationship(
         "DATASETTYPE",
         primaryjoin="DATASET.typeID == DATASETTYPE.id",
         backref="datasets",
@@ -514,7 +514,7 @@ class DATASETPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="DATASETPARAMETER.datasetID == DATASET.id",
         backref="datasetParameters",
     )
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="DATASETPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="datasetParameters",
@@ -662,7 +662,7 @@ class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="INVESTIGATION.facilityID == FACILITY.id",
         backref="investigations",
     )
-    INVESTIGATIONTYPE = relationship(
+    TYPE = relationship(
         "INVESTIGATIONTYPE",
         primaryjoin="INVESTIGATION.typeID == INVESTIGATIONTYPE.id",
         backref="investigations",
@@ -763,7 +763,7 @@ class INVESTIGATIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="INVESTIGATIONPARAMETER.investigationID == INVESTIGATION.id",
         backref="investigationParameters",
     )
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="INVESTIGATIONPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="investigationParameters",
@@ -948,7 +948,7 @@ class PERMISSIBLESTRINGVALUE(Base, EntityHelper, metaclass=EntityMeta):
         "PARAMETERTYPE_ID", ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="PERMISSIBLESTRINGVALUE.parameterTypeID == PARAMETERTYPE.id",
         backref="permissibleStringValues",
@@ -1075,7 +1075,7 @@ class SAMPLE(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="SAMPLE.investigationID == INVESTIGATION.id",
         backref="samples",
     )
-    SAMPLETYPE = relationship(
+    TYPE = relationship(
         "SAMPLETYPE",
         primaryjoin="SAMPLE.sampleTypeID == SAMPLETYPE.id",
         backref="samples",
@@ -1104,7 +1104,7 @@ class SAMPLEPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         "PARAMETER_TYPE_ID", ForeignKey("PARAMETERTYPE.ID"), nullable=False, index=True,
     )
 
-    PARAMETERTYPE = relationship(
+    TYPE = relationship(
         "PARAMETERTYPE",
         primaryjoin="SAMPLEPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="sampleParameters",
@@ -1180,7 +1180,9 @@ class USERGROUP(Base, EntityHelper, metaclass=EntityMeta):
     userID = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
 
     GROUPING = relationship(
-        "GROUPING", primaryjoin="USERGROUP.groupID == GROUPING.id", backref="grouping",
+        "GROUPING",
+        primaryjoin="USERGROUP.groupID == GROUPING.id",
+        backref="userGroups",
     )
     USER = relationship(
         "USER", primaryjoin="USERGROUP.userID == USER.id", backref="userGroups",
@@ -1240,7 +1242,7 @@ class STUDY(Base, EntityHelper, metaclass=EntityMeta):
 
 class SAMPLETYPE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "SAMPLETYPE"
-    __singularfieldname = "sampleType"
+    __singularfieldname__ = "sampleType"
     __pluralfieldname__ = "sampleTypes"
     __table_args__ = (
         Index("UNQ_SAMPLETYPE_0", "FACILITY_ID", "NAME", "MOLECULARFORMULA"),
