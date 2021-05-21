@@ -39,6 +39,14 @@ class TestICATIncludeFilter:
                 {"investigationUsers", "datasets", "facility"},
                 id="nested list",
             ),
+            pytest.param(
+                {"investigationUsers": [{"user": "userGroups"}, "investigation", []]},
+                {
+                    "investigationUsers.user.userGroups",
+                    "investigationUsers.investigation",
+                },
+                id="Complex use case used similarly in DataGateway",
+            ),
         ],
     )
     def test_valid_input(self, icat_query, filter_input, expected_output):
@@ -66,6 +74,10 @@ class TestICATIncludeFilter:
             pytest.param(
                 {"datasets": {"datafiles", "sample"}},
                 id="invalid inner dictionary value",
+            ),
+            pytest.param(
+                {"investigationUsers": [{2: "userGroups"}, "investigation"]},
+                id="Invalid inner key with nested dict and list",
             ),
         ],
     )
