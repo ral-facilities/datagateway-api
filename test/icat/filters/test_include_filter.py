@@ -45,7 +45,12 @@ class TestICATIncludeFilter:
                     "investigationUsers.user.userGroups",
                     "investigationUsers.investigation",
                 },
-                id="Complex use case used similarly in DataGateway",
+                id="complex use case used similarly in DataGateway",
+            ),
+            pytest.param(
+                {"investigationUsers": [["investigation.datasets"]]},
+                {"investigationUsers.investigation.datasets"},
+                id="dictionary with nested list value",
             ),
         ],
     )

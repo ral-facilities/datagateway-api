@@ -246,7 +246,9 @@ class PythonICATIncludeFilter(IncludeFilter):
                             self._extract_filter_fields(".".join((key, element)))
                         elif isinstance(element, list):
                             for sub_element in element:
-                                self._extract_filter_fields(".".join(key, sub_element))
+                                self._extract_filter_fields(
+                                    ".".join((key, sub_element)),
+                                )
                         elif isinstance(element, dict):
                             for (
                                 inner_element_key,
