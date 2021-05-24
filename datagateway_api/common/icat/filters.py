@@ -241,8 +241,31 @@ class PythonICATIncludeFilter(IncludeFilter):
                     self._extract_filter_fields(".".join((key, value)))
                 elif isinstance(value, list):
                     for element in value:
-                        # Will end up as: key.element1, key.element2, key.element3 etc.
-                        self._extract_filter_fields(".".join((key, element)))
+                        if isinstance(element, str):
+                            # Will end up as: key.element1, key.element2 etc.
+                            self._extract_filter_fields(".".join((key, element)))
+                        elif isinstance(element, list):
+                            for sub_element in element:
+                                self._extract_filter_fields(
+                                    ".".join((key, sub_element)),
+                                )
+                        elif isinstance(element, dict):
+                            for (
+                                inner_element_key,
+                                inner_element_value,
+                            ) in element.items():
+                                if not isinstance(inner_element_key, str):
+                                    raise FilterError(
+                                        "Include Filter: Dictionary key should only be"
+                                        " a string, not any other type",
+                                    )
+                                self._extract_filter_fields(
+                                    {
+                                        ".".join(
+                                            (key, inner_element_key),
+                                        ): inner_element_value,
+                                    },
+                                )
                 elif isinstance(value, dict):
                     for inner_key, inner_value in value.items():
                         if not isinstance(inner_key, str):
