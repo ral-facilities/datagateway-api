@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import argparse
 import datetime
-from multiprocessing import Pool, Process
+from multiprocessing import Process
 from random import choice, randrange, seed
 
 from faker import Faker
@@ -123,11 +123,6 @@ class Generator(ABC):
     def generate(self):
         pass
 
-    def pool_map(self, function):
-        pool = Pool()
-        pool.map(function, range(1, self.amount))
-        pool.close()
-
 
 class FacilityGenerator(Generator):
     tier = 0
@@ -150,7 +145,8 @@ class DataCollectionGenerator(Generator):
     amount = 1000
 
     def generate(self):
-        self.pool_map(DataCollectionGenerator.generate_data_collection)
+        for i in range(1, self.amount):
+            DataCollectionGenerator.generate_data_collection(i)
 
     @staticmethod
     def generate_data_collection(i):
@@ -164,7 +160,8 @@ class ApplicationGenerator(Generator):
     amount = 80
 
     def generate(self):
-        self.pool_map(ApplicationGenerator.generate_applications)
+        for i in range(1, self.amount):
+            ApplicationGenerator.generate_applications(i)
 
     @staticmethod
     def generate_applications(i):
@@ -179,7 +176,8 @@ class DatasetTypeGenerator(Generator):
     amount = 4
 
     def generate(self):
-        self.pool_map(DatasetTypeGenerator.generate_dataset_type)
+        for i in range(1, self.amount):
+            DatasetTypeGenerator.generate_dataset_type(i)
 
     @staticmethod
     def generate_dataset_type(i):
@@ -193,7 +191,8 @@ class FacilityCycleGenerator(Generator):
     amount = 4 * YEARS  # This gives 4 per year for 20 years
 
     def generate(self):
-        self.pool_map(FacilityCycleGenerator.generate_facility_cycle)
+        for i in range(1, self.amount):
+            FacilityCycleGenerator.generate_facility_cycle(i)
 
     @staticmethod
     def generate_facility_cycle(i):
@@ -213,7 +212,9 @@ class SampleTypeGenerator(Generator):
     amount = 80
 
     def generate(self):
-        self.pool_map(SampleTypeGenerator.generate_sample_type)
+
+        for i in range(1, self.amount):
+            SampleTypeGenerator.generate_sample_type(i)
 
     @staticmethod
     def generate_sample_type(i):
@@ -229,7 +230,8 @@ class InstrumentGenerator(Generator):
     amount = 15
 
     def generate(self):
-        self.pool_map(InstrumentGenerator.generate_instruments)
+        for i in range(1, self.amount):
+            InstrumentGenerator.generate_instruments(i)
 
     @staticmethod
     def generate_instruments(i):
@@ -246,7 +248,8 @@ class UserGenerator(Generator):
     amount = 500
 
     def generate(self):
-        self.pool_map(UserGenerator.generate_users)
+        for i in range(1, self.amount):
+            UserGenerator.generate_users(i)
 
     @staticmethod
     def generate_users(i):
@@ -264,7 +267,8 @@ class DatafileFormatGenerator(Generator):
     amount = 10
 
     def generate(self):
-        self.pool_map(DatafileFormatGenerator.generate_datafile_format)
+        for i in range(1, self.amount):
+            DatafileFormatGenerator.generate_datafile_format(i)
 
     @staticmethod
     def generate_datafile_format(i):
@@ -279,7 +283,8 @@ class InvestigationTypeGenerator(Generator):
     amount = 4
 
     def generate(self):
-        self.pool_map(InvestigationTypeGenerator.generate_investigation_type)
+        for i in range(1, self.amount):
+            InvestigationTypeGenerator.generate_investigation_type(i)
 
     @staticmethod
     def generate_investigation_type(i):
@@ -293,7 +298,8 @@ class GroupingGenerator(Generator):
     amount = 30
 
     def generate(self):
-        self.pool_map(GroupingGenerator.generate_groupings)
+        for i in range(1, self.amount):
+            GroupingGenerator.generate_groupings(i)
 
     @staticmethod
     def generate_groupings(i):
@@ -307,7 +313,8 @@ class InvestigationGenerator(Generator):
     amount = 3 * FacilityCycleGenerator.amount  # 60 Investigations per cycle
 
     def generate(self):
-        self.pool_map(InvestigationGenerator.generate_investigations)
+        for i in range(1, self.amount):
+            InvestigationGenerator.generate_investigations(i)
 
     @staticmethod
     def generate_investigations(i):
@@ -330,7 +337,8 @@ class InvestigationUserGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(InvestigationUserGenerator.generate_investigation_user)
+        for i in range(1, self.amount):
+            InvestigationUserGenerator.generate_investigation_user(i)
 
     @staticmethod
     def generate_investigation_user(i):
@@ -347,7 +355,8 @@ class InstrumentScientistGenerator(Generator):
     amount = InstrumentGenerator.amount
 
     def generate(self):
-        self.pool_map(InstrumentScientistGenerator.generate_instrument_scientist)
+        for i in range(1, self.amount):
+            InstrumentScientistGenerator.generate_instrument_scientist(i)
 
     @staticmethod
     def generate_instrument_scientist(i):
@@ -363,9 +372,8 @@ class InvestigationInstrumentGenerator(Generator):
     amount = InvestigationGenerator.amount  # Must equal number of investigations
 
     def generate(self):
-        self.pool_map(
-            InvestigationInstrumentGenerator.generate_investigation_instrument,
-        )
+        for i in range(1, self.amount):
+            InvestigationInstrumentGenerator.generate_investigation_instrument(i)
 
     @staticmethod
     def generate_investigation_instrument(i):
@@ -381,7 +389,8 @@ class SampleGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(SampleGenerator.generate_sample)
+        for i in range(1, self.amount):
+            SampleGenerator.generate_sample(i)
 
     @staticmethod
     def generate_sample(i):
@@ -397,7 +406,8 @@ class UserGroupGenerator(Generator):
     amount = UserGenerator.amount
 
     def generate(self):
-        self.pool_map(UserGroupGenerator.generate_user_groups)
+        for i in range(1, self.amount):
+            UserGroupGenerator.generate_user_groups(i)
 
     @staticmethod
     def generate_user_groups(i):
@@ -413,7 +423,8 @@ class StudyGenerator(Generator):
     amount = UserGenerator.amount
 
     def generate(self):
-        self.pool_map(StudyGenerator.generate_studies)
+        for i in range(1, self.amount):
+            StudyGenerator.generate_studies(i)
 
     @staticmethod
     def generate_studies(i):
@@ -430,7 +441,8 @@ class InvestigationGroupGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(InvestigationGroupGenerator.generate_investigation_group)
+        for i in range(1, self.amount):
+            InvestigationGroupGenerator.generate_investigation_group(i)
 
     @staticmethod
     def generate_investigation_group(i):
@@ -447,7 +459,8 @@ class KeywordGenerator(Generator):
     amount = 15000
 
     def generate(self):
-        self.pool_map(KeywordGenerator.generate_keyword)
+        for i in range(1, self.amount):
+            KeywordGenerator.generate_keyword(i)
 
     @staticmethod
     def generate_keyword(i):
@@ -463,7 +476,8 @@ class PublicationGenerator(Generator):
     amount = InvestigationGenerator.amount * 3
 
     def generate(self):
-        self.pool_map(PublicationGenerator.generate_publication)
+        for i in range(1, self.amount):
+            PublicationGenerator.generate_publication(i)
 
     @staticmethod
     def generate_publication(i):
@@ -482,7 +496,8 @@ class ParameterTypeGenerator(Generator):
     amount = 50
 
     def generate(self):
-        self.pool_map(ParameterTypeGenerator.generate_parameter_type)
+        for i in range(1, self.amount):
+            ParameterTypeGenerator.generate_parameter_type(i)
 
     @staticmethod
     def generate_parameter_type(i):
@@ -507,10 +522,12 @@ class InvestigationParameterGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(generate_investigation_parameter)
+        for i in range(1, self.amount):
+            generate_investigation_parameter(i)
 
 
 def generate_investigation_parameter(i):
+    # TODO - Why's this not in the class?
     investigation_parameter = models.INVESTIGATIONPARAMETER()
     apply_common_attributes(investigation_parameter, i)
     apply_common_parameter_attributes(investigation_parameter, i)
@@ -526,7 +543,8 @@ class ShiftGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(ShiftGenerator.generate_shift)
+        for i in range(1, self.amount):
+            ShiftGenerator.generate_shift(i)
 
     @staticmethod
     def generate_shift(i):
@@ -542,7 +560,8 @@ class StudyInvestigationGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(StudyInvestigationGenerator.generate_study_investigation)
+        for i in range(1, self.amount):
+            StudyInvestigationGenerator.generate_study_investigation(i)
 
     @staticmethod
     def generate_study_investigation(i):
@@ -558,7 +577,8 @@ class DatasetGenerator(Generator):
     amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
 
     def generate(self):
-        self.pool_map(DatasetGenerator.generate_dataset)
+        for i in range(1, self.amount):
+            DatasetGenerator.generate_dataset(i)
 
     @staticmethod
     def generate_dataset(i):
@@ -583,7 +603,8 @@ class DatasetParameterGenerator(Generator):
     amount = ParameterTypeGenerator.amount
 
     def generate(self):
-        self.pool_map(DatasetParameterGenerator.generate_dataset_parameter)
+        for i in range(1, self.amount):
+            DatasetParameterGenerator.generate_dataset_parameter(i)
 
     @staticmethod
     def generate_dataset_parameter(i):
@@ -600,7 +621,8 @@ class DatafileGenerator(Generator):
     amount = DatasetGenerator.amount * 55  # 55 files per Dataset
 
     def generate(self):
-        self.pool_map(DatafileGenerator.generate_datafile)
+        for i in range(1, self.amount):
+            DatafileGenerator.generate_datafile(i)
 
     @staticmethod
     def generate_datafile(i):
@@ -622,7 +644,8 @@ class PermissibleStringValueGenerator(Generator):
     amount = 50
 
     def generate(self):
-        self.pool_map(generate_permissible_string_value)
+        for i in range(1, self.amount):
+            generate_permissible_string_value(i)
 
 
 def generate_permissible_string_value(i):
@@ -638,9 +661,8 @@ class DataCollectionParameterGenerator(Generator):
     amount = DataCollectionGenerator.amount
 
     def generate(self):
-        self.pool_map(
-            DataCollectionParameterGenerator.generate_data_collection_parameter,
-        )
+        for i in range(1, self.amount):
+            DataCollectionParameterGenerator.generate_data_collection_parameter(i)
 
     @staticmethod
     def generate_data_collection_parameter(i):
@@ -659,7 +681,8 @@ class SampleParameterGenerator(Generator):
     amount = SampleGenerator.amount
 
     def generate(self):
-        self.pool_map(SampleParameterGenerator.generate_sample_parameter)
+        for i in range(1, self.amount):
+            SampleParameterGenerator.generate_sample_parameter(i)
 
     @staticmethod
     def generate_sample_parameter(i):
@@ -676,7 +699,8 @@ class DatafileParameterGenerator(Generator):
     amount = DatafileGenerator.amount
 
     def generate(self):
-        self.pool_map(DatafileParameterGenerator.generate_datafile_parameter)
+        for i in range(1, self.amount):
+            DatafileParameterGenerator.generate_datafile_parameter(i)
 
     @staticmethod
     def generate_datafile_parameter(i):
