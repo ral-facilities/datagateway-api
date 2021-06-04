@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 import argparse
 import datetime
-from multiprocessing import Pool, Process
-from random import choice, randrange, seed
+from multiprocessing import Process
 
 from faker import Faker
 from sqlalchemy import create_engine
@@ -33,8 +32,7 @@ args = parser.parse_args()
 SEED = args.seed
 YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
-faker.seed(SEED)
-seed(a=SEED)
+Faker.seed(SEED)
 
 
 engine = create_engine(
@@ -101,10 +99,10 @@ def apply_common_attributes(entity, iterator):
 
 def apply_common_parameter_attributes(entity, i):
     entity.dateTimeValue = get_start_date(i)
-    entity.error = randrange(42342)
-    entity.numericValue = randrange(352352)
-    entity.rangeBottom = randrange(1, 50)
-    entity.rangeTop = randrange(50, 101)
+    entity.error = faker.random_int(0, 42341)
+    entity.numericValue = faker.random_int(0, 352351)
+    entity.rangeBottom = faker.random_int(1, 50)
+    entity.rangeTop = faker.random_int(50, 101)
     entity.stringValue = faker.word() + str(i)
 
 
@@ -122,11 +120,6 @@ class Generator(ABC):
     @abstractmethod
     def generate(self):
         pass
-
-    def pool_map(self, function):
-        pool = Pool()
-        pool.map(function, range(1, self.amount))
-        pool.close()
 
 
 class FacilityGenerator(Generator):
@@ -150,7 +143,8 @@ class DataCollectionGenerator(Generator):
     amount = 1000
 
     def generate(self):
-        self.pool_map(DataCollectionGenerator.generate_data_collection)
+        for i in range(1, self.amount):
+            DataCollectionGenerator.generate_data_collection(i)
 
     @staticmethod
     def generate_data_collection(i):
@@ -164,13 +158,14 @@ class ApplicationGenerator(Generator):
     amount = 80
 
     def generate(self):
-        self.pool_map(ApplicationGenerator.generate_applications)
+        for i in range(1, self.amount):
+            ApplicationGenerator.generate_applications(i)
 
     @staticmethod
     def generate_applications(i):
         application = models.APPLICATION()
         apply_common_attributes(application, i)
-        application.version = randrange(1, 4)
+        application.version = faker.random_int(1, 4)
         post_entity(application)
 
 
@@ -179,7 +174,8 @@ class DatasetTypeGenerator(Generator):
     amount = 4
 
     def generate(self):
-        self.pool_map(DatasetTypeGenerator.generate_dataset_type)
+        for i in range(1, self.amount):
+            DatasetTypeGenerator.generate_dataset_type(i)
 
     @staticmethod
     def generate_dataset_type(i):
@@ -193,7 +189,8 @@ class FacilityCycleGenerator(Generator):
     amount = 4 * YEARS  # This gives 4 per year for 20 years
 
     def generate(self):
-        self.pool_map(FacilityCycleGenerator.generate_facility_cycle)
+        for i in range(1, self.amount):
+            FacilityCycleGenerator.generate_facility_cycle(i)
 
     @staticmethod
     def generate_facility_cycle(i):
@@ -213,13 +210,15 @@ class SampleTypeGenerator(Generator):
     amount = 80
 
     def generate(self):
-        self.pool_map(SampleTypeGenerator.generate_sample_type)
+
+        for i in range(1, self.amount):
+            SampleTypeGenerator.generate_sample_type(i)
 
     @staticmethod
     def generate_sample_type(i):
         sample_type = models.SAMPLETYPE()
         apply_common_attributes(sample_type, i)
-        sample_type.molecularFormula = randrange(43, 13323)
+        sample_type.molecularFormula = faker.random_int(43, 13323)
         sample_type.safetyInformation = faker.text()
         post_entity(sample_type)
 
@@ -229,7 +228,8 @@ class InstrumentGenerator(Generator):
     amount = 15
 
     def generate(self):
-        self.pool_map(InstrumentGenerator.generate_instruments)
+        for i in range(1, self.amount):
+            InstrumentGenerator.generate_instruments(i)
 
     @staticmethod
     def generate_instruments(i):
@@ -246,7 +246,8 @@ class UserGenerator(Generator):
     amount = 500
 
     def generate(self):
-        self.pool_map(UserGenerator.generate_users)
+        for i in range(1, self.amount):
+            UserGenerator.generate_users(i)
 
     @staticmethod
     def generate_users(i):
@@ -255,7 +256,7 @@ class UserGenerator(Generator):
         user.email = faker.ascii_email()
         user.name = faker.first_name() + f"{i}"
         user.fullName = faker.name()
-        user.orcidId = randrange(2332, 24242)
+        user.orcidId = faker.random_int(2332, 24242)
         post_entity(user)
 
 
@@ -264,13 +265,14 @@ class DatafileFormatGenerator(Generator):
     amount = 10
 
     def generate(self):
-        self.pool_map(DatafileFormatGenerator.generate_datafile_format)
+        for i in range(1, self.amount):
+            DatafileFormatGenerator.generate_datafile_format(i)
 
     @staticmethod
     def generate_datafile_format(i):
         datafile_format = models.DATAFILEFORMAT()
         apply_common_attributes(datafile_format, i)
-        datafile_format.version = randrange(1, 14)
+        datafile_format.version = faker.random_int(1, 14)
         post_entity(datafile_format)
 
 
@@ -279,7 +281,8 @@ class InvestigationTypeGenerator(Generator):
     amount = 4
 
     def generate(self):
-        self.pool_map(InvestigationTypeGenerator.generate_investigation_type)
+        for i in range(1, self.amount):
+            InvestigationTypeGenerator.generate_investigation_type(i)
 
     @staticmethod
     def generate_investigation_type(i):
@@ -293,7 +296,8 @@ class GroupingGenerator(Generator):
     amount = 30
 
     def generate(self):
-        self.pool_map(GroupingGenerator.generate_groupings)
+        for i in range(1, self.amount):
+            GroupingGenerator.generate_groupings(i)
 
     @staticmethod
     def generate_groupings(i):
@@ -307,7 +311,8 @@ class InvestigationGenerator(Generator):
     amount = 3 * FacilityCycleGenerator.amount  # 60 Investigations per cycle
 
     def generate(self):
-        self.pool_map(InvestigationGenerator.generate_investigations)
+        for i in range(1, self.amount):
+            InvestigationGenerator.generate_investigations(i)
 
     @staticmethod
     def generate_investigations(i):
@@ -320,8 +325,10 @@ class InvestigationGenerator(Generator):
         investigation.releaseDate = get_end_date(i)
         investigation.summary = faker.text()
         investigation.title = faker.text()
-        investigation.visitId = randrange(1, 100)
-        investigation.typeID = randrange(1, 4)
+        investigation.visitId = faker.random_int(1, 100)
+        investigation.typeID = faker.random_int(
+            1, InvestigationTypeGenerator.amount - 1,
+        )
         post_entity(investigation)
 
 
@@ -330,15 +337,16 @@ class InvestigationUserGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(InvestigationUserGenerator.generate_investigation_user)
+        for i in range(1, self.amount):
+            InvestigationUserGenerator.generate_investigation_user(i)
 
     @staticmethod
     def generate_investigation_user(i):
         investigation_user = models.INVESTIGATIONUSER()
         apply_common_attributes(investigation_user, i)
-        investigation_user.role = ["PI", "CI"][randrange(2)]
+        investigation_user.role = ["PI", "CI"][faker.random_int(0, 1)]
         investigation_user.investigationID = i
-        investigation_user.userID = randrange(1, UserGenerator.amount)
+        investigation_user.userID = faker.random_int(1, UserGenerator.amount - 1)
         post_entity(investigation_user)
 
 
@@ -347,14 +355,15 @@ class InstrumentScientistGenerator(Generator):
     amount = InstrumentGenerator.amount
 
     def generate(self):
-        self.pool_map(InstrumentScientistGenerator.generate_instrument_scientist)
+        for i in range(1, self.amount):
+            InstrumentScientistGenerator.generate_instrument_scientist(i)
 
     @staticmethod
     def generate_instrument_scientist(i):
         instrument_scientist = models.INSTRUMENTSCIENTIST()
         apply_common_attributes(instrument_scientist, i)
         instrument_scientist.instrumentID = i
-        instrument_scientist.userID = randrange(1, UserGenerator.amount)
+        instrument_scientist.userID = faker.random_int(1, UserGenerator.amount - 1)
         post_entity(instrument_scientist)
 
 
@@ -363,16 +372,17 @@ class InvestigationInstrumentGenerator(Generator):
     amount = InvestigationGenerator.amount  # Must equal number of investigations
 
     def generate(self):
-        self.pool_map(
-            InvestigationInstrumentGenerator.generate_investigation_instrument,
-        )
+        for i in range(1, self.amount):
+            InvestigationInstrumentGenerator.generate_investigation_instrument(i)
 
     @staticmethod
     def generate_investigation_instrument(i):
         investigation_instrument = models.INVESTIGATIONINSTRUMENT()
         apply_common_attributes(investigation_instrument, i)
         investigation_instrument.investigationID = i
-        investigation_instrument.instrumentID = randrange(1, 15)
+        investigation_instrument.instrumentID = faker.random_int(
+            1, InstrumentGenerator.amount - 1,
+        )
         post_entity(investigation_instrument)
 
 
@@ -381,14 +391,15 @@ class SampleGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(SampleGenerator.generate_sample)
+        for i in range(1, self.amount):
+            SampleGenerator.generate_sample(i)
 
     @staticmethod
     def generate_sample(i):
         sample = models.SAMPLE()
         apply_common_attributes(sample, i)
         sample.investigationID = i
-        sample.typeID = randrange(1, SampleTypeGenerator.amount)
+        sample.typeID = faker.random_int(1, SampleTypeGenerator.amount - 1)
         post_entity(sample)
 
 
@@ -397,13 +408,14 @@ class UserGroupGenerator(Generator):
     amount = UserGenerator.amount
 
     def generate(self):
-        self.pool_map(UserGroupGenerator.generate_user_groups)
+        for i in range(1, self.amount):
+            UserGroupGenerator.generate_user_groups(i)
 
     @staticmethod
     def generate_user_groups(i):
         user_group = models.USERGROUP()
         apply_common_attributes(user_group, i)
-        user_group.groupID = randrange(1, GroupingGenerator.amount)
+        user_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
         user_group.userID = i
         post_entity(user_group)
 
@@ -413,14 +425,15 @@ class StudyGenerator(Generator):
     amount = UserGenerator.amount
 
     def generate(self):
-        self.pool_map(StudyGenerator.generate_studies)
+        for i in range(1, self.amount):
+            StudyGenerator.generate_studies(i)
 
     @staticmethod
     def generate_studies(i):
         study = models.STUDY()
         apply_common_attributes(study, i)
         study.startDate = get_start_date(i)
-        study.status = randrange(2)
+        study.status = faker.random_int(0, 1)
         study.userID = i
         post_entity(study)
 
@@ -430,14 +443,15 @@ class InvestigationGroupGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(InvestigationGroupGenerator.generate_investigation_group)
+        for i in range(1, self.amount):
+            InvestigationGroupGenerator.generate_investigation_group(i)
 
     @staticmethod
     def generate_investigation_group(i):
         investigation_group = models.INVESTIGATIONGROUP()
         apply_common_attributes(investigation_group, i)
         investigation_group.role = faker.text() + str(i)
-        investigation_group.groupID = randrange(1, GroupingGenerator.amount)
+        investigation_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
         investigation_group.investigationID = i
         post_entity(investigation_group)
 
@@ -447,14 +461,15 @@ class KeywordGenerator(Generator):
     amount = 15000
 
     def generate(self):
-        self.pool_map(KeywordGenerator.generate_keyword)
+        for i in range(1, self.amount):
+            KeywordGenerator.generate_keyword(i)
 
     @staticmethod
     def generate_keyword(i):
         keyword = models.KEYWORD()
         apply_common_attributes(keyword, i)
         keyword.name = faker.word() + str(i)
-        keyword.investigationID = randrange(1, InvestigationGenerator.amount)
+        keyword.investigationID = faker.random_int(1, InvestigationGenerator.amount - 1)
         post_entity(keyword)
 
 
@@ -463,7 +478,8 @@ class PublicationGenerator(Generator):
     amount = InvestigationGenerator.amount * 3
 
     def generate(self):
-        self.pool_map(PublicationGenerator.generate_publication)
+        for i in range(1, self.amount):
+            PublicationGenerator.generate_publication(i)
 
     @staticmethod
     def generate_publication(i):
@@ -471,7 +487,7 @@ class PublicationGenerator(Generator):
         apply_common_attributes(publication, i)
         publication.fullReference = faker.text()
         publication.repository = faker.uri()
-        publication.repositoryId = randrange(1, 23232234)
+        publication.repositoryId = faker.random_int(1, 23232234)
         publication.url = faker.url()
         publication.investigationID = i % (InvestigationGenerator.amount - 1) + 1
         post_entity(publication)
@@ -482,23 +498,26 @@ class ParameterTypeGenerator(Generator):
     amount = 50
 
     def generate(self):
-        self.pool_map(ParameterTypeGenerator.generate_parameter_type)
+        for i in range(1, self.amount):
+            ParameterTypeGenerator.generate_parameter_type(i)
 
     @staticmethod
     def generate_parameter_type(i):
         parameter_type = models.PARAMETERTYPE()
         apply_common_attributes(parameter_type, i)
-        parameter_type.applicableToDataCollection = randrange(2)
-        parameter_type.applicableToDatafile = randrange(2)
-        parameter_type.applicableToDataset = randrange(2)
-        parameter_type.applicableToSample = randrange(2)
-        parameter_type.enforced = randrange(2)
-        parameter_type.maximumNumericValue = randrange(10, 100)
-        parameter_type.minimumNumericValue = randrange(10)
+        parameter_type.applicableToDataCollection = faker.random_int(0, 1)
+        parameter_type.applicableToDatafile = faker.random_int(0, 1)
+        parameter_type.applicableToDataset = faker.random_int(0, 1)
+        parameter_type.applicableToSample = faker.random_int(0, 1)
+        parameter_type.enforced = faker.random_int(0, 1)
+        parameter_type.maximumNumericValue = faker.random_int(10, 100)
+        parameter_type.minimumNumericValue = faker.random_int(0, 9)
         parameter_type.units = f"unit {i}"
         parameter_type.unitsFullName = faker.word()
-        parameter_type.valueType = choice(list(models.PARAMETERTYPE.ValueTypeEnum))
-        parameter_type.verified = randrange(2)
+        parameter_type.valueType = list(models.PARAMETERTYPE.ValueTypeEnum)[
+            faker.random_int(0, 2)
+        ]
+        parameter_type.verified = faker.random_int(0, 1)
         post_entity(parameter_type)
 
 
@@ -507,18 +526,19 @@ class InvestigationParameterGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(generate_investigation_parameter)
+        for i in range(1, self.amount):
+            InvestigationParameterGenerator.generate_investigation_parameter(i)
 
-
-def generate_investigation_parameter(i):
-    investigation_parameter = models.INVESTIGATIONPARAMETER()
-    apply_common_attributes(investigation_parameter, i)
-    apply_common_parameter_attributes(investigation_parameter, i)
-    investigation_parameter.investigationID = i
-    investigation_parameter.parameterTypeID = randrange(
-        1, ParameterTypeGenerator.amount,
-    )
-    post_entity(investigation_parameter)
+    @staticmethod
+    def generate_investigation_parameter(i):
+        investigation_parameter = models.INVESTIGATIONPARAMETER()
+        apply_common_attributes(investigation_parameter, i)
+        apply_common_parameter_attributes(investigation_parameter, i)
+        investigation_parameter.investigationID = i
+        investigation_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
+        post_entity(investigation_parameter)
 
 
 class ShiftGenerator(Generator):
@@ -526,7 +546,8 @@ class ShiftGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(ShiftGenerator.generate_shift)
+        for i in range(1, self.amount):
+            ShiftGenerator.generate_shift(i)
 
     @staticmethod
     def generate_shift(i):
@@ -542,14 +563,15 @@ class StudyInvestigationGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        self.pool_map(StudyInvestigationGenerator.generate_study_investigation)
+        for i in range(1, self.amount):
+            StudyInvestigationGenerator.generate_study_investigation(i)
 
     @staticmethod
     def generate_study_investigation(i):
         study_investigation = models.STUDYINVESTIGATION()
         apply_common_attributes(study_investigation, i)
         study_investigation.investigationID = i
-        study_investigation.studyID = randrange(1, StudyGenerator.amount)
+        study_investigation.studyID = faker.random_int(1, StudyGenerator.amount - 1)
         post_entity(study_investigation)
 
 
@@ -558,13 +580,14 @@ class DatasetGenerator(Generator):
     amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
 
     def generate(self):
-        self.pool_map(DatasetGenerator.generate_dataset)
+        for i in range(1, self.amount):
+            DatasetGenerator.generate_dataset(i)
 
     @staticmethod
     def generate_dataset(i):
         dataset = models.DATASET()
         apply_common_attributes(dataset, i)
-        dataset.complete = randrange(2)
+        dataset.complete = faker.random_int(0, 1)
         dataset.location = faker.file_path()
         investigation_id = i % InvestigationGenerator.amount
         dataset.investigationID = (
@@ -574,7 +597,7 @@ class DatasetGenerator(Generator):
         )
         sample_id = i % SampleGenerator.amount
         dataset.sampleID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
-        dataset.typeID = randrange(1, DatasetTypeGenerator.amount)
+        dataset.typeID = faker.random_int(1, DatasetTypeGenerator.amount - 1)
         post_entity(dataset)
 
 
@@ -583,14 +606,15 @@ class DatasetParameterGenerator(Generator):
     amount = ParameterTypeGenerator.amount
 
     def generate(self):
-        self.pool_map(DatasetParameterGenerator.generate_dataset_parameter)
+        for i in range(1, self.amount):
+            DatasetParameterGenerator.generate_dataset_parameter(i)
 
     @staticmethod
     def generate_dataset_parameter(i):
         dataset_param = models.DATASETPARAMETER()
         apply_common_attributes(dataset_param, i)
         apply_common_parameter_attributes(dataset_param, i)
-        dataset_param.datasetID = randrange(1, DatasetGenerator.amount)
+        dataset_param.datasetID = faker.random_int(1, DatasetGenerator.amount - 1)
         dataset_param.parameterTypeID = i
         post_entity(dataset_param)
 
@@ -600,7 +624,8 @@ class DatafileGenerator(Generator):
     amount = DatasetGenerator.amount * 55  # 55 files per Dataset
 
     def generate(self):
-        self.pool_map(DatafileGenerator.generate_datafile)
+        for i in range(1, self.amount):
+            DatafileGenerator.generate_datafile(i)
 
     @staticmethod
     def generate_datafile(i):
@@ -609,8 +634,10 @@ class DatafileGenerator(Generator):
         datafile.checksum = faker.md5()
         datafile.datafileCreateTime = datafile.createTime
         datafile.datafileModTime = datafile.modTime
-        datafile.fileSize = randrange(123, 213123121)
-        datafile.datafileFormatID = randrange(1, DatafileFormatGenerator.amount)
+        datafile.fileSize = faker.random_int(123, 213123121)
+        datafile.datafileFormatID = faker.random_int(
+            1, DatafileFormatGenerator.amount - 1,
+        )
         datafile.datasetID = i % (DatasetGenerator.amount - 1) + 1
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
@@ -622,7 +649,8 @@ class PermissibleStringValueGenerator(Generator):
     amount = 50
 
     def generate(self):
-        self.pool_map(generate_permissible_string_value)
+        for i in range(1, self.amount):
+            generate_permissible_string_value(i)
 
 
 def generate_permissible_string_value(i):
@@ -638,9 +666,8 @@ class DataCollectionParameterGenerator(Generator):
     amount = DataCollectionGenerator.amount
 
     def generate(self):
-        self.pool_map(
-            DataCollectionParameterGenerator.generate_data_collection_parameter,
-        )
+        for i in range(1, self.amount):
+            DataCollectionParameterGenerator.generate_data_collection_parameter(i)
 
     @staticmethod
     def generate_data_collection_parameter(i):
@@ -648,8 +675,8 @@ class DataCollectionParameterGenerator(Generator):
         apply_common_attributes(datacollection_parameter, i)
         apply_common_parameter_attributes(datacollection_parameter, i)
         datacollection_parameter.dataCollectionID = i
-        datacollection_parameter.parameterTypeID = randrange(
-            1, ParameterTypeGenerator.amount,
+        datacollection_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
         )
         post_entity(datacollection_parameter)
 
@@ -659,7 +686,8 @@ class SampleParameterGenerator(Generator):
     amount = SampleGenerator.amount
 
     def generate(self):
-        self.pool_map(SampleParameterGenerator.generate_sample_parameter)
+        for i in range(1, self.amount):
+            SampleParameterGenerator.generate_sample_parameter(i)
 
     @staticmethod
     def generate_sample_parameter(i):
@@ -667,7 +695,9 @@ class SampleParameterGenerator(Generator):
         apply_common_attributes(sample_parameter, i)
         apply_common_parameter_attributes(sample_parameter, i)
         sample_parameter.sampleID = i
-        sample_parameter.parameterTypeID = randrange(1, ParameterTypeGenerator.amount)
+        sample_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
         post_entity(sample_parameter)
 
 
@@ -676,7 +706,8 @@ class DatafileParameterGenerator(Generator):
     amount = DatafileGenerator.amount
 
     def generate(self):
-        self.pool_map(DatafileParameterGenerator.generate_datafile_parameter)
+        for i in range(1, self.amount):
+            DatafileParameterGenerator.generate_datafile_parameter(i)
 
     @staticmethod
     def generate_datafile_parameter(i):
@@ -684,7 +715,9 @@ class DatafileParameterGenerator(Generator):
         apply_common_attributes(datafile_param, i)
         apply_common_parameter_attributes(datafile_param, i)
         datafile_param.datafileID = i
-        datafile_param.parameterTypeID = randrange(1, ParameterTypeGenerator.amount)
+        datafile_param.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
         post_entity(datafile_param)
 
 
