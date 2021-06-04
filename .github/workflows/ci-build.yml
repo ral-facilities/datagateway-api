@@ -149,3 +149,85 @@ jobs:
 
     - name: Run Nox safety session
       run: nox -s safety
+
+  generator-script-testing:
+    runs-on: ubuntu-16.04
+    name: ICATDB Generator Script Consistency Test
+    steps:
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
+
+      # Setup Java & Python
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: change-payara-setup-script-url
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
+
+      # Prep for running the playbook
+      - name: Create hosts file
+        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      - name: Prepare vault pass
+        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+      - name: Move vault to directory it'll get detected by Ansible
+        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+      - name: Replace default payara user with Actions user
+        run: |
+          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
+
+      # Create local instance of ICAT
+      - name: Run ICAT Ansible Playbook
+        run: |
+          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
+
+      - name: Create config.json
+        run: cp datagateway_api/config.json.example datagateway_api/config.json
+      - name: Install Poetry
+        run: pip install poetry==1.1.4
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Add dummy data to icatdb
+        run: poetry run python -m util.icat_db_generator
+      - name: Get SQL dump of dummy data
+        run: mysqldump -ppw icatdb > ~/generator_script_dump_1.sql
+
+      # Drop and re-create icatdb to remove generated data
+      - name: Drop icatdb
+        run: mysql -ppw -e 'DROP DATABASE icatdb;'
+      - name: Create icatdb
+        run: mysql -ppw -e 'CREATE DATABASE icatdb;'
+      # Regenerate table structure of icatdb
+      - name: Reinstall ICAT Server
+        run: cd /home/runner/install/icat.server; ./setup -vv install
+
+      - name: Add (new) dummy data to icatdb
+        run: |
+          cd /home/runner/work/datagateway-api/datagateway-api; poetry run python -m util.icat_db_generator
+      - name: Get SQL dump of new dummy data
+        run: mysqldump -ppw icatdb > ~/generator_script_dump_2.sql
+
+      - name: Diff SQL dumps
+        run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
