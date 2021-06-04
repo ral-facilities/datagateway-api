@@ -32,7 +32,7 @@ args = parser.parse_args()
 SEED = args.seed
 YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
-faker.seed(SEED)
+Faker.seed(SEED)
 
 
 engine = create_engine(
