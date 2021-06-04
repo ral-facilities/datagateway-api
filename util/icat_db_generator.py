@@ -527,19 +527,18 @@ class InvestigationParameterGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            generate_investigation_parameter(i)
+            InvestigationParameterGenerator.generate_investigation_parameter(i)
 
-
-def generate_investigation_parameter(i):
-    # TODO - Why's this not in the class?
-    investigation_parameter = models.INVESTIGATIONPARAMETER()
-    apply_common_attributes(investigation_parameter, i)
-    apply_common_parameter_attributes(investigation_parameter, i)
-    investigation_parameter.investigationID = i
-    investigation_parameter.parameterTypeID = faker.random_int(
-        1, ParameterTypeGenerator.amount - 1,
-    )
-    post_entity(investigation_parameter)
+    @staticmethod
+    def generate_investigation_parameter(i):
+        investigation_parameter = models.INVESTIGATIONPARAMETER()
+        apply_common_attributes(investigation_parameter, i)
+        apply_common_parameter_attributes(investigation_parameter, i)
+        investigation_parameter.investigationID = i
+        investigation_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
+        post_entity(investigation_parameter)
 
 
 class ShiftGenerator(Generator):
