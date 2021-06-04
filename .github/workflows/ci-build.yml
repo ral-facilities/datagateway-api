@@ -212,13 +212,13 @@ jobs:
       - name: Add dummy data to icatdb
         run: poetry run python -m util.icat_db_generator
       - name: Get SQL dump of dummy data
-        run: mysqldump -ppw icatdb > ~/generator_script_dump_1.sql
+        run: mysqldump -picatdbuserpw -uicatdbuser icatdb > ~/generator_script_dump_1.sql
 
       # Drop and re-create icatdb to remove generated data
       - name: Drop icatdb
-        run: mysql -ppw -e 'DROP DATABASE icatdb;'
+        run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
       - name: Create icatdb
-        run: mysql -ppw -e 'CREATE DATABASE icatdb;'
+        run: mysql -picatdbuserpw -uicatdbuser -e 'CREATE DATABASE icatdb;'
       # Regenerate table structure of icatdb
       - name: Reinstall ICAT Server
         run: cd /home/runner/install/icat.server; ./setup -vv install
@@ -227,7 +227,7 @@ jobs:
         run: |
           cd /home/runner/work/datagateway-api/datagateway-api; poetry run python -m util.icat_db_generator
       - name: Get SQL dump of new dummy data
-        run: mysqldump -ppw icatdb > ~/generator_script_dump_2.sql
+        run: mysqldump -picatdbuserpw -uicatdbuser icatdb > ~/generator_script_dump_2.sql
 
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
