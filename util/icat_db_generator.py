@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import argparse
 import datetime
 from multiprocessing import Process
-from random import choice, randrange, seed
 
 from faker import Faker
 from sqlalchemy import create_engine
@@ -34,7 +33,6 @@ SEED = args.seed
 YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
 faker.seed(SEED)
-seed(a=SEED)
 
 
 engine = create_engine(
@@ -328,7 +326,9 @@ class InvestigationGenerator(Generator):
         investigation.summary = faker.text()
         investigation.title = faker.text()
         investigation.visitId = faker.random_int(1, 100)
-        investigation.typeID = randrange(1, 4)
+        investigation.typeID = faker.random_int(
+            1, InvestigationTypeGenerator.amount - 1,
+        )
         post_entity(investigation)
 
 
@@ -346,7 +346,7 @@ class InvestigationUserGenerator(Generator):
         apply_common_attributes(investigation_user, i)
         investigation_user.role = ["PI", "CI"][faker.random_int(0, 1)]
         investigation_user.investigationID = i
-        investigation_user.userID = randrange(1, UserGenerator.amount)
+        investigation_user.userID = faker.random_int(1, UserGenerator.amount - 1)
         post_entity(investigation_user)
 
 
@@ -363,7 +363,7 @@ class InstrumentScientistGenerator(Generator):
         instrument_scientist = models.INSTRUMENTSCIENTIST()
         apply_common_attributes(instrument_scientist, i)
         instrument_scientist.instrumentID = i
-        instrument_scientist.userID = randrange(1, UserGenerator.amount)
+        instrument_scientist.userID = faker.random_int(1, UserGenerator.amount - 1)
         post_entity(instrument_scientist)
 
 
@@ -380,7 +380,9 @@ class InvestigationInstrumentGenerator(Generator):
         investigation_instrument = models.INVESTIGATIONINSTRUMENT()
         apply_common_attributes(investigation_instrument, i)
         investigation_instrument.investigationID = i
-        investigation_instrument.instrumentID = randrange(1, 15)
+        investigation_instrument.instrumentID = faker.random_int(
+            1, InstrumentGenerator.amount - 1,
+        )
         post_entity(investigation_instrument)
 
 
@@ -397,7 +399,7 @@ class SampleGenerator(Generator):
         sample = models.SAMPLE()
         apply_common_attributes(sample, i)
         sample.investigationID = i
-        sample.typeID = randrange(1, SampleTypeGenerator.amount)
+        sample.typeID = faker.random_int(1, SampleTypeGenerator.amount - 1)
         post_entity(sample)
 
 
@@ -413,7 +415,7 @@ class UserGroupGenerator(Generator):
     def generate_user_groups(i):
         user_group = models.USERGROUP()
         apply_common_attributes(user_group, i)
-        user_group.groupID = randrange(1, GroupingGenerator.amount)
+        user_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
         user_group.userID = i
         post_entity(user_group)
 
@@ -449,7 +451,7 @@ class InvestigationGroupGenerator(Generator):
         investigation_group = models.INVESTIGATIONGROUP()
         apply_common_attributes(investigation_group, i)
         investigation_group.role = faker.text() + str(i)
-        investigation_group.groupID = randrange(1, GroupingGenerator.amount)
+        investigation_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
         investigation_group.investigationID = i
         post_entity(investigation_group)
 
@@ -467,7 +469,7 @@ class KeywordGenerator(Generator):
         keyword = models.KEYWORD()
         apply_common_attributes(keyword, i)
         keyword.name = faker.word() + str(i)
-        keyword.investigationID = randrange(1, InvestigationGenerator.amount)
+        keyword.investigationID = faker.random_int(1, InvestigationGenerator.amount - 1)
         post_entity(keyword)
 
 
@@ -512,7 +514,9 @@ class ParameterTypeGenerator(Generator):
         parameter_type.minimumNumericValue = faker.random_int(0, 9)
         parameter_type.units = f"unit {i}"
         parameter_type.unitsFullName = faker.word()
-        parameter_type.valueType = choice(list(models.PARAMETERTYPE.ValueTypeEnum))
+        parameter_type.valueType = list(models.PARAMETERTYPE.ValueTypeEnum)[
+            faker.random_int(0, 2)
+        ]
         parameter_type.verified = faker.random_int(0, 1)
         post_entity(parameter_type)
 
@@ -532,8 +536,8 @@ def generate_investigation_parameter(i):
     apply_common_attributes(investigation_parameter, i)
     apply_common_parameter_attributes(investigation_parameter, i)
     investigation_parameter.investigationID = i
-    investigation_parameter.parameterTypeID = randrange(
-        1, ParameterTypeGenerator.amount,
+    investigation_parameter.parameterTypeID = faker.random_int(
+        1, ParameterTypeGenerator.amount - 1,
     )
     post_entity(investigation_parameter)
 
@@ -568,7 +572,7 @@ class StudyInvestigationGenerator(Generator):
         study_investigation = models.STUDYINVESTIGATION()
         apply_common_attributes(study_investigation, i)
         study_investigation.investigationID = i
-        study_investigation.studyID = randrange(1, StudyGenerator.amount)
+        study_investigation.studyID = faker.random_int(1, StudyGenerator.amount - 1)
         post_entity(study_investigation)
 
 
@@ -594,7 +598,7 @@ class DatasetGenerator(Generator):
         )
         sample_id = i % SampleGenerator.amount
         dataset.sampleID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
-        dataset.typeID = randrange(1, DatasetTypeGenerator.amount)
+        dataset.typeID = faker.random_int(1, DatasetTypeGenerator.amount - 1)
         post_entity(dataset)
 
 
@@ -611,7 +615,7 @@ class DatasetParameterGenerator(Generator):
         dataset_param = models.DATASETPARAMETER()
         apply_common_attributes(dataset_param, i)
         apply_common_parameter_attributes(dataset_param, i)
-        dataset_param.datasetID = randrange(1, DatasetGenerator.amount)
+        dataset_param.datasetID = faker.random_int(1, DatasetGenerator.amount - 1)
         dataset_param.parameterTypeID = i
         post_entity(dataset_param)
 
@@ -632,7 +636,9 @@ class DatafileGenerator(Generator):
         datafile.datafileCreateTime = datafile.createTime
         datafile.datafileModTime = datafile.modTime
         datafile.fileSize = faker.random_int(123, 213123121)
-        datafile.datafileFormatID = randrange(1, DatafileFormatGenerator.amount)
+        datafile.datafileFormatID = faker.random_int(
+            1, DatafileFormatGenerator.amount - 1,
+        )
         datafile.datasetID = i % (DatasetGenerator.amount - 1) + 1
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
@@ -670,8 +676,8 @@ class DataCollectionParameterGenerator(Generator):
         apply_common_attributes(datacollection_parameter, i)
         apply_common_parameter_attributes(datacollection_parameter, i)
         datacollection_parameter.dataCollectionID = i
-        datacollection_parameter.parameterTypeID = randrange(
-            1, ParameterTypeGenerator.amount,
+        datacollection_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
         )
         post_entity(datacollection_parameter)
 
@@ -690,7 +696,9 @@ class SampleParameterGenerator(Generator):
         apply_common_attributes(sample_parameter, i)
         apply_common_parameter_attributes(sample_parameter, i)
         sample_parameter.sampleID = i
-        sample_parameter.parameterTypeID = randrange(1, ParameterTypeGenerator.amount)
+        sample_parameter.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
         post_entity(sample_parameter)
 
 
@@ -708,7 +716,9 @@ class DatafileParameterGenerator(Generator):
         apply_common_attributes(datafile_param, i)
         apply_common_parameter_attributes(datafile_param, i)
         datafile_param.datafileID = i
-        datafile_param.parameterTypeID = randrange(1, ParameterTypeGenerator.amount)
+        datafile_param.parameterTypeID = faker.random_int(
+            1, ParameterTypeGenerator.amount - 1,
+        )
         post_entity(datafile_param)
 
 
