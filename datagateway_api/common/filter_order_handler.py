@@ -82,6 +82,7 @@ class FilterOrderHandler(object):
             for icat_filter in self.filters
         ):
             PythonICATOrderFilter.result_order = []
+            PythonICATOrderFilter.join_specs = {}
 
     def manage_icat_filters(self, filters, query):
         """
