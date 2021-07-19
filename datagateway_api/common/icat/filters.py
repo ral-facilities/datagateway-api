@@ -164,8 +164,7 @@ class PythonICATOrderFilter(OrderFilter):
             log.info("Adding order filter (for %s)", self.field)
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
-            # Typically either invalid attribute(s) or attribute(s) contains 1-many
-            # relationship
+            # Typically invalid attribute(s)
             raise FilterError(e)
 
         split_fields = self.field.split(".")
