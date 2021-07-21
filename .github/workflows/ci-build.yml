@@ -81,7 +81,7 @@ jobs:
 
     - name: Add dummy data to icatdb
       run: |
-        poetry run python -m util.icat_db_generator -s 4 -y 3
+        poetry run python -m util.icat_db_generator
 
     # Run Nox tests session, saves and uploads a coverage report to codecov
     - name: Run Nox tests session
