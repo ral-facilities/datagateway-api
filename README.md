@@ -764,11 +764,13 @@ Within the repository, there are some useful files which can help with using the
 ## Database Generator
 There is a tool to generate mock data into ICAT's database. It is located in
 `util/icat_db_generator.py`. By default it will generate 20 years worth of data (approx
-70,000 entities). The script makes use of `random` and `Faker` and is seeded with a seed
-of 1. The seed and number of years of data generated can be changed by using the arg
-flags `-s` or `--seed` for the seed, and `-y` or `--years` for the number of years. For
-example: `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and
-generate 10 years of data.
+70,000 entities). The default arguments will match the data on SciGateway Preprod and
+therefore this is usually a good starting point. The script makes use of `random` and
+`Faker` and is seeded with a seed of 1. The seed and number of years of data generated
+can be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or
+`--years` for the number of years. For example:
+`python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10
+years of data.
 
 This uses code from the API's Database Backend, so a suitable `db_url` should be
 configured in `config.json`.
