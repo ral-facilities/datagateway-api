@@ -148,6 +148,9 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
 class PythonICATOrderFilter(OrderFilter):
     # Used to append the order tuples across all filters in a single request
     result_order = []
+    # When 1-many relationships occur, entities should be joined using a LEFT JOIN to
+    # prevent disappearing results when sorting on DataGateway's table view
+    join_specs = {}
 
     def __init__(self, field, direction):
         # Python ICAT doesn't automatically uppercase the direction, errors otherwise
@@ -161,9 +164,35 @@ class PythonICATOrderFilter(OrderFilter):
             log.info("Adding order filter (for %s)", self.field)
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
-            # Typically either invalid attribute(s) or attribute(s) contains 1-many
-            # relationship
+            # Typically invalid attribute(s)
             raise FilterError(e)
+
+        split_fields = self.field.split(".")
+        for field_pointer in range(len(split_fields)):
+            # Looking for plural entities but not field names
+            # This is to avoid adding JOINs to field names such as job's argument field
+            if (
+                split_fields[field_pointer].endswith("s")
+                and split_fields[field_pointer] != split_fields[-1]
+            ):
+                # Length minus 1 is used to omit field names, same reason as above
+                for join_field_pointer in range(field_pointer, len(split_fields) - 1):
+                    join_field_list = split_fields[
+                        field_pointer : join_field_pointer + 1
+                    ]
+                    join_field_str = ".".join(join_field_list)
+
+                    PythonICATOrderFilter.join_specs[join_field_str] = "LEFT JOIN"
+
+                log.debug(
+                    "Setting query join specs: %s", PythonICATOrderFilter.join_specs,
+                )
+                try:
+                    query.setJoinSpecs(PythonICATOrderFilter.join_specs)
+                except (TypeError, ValueError) as e:
+                    raise FilterError(e)
+
+                break
 
 
 class PythonICATSkipFilter(SkipFilter):
