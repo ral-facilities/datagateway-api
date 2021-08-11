@@ -259,5 +259,11 @@ jobs:
         run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_master.sql
 
       # Tests that the generator script produces the same data as is produced with master's version
+
+      # NOTE: If a delibrate change is made to the script that will change the data generated,
+      # the diff (and therefore this job) will fail. If this is the case, don't be alarmed.
+      # But, if you didn't mean to change the output of the script, there is likely a
+      # problem with the changes made that will make the generator script's data
+      # different to SciGateway preprod
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_master.sql ~/generator_script_dump_1.sql
