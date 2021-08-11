@@ -152,6 +152,7 @@ jobs:
 
   generator-script-testing:
     runs-on: ubuntu-16.04
+    continue-on-error: true
     name: icatdb Generator Script Consistency Test
     steps:
       - name: Add apt repo
@@ -262,6 +263,8 @@ jobs:
 
       # NOTE: If a delibrate change is made to the script that will change the data generated,
       # the diff (and therefore this job) will fail. If this is the case, don't be alarmed.
+      # The `continue-on-error` keyword has been added to this job so the workflow should
+      # pass when the PR is merged in, even if this job fails.
       # But, if you didn't mean to change the output of the script, there is likely a
       # problem with the changes made that will make the generator script's data
       # different to SciGateway preprod
