@@ -253,10 +253,8 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Is API on master?
-        run: pwd; git status
       - name: Add dummy data to icatdb
-        run: pwd; poetry run python -m util.icat_db_generator
+        run: poetry run python -m util.icat_db_generator
       - name: Get SQL dump of dummy data from master's generator script
         run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_master.sql
 
