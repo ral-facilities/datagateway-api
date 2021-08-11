@@ -775,6 +775,15 @@ years of data.
 This uses code from the API's Database Backend, so a suitable `db_url` should be
 configured in `config.json`.
 
+When used on a machine that doesn't use UTC timezone, you may find there are a mix of timezones when querying the API. This issue was found on SciGateway Preprod when using BST
+and there would be a mix of +00:00 and +01:00 timezones
+([more details with screenshots](https://github.com/ral-facilities/datagateway/issues/782)).
+The current suggested workaround is to change your machine to use UTC. In the case of
+SciGateway preprod, the JVM timezone was changed to UTC (in
+`/home/glassfish/[PAYARA_VERSION]/glassfish/domains/domain1/config/domain.xml`). This
+was done to ensure the VM's system timezone wasn't changed back to BST by the automated
+systems that maintain it.
+
 
 ## Postman Collection
 With a handful of endpoints associated with each entity, there are hundreds of endpoints
