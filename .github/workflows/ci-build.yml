@@ -152,10 +152,14 @@ jobs:
 
   generator-script-testing:
     runs-on: ubuntu-16.04
+    continue-on-error: true
     name: icatdb Generator Script Consistency Test
     steps:
       - name: Add apt repo
         run: sudo add-apt-repository universe
+
+      - name: Step which won't work
+        run: ls unknown_dir/
 
       # Setup Java & Python
       - name: Setup Java
