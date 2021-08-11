@@ -248,6 +248,11 @@ jobs:
         with:
           ref: master
 
+      - name: Create config.json
+        run: cp datagateway_api/config.json.example datagateway_api/config.json
+      - name: Install dependencies
+        run: poetry install
+
       - name: Is API on master?
         run: pwd; git status
       - name: Add dummy data to icatdb
