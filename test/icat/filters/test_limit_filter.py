@@ -1,8 +1,11 @@
+from unittest.mock import patch
+
 import pytest
 
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.common.icat.filters import (
+    icat_set_limit,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
 )
@@ -54,3 +57,14 @@ class TestICATLimitFilter:
         filter_handler.apply_filters(icat_query)
 
         assert icat_query.limit == (skip_value, limit_value)
+
+    def test_invalid_icat_set_limit(self, icat_query):
+        """
+        The validity of this function is tested when applying a limit filter, an explict
+        invalid test case is required to cover when invalid arguments are given
+        """
+        with patch(
+            "icat.query.Query.setLimit", side_effect=TypeError("Mocked Exception"),
+        ):
+            with pytest.raises(FilterError):
+                icat_set_limit(icat_query, 50, 50)
