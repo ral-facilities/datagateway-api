@@ -42,7 +42,6 @@ class DatabaseBackend(Backend):
 
         try:
             inspector = inspect(db.engine)
-            print(type(inspector))
             tables = inspector.get_table_names()
             log.debug("Tables on ping: %s", tables)
         except SQLAlchemyError as e:
