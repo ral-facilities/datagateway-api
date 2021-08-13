@@ -43,6 +43,7 @@ class TestBackends:
         facilitycycle_id = "facilitycycle_id"
         id_ = "id_"
 
+        assert d.ping() is None
         assert d.login(credentials) is None
         assert d.get_session_details(session_id) is None
         assert d.refresh(session_id) is None
