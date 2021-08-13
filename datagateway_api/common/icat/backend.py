@@ -34,9 +34,6 @@ class PythonICATBackend(Backend):
     Class that contains functions to access and modify data in an ICAT database directly
     """
 
-    def __init__(self):
-        pass
-
     def login(self, credentials, **kwargs):
         log.info("Logging in to get session ID")
         client_pool = kwargs.get("client_pool")
