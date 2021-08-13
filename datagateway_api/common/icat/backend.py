@@ -1,9 +1,10 @@
 import logging
 
-from icat.exception import ICATSessionError
+from icat.exception import ICATError, ICATSessionError
 
 from datagateway_api.common.backend import Backend
-from datagateway_api.common.exceptions import AuthenticationError
+from datagateway_api.common.constants import Constants
+from datagateway_api.common.exceptions import AuthenticationError, PythonICATError
 from datagateway_api.common.helpers import queries_records
 from datagateway_api.common.icat.helpers import (
     create_entities,
@@ -34,8 +35,19 @@ class PythonICATBackend(Backend):
     Class that contains functions to access and modify data in an ICAT database directly
     """
 
-    def __init__(self):
-        pass
+    def ping(self, **kwargs):
+        log.info("Pinging ICAT to ensure API is alive and well")
+
+        client_pool = kwargs.get("client_pool")
+        client = get_cached_client(None, client_pool)
+
+        try:
+            entity_names = client.getEntityNames()
+            log.debug("Entity names on ping: %s", entity_names)
+        except ICATError as e:
+            raise PythonICATError(e)
+
+        return Constants.PING_OK_RESPONSE
 
     def login(self, credentials, **kwargs):
         log.info("Logging in to get session ID")

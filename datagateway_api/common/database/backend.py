@@ -2,9 +2,14 @@ import datetime
 import logging
 import uuid
 
+from sqlalchemy import inspect
+from sqlalchemy.exc import SQLAlchemyError
+
 from datagateway_api.common.backend import Backend
+from datagateway_api.common.constants import Constants
 from datagateway_api.common.database.helpers import (
     create_rows_from_json,
+    db,
     delete_row_by_id,
     get_facility_cycles_for_instrument,
     get_facility_cycles_for_instrument_count,
@@ -20,7 +25,7 @@ from datagateway_api.common.database.helpers import (
     update_row_from_id,
 )
 from datagateway_api.common.database.models import SESSION
-from datagateway_api.common.exceptions import AuthenticationError
+from datagateway_api.common.exceptions import AuthenticationError, DatabaseError
 from datagateway_api.common.helpers import get_entity_object_from_name, queries_records
 
 
@@ -31,6 +36,18 @@ class DatabaseBackend(Backend):
     """
     Class that contains functions to access and modify data in an ICAT database directly
     """
+
+    def ping(self, **kwargs):
+        log.info("Pinging DB connection to ensure API is alive and well")
+
+        try:
+            inspector = inspect(db.engine)
+            tables = inspector.get_table_names()
+            log.debug("Tables on ping: %s", tables)
+        except SQLAlchemyError as e:
+            raise DatabaseError(e)
+
+        return Constants.PING_OK_RESPONSE
 
     def login(self, credentials, **kwargs):
         if credentials["username"] == "user" and credentials["password"] == "password":

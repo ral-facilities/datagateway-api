@@ -18,6 +18,7 @@ from datagateway_api.src.resources.entities.entity_endpoint import (
     get_id_endpoint,
 )
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
+from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoint
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
@@ -160,6 +161,11 @@ def create_api_endpoints(flask_app, api, spec):
         "/count",
     )
     spec.path(resource=count_instrument_investigation_resource, api=api)
+
+    # Ping endpoint
+    ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
+    api.add_resource(ping_resource, "/ping")
+    spec.path(resource=ping_resource, api=api)
 
 
 def openapi_config(spec):

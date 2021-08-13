@@ -7,6 +7,15 @@ class Backend(ABC):
     """
 
     @abstractmethod
+    def ping(self):
+        """
+        Endpoint requiring no authentication to check the API is alive and does a basic
+        check to ensure the connection method to ICAT is working
+        :returns: String to tell user the API is OK
+        """
+        pass
+
+    @abstractmethod
     def login(self, credentials):
         """
         Attempt to log a user in using the provided credentials

@@ -10996,5 +10996,22 @@ paths:
       summary: Count investigations for a given Facility Cycle & Instrument
       tags:
       - Investigations
+  /ping:
+    get:
+      description: Pings the API's connection method to check responsiveness
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                description: OK message
+                example: DataGateway API OK
+                type: string
+          description: Success - the API is responsive on the backend configured
+        '500':
+          description: Pinging the API's connection method has gone wrong
+      summary: Ping API connection method
+      tags:
+      - Ping
 security:
 - session_id: []
