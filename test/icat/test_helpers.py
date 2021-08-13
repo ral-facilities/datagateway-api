@@ -1,7 +1,13 @@
+from unittest.mock import patch
+
+from icat.exception import ICATInternalError
 import pytest
 
-from datagateway_api.common.exceptions import BadRequestError
-from datagateway_api.common.icat.helpers import get_icat_entity_name_as_camel_case
+from datagateway_api.common.exceptions import BadRequestError, PythonICATError
+from datagateway_api.common.icat.helpers import (
+    get_icat_entity_name_as_camel_case,
+    push_data_updates_to_icat,
+)
 
 
 class TestICATHelpers:
@@ -32,3 +38,12 @@ class TestICATHelpers:
     def test_invalid_get_icat_entity_name_as_camel_case(self, icat_client):
         with pytest.raises(BadRequestError):
             get_icat_entity_name_as_camel_case(icat_client, "UnknownEntityName")
+
+    def test_invalid_update_pushes(self, icat_client):
+        with patch(
+            "icat.entity.Entity.update",
+            side_effect=ICATInternalError("Mocked Exception"),
+        ):
+            inv_entity = icat_client.new("investigation", name="Investigation A")
+            with pytest.raises(PythonICATError):
+                push_data_updates_to_icat(inv_entity)
