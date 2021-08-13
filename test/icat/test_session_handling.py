@@ -1,12 +1,16 @@
 from datetime import datetime
+from unittest.mock import patch
 
 from dateutil.tz import tzlocal
 from icat.client import Client
 import pytest
 
+from datagateway_api.common.backends import create_backend
 from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.common.icat.filters import PythonICATWhereFilter
+from datagateway_api.common.icat.icat_client_pool import create_client_pool
 
 
 class TestSessionHandling:
@@ -140,6 +144,13 @@ class TestSessionHandling:
         login_response = flask_test_app_icat.post("/sessions", json=request_body)
 
         assert login_response.status_code == expected_response_code
+
+    def test_expired_session(self):
+        test_backend = create_backend("python_icat")
+        client_pool = create_client_pool()
+        with patch("icat.client.Client.getRemainingMinutes", return_value=-1):
+            with pytest.raises(AuthenticationError):
+                test_backend.get_session_details("session id", client_pool=client_pool)
 
     def test_valid_logout(self, flask_test_app_icat):
         client = Client(
