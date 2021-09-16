@@ -7,7 +7,7 @@ on:
       - master
 jobs:
   tests:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.0
     strategy:
       fail-fast: false
       matrix:
@@ -91,7 +91,7 @@ jobs:
       uses: codecov/codecov-action@v1
 
   linting:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     name: Linting
     steps:
     - name: Setup Python
@@ -111,7 +111,7 @@ jobs:
       run: nox -s lint
 
   formatting:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     name: Code Formatting
     steps:
     - name: Setup Python
@@ -131,7 +131,7 @@ jobs:
       run: nox -s black
 
   safety:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     name: Dependency Safety
     steps:
     - name: Setup Python
@@ -151,7 +151,7 @@ jobs:
       run: nox -s safety
 
   generator-script-testing:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-20.04
     continue-on-error: true
     name: icatdb Generator Script Consistency Test
     steps:
