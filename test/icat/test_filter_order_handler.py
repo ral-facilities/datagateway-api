@@ -68,4 +68,7 @@ class TestFilterOrderHandler:
         test_handler.add_filters([where_filter, limit_filter])
         test_handler.apply_filters(icat_query)
 
-        assert icat_query.conditions == {"id": "= '2'"} and icat_query.limit == (0, 10)
+        assert icat_query.conditions == {"id": ["%s = '2'"]} and icat_query.limit == (
+            0,
+            10,
+        )
