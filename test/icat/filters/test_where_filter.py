@@ -12,7 +12,11 @@ class TestICATWhereFilter:
             pytest.param("eq", 5, ["%s = '5'"], id="equal"),
             pytest.param("ne", 5, ["%s != 5"], id="not equal"),
             pytest.param("like", 5, ["%s like '%%5%%'"], id="like"),
+            pytest.param("ilike", 5, ["UPPER(%s) like UPPER('%%5%%')"], id="ilike"),
             pytest.param("nlike", 5, ["%s not like '%%5%%'"], id="not like"),
+            pytest.param(
+                "nilike", 5, ["UPPER(%s) not like UPPER('%%5%%')"], id="not ilike",
+            ),
             pytest.param("lt", 5, ["%s < '5'"], id="less than"),
             pytest.param("lte", 5, ["%s <= '5'"], id="less than or equal"),
             pytest.param("gt", 5, ["%s > '5'"], id="greater than"),
