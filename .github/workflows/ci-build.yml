@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: icatproject-contrib/icat-ansible
-        ref: ubuntu-20-work
+        ref: master
         path: icat-ansible
     - name: Install Ansible
       run: pip install -r icat-ansible/requirements.txt
@@ -75,7 +75,7 @@ jobs:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
-      run: pip install poetry==1.1.4
+      run: pip install poetry==1.1.9
     - name: Install dependencies
       run: poetry install
 
@@ -85,7 +85,7 @@ jobs:
 
     # Run Nox tests session, saves and uploads a coverage report to codecov
     - name: Run Nox tests session
-      run: nox -s tests -- --cov=datagateway_api --cov-report=xml
+      run: nox -p ${{ matrix.python-version }} -s tests -- --cov=datagateway_api --cov-report=xml
     - name: Upload code coverage report
       if: matrix.python-version == '3.6'
       uses: codecov/codecov-action@v1
@@ -105,7 +105,7 @@ jobs:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
-      run: pip install poetry==1.1.4
+      run: pip install poetry==1.1.9
 
     - name: Run Nox lint session
       run: nox -s lint
@@ -125,7 +125,7 @@ jobs:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
-      run: pip install poetry==1.1.4
+      run: pip install poetry==1.1.9
 
     - name: Run Nox black session
       run: nox -s black
@@ -145,7 +145,7 @@ jobs:
     - name: Install Nox
       run: pip install nox==2020.8.22
     - name: Install Poetry
-      run: pip install poetry==1.1.4
+      run: pip install poetry==1.1.9
 
     - name: Run Nox safety session
       run: nox -s safety
@@ -175,7 +175,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: ubuntu-20-work
+          ref: master
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -206,7 +206,7 @@ jobs:
       - name: Create config.json
         run: cp datagateway_api/config.json.example datagateway_api/config.json
       - name: Install Poetry
-        run: pip install poetry==1.1.4
+        run: pip install poetry==1.1.9
       - name: Install dependencies
         run: poetry install
 
