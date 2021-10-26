@@ -1,26 +1,16 @@
 {
-  "datagateway_api": {
-    "extension": "/datagateway-api",
-    "backend": "python_icat",
-    "client_cache_size": 10,
-    "client_pool_init_size": 3,
-    "client_pool_max_size": 20,
-    "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
-    "icat_url": "https://icatisis.esc.rl.ac.uk:8181",
-    "icat_check_cert": false
-  },
-  "search_api": {
-    "extension": "/search-api",
-    "icat_url": "https://icatisis.esc.rl.ac.uk:8181",
-    "icat_check_cert": false,
-    "client_pool_init_size": 3
-    "client_pool_max_size": 20
-  },
+  "backend": "db",
+  "client_cache_size": 5,
+  "client_pool_init_size": 2,
+  "client_pool_max_size": 5,
+  "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
   "flask_reloader": false,
-  "log_level": "DEBUG",
-  "log_location": "/root/seg_dev/datagateway-api/logs.log",
-  "debug_mode": true,
-  "generate_swagger": true,
+  "icat_url": "https://localhost:8181",
+  "icat_check_cert": false,
+  "log_level": "WARN",
+  "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",
+  "debug_mode": false,
+  "generate_swagger": false,
   "host": "127.0.0.1",
   "port": "5000",
   "test_user_credentials": {"username": "root", "password": "pw"},
