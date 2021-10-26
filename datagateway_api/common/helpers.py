@@ -20,7 +20,7 @@ from datagateway_api.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (
+from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (  # noqa: B950
     endpoints,
 )
 

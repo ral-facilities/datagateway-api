@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy.inspection import inspect
 
 from datagateway_api.common.helpers import get_entity_object_from_name
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (
+from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (  # noqa: B950
     endpoints,
 )
 
