@@ -1,4 +1,4 @@
-from datagateway_api.common.icat.filters import (
+from datagateway_api.common.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATSkipFilter,

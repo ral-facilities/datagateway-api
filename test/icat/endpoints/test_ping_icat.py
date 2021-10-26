@@ -3,10 +3,12 @@ from unittest.mock import patch
 from icat.exception import ICATError
 import pytest
 
-from datagateway_api.common.backends import create_backend
 from datagateway_api.common.constants import Constants
+from datagateway_api.common.datagateway_api.backends import create_backend
+from datagateway_api.common.datagateway_api.icat.icat_client_pool import (
+    create_client_pool,
+)
 from datagateway_api.common.exceptions import PythonICATError
-from datagateway_api.common.icat.icat_client_pool import create_client_pool
 
 
 class TestICATPing:

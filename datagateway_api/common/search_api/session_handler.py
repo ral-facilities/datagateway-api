@@ -9,9 +9,12 @@ def requires_session_id(method):
     """
     TODO
     """
+    pass
 
+    """
     @wraps(method)
     def wrapper_requires_session(*args, **kwargs):
         pass
 
     return wrapper_requires_session
+    """

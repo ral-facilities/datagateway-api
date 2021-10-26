@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.common.database.filters import (
+from datagateway_api.common.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
     DatabaseIncludeFilter,
     DatabaseLimitFilter,

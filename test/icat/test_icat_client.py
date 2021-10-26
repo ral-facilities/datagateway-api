@@ -1,6 +1,6 @@
 from icat.client import Client
 
-from datagateway_api.common.icat.icat_client_pool import ICATClient
+from datagateway_api.common.datagateway_api.icat.icat_client_pool import ICATClient
 
 
 class TestICATClient:

@@ -1,7 +1,7 @@
 import pytest
 
+from datagateway_api.common.datagateway_api.icat.filters import PythonICATIncludeFilter
 from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.icat.filters import PythonICATIncludeFilter
 
 
 class TestICATIncludeFilter:

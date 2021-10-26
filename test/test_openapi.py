@@ -2,7 +2,9 @@ from datetime import date, datetime
 
 import pytest
 
-from datagateway_api.src.resources.entities.entity_map import type_conversion
+from datagateway_api.src.resources.datagateway_api.entities.entity_map import (
+    type_conversion,
+)
 
 
 class TestOpenAPI:

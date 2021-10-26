@@ -1,7 +1,9 @@
 import pytest
 
+from datagateway_api.common.datagateway_api.icat.filters import (
+    PythonICATDistinctFieldFilter,
+)
 from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.icat.filters import PythonICATDistinctFieldFilter
 
 
 class TestICATDistinctFilter:

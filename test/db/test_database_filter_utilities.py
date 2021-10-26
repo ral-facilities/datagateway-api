@@ -1,7 +1,9 @@
 import pytest
 
-from datagateway_api.common.database.filters import DatabaseFilterUtilities
-from datagateway_api.common.database.helpers import ReadQuery
+from datagateway_api.common.datagateway_api.database.filters import (
+    DatabaseFilterUtilities,
+)
+from datagateway_api.common.datagateway_api.database.helpers import ReadQuery
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.helpers import get_entity_object_from_name
 
