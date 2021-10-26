@@ -73,7 +73,7 @@ class DatabaseFilterUtilities:
         filter
 
         :param query: The query to have filters applied to
-        :type query: :class:`datagateway_api.common.database.helpers.[QUERY]`
+        :type query: :class:`.common.datagateway_api.database.helpers.[QUERY]`
         """
 
         if self.related_related_field:
@@ -92,7 +92,7 @@ class DatabaseFilterUtilities:
         variables of this class
 
         :param query: The query to have filters applied to
-        :type query: :class:`datagateway_api.common.database.helpers.[QUERY]`
+        :type query: :class:`.common.datagateway_api.database.helpers.[QUERY]`
         :return: Entity model of the field (usually the field relating to the endpoint
             the request is coming from)
         """

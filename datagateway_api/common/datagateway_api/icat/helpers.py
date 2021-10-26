@@ -14,6 +14,15 @@ from icat.exception import (
     ICATValidationError,
 )
 
+from datagateway_api.common.datagateway_api.filter_order_handler import (
+    FilterOrderHandler,
+)
+from datagateway_api.common.datagateway_api.icat.filters import (
+    PythonICATLimitFilter,
+    PythonICATWhereFilter,
+)
+from datagateway_api.common.datagateway_api.icat.lru_cache import ExtendedLRUCache
+from datagateway_api.common.datagateway_api.icat.query import ICATQuery
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -21,14 +30,6 @@ from datagateway_api.common.exceptions import (
     MissingRecordError,
     PythonICATError,
 )
-from datagateway_api.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.common.icat.filters import (
-    PythonICATLimitFilter,
-    PythonICATWhereFilter,
-)
-from datagateway_api.common.icat.lru_cache import ExtendedLRUCache
-from datagateway_api.common.icat.query import ICATQuery
-
 
 log = logging.getLogger()
 

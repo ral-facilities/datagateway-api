@@ -1,6 +1,10 @@
 import pytest
 
-from datagateway_api.common.database.models import FACILITY, INVESTIGATION, JOB
+from datagateway_api.common.datagateway_api.database.models import (
+    FACILITY,
+    INVESTIGATION,
+    JOB,
+)
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.helpers import get_entity_object_from_name
 

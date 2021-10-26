@@ -9,7 +9,7 @@ from abc import ABC, abstractclassmethod, abstractmethod
 
 class PaNOSCAttribute(ABC):
     @abstractclassmethod
-    def from_icat(cls):
+    def from_icat(self):
         pass
 
     @abstractmethod

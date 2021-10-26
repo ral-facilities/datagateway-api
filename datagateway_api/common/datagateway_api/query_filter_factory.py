@@ -29,7 +29,7 @@ class QueryFilterFactory(object):
 
         backend_type = config.get_config_value(APIConfigOptions.BACKEND)
         if backend_type == "db":
-            from datagateway_api.common.database.filters import (
+            from datagateway_api.common.datagateway_api.database.filters import (
                 DatabaseDistinctFieldFilter as DistinctFieldFilter,
                 DatabaseIncludeFilter as IncludeFilter,
                 DatabaseLimitFilter as LimitFilter,
@@ -38,7 +38,7 @@ class QueryFilterFactory(object):
                 DatabaseWhereFilter as WhereFilter,
             )
         elif backend_type == "python_icat":
-            from datagateway_api.common.icat.filters import (
+            from datagateway_api.common.datagateway_api.icat.filters import (
                 PythonICATDistinctFieldFilter as DistinctFieldFilter,
                 PythonICATIncludeFilter as IncludeFilter,
                 PythonICATLimitFilter as LimitFilter,

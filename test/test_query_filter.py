@@ -2,9 +2,11 @@ from unittest.mock import patch
 
 import pytest
 
+from datagateway_api.common.datagateway_api.query_filter_factory import (
+    QueryFilterFactory,
+)
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.filters import QueryFilter
-from datagateway_api.common.query_filter_factory import QueryFilterFactory
 
 
 class TestQueryFilter:

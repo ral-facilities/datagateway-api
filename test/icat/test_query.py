@@ -3,13 +3,13 @@ from datetime import datetime
 from icat.entity import Entity
 import pytest
 
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import PythonICATError
-from datagateway_api.common.icat.filters import (
+from datagateway_api.common.datagateway_api.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.common.icat.query import ICATQuery
+from datagateway_api.common.datagateway_api.icat.query import ICATQuery
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.exceptions import PythonICATError
 
 
 def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False):

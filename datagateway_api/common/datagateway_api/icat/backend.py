@@ -2,11 +2,9 @@ import logging
 
 from icat.exception import ICATError, ICATSessionError
 
-from datagateway_api.common.backend import Backend
 from datagateway_api.common.constants import Constants
-from datagateway_api.common.exceptions import AuthenticationError, PythonICATError
-from datagateway_api.common.helpers import queries_records
-from datagateway_api.common.icat.helpers import (
+from datagateway_api.common.datagateway_api.backend import Backend
+from datagateway_api.common.datagateway_api.icat.helpers import (
     create_entities,
     delete_entity_by_id,
     get_cached_client,
@@ -25,6 +23,8 @@ from datagateway_api.common.icat.helpers import (
     update_entities,
     update_entity_by_id,
 )
+from datagateway_api.common.exceptions import AuthenticationError, PythonICATError
+from datagateway_api.common.helpers import queries_records
 
 
 log = logging.getLogger()

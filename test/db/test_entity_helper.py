@@ -1,7 +1,7 @@
 import pytest
 
 from datagateway_api.common.constants import Constants
-from datagateway_api.common.database.models import (
+from datagateway_api.common.datagateway_api.database.models import (
     DATAFILE,
     DATAFILEFORMAT,
     DATASET,

@@ -6,12 +6,12 @@ import logging
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import aliased
 
-from datagateway_api.common.database.filters import (
+from datagateway_api.common.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
     DatabaseIncludeFilter as IncludeFilter,
     DatabaseWhereFilter as WhereFilter,
 )
-from datagateway_api.common.database.models import (
+from datagateway_api.common.datagateway_api.database.models import (
     FACILITY,
     FACILITYCYCLE,
     INSTRUMENT,
@@ -19,12 +19,14 @@ from datagateway_api.common.database.models import (
     INVESTIGATIONINSTRUMENT,
     SESSION,
 )
+from datagateway_api.common.datagateway_api.filter_order_handler import (
+    FilterOrderHandler,
+)
 from datagateway_api.common.exceptions import (
     AuthenticationError,
     BadRequestError,
     MissingRecordError,
 )
-from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.common.helpers import map_distinct_attributes_to_results
 
 
