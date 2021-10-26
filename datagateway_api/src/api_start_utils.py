@@ -19,16 +19,16 @@ from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint impo
     get_find_one_endpoint,
     get_id_endpoint,
 )
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (
+from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (  # noqa: B950
     endpoints,
 )
 from datagateway_api.src.resources.datagateway_api.non_entities.ping_endpoint import (
     ping_endpoint,
 )
-from datagateway_api.src.resources.datagateway_api.non_entities.sessions_endpoints import (
+from datagateway_api.src.resources.datagateway_api.non_entities.sessions_endpoints import (  # noqa: B950
     session_endpoints,
 )
-from datagateway_api.src.resources.datagateway_api.table_endpoints.table_endpoints import (
+from datagateway_api.src.resources.datagateway_api.table_endpoints.table_endpoints import (  # noqa: B950
     count_instrument_facility_cycles_endpoint,
     count_instrument_investigation_endpoint,
     instrument_facility_cycles_endpoint,
