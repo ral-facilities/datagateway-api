@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - feature/versioning-#242
+      #- feature/versioning-#242
     tags:
       - '*'
 
@@ -25,21 +25,21 @@ jobs:
       - name: Build project for distribution
         run: poetry build
 
-      - name: Determine tag name
-        run: |
-          if [ "${{ github.ref }}" = "refs/heads/master" ]
-          then
-            echo TAG_NAME=snapshot >> $GITHUB_ENV
-          else
-            echo TAG_NAME=`basename "$(poetry version --short)"` >> $GITHUB_ENV
-          fi
+      #- name: Determine tag name
+        #run: |
+          #if [ "${{ github.ref }}" = "refs/heads/master" ]
+          #then
+            #echo TAG_NAME=snapshot >> $GITHUB_ENV
+          #else
+            #echo TAG_NAME=`basename "$(poetry version --short)"` >> $GITHUB_ENV
+          #fi
 
-      - name: Update snapshot tag
-        uses: richardsimko/update-tag@v1
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #- name: Update snapshot tag
+        #uses: richardsimko/update-tag@v1
+        #with:
+          #tag_name: ${{ env.TAG_NAME }}
+        #env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         #if: ${{ github.ref == 'refs/heads/master' }}
 
       - name: Install Python Semantic Release
