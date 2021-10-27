@@ -1,2 +1,3 @@
+# Only check commits so we don't need to squash and merge PRs
 commitsOnly: true
 anyCommit: true
