@@ -1,3 +1,4 @@
 # Only check commits so we don't need to squash and merge PRs
+# new comment
 commitsOnly: true
 anyCommit: true
