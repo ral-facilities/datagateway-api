@@ -15,7 +15,7 @@ version_toml = [
 branch = "master"
 upload_to_pypi = false
 upload_to_release = true
-build_command = "poetry build"
+build_command = "pip install poetry==1.1.9 && poetry build"
 
 [tool.poetry.dependencies]
 python = "^3.6"
