@@ -31,7 +31,7 @@ jobs:
           then
             echo TAG_NAME=snapshot >> $GITHUB_ENV
           else
-            echo TAG_NAME=`basename ${{ github.ref }}` >> $GITHUB_ENV
+            echo TAG_NAME=`basename "$(poetry version --short)"` >> $GITHUB_ENV
           fi
 
       - name: Update snapshot tag
