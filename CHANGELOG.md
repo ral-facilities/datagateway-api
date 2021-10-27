@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.0 (2021-10-27)
+### Feature
+* Add comment ([`f0ce3d5`](https://github.com/MRichards99/datagateway-api/commit/f0ce3d5a5ea20f1d1cc328803dae47f6da536679))
+
 ## v0.1.4 (2021-10-27)
 ### Fix
 * Change build cmd ([`9c7e3b0`](https://github.com/MRichards99/datagateway-api/commit/9c7e3b0db7ebe82f00beb7ab07baa8bf82de6e43))
