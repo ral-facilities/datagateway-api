@@ -15,11 +15,15 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+      - name: Set GitHub author config
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
-
       - name: Install Poetry
         run: pip install poetry==1.1.9
       - name: Build project for distribution
