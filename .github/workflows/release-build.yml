@@ -1,0 +1,43 @@
+name: Release Build
+on:
+  push:
+    branches:
+      - master
+      - feature/versioning-#242
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: Release Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install Poetry
+        run: pip install poetry==1.1.9
+      - name: Build project for distribution
+        run: poetry build
+
+      - name: Determine tag name
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/master" ]
+          then
+            echo TAG_NAME=snapshot >> $GITHUB_ENV
+          else
+            echo TAG_NAME=`basename ${{ github.ref }}` >> $GITHUB_ENV
+          fi
+
+      - name: Update snapshot tag
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ github.ref == 'refs/heads/master' }}
