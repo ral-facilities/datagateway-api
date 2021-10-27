@@ -41,3 +41,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         #if: ${{ github.ref == 'refs/heads/master' }}
+
+      - name: Install Python Semantic Release
+        run: pip install python-semantic-release
+
+      - name: Perform release
+        run: semantic-release publish
