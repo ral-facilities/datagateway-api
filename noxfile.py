@@ -84,7 +84,7 @@ def safety(session):
 
 @nox.session(python=["3.6", "3.7", "3.8", "3.9"], reuse_venv=True)
 def tests(session):
-    # test 1234567
+    # test 123456789
     args = session.posargs
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
