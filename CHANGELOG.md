@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.1.4 (2021-10-27)
+### Fix
+* Change build cmd ([`9c7e3b0`](https://github.com/MRichards99/datagateway-api/commit/9c7e3b0db7ebe82f00beb7ab07baa8bf82de6e43))
+
 ## v0.1.3 (2021-10-27)
 ### Fix
 * Use semantic release Action ([`53d30c3`](https://github.com/MRichards99/datagateway-api/commit/53d30c3b9857ce855e655b48315c3435c608d766))
