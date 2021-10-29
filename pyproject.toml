@@ -54,6 +54,7 @@ pytest = "^6.1.2"
 coverage = {extras = ["toml"], version = "^5.3"}
 pytest-cov = "^2.10.1"
 pytest-icdiff = "^0.5"
+python-semantic-release = "^7.19.2"
 
 [tool.poetry.scripts]
 
