@@ -19,6 +19,7 @@ sqlalchemy to communicate directly with ICAT's database.
   - [Automated Testing & Other Development Helpers (Nox)](#automated-testing-&-other-development-helpers-(nox))
   - [Automated Checks during Git Commit (Pre Commit)](#automated-checks-during-git-commit-(pre-commit))
   - [Summary](#summary)
+- [API Versioning](#api-versioning)
 - [Running DataGateway API](#running-datagateway-api)
   - [API Startup](#api-startup)
   - [Authentication](#authentication)
@@ -277,6 +278,59 @@ pip install --user --upgrade pre-commit
 # Install commit hooks
 pre-commit install
 ```
+
+
+
+
+# API Versioning
+This repository uses semantic versioning as the standard for version number
+incrementing, with the version stored in `pyproject.toml`. There is a GitHub Actions
+workflow (`release-build.yml`) which runs when master is updated (i.e. when a pull
+request is merged). This uses
+[python-semantic-release](https://github.com/relekang/python-semantic-release) to
+determine whether a release needs to be made, and if so, whether a major, minor or patch
+version bump should be made. This decision is made based on commit message content.
+
+In a PR, at least one commit must follow the
+[Angular commit message format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format)
+and use one of the
+[conventional commit types](https://github.com/commitizen/conventional-commit-types/blob/master/index.json).
+Note, there are no scopes (part of the Angular message format) configured for this repo
+so there's no need to make use of this feature. Compliance to this format and use of
+standard types will be checked by
+[semantic-pull-requests](https://github.com/zeke/semantic-pull-requests) which is a
+GitHub app installed into this repo and runs alongside existing CI jobs for pull
+requests. For example, the following commit messages follow the conventional commit
+standard:
+
+```
+# Commit to edit a CI job
+ci: Edit linting job #issue-number
+
+# Commit for a bug fix
+fix: Fix bug found with count endpoints #issue-number
+
+# Commit for a new feature
+feat: Add endpoints for search API #issue-number
+
+# Commit which introduces a breaking change for users
+BREAKING CHANGE: Change format of `config.json`, the previous version is no longer supported #issue-number
+
+# You can also use `BREAKING CHANGE:` in the additional information if the commit also adds a new feature, like so:
+feat: My new feature #issue-number
+
+BREAKING CHANGE: This feature means X functionality has been removed
+```
+
+For each pull request, only one commit message in this format is required to satisfy the
+semantic pull request checker. Requiring only one commit message in this format should
+hopefully not impose this commit style on developer. However, it is encouraged to use it
+where possible, as the types are also used to form `CHANGELOG.md`.
+
+New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING CHANGE:`
+(major) commit type is found between the previous release and the most recent commit on
+master. When the version is bumped, a GitHub tag and release is made which contains
+the source code and the built versions of the API (sdist and wheel).
 
 
 
