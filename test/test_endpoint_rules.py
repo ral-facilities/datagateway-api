@@ -60,6 +60,51 @@ class TestEndpointRules:
                 ["GET"],
                 id="count ISIS investigations",
             ),
+            pytest.param(
+                "/search_api/datasets", ["GET"], id="Search API search datasets",
+            ),
+            pytest.param(
+                "/search_api/documents", ["GET"], id="Search API search documents",
+            ),
+            pytest.param(
+                "/search_api/instruments", ["GET"], id="Search API search instruments",
+            ),
+            pytest.param(
+                "/search_api/datasets/<int:pid>",
+                ["GET"],
+                id="Search API get single dataset",
+            ),
+            pytest.param(
+                "/search_api/documents/<int:pid>",
+                ["GET"],
+                id="Search API get single document",
+            ),
+            pytest.param(
+                "/search_api/instruments/<int:pid>",
+                ["GET"],
+                id="Search API get single instrument",
+            ),
+            pytest.param(
+                "/search_api/datasets/count", ["GET"], id="Search API dataset count",
+            ),
+            pytest.param(
+                "/search_api/documents/count", ["GET"], id="Search API document count",
+            ),
+            pytest.param(
+                "/search_api/instruments/count",
+                ["GET"],
+                id="Search API instrument count",
+            ),
+            pytest.param(
+                "/search_api/datasets/<int:pid>/files",
+                ["GET"],
+                id="Search API get dataset files",
+            ),
+            pytest.param(
+                "/search_api/datasets/<int:pid>/files/count",
+                ["GET"],
+                id="Search API dataset files count",
+            ),
         ],
     )
     def test_non_entity_endpoints(
