@@ -34,6 +34,13 @@ from datagateway_api.src.resources.datagateway_api.table_endpoints.table_endpoin
     instrument_facility_cycles_endpoint,
     instrument_investigation_endpoint,
 )
+from datagateway_api.src.resources.search_api.search_api_endpoints import (
+    get_files_endpoint,
+    get_number_count_endpoint,
+    get_number_count_files_endpoint,
+    get_search_endpoint,
+    get_single_endpoint,
+)
 from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
 from datagateway_api.src.swagger.initialise_spec import initialise_spec
 
@@ -172,6 +179,49 @@ def create_api_endpoints(flask_app, api, spec):
     ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
     api.add_resource(ping_resource, "/ping")
     spec.path(resource=ping_resource, api=api)
+
+    # Search API endpoints
+    # TODO - make conditional respect new config style when implemented
+    if True:
+        search_api_extension = "search_api"
+        search_api_entity_endpoints = ["datasets", "documents", "instruments"]
+
+        for entity_name in search_api_entity_endpoints:
+            get_search_endpoint_resource = get_search_endpoint(entity_name)
+            api.add_resource(
+                get_search_endpoint_resource, f"/{search_api_extension}/{entity_name}",
+            )
+            spec.path(resource=get_endpoint_resource, api=api)
+
+            get_single_endpoint_resource = get_single_endpoint(entity_name)
+            api.add_resource(
+                get_single_endpoint_resource,
+                f"/{search_api_extension}/{entity_name}/<int:pid>",
+            )
+            spec.path(resource=get_single_endpoint_resource, api=api)
+
+            get_number_count_endpoint_resource = get_number_count_endpoint(entity_name)
+            api.add_resource(
+                get_number_count_endpoint_resource,
+                f"/{search_api_extension}/{entity_name}/count",
+            )
+            spec.path(resource=get_number_count_endpoint_resource, api=api)
+
+        get_files_endpoint_resource = get_files_endpoint("datasets")
+        api.add_resource(
+            get_files_endpoint_resource,
+            f"/{search_api_extension}/datasets/<int:pid>/files",
+        )
+        spec.path(resource=get_files_endpoint_resource, api=api)
+
+        get_number_count_files_endpoint_resource = get_number_count_files_endpoint(
+            "datasets",
+        )
+        api.add_resource(
+            get_number_count_files_endpoint_resource,
+            f"/{search_api_extension}/datasets/<int:pid>/files/count",
+        )
+        spec.path(resource=get_number_count_files_endpoint_resource, api=api)
 
 
 def openapi_config(spec):
