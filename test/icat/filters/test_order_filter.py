@@ -1,5 +1,5 @@
 import pytest
-
+from typing_extensions import OrderedDict
 
 from datagateway_api.common.datagateway_api.filter_order_handler import (
     FilterOrderHandler,
@@ -83,7 +83,7 @@ class TestICATOrderFilter:
         filter_handler.add_filter(test_filter)
         filter_handler.apply_filters(icat_query)
 
-        assert icat_query.order == [("id", "DESC")]
+        assert icat_query.order == OrderedDict([("id", "%s DESC")])
 
         filter_handler.clear_python_icat_order_filters()
 
