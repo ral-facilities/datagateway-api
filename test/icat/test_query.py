@@ -55,7 +55,7 @@ class TestICATQuery:
                 {"fullName": "like Bob"},
                 None,
                 None,
-                {"fullName": "like Bob"},
+                {"fullName": ["%s like Bob"]},
                 None,
                 set(),
                 id="Query with condition",

@@ -9,16 +9,20 @@ class TestICATWhereFilter:
     @pytest.mark.parametrize(
         "operation, value, expected_condition_value",
         [
-            pytest.param("eq", 5, "= '5'", id="equal"),
-            pytest.param("ne", 5, "!= 5", id="not equal"),
-            pytest.param("like", 5, "like '%5%'", id="like"),
-            pytest.param("nlike", 5, "not like '%5%'", id="not like"),
-            pytest.param("lt", 5, "< '5'", id="less than"),
-            pytest.param("lte", 5, "<= '5'", id="less than or equal"),
-            pytest.param("gt", 5, "> '5'", id="greater than"),
-            pytest.param("gte", 5, ">= '5'", id="greater than or equal"),
-            pytest.param("in", [1, 2, 3, 4], "in (1, 2, 3, 4)", id="in a list"),
-            pytest.param("in", [], "in (NULL)", id="empty list"),
+            pytest.param("eq", 5, ["%s = '5'"], id="equal"),
+            pytest.param("ne", 5, ["%s != 5"], id="not equal"),
+            pytest.param("like", 5, ["%s like '%%5%%'"], id="like"),
+            pytest.param("ilike", 5, ["UPPER(%s) like UPPER('%%5%%')"], id="ilike"),
+            pytest.param("nlike", 5, ["%s not like '%%5%%'"], id="not like"),
+            pytest.param(
+                "nilike", 5, ["UPPER(%s) not like UPPER('%%5%%')"], id="not ilike",
+            ),
+            pytest.param("lt", 5, ["%s < '5'"], id="less than"),
+            pytest.param("lte", 5, ["%s <= '5'"], id="less than or equal"),
+            pytest.param("gt", 5, ["%s > '5'"], id="greater than"),
+            pytest.param("gte", 5, ["%s >= '5'"], id="greater than or equal"),
+            pytest.param("in", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list"),
+            pytest.param("in", [], ["%s in (NULL)"], id="empty list"),
         ],
     )
     def test_valid_operations(
@@ -44,13 +48,13 @@ class TestICATWhereFilter:
         test_filter = PythonICATWhereFilter("startDate", "o.endDate", "lt")
         test_filter.apply_filter(icat_query)
 
-        assert icat_query.conditions == {"startDate": "< o.endDate"}
+        assert icat_query.conditions == {"startDate": ["%s < o.endDate"]}
 
     def test_valid_field(self, icat_query):
         test_filter = PythonICATWhereFilter("title", "Investigation Title", "eq")
         test_filter.apply_filter(icat_query)
 
-        assert icat_query.conditions == {"title": "= 'Investigation Title'"}
+        assert icat_query.conditions == {"title": ["%s = 'Investigation Title'"]}
 
     def test_invalid_field(self, icat_query):
         test_filter = PythonICATWhereFilter("random_field", "my_value", "eq")
@@ -66,4 +70,4 @@ class TestICATWhereFilter:
         filter_handler.add_filters([lt_filter, gt_filter])
         filter_handler.apply_filters(icat_query)
 
-        assert icat_query.conditions == {"id": ["< '10'", "> '5'"]}
+        assert icat_query.conditions == {"id": ["%s < '10'", "%s > '5'"]}
