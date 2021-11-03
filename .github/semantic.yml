@@ -1,0 +1,4 @@
+# Only check commits so we don't need to squash and merge PRs preventing loss of commit history
+commitsOnly: true
+# One or more commits need to follow the Angular commit spec, though ideally we should be using this as much as possible for the changelog
+anyCommit: true
