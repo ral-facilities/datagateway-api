@@ -8,8 +8,13 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.common.config import config
-from datagateway_api.common.datagateway_api.backends import create_backend
-from datagateway_api.common.datagateway_api.database.helpers import db
+
+# Only attempt to create a DataGateway API backend if the datagateway_api object
+# is present in the config. This ensures that the API does not error on startup
+# due to an AttributeError exception being thrown if the object is missing.
+if config.datagateway_api is not None:
+    from datagateway_api.common.datagateway_api.backends import create_backend
+from datagateway_api.common.datagateway_api.database.helpers import db  # noqa: I202
 from datagateway_api.common.datagateway_api.icat.icat_client_pool import (
     create_client_pool,
 )
@@ -67,16 +72,17 @@ def create_app_infrastructure(flask_app):
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
 
-    try:
-        backend_type = flask_app.config["TEST_BACKEND"]
-        config.set_backend_type(backend_type)
-    except KeyError:
-        backend_type = config.backend
+    if config.datagateway_api is not None:
+        try:
+            backend_type = flask_app.config["TEST_BACKEND"]
+            config.datagateway_api.set_backend_type(backend_type)
+        except KeyError:
+            backend_type = config.datagateway_api.backend
 
-    if backend_type == "db":
-        flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.db_url
-        flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-        db.init_app(flask_app)
+        if backend_type == "db":
+            flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.datagateway_api.db_url
+            flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+            db.init_app(flask_app)
 
     initialise_spec(spec)
 
@@ -84,92 +90,112 @@ def create_app_infrastructure(flask_app):
 
 
 def create_api_endpoints(flask_app, api, spec):
-    try:
-        backend_type = flask_app.config["TEST_BACKEND"]
-        config.set_backend_type(backend_type)
-    except KeyError:
-        backend_type = config.backend
+    if config.datagateway_api is not None:
+        try:
+            backend_type = flask_app.config["TEST_BACKEND"]
+            config.datagateway_api.set_backend_type(backend_type)
+        except KeyError:
+            backend_type = config.datagateway_api.backend
 
-    backend = create_backend(backend_type)
+        backend = create_backend(backend_type)
 
-    icat_client_pool = None
-    if backend_type == "python_icat":
-        # Create client pool
-        icat_client_pool = create_client_pool()
+        icat_client_pool = None
+        if backend_type == "python_icat":
+            # Create client pool
+            icat_client_pool = create_client_pool()
 
-    for entity_name in endpoints:
-        get_endpoint_resource = get_endpoint(
-            entity_name, endpoints[entity_name], backend, client_pool=icat_client_pool,
+        for entity_name in endpoints:
+            get_endpoint_resource = get_endpoint(
+                entity_name,
+                endpoints[entity_name],
+                backend,
+                client_pool=icat_client_pool,
+            )
+            api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
+            spec.path(resource=get_endpoint_resource, api=api)
+
+            get_id_endpoint_resource = get_id_endpoint(
+                entity_name,
+                endpoints[entity_name],
+                backend,
+                client_pool=icat_client_pool,
+            )
+            api.add_resource(
+                get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id_>",
+            )
+            spec.path(resource=get_id_endpoint_resource, api=api)
+
+            get_count_endpoint_resource = get_count_endpoint(
+                entity_name,
+                endpoints[entity_name],
+                backend,
+                client_pool=icat_client_pool,
+            )
+            api.add_resource(
+                get_count_endpoint_resource, f"/{entity_name.lower()}/count",
+            )
+            spec.path(resource=get_count_endpoint_resource, api=api)
+
+            get_find_one_endpoint_resource = get_find_one_endpoint(
+                entity_name,
+                endpoints[entity_name],
+                backend,
+                client_pool=icat_client_pool,
+            )
+            api.add_resource(
+                get_find_one_endpoint_resource, f"/{entity_name.lower()}/findone",
+            )
+            spec.path(resource=get_find_one_endpoint_resource, api=api)
+
+        # Session endpoint
+        session_endpoint_resource = session_endpoints(
+            backend, client_pool=icat_client_pool,
         )
-        api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
-        spec.path(resource=get_endpoint_resource, api=api)
+        api.add_resource(session_endpoint_resource, "/sessions")
+        spec.path(resource=session_endpoint_resource, api=api)
 
-        get_id_endpoint_resource = get_id_endpoint(
-            entity_name, endpoints[entity_name], backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(get_id_endpoint_resource, f"/{entity_name.lower()}/<int:id_>")
-        spec.path(resource=get_id_endpoint_resource, api=api)
-
-        get_count_endpoint_resource = get_count_endpoint(
-            entity_name, endpoints[entity_name], backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(get_count_endpoint_resource, f"/{entity_name.lower()}/count")
-        spec.path(resource=get_count_endpoint_resource, api=api)
-
-        get_find_one_endpoint_resource = get_find_one_endpoint(
-            entity_name, endpoints[entity_name], backend, client_pool=icat_client_pool,
+        # Table specific endpoints
+        instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
+            backend, client_pool=icat_client_pool,
         )
         api.add_resource(
-            get_find_one_endpoint_resource, f"/{entity_name.lower()}/findone",
+            instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles",
         )
-        spec.path(resource=get_find_one_endpoint_resource, api=api)
+        spec.path(resource=instrument_facility_cycle_resource, api=api)
 
-    # Session endpoint
-    session_endpoint_resource = session_endpoints(backend, client_pool=icat_client_pool)
-    api.add_resource(session_endpoint_resource, "/sessions")
-    spec.path(resource=session_endpoint_resource, api=api)
+        count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
+            backend, client_pool=icat_client_pool,
+        )
+        api.add_resource(
+            count_instrument_facility_cycle_res,
+            "/instruments/<int:id_>/facilitycycles/count",
+        )
+        spec.path(resource=count_instrument_facility_cycle_res, api=api)
 
-    # Table specific endpoints
-    instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
-        backend, client_pool=icat_client_pool,
-    )
-    api.add_resource(
-        instrument_facility_cycle_resource, "/instruments/<int:id_>/facilitycycles",
-    )
-    spec.path(resource=instrument_facility_cycle_resource, api=api)
+        instrument_investigation_resource = instrument_investigation_endpoint(
+            backend, client_pool=icat_client_pool,
+        )
+        api.add_resource(
+            instrument_investigation_resource,
+            "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>"
+            "/investigations",
+        )
+        spec.path(resource=instrument_investigation_resource, api=api)
 
-    count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
-        backend, client_pool=icat_client_pool,
-    )
-    api.add_resource(
-        count_instrument_facility_cycle_res,
-        "/instruments/<int:id_>/facilitycycles/count",
-    )
-    spec.path(resource=count_instrument_facility_cycle_res, api=api)
+        count_instrument_investigation_res = count_instrument_investigation_endpoint(
+            backend, client_pool=icat_client_pool,
+        )
+        api.add_resource(
+            count_instrument_investigation_res,
+            "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>"
+            "/investigations/count",
+        )
+        spec.path(resource=count_instrument_investigation_res, api=api)
 
-    instrument_investigation_resource = instrument_investigation_endpoint(
-        backend, client_pool=icat_client_pool,
-    )
-    api.add_resource(
-        instrument_investigation_resource,
-        "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations",
-    )
-    spec.path(resource=instrument_investigation_resource, api=api)
-
-    count_instrument_investigation_resource = count_instrument_investigation_endpoint(
-        backend, client_pool=icat_client_pool,
-    )
-    api.add_resource(
-        count_instrument_investigation_resource,
-        "/instruments/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations"
-        "/count",
-    )
-    spec.path(resource=count_instrument_investigation_resource, api=api)
-
-    # Ping endpoint
-    ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
-    api.add_resource(ping_resource, "/ping")
-    spec.path(resource=ping_resource, api=api)
+        # Ping endpoint
+        ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
+        api.add_resource(ping_resource, "/ping")
+        spec.path(resource=ping_resource, api=api)
 
 
 def openapi_config(spec):

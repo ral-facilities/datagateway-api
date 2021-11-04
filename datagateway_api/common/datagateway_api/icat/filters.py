@@ -214,7 +214,9 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_properties = get_icat_properties(config.icat_url, config.icat_check_cert)
+        icat_properties = get_icat_properties(
+            config.datagateway_api.icat_url, config.datagateway_api.icat_check_cert,
+        )
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 

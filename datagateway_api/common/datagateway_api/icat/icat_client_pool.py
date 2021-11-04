@@ -13,7 +13,8 @@ class ICATClient(Client):
 
     def __init__(self):
         super().__init__(
-            config.icat_url, checkCert=config.icat_check_cert,
+            config.datagateway_api.icat_url,
+            checkCert=config.datagateway_api.icat_check_cert,
         )
         # When clients are cleaned up, sessions won't be logged out
         self.autoLogout = False
@@ -35,8 +36,8 @@ def create_client_pool():
 
     return ObjectPool(
         ICATClient,
-        min_init=config.client_pool_init_size,
-        max_capacity=config.client_pool_max_size,
+        min_init=config.datagateway_api.client_pool_init_size,
+        max_capacity=config.datagateway_api.client_pool_max_size,
         max_reusable=0,
         expires=0,
     )

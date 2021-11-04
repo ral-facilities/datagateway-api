@@ -36,7 +36,7 @@ Faker.seed(SEED)
 
 
 engine = create_engine(
-    config.db_url, poolclass=QueuePool, pool_size=100, max_overflow=0,
+    config.datagateway_api.db_url, poolclass=QueuePool, pool_size=100, max_overflow=0,
 )
 session_factory = sessionmaker(engine)
 session = scoped_session(session_factory)()
