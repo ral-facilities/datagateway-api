@@ -9,15 +9,17 @@ from datagateway_api.common.datagateway_api.database.filters import (
     DatabaseWhereFilter,
 )
 from datagateway_api.common.datagateway_api.query_filter_factory import (
-    QueryFilterFactory,
+    DataGatewayAPIQueryFilterFactory,
 )
 
 
 # TODO - Move outside of db/
-class TestQueryFilterFactory:
+class TestDataGatewayAPIQueryFilterFactory:
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_distinct_filter(self):
-        test_filter = QueryFilterFactory.get_query_filter({"distinct": "TEST"})
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
+            {"distinct": "TEST"}
+        )
         assert isinstance(test_filter[0], DatabaseDistinctFieldFilter)
         assert len(test_filter) == 1
 
@@ -34,25 +36,27 @@ class TestQueryFilterFactory:
         ],
     )
     def test_valid_include_filter(self, filter_input):
-        test_filter = QueryFilterFactory.get_query_filter(filter_input)
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(filter_input)
         assert isinstance(test_filter[0], DatabaseIncludeFilter)
         assert len(test_filter) == 1
 
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_limit_filter(self):
-        test_filter = QueryFilterFactory.get_query_filter({"limit": 10})
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter({"limit": 10})
         assert isinstance(test_filter[0], DatabaseLimitFilter)
         assert len(test_filter) == 1
 
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_order_filter(self):
-        test_filter = QueryFilterFactory.get_query_filter({"order": "id DESC"})
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
+            {"order": "id DESC"}
+        )
         assert isinstance(test_filter[0], DatabaseOrderFilter)
         assert len(test_filter) == 1
 
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_skip_filter(self):
-        test_filter = QueryFilterFactory.get_query_filter({"skip": 10})
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter({"skip": 10})
         assert isinstance(test_filter[0], DatabaseSkipFilter)
         assert len(test_filter) == 1
 
@@ -71,6 +75,6 @@ class TestQueryFilterFactory:
         ],
     )
     def test_valid_where_filter(self, filter_input):
-        test_filter = QueryFilterFactory.get_query_filter(filter_input)
+        test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(filter_input)
         assert isinstance(test_filter[0], DatabaseWhereFilter)
         assert len(test_filter) == 1

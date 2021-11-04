@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from datagateway_api.common.datagateway_api.database import models
 from datagateway_api.common.datagateway_api.query_filter_factory import (
-    QueryFilterFactory,
+    DataGatewayAPIQueryFilterFactory,
 )
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
@@ -104,7 +104,9 @@ def get_filters_from_query_string():
         for arg in request.args:
             for value in request.args.getlist(arg):
                 filters.extend(
-                    QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
+                    DataGatewayAPIQueryFilterFactory.get_query_filter(
+                        {arg: json.loads(value)}
+                    ),
                 )
         return filters
     except Exception as e:

@@ -1,5 +1,6 @@
 import logging
 
+from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
 from datagateway_api.common.config import APIConfigOptions, config
 from datagateway_api.common.exceptions import (
     ApiError,
@@ -9,7 +10,7 @@ from datagateway_api.common.exceptions import (
 log = logging.getLogger()
 
 
-class QueryFilterFactory(object):
+class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
     def get_query_filter(request_filter):
         """

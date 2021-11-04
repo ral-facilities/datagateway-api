@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 
 from datagateway_api.common.datagateway_api.query_filter_factory import (
-    QueryFilterFactory,
+    DataGatewayAPIQueryFilterFactory,
 )
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.filters import QueryFilter
@@ -31,4 +31,4 @@ class TestQueryFilter:
             return_value="invalid_backend",
         ):
             with pytest.raises(ApiError):
-                QueryFilterFactory.get_query_filter({"order": "id DESC"})
+                DataGatewayAPIQueryFilterFactory.get_query_filter({"order": "id DESC"})
