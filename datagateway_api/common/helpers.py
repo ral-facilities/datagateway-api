@@ -103,7 +103,7 @@ def get_filters_from_query_string():
         filters = []
         for arg in request.args:
             for value in request.args.getlist(arg):
-                filters.append(
+                filters.extend(
                     QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
                 )
         return filters

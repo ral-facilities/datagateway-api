@@ -57,18 +57,18 @@ class QueryFilterFactory(object):
             field = list(request_filter[filter_name].keys())[0]
             operation = list(request_filter[filter_name][field].keys())[0]
             value = request_filter[filter_name][field][operation]
-            return WhereFilter(field, value, operation)
+            return [WhereFilter(field, value, operation)]
         elif filter_name == "order":
             field = request_filter["order"].split(" ")[0]
             direction = request_filter["order"].split(" ")[1]
-            return OrderFilter(field, direction)
+            return [OrderFilter(field, direction)]
         elif filter_name == "skip":
-            return SkipFilter(request_filter["skip"])
+            return [SkipFilter(request_filter["skip"])]
         elif filter_name == "limit":
-            return LimitFilter(request_filter["limit"])
+            return [LimitFilter(request_filter["limit"])]
         elif filter_name == "include":
-            return IncludeFilter(request_filter["include"])
+            return [IncludeFilter(request_filter["include"])]
         elif filter_name == "distinct":
-            return DistinctFieldFilter(request_filter["distinct"])
+            return [DistinctFieldFilter(request_filter["distinct"])]
         else:
             raise FilterError(f" Bad filter: {request_filter}")
