@@ -13,8 +13,8 @@ from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
-from test.icat.endpoints.test_create_icat import TestICATCreateData
-from test.icat.test_query import prepare_icat_data_for_assertion
+from test.datagateway_api.icat.endpoints.test_create_icat import TestICATCreateData
+from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
 @pytest.fixture(scope="package")
