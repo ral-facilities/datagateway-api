@@ -10,6 +10,7 @@ from datagateway_api.common.filters import (
     SkipFilter,
     WhereFilter,
 )
+from datagateway_api.common.helpers import get_icat_properties
 
 
 log = logging.getLogger()
@@ -213,7 +214,7 @@ class PythonICATSkipFilter(SkipFilter):
         super().__init__(skip_value)
 
     def apply_filter(self, query):
-        icat_properties = config.get_icat_properties()
+        icat_properties = get_icat_properties(config.icat_url, config.icat_check_cert)
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 

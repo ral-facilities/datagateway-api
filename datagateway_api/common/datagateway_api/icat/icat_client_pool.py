@@ -3,7 +3,7 @@ import logging
 from icat.client import Client
 from object_pool import ObjectPool
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.common.config import config
 
 log = logging.getLogger()
 
@@ -13,8 +13,7 @@ class ICATClient(Client):
 
     def __init__(self):
         super().__init__(
-            config.get_config_value(APIConfigOptions.ICAT_URL),
-            checkCert=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
+            config.icat_url, checkCert=config.icat_check_cert,
         )
         # When clients are cleaned up, sessions won't be logged out
         self.autoLogout = False
@@ -36,8 +35,8 @@ def create_client_pool():
 
     return ObjectPool(
         ICATClient,
-        min_init=config.get_config_value(APIConfigOptions.CLIENT_POOL_INIT_SIZE),
-        max_capacity=config.get_config_value(APIConfigOptions.CLIENT_POOL_MAX_SIZE),
+        min_init=config.client_pool_init_size,
+        max_capacity=config.client_pool_max_size,
         max_reusable=0,
         expires=0,
     )

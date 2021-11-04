@@ -8,7 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.pool import QueuePool
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.common.config import config
 from datagateway_api.common.datagateway_api.database import models
 
 parser = argparse.ArgumentParser()
@@ -36,10 +36,7 @@ Faker.seed(SEED)
 
 
 engine = create_engine(
-    config.get_config_value(APIConfigOptions.DB_URL),
-    poolclass=QueuePool,
-    pool_size=100,
-    max_overflow=0,
+    config.db_url, poolclass=QueuePool, pool_size=100, max_overflow=0,
 )
 session_factory = sessionmaker(engine)
 session = scoped_session(session_factory)()
