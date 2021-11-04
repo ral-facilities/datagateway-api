@@ -3,6 +3,7 @@ import pytest
 from datagateway_api.common.config import config
 from datagateway_api.common.datagateway_api.icat.filters import PythonICATSkipFilter
 from datagateway_api.common.exceptions import FilterError
+from datagateway_api.common.helpers import get_icat_properties
 
 
 class TestICATSkipFilter:
@@ -15,7 +16,7 @@ class TestICATSkipFilter:
 
         assert icat_query.limit == (
             skip_value,
-            config.get_icat_properties()["maxEntities"],
+            get_icat_properties(config.icat_url, config.icat_check_cert)["maxEntities"],
         )
 
     @pytest.mark.parametrize(
