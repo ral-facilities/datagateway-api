@@ -19,7 +19,10 @@ from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 @pytest.fixture(scope="package")
 def icat_client():
-    client = Client(config.icat_url, checkCert=config.icat_check_cert)
+    client = Client(
+        config.datagateway_api.icat_url,
+        checkCert=config.datagateway_api.icat_check_cert,
+    )
     client.login(
         config.test_mechanism, config.test_user_credentials.dict(),
     )

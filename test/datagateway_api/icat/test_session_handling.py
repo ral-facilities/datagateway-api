@@ -141,7 +141,10 @@ class TestSessionHandling:
                 test_backend.get_session_details("session id", client_pool=client_pool)
 
     def test_valid_logout(self, flask_test_app_icat):
-        client = Client(config.icat_url, checkCert=config.icat_check_cert)
+        client = Client(
+            config.datagateway_api.icat_url,
+            checkCert=config.datagateway_api.icat_check_cert,
+        )
         client.login(
             config.test_mechanism, config.test_user_credentials.dict(),
         )

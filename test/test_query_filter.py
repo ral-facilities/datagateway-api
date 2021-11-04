@@ -25,6 +25,6 @@ class TestQueryFilter:
         assert qf.apply_filter(apply_filter) is None
 
     def test_invalid_query_filter_getter(self):
-        config.config.backend = "invalid_backend"
+        config.config.datagateway_api.backend = "invalid_backend"
         with pytest.raises(ApiError):
             QueryFilterFactory.get_query_filter({"order": "id DESC"})
