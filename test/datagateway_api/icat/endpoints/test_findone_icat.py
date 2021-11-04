@@ -1,4 +1,4 @@
-from test.icat.test_query import prepare_icat_data_for_assertion
+from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
 class TestICATFindone:
