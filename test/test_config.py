@@ -1,68 +1,71 @@
-from pathlib import Path
-import tempfile
+import json
+from unittest.mock import mock_open, patch
 
 import pytest
 
-from datagateway_api.common.config import APIConfigOptions, Config
+from datagateway_api.common.config import APIConfig
 
 
 @pytest.fixture()
-def test_config():
-    return Config(
-        path=Path(__file__).parent.parent / "datagateway_api" / "config.json.example",
-    )
+def test_config_data():
+    return {
+        "backend": "db",
+        "client_cache_size": 5,
+        "client_pool_init_size": 2,
+        "client_pool_max_size": 5,
+        "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
+        "flask_reloader": False,
+        "icat_url": "https://localhost:8181",
+        "icat_check_cert": False,
+        "log_level": "WARN",
+        "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",
+        "debug_mode": False,
+        "generate_swagger": False,
+        "host": "127.0.0.1",
+        "port": "5000",
+        "test_user_credentials": {"username": "root", "password": "pw"},
+        "test_mechanism": "simple",
+    }
 
 
-class TestConfig:
-    def test_valid_get_config_value(self, test_config):
-        backend_type = test_config.get_config_value(APIConfigOptions.BACKEND)
+@pytest.fixture()
+def test_config(test_config_data):
+    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+        return APIConfig.load("test/path")
+
+
+class TestAPIConfig:
+    def test_load_with_valid_config_data(self, test_config):
+        backend_type = test_config.backend
         assert backend_type == "db"
 
-    def test_invalid_get_config_value(self, test_config):
-        del test_config._config["backend"]
-        with pytest.raises(SystemExit):
-            test_config.get_config_value(APIConfigOptions.BACKEND)
+    def test_load_with_no_config_data(self):
+        with patch("builtins.open", mock_open(read_data="{}")):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
 
-    @pytest.mark.parametrize(
-        "backend_type",
-        [
-            pytest.param("python_icat", id="Python ICAT Backend"),
-            pytest.param("db", id="Database Backend"),
-        ],
-    )
-    def test_valid_config_items_exist(self, test_config, backend_type):
-        test_config._config["backend"] = backend_type
+    def test_load_with_missing_mandatory_config_data(self, test_config_data):
+        del test_config_data["backend"]
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
 
-        # Just want to check no SysExit's, so no assert is needed
-        test_config._check_config_items_exist()
+    def test_load_with_db_backend_and_missing_db_config_data(self, test_config_data):
+        del test_config_data["db_url"]
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
 
-    def test_invalid_config_items_exist(self):
-        blank_config_file = tempfile.NamedTemporaryFile(mode="w+", suffix=".json")
-        blank_config_file.write("{}")
-        blank_config_file.seek(0)
+    def test_load_with_python_icat_backend_and_missing_python_icat_config_data(
+        self, test_config_data,
+    ):
+        test_config_data["backend"] = "python_icat"
+        del test_config_data["icat_url"]
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
 
-        with pytest.raises(SystemExit):
-            Config(path=blank_config_file.name)
-
-    def test_valid_set_backend_type(self, test_config):
+    def test_set_backend_type(self, test_config):
         test_config.set_backend_type("backend_name_changed")
 
-        assert test_config._config["backend"] == "backend_name_changed"
-
-    def test_valid_icat_properties(self, test_config):
-        example_icat_properties = {
-            "maxEntities": 10000,
-            "lifetimeMinutes": 120,
-            "authenticators": [
-                {
-                    "mnemonic": "simple",
-                    "keys": [{"name": "username"}, {"name": "password", "hide": True}],
-                    "friendly": "Simple",
-                },
-            ],
-            "containerType": "Glassfish",
-        }
-
-        icat_properties = test_config.get_icat_properties()
-        # Values could vary across versions, less likely that keys will
-        assert icat_properties.keys() == example_icat_properties.keys()
+        assert test_config.backend == "backend_name_changed"
