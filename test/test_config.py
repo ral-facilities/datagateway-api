@@ -55,7 +55,7 @@ class TestAPIConfig:
                 APIConfig.load("test/path")
 
     def test_load_with_missing_mandatory_config_data(self, test_config_data):
-        del test_config_data["host"]
+        del test_config_data["log_location"]
         with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
             with pytest.raises(SystemExit):
                 APIConfig.load("test/path")

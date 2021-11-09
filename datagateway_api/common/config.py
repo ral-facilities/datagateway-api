@@ -140,16 +140,16 @@ class APIConfig(BaseModel):
     """
 
     datagateway_api: Optional[DatagatewayAPI]
-    debug_mode: StrictBool
-    flask_reloader: StrictBool
+    debug_mode: Optional[StrictBool]
+    flask_reloader: Optional[StrictBool]
     generate_swagger: StrictBool
-    host: StrictStr
+    host: Optional[StrictStr]
     log_level: StrictStr
     log_location: StrictStr
-    port: StrictStr
+    port: Optional[StrictStr]
     search_api: Optional[SearchAPI]
-    test_mechanism: StrictStr
-    test_user_credentials: TestUserCredentials
+    test_mechanism: Optional[StrictStr]
+    test_user_credentials: Optional[TestUserCredentials]
 
     @classmethod
     def load(cls, path=Path(__file__).parent.parent / "config.json"):
