@@ -1229,6 +1229,7 @@ class STUDY(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
+    pid = Column("PID", String(255))
     startDate = Column("STARTDATE", DateTime)
     status = Column("STATUS", Integer)
     userID = Column("USER_ID", ForeignKey("USER_.ID"), index=True)
