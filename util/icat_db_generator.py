@@ -34,6 +34,9 @@ YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
 Faker.seed(SEED)
 
+pid_faker = Faker()
+pid_faker.seed_instance(SEED)
+
 
 engine = create_engine(
     config.get_config_value(APIConfigOptions.DB_URL),
@@ -434,7 +437,7 @@ class StudyGenerator(Generator):
         apply_common_attributes(study, i)
         study.startDate = get_start_date(i)
         study.status = faker.random_int(0, 1)
-        study.pid = faker.isbn10(separator="-")
+        study.pid = pid_faker.isbn10(separator="-")
         study.userID = i
         post_entity(study)
 
