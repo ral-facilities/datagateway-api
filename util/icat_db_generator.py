@@ -434,6 +434,7 @@ class StudyGenerator(Generator):
         apply_common_attributes(study, i)
         study.startDate = get_start_date(i)
         study.status = faker.random_int(0, 1)
+        study.pid = faker.isbn10(separator="-")
         study.userID = i
         post_entity(study)
 
