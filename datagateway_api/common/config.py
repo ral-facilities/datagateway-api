@@ -17,10 +17,10 @@ from pydantic import (
 log = logging.getLogger()
 
 
-class DatagatewayAPI(BaseModel):
+class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
-    validation of the DatagatewayAPI config data using Python type annotations. It takes
+    validation of the DataGatewayAPI config data using Python type annotations. It takes
     the backend into account, meaning only the config options for the backend used are
     required.
     """
@@ -139,7 +139,7 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
-    datagateway_api: Optional[DatagatewayAPI]
+    datagateway_api: Optional[DataGatewayAPI]
     debug_mode: Optional[StrictBool]
     flask_reloader: Optional[StrictBool]
     generate_swagger: StrictBool
