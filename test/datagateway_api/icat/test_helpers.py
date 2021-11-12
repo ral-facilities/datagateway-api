@@ -3,11 +3,11 @@ from unittest.mock import patch
 from icat.exception import ICATInternalError
 import pytest
 
+from datagateway_api.src.common.exceptions import BadRequestError, PythonICATError
 from datagateway_api.src.datagateway_api.icat.helpers import (
     get_icat_entity_name_as_camel_case,
     push_data_updates_to_icat,
 )
-from datagateway_api.src.common.exceptions import BadRequestError, PythonICATError
 
 
 class TestICATHelpers:

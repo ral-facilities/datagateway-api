@@ -6,6 +6,11 @@ from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 
 from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.common.exceptions import AuthenticationError, DatabaseError
+from datagateway_api.src.common.helpers import (
+    get_entity_object_from_name,
+    queries_records,
+)
 from datagateway_api.src.datagateway_api.backend import Backend
 from datagateway_api.src.datagateway_api.database.helpers import (
     create_rows_from_json,
@@ -25,11 +30,6 @@ from datagateway_api.src.datagateway_api.database.helpers import (
     update_row_from_id,
 )
 from datagateway_api.src.datagateway_api.database.models import SESSION
-from datagateway_api.src.common.exceptions import AuthenticationError, DatabaseError
-from datagateway_api.src.common.helpers import (
-    get_entity_object_from_name,
-    queries_records,
-)
 
 
 log = logging.getLogger()

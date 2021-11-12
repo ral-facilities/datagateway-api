@@ -4,9 +4,9 @@ from icat.exception import ICATError
 import pytest
 
 from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.common.exceptions import PythonICATError
 from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.src.common.exceptions import PythonICATError
 
 
 class TestICATPing:

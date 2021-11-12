@@ -8,8 +8,6 @@ from flask import request
 from flask_restful import reqparse
 from sqlalchemy.exc import IntegrityError
 
-from datagateway_api.src.datagateway_api.database import models
-from datagateway_api.src.datagateway_api.query_filter_factory import QueryFilterFactory
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
     ApiError,
@@ -18,6 +16,8 @@ from datagateway_api.src.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
+from datagateway_api.src.datagateway_api.database import models
+from datagateway_api.src.datagateway_api.query_filter_factory import QueryFilterFactory
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()

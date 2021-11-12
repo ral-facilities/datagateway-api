@@ -3,15 +3,15 @@ from datetime import datetime, timedelta
 from flask import Flask
 import pytest
 
+from datagateway_api.src.api_start_utils import (
+    create_api_endpoints,
+    create_app_infrastructure,
+)
 from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
 )
 from datagateway_api.src.datagateway_api.database.models import SESSION
-from datagateway_api.src.api_start_utils import (
-    create_api_endpoints,
-    create_app_infrastructure,
-)
 
 
 @pytest.fixture()
