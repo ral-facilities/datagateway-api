@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.common.exceptions import (
+from datagateway_api.src.common.exceptions import (
     ApiError,
     AuthenticationError,
     BadRequestError,

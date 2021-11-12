@@ -1,6 +1,6 @@
 from flask_restful import Resource
 
-from datagateway_api.common.helpers import (
+from datagateway_api.src.common.helpers import (
     get_filters_from_query_string,
     get_session_id_from_auth_header,
 )

@@ -1,7 +1,7 @@
 from dateutil.parser import parse
 from icat import helper
 
-from datagateway_api.common.exceptions import BadRequestError
+from datagateway_api.src.common.exceptions import BadRequestError
 
 
 class DateHandler:

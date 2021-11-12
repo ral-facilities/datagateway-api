@@ -2,8 +2,8 @@ import logging
 
 from flask import Flask
 
-from datagateway_api.common.config import APIConfigOptions, config
-from datagateway_api.common.logger_setup import setup_logger
+from datagateway_api.src.common.config import APIConfigOptions, config
+from datagateway_api.src.common.logger_setup import setup_logger
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,

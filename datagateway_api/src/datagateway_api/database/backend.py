@@ -5,9 +5,9 @@ import uuid
 from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
 
-from datagateway_api.common.constants import Constants
-from datagateway_api.common.datagateway_api.backend import Backend
-from datagateway_api.common.datagateway_api.database.helpers import (
+from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.datagateway_api.backend import Backend
+from datagateway_api.src.datagateway_api.database.helpers import (
     create_rows_from_json,
     db,
     delete_row_by_id,
@@ -24,9 +24,12 @@ from datagateway_api.common.datagateway_api.database.helpers import (
     requires_session_id,
     update_row_from_id,
 )
-from datagateway_api.common.datagateway_api.database.models import SESSION
-from datagateway_api.common.exceptions import AuthenticationError, DatabaseError
-from datagateway_api.common.helpers import get_entity_object_from_name, queries_records
+from datagateway_api.src.datagateway_api.database.models import SESSION
+from datagateway_api.src.common.exceptions import AuthenticationError, DatabaseError
+from datagateway_api.src.common.helpers import (
+    get_entity_object_from_name,
+    queries_records,
+)
 
 
 log = logging.getLogger()

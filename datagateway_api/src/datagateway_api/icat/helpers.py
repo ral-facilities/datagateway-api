@@ -14,17 +14,15 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.common.datagateway_api.filter_order_handler import (
-    FilterOrderHandler,
-)
-from datagateway_api.common.datagateway_api.icat.filters import (
+from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.common.datagateway_api.icat.lru_cache import ExtendedLRUCache
-from datagateway_api.common.datagateway_api.icat.query import ICATQuery
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import (
+from datagateway_api.src.datagateway_api.icat.lru_cache import ExtendedLRUCache
+from datagateway_api.src.datagateway_api.icat.query import ICATQuery
+from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.exceptions import (
     AuthenticationError,
     BadRequestError,
     MissingRecordError,

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import logging
 
-from datagateway_api.common.exceptions import BadRequestError, FilterError
+from datagateway_api.src.common.exceptions import BadRequestError, FilterError
 
 log = logging.getLogger()
 

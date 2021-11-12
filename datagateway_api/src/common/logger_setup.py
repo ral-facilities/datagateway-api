@@ -1,7 +1,7 @@
 import logging.config
 from pathlib import Path
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.src.common.config import APIConfigOptions, config
 
 LOG_FILE_NAME = Path(config.get_config_value(APIConfigOptions.LOG_LOCATION))
 logger_config = {

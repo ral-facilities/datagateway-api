@@ -21,8 +21,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import DatabaseError, FilterError
+from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.exceptions import DatabaseError, FilterError
 
 Base = declarative_base()
 

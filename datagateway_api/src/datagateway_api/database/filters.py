@@ -2,8 +2,8 @@ import logging
 
 from sqlalchemy import asc, desc
 
-from datagateway_api.common.exceptions import FilterError, MultipleIncludeError
-from datagateway_api.common.filters import (
+from datagateway_api.src.common.exceptions import FilterError, MultipleIncludeError
+from datagateway_api.src.common.filters import (
     DistinctFieldFilter,
     IncludeFilter,
     LimitFilter,
@@ -11,7 +11,7 @@ from datagateway_api.common.filters import (
     SkipFilter,
     WhereFilter,
 )
-from datagateway_api.common.helpers import get_entity_object_from_name
+from datagateway_api.src.common.helpers import get_entity_object_from_name
 
 
 log = logging.getLogger()

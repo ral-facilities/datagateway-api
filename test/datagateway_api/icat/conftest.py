@@ -8,7 +8,7 @@ from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.src.common.config import APIConfigOptions, config
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,

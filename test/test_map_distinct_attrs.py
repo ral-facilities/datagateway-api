@@ -3,7 +3,7 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 import pytest
 
-from datagateway_api.common.helpers import map_distinct_attributes_to_results
+from datagateway_api.src.common.helpers import map_distinct_attributes_to_results
 
 
 class TestMapDistinctAttrs:

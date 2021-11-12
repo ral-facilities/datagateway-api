@@ -2,7 +2,7 @@ import logging
 
 from cachetools.lru import LRUCache
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.src.common.config import APIConfigOptions, config
 
 log = logging.getLogger()
 

@@ -1,7 +1,7 @@
 import logging
 
-from datagateway_api.common.config import APIConfigOptions, config
-from datagateway_api.common.exceptions import (
+from datagateway_api.src.common.config import APIConfigOptions, config
+from datagateway_api.src.common.exceptions import (
     ApiError,
     FilterError,
 )
@@ -29,7 +29,7 @@ class QueryFilterFactory(object):
 
         backend_type = config.get_config_value(APIConfigOptions.BACKEND)
         if backend_type == "db":
-            from datagateway_api.common.datagateway_api.database.filters import (
+            from datagateway_api.src.datagateway_api.database.filters import (
                 DatabaseDistinctFieldFilter as DistinctFieldFilter,
                 DatabaseIncludeFilter as IncludeFilter,
                 DatabaseLimitFilter as LimitFilter,
@@ -38,7 +38,7 @@ class QueryFilterFactory(object):
                 DatabaseWhereFilter as WhereFilter,
             )
         elif backend_type == "python_icat":
-            from datagateway_api.common.datagateway_api.icat.filters import (
+            from datagateway_api.src.datagateway_api.icat.filters import (
                 PythonICATDistinctFieldFilter as DistinctFieldFilter,
                 PythonICATIncludeFilter as IncludeFilter,
                 PythonICATLimitFilter as LimitFilter,

@@ -1,8 +1,8 @@
 import logging
 
-from datagateway_api.common.config import config
-from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.filters import (
+from datagateway_api.src.common.config import config
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.filters import (
     DistinctFieldFilter,
     IncludeFilter,
     LimitFilter,

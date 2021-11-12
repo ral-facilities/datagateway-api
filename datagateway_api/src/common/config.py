@@ -35,7 +35,7 @@ class APIConfigOptions(Enum):
 
 
 class Config(object):
-    def __init__(self, path=Path(__file__).parent.parent / "config.json"):
+    def __init__(self, path=Path(__file__).parent.parent.parent / "config.json"):
         self.path = path
         with open(self.path) as target:
             self._config = json.load(target)

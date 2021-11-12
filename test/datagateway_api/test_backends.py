@@ -1,9 +1,9 @@
 import pytest
 
-from datagateway_api.common.datagateway_api.backend import Backend
-from datagateway_api.common.datagateway_api.backends import create_backend
-from datagateway_api.common.datagateway_api.database.backend import DatabaseBackend
-from datagateway_api.common.datagateway_api.icat.backend import PythonICATBackend
+from datagateway_api.src.datagateway_api.backend import Backend
+from datagateway_api.src.datagateway_api.backends import create_backend
+from datagateway_api.src.datagateway_api.database.backend import DatabaseBackend
+from datagateway_api.src.datagateway_api.icat.backend import PythonICATBackend
 
 
 class TestBackends:

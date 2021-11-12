@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from datagateway_api.common.config import APIConfigOptions, Config
+from datagateway_api.src.common.config import APIConfigOptions, Config
 
 
 @pytest.fixture()

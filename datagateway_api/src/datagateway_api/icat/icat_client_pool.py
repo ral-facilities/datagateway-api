@@ -3,7 +3,7 @@ import logging
 from icat.client import Client
 from object_pool import ObjectPool
 
-from datagateway_api.common.config import APIConfigOptions, config
+from datagateway_api.src.common.config import APIConfigOptions, config
 
 log = logging.getLogger()
 
