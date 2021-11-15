@@ -1,6 +1,4 @@
-from datagateway_api.src.resources.datagateway_api.entities.entity_map import (
-    create_entity_models,
-)
+from datagateway_api.src.resources.entities.entity_map import create_entity_models
 
 
 def initialise_spec(spec):

@@ -7,28 +7,22 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from datagateway_api.common.config import APIConfigOptions, config
-from datagateway_api.common.datagateway_api.backends import create_backend
-from datagateway_api.common.datagateway_api.database.helpers import db
-from datagateway_api.common.datagateway_api.icat.icat_client_pool import (
-    create_client_pool,
-)
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint import (
+from datagateway_api.src.common.config import APIConfigOptions, config
+from datagateway_api.src.datagateway_api.backends import create_backend
+from datagateway_api.src.datagateway_api.database.helpers import db
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,
     get_find_one_endpoint,
     get_id_endpoint,
 )
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (  # noqa: B950
-    endpoints,
-)
-from datagateway_api.src.resources.datagateway_api.non_entities.ping_endpoint import (
-    ping_endpoint,
-)
-from datagateway_api.src.resources.datagateway_api.non_entities.sessions_endpoints import (  # noqa: B950
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
+from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoint
+from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
-from datagateway_api.src.resources.datagateway_api.table_endpoints.table_endpoints import (  # noqa: B950
+from datagateway_api.src.resources.table_endpoints.table_endpoints import (
     count_instrument_facility_cycles_endpoint,
     count_instrument_investigation_endpoint,
     instrument_facility_cycles_endpoint,

@@ -2,8 +2,8 @@ from datetime import datetime
 
 import pytest
 
-from datagateway_api.common.date_handler import DateHandler
-from datagateway_api.common.exceptions import BadRequestError
+from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.exceptions import BadRequestError
 
 
 class TestIsStrADate:

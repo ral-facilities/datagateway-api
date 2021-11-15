@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.common.helpers import is_valid_json
+from datagateway_api.src.common.helpers import is_valid_json
 
 
 class TestIsValidJSON:
