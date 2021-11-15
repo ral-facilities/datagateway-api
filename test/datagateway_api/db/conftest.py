@@ -3,12 +3,12 @@ import uuid
 
 import pytest
 
-from datagateway_api.common.constants import Constants
-from datagateway_api.common.datagateway_api.database.helpers import (
+from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
 )
-from datagateway_api.common.datagateway_api.database.models import (
+from datagateway_api.src.datagateway_api.database.models import (
     FACILITYCYCLE,
     INSTRUMENT,
     INVESTIGATION,

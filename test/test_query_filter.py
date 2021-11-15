@@ -1,11 +1,10 @@
 import pytest
 
-import datagateway_api.common.config as config
-from datagateway_api.common.datagateway_api.query_filter_factory import (
-    QueryFilterFactory,
-)
-from datagateway_api.common.exceptions import ApiError
-from datagateway_api.common.filters import QueryFilter
+
+import datagateway_api.src.common.config as config
+from datagateway_api.src.common.exceptions import ApiError
+from datagateway_api.src.common.filters import QueryFilter
+from datagateway_api.src.datagateway_api.query_filter_factory import QueryFilterFactory
 
 
 class TestQueryFilter:

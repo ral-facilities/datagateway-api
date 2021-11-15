@@ -8,11 +8,11 @@ from icat.exception import ICATNoObjectError
 from icat.query import Query
 import pytest
 
-from datagateway_api.common.config import config
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
+from datagateway_api.src.common.config import config
 from test.datagateway_api.icat.endpoints.test_create_icat import TestICATCreateData
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 

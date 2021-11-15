@@ -10,7 +10,7 @@ per-file-ignores =
   test/*: S101
   util/icat_db_generator.py: S311
   datagateway_api/wsgi.py:E402,F401
-  datagateway_api/common/datagateway_api/database/models.py: N815,A003
-  datagateway_api/common/datagateway_api/icat/filters.py: C901
-  datagateway_api/common/search_api/models.py: B950
+  datagateway_api/src/datagateway_api/database/models.py: N815,A003
+  datagateway_api/src/datagateway_api/icat/filters.py: C901
+  datagateway_api/src/search_api/models.py: B950
 enable-extensions=G

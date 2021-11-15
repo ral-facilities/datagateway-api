@@ -1,9 +1,9 @@
 import pytest
 
-from datagateway_api.common.config import config
-from datagateway_api.common.datagateway_api.icat.filters import PythonICATSkipFilter
-from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.helpers import get_icat_properties
+from datagateway_api.src.common.config import config
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.helpers import get_icat_properties
+from datagateway_api.src.datagateway_api.icat.filters import PythonICATSkipFilter
 
 
 class TestICATSkipFilter:
