@@ -11013,10 +11013,16 @@ paths:
       summary: Ping API connection method
       tags:
       - Ping
+  /search_api/datasets:
+    get: {}
   /search_api/datasets/{pid}: {}
   /search_api/datasets/count: {}
+  /search_api/documents:
+    get: {}
   /search_api/documents/{pid}: {}
   /search_api/documents/count: {}
+  /search_api/instruments:
+    get: {}
   /search_api/instruments/{pid}: {}
   /search_api/instruments/count: {}
   /search_api/datasets/{pid}/files: {}

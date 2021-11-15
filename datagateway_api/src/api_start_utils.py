@@ -91,6 +91,7 @@ def create_app_infrastructure(flask_app):
 
 
 def create_api_endpoints(flask_app, api, spec):
+    # DataGateway API endpoints
     if config.datagateway_api is not None:
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
@@ -216,8 +217,7 @@ def create_api_endpoints(flask_app, api, spec):
         spec.path(resource=ping_resource, api=api)
 
     # Search API endpoints
-    # TODO - make conditional respect new config style when implemented
-    if True:
+    if config.search_api is not None:
         # TODO - Use config value when new config style is implemented
         search_api_extension = "search_api"
         search_api_entity_endpoints = ["datasets", "documents", "instruments"]
