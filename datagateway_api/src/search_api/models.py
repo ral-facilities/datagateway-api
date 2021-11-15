@@ -3,11 +3,24 @@ Code to define the PaNOSC data model
 TODO - Implement these using pydantic
 """
 
+from __future__ import annotations
 
 from abc import ABC, abstractclassmethod, abstractmethod
+from datetime import datetime
+from typing import List, Optional, Union
+
+from pydantic import (
+    BaseModel,
+    Field,
+    StrictBool,
+    StrictFloat,
+    StrictInt,
+    StrictStr,
+    validator,
+)
 
 
-class PaNOSCAttribute(ABC):
+class PaNOSCAttribute(ABC, BaseModel):
     @abstractclassmethod
     def from_icat(self):
         pass
@@ -20,15 +33,13 @@ class PaNOSCAttribute(ABC):
 class Affiliation(PaNOSCAttribute):
     """Information about which facility a member is located at"""
 
-    def __init__(self, id_, name=None, address=None, city=None, country=None):
-        # TODO - Inconsistency in data models regarding id and pid's
-        self.id = id_
-        self.name = name
-        self.address = address
-        self.city = city
-        self.country = country
+    id_: StrictStr = Field(alias="id")
+    name: Optional[StrictStr]
+    address: Optional[StrictStr]
+    city: Optional[StrictStr]
+    country: Optional[StrictStr]
 
-        self.affiliations = None
+    members: Optional[List[Member]]
 
     @classmethod
     def from_icat(cls):
@@ -44,19 +55,17 @@ class Dataset(PaNOSCAttribute):
     and Technique
     """
 
-    def __init__(self, pid, title, is_public, creation_date, size=None):
-        self.pid = pid  # TODO - dataset.doi, field not filled out by ISIS
-        self.title = title  # TODO - dataset.name, only ~1k of ISIS' 159k datasets aren't called "raw"
-        self.isPublic = is_public  # Evaluate 3 years from date
-        self.creationDate = creation_date  # TODO - dataset.startDate or creationDate? startDate is null on ISIS
-        self.size = size  # TODO - Would require TopCAT request, but not mandatory
+    pid: StrictStr
+    title: StrictStr
+    is_public: StrictBool = Field(alias="isPublic")
+    creation_date: datetime = Field(alias="creationDate")
 
-        self.documents = Document()
-        self.techniques = Technique()
-        self.instrument = None
-        self.files = None
-        self.parameters = None
-        self.samples = None
+    documents: List[Document]
+    techniques: List[Technique]
+    instrument: Optional[instrument]
+    files: Optional[List[File]]
+    parameters: Optional[List[Parameter]]
+    samples: Optional[List[Sample]]
 
     @classmethod
     def from_icat(cls):
@@ -71,35 +80,21 @@ class Document(PaNOSCAttribute):
     Proposal which includes the dataset or published paper which references the dataset
     """
 
-    def __init__(
-        self,
-        pid,
-        is_public,
-        type_,
-        title,
-        summary=None,
-        doi=None,
-        start_date=None,
-        end_date=None,
-        release_date=None,
-        license_=None,
-        keywords=None,
-    ):
-        self.pid = pid  # investigation.doi
-        self.isPublic = is_public  # TODO - Evaluate 3 years of startDate or releaseDate
-        self.type = type_  # TODO - investigation.type.name
-        self.title = title  # investigaton.name
-        self.summary = summary  # investigation.summary
-        self.doi = doi  # TODO - investigation.doi but we already use that for pid
-        self.startDate = start_date  # investigation.startDate
-        self.endDate = end_date  # investigation.endDate
-        self.releaseDate = release_date  # investigation.releaseDate
-        self.license = license_  # Not stored in ICAT but not mandatory, ignore
-        self.keywords = keywords  # TODO - Iterate through keywords.name?
+    pid: StrictStr
+    is_public: StrictBool = Field(alias="isPublic")
+    type_: StrictStr = Field(alias="type")
+    title: StrictStr
+    summary: Optional[StrictStr]
+    doi: Optional[StrictStr]
+    start_date: Optional[datetime] = Field(alias="startDate")
+    end_date: Optional[datetime] = Field(alias="endDate")
+    release_date: Optional[datetime] = Field(alias="releaseDate")
+    license_: Optional[StrictStr] = Field(alias="license")
+    keywords: Optional[List[StrictStr]]
 
-        self.datasets = Dataset()
-        self.members = None
-        self.parameters = None
+    datasets: List[Dataset]
+    members: Optional[List[Member]]
+    parameters: Optional[List[Parameter]]
 
     @classmethod
     def from_icat(cls):
@@ -112,13 +107,12 @@ class Document(PaNOSCAttribute):
 class File(PaNOSCAttribute):
     """Name of file and optionally location"""
 
-    def __init__(self, id_, name, path=None, size=None):
-        self.id = id_  # datafile.id
-        self.name = name  # datafile.name
-        self.path = path  # datafile.location
-        self.size = size  # datafile.fileSize
+    id_: StrictStr = Field(alias="id")
+    name: StrictStr
+    path: Optional[StrictStr]
+    size: Optional[StrictInt]
 
-        self.dataset = Dataset()
+    dataset: Dataset
 
     @classmethod
     def from_icat(cls):
@@ -131,12 +125,11 @@ class File(PaNOSCAttribute):
 class Instrument(PaNOSCAttribute):
     """Beam line where experiment took place"""
 
-    def __init__(self, id_, name, facility):
-        self.id = id_  # instrument.id
-        self.name = name  # instrument.name
-        self.facility = facility  # TODO - instrument.facility.name or fullName
+    id_: StrictStr = Field(alias="id")
+    name: StrictStr
+    facility: StrictStr
 
-        self.datasets = None
+    datasets: Optional[List[Dataset]]
 
     @classmethod
     def from_icat(cls):
@@ -149,11 +142,12 @@ class Instrument(PaNOSCAttribute):
 class Member(PaNOSCAttribute):
     """Proposal team member or paper co-author"""
 
-    def __init__(self, role=None):
-        self.role = role  # investigationUser.role
+    id_: StrictStr = Field(alias="id")
+    role: Optional[StrictStr] = Field(alias="role")
 
-        self.person = Person()
-        self.affiliations = None
+    document: Document
+    person: Optional[Person]
+    affiliations: Optional[List[Affiliation]]
 
     @classmethod
     def from_icat(cls):
@@ -169,15 +163,25 @@ class Parameter(PaNOSCAttribute):
     Note: a parameter is either related to a dataset or a document, but not both.
     """
 
-    def __init__(self, name, value, unit=None):
-        self.name = name  # investigationParameter.type.name
-        """
-        Value can be a number or a string so either field can be used, ICAT also has
-        dateTimeValue which we could check and convert into a string if there's no
-        stringValue or numericValue
-        """
-        self.value = value  # investigationParameter.numericValue or stringValue
-        self.unit = unit  # TODO - investigationParameter.type.units or unitsFullName. In ISIS, units is just "None", full name is null
+    id_: StrictStr = Field(alias="id")
+    name: StrictStr
+    value: Union[StrictFloat, StrictInt, StrictStr]
+    unit: Optional[StrictStr]
+
+    dataset: Optional[Dataset]
+    document: Optional[Document]
+
+    @validator(
+        "document", always=True,
+    )
+    def validate_dataset_and_document(cls, value, values):  # noqa: B902, N805
+        # TODO - Should there be a check for if both document and dataset are None?
+
+        if "dataset" in values and values["dataset"] is not None and value is not None:
+            # TODO - Should an exception be raised here instead?
+            return None
+
+        return value
 
     @classmethod
     def from_icat(cls):
@@ -190,23 +194,14 @@ class Parameter(PaNOSCAttribute):
 class Person(PaNOSCAttribute):
     """Human who carried out experiment"""
 
-    def __init__(
-        self,
-        id_,
-        full_name,
-        orcidid=None,
-        researcher_id=None,
-        first_name=None,
-        last_name=None,
-    ):
-        # TODO - anon doesn't have permissions to query users on ISIS, has to be on an include
-        self.id = id_  # user.id
-        self.full_name = full_name  # user.fullName
-        self.orcidid = orcidid  # user.orcidId
-        self.researcherId = researcher_id  # TODO - not sure, not mandatory, keep blank?
-        # TODO - These can be null on ISIS data?
-        self.firstName = first_name  # user.givenName
-        self.lastName = last_name  # user.familyName
+    id_: StrictStr = Field(alias="id")
+    full_name: StrictStr = Field(alias="fullName")
+    orcid: Optional[StrictStr]
+    researcher_id: Optional[StrictStr] = Field(alias="researcherId")
+    first_name: Optional[StrictStr] = Field(alias="firstName")
+    last_name: Optional[StrictStr] = Field(alias="lastName")
+
+    mambers: Optional[Member]
 
     @classmethod
     def from_icat(cls):
@@ -219,13 +214,11 @@ class Person(PaNOSCAttribute):
 class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
-    def __init__(self, name, pid=None, description=None):
-        self.name = name  # sample.name
-        self.pid = pid  # TODO - sample.pid, seems to be null on ISIS
-        # parameters will be a list, description isn't mandatory, maybe just leave?
-        self.description = description  # TODO - sample.parameters.type.description
+    pid: Optional[StrictStr]  # TODO - Oprtional or not?
+    name: StrictStr
+    description: Optional[StrictStr]
 
-        self.datasets = None
+    datasets: Optional[List[Dataset]]
 
     @classmethod
     def from_icat(cls):
@@ -238,9 +231,10 @@ class Sample(PaNOSCAttribute):
 class Technique(PaNOSCAttribute):
     """Common name of scientific method used"""
 
-    def __init__(self, pid, name):
-        self.pid = pid
-        self.name = name
+    pid: StrictStr
+    name: StrictStr
+
+    datasets: Optional[List[Dataset]]
 
     @classmethod
     def from_icat(cls):
@@ -248,3 +242,14 @@ class Technique(PaNOSCAttribute):
 
     def to_icat(self):
         pass
+
+
+# The below models reference other models that may not be defined during their
+# creation so their references have to manually be updated to lead to the actual
+# models or else an exception will be raised. This can be done with the help of
+# the postponed annotations via the future import together with the
+# `update_forward_refs` method, only after all related models are declared.
+Affiliation.update_forward_refs()
+Dataset.update_forward_refs()
+Document.update_forward_refs()
+Member.update_forward_refs()
