@@ -1,9 +1,10 @@
 from flask_restful import Resource
 
 
-# TODO - Might need kwargs on get_endpoint(), get_id_endpoint(), get_count_endpoint(),
-# get_files_endpoint(), get_count_files_endpoint() for client handling?
-def get_endpoint(name):
+# TODO - Might need kwargs on get_search_endpoint(), get_single_endpoint(),
+# get_number_count_endpoint(), get_files_endpoint(), get_number_count_files_endpoint()
+# for client handling?
+def get_search_endpoint(name):
     """
     TODO - Add docstring
     """
@@ -30,7 +31,7 @@ def get_endpoint(name):
     return Endpoint
 
 
-def get_id_endpoint(name):
+def get_single_endpoint(name):
     """
     TODO - Add docstring
     """
@@ -46,7 +47,7 @@ def get_id_endpoint(name):
     return EndpointWithID
 
 
-def get_count_endpoint(name):
+def get_number_count_endpoint(name):
     """
     TODO - Add docstring
     """
@@ -78,7 +79,7 @@ def get_files_endpoint(name):
     return FilesEndpoint
 
 
-def get_count_files_endpoint(name):
+def get_number_count_files_endpoint(name):
     """
     TODO - Add docstring
     """
