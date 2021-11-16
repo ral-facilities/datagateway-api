@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.src.common.config import config
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -27,7 +28,7 @@ class TestUpdateMultipleEntities:
             update_data_list.append(update_entity)
 
         test_response = flask_test_app_icat.patch(
-            "/investigations",
+            f"{config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_list,
         )
@@ -55,7 +56,7 @@ class TestUpdateMultipleEntities:
         single_investigation_test_data[0]["summary"] = expected_summary
 
         test_response = flask_test_app_icat.patch(
-            "/investigations",
+            f"{config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
@@ -77,7 +78,7 @@ class TestUpdateMultipleEntities:
         }
 
         test_response = flask_test_app_icat.patch(
-            "/investigations",
+            f"{config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
@@ -105,7 +106,7 @@ class TestUpdateMultipleEntities:
         }
 
         test_response = flask_test_app_icat.patch(
-            "/investigations",
+            f"{config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=invalid_update_data_json,
         )
@@ -137,14 +138,17 @@ class TestUpdateMultipleEntities:
         ]
 
         update_response = flask_test_app_icat.patch(
-            "/investigations", headers=valid_icat_credentials_header, json=request_body,
+            f"{config.datagateway_api.extension}/investigations",
+            headers=valid_icat_credentials_header,
+            json=request_body,
         )
 
         # Get first entity that would've been successfully updated to ensure the changes
         # were rolled back when the ICATValidationError occurred for the second entity
         # in the request body
         get_response = flask_test_app_icat.get(
-            f"/investigations/{multiple_investigation_test_data[0]['id']}",
+            f"{config.datagateway_api.extension}/investigations"
+            f"/{multiple_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
         )
         get_response_json = prepare_icat_data_for_assertion([get_response.json])

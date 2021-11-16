@@ -3,6 +3,7 @@ import uuid
 
 import pytest
 
+from datagateway_api.src.common.config import config
 from datagateway_api.src.common.constants import Constants
 from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
@@ -116,7 +117,8 @@ def isis_specific_endpoint_data_db():
 @pytest.fixture()
 def final_instrument_id(flask_test_app_db, valid_db_credentials_header):
     final_instrument_result = flask_test_app_db.get(
-        '/instruments/findone?order="id DESC"', headers=valid_db_credentials_header,
+        f'{config.datagateway_api.extension}/instruments/findone?order="id DESC"',
+        headers=valid_db_credentials_header,
     )
     return final_instrument_result.json["id"]
 
@@ -124,6 +126,7 @@ def final_instrument_id(flask_test_app_db, valid_db_credentials_header):
 @pytest.fixture()
 def final_facilitycycle_id(flask_test_app_db, valid_db_credentials_header):
     final_facilitycycle_result = flask_test_app_db.get(
-        '/facilitycycles/findone?order="id DESC"', headers=valid_db_credentials_header,
+        f'{config.datagateway_api.extension}/facilitycycles/findone?order="id DESC"',
+        headers=valid_db_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
