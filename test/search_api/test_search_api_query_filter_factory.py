@@ -111,6 +111,24 @@ class TestSearchAPIQueryFilterFactory:
                 ["and", "and"],
                 id="Nested AND, multiple conditions with operator",
             ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {"name": {"like": "Test name"}},
+                                {"value": {"gte": 275}},
+                            ],
+                        },
+                    },
+                },
+                2,
+                ["name", "value"],
+                ["like", "gte"],
+                ["Test name", 275],
+                ["or", "or"],
+                id="OR, multiple conditions with operator",
+            ),
         ],
     )
     def test_valid_where_filter(
