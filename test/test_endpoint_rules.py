@@ -1,8 +1,6 @@
 import pytest
 
-from datagateway_api.src.resources.datagateway_api.entities.entity_endpoint_dict import (  # noqa: B950
-    endpoints,
-)
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 
 class TestEndpointRules:

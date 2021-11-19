@@ -2,15 +2,13 @@ from unittest.mock import patch
 
 import pytest
 
-from datagateway_api.common.datagateway_api.filter_order_handler import (
-    FilterOrderHandler,
-)
-from datagateway_api.common.datagateway_api.icat.filters import (
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.datagateway_api.icat.filters import (
     icat_set_limit,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
 )
-from datagateway_api.common.exceptions import FilterError
 
 
 class TestICATLimitFilter:

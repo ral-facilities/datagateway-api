@@ -1,7 +1,7 @@
 import pytest
 
-from datagateway_api.common.constants import Constants
-from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.common.date_handler import DateHandler
 
 
 class TestDBGetWithFilters:
