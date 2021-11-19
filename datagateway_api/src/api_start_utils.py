@@ -22,18 +22,18 @@ from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoi
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
-from datagateway_api.src.resources.table_endpoints.table_endpoints import (
-    count_instrument_facility_cycles_endpoint,
-    count_instrument_investigation_endpoint,
-    instrument_facility_cycles_endpoint,
-    instrument_investigation_endpoint,
-)
-from datagateway_api.src.resources.search_api.search_api_endpoints import (
+from datagateway_api.src.resources.search_api_endpoints import (
     get_files_endpoint,
     get_number_count_endpoint,
     get_number_count_files_endpoint,
     get_search_endpoint,
     get_single_endpoint,
+)
+from datagateway_api.src.resources.table_endpoints.table_endpoints import (
+    count_instrument_facility_cycles_endpoint,
+    count_instrument_investigation_endpoint,
+    instrument_facility_cycles_endpoint,
+    instrument_investigation_endpoint,
 )
 from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
 from datagateway_api.src.swagger.initialise_spec import initialise_spec
