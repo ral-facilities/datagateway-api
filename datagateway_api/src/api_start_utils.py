@@ -7,10 +7,10 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from datagateway_api.common.backends import create_backend
-from datagateway_api.common.config import APIConfigOptions, config
-from datagateway_api.common.database.helpers import db
-from datagateway_api.common.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.common.config import APIConfigOptions, config
+from datagateway_api.src.datagateway_api.backends import create_backend
+from datagateway_api.src.datagateway_api.database.helpers import db
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,

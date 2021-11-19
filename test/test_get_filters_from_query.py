@@ -1,14 +1,14 @@
 import pytest
 
-from datagateway_api.common.database.filters import (
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.helpers import get_filters_from_query_string
+from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
     DatabaseIncludeFilter,
     DatabaseLimitFilter,
     DatabaseOrderFilter,
     DatabaseSkipFilter,
 )
-from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.helpers import get_filters_from_query_string
 
 
 class TestGetFiltersFromQueryString:

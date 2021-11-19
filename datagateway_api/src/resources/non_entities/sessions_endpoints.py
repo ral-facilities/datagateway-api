@@ -3,8 +3,8 @@ import logging
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.exceptions import AuthenticationError
-from datagateway_api.common.helpers import get_session_id_from_auth_header
+from datagateway_api.src.common.exceptions import AuthenticationError
+from datagateway_api.src.common.helpers import get_session_id_from_auth_header
 
 
 log = logging.getLogger()
