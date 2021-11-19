@@ -19,22 +19,15 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         query_filters = []
 
         if query_param_name == "filter":
-            log.debug(
-                f"Filter: {request_filter['filter']}, Type: {type(request_filter['filter'])})",
-            )
+            log.debug("Filter: %s", request_filter["filter"])
             for filter_name, filter_input in request_filter["filter"].items():
-                log.debug(f"Name: {filter_name}, Type: {type(filter_name)}")
-                log.debug(f"Input: {filter_input}, Type: {type(filter_input)}")
                 # {"where": {"property": "value"}}
                 # {"where": {"property": {"operator": "value"}}}
                 # {"where": {"text": "value"}}
                 # {"where": {"and": [{"property": "value"}, {"property": "value"}]}}
                 # {"where": {"or": [{"property": "value"}, {"property": "value"}]}}
                 if filter_name == "where":
-                    if list(filter_input.keys())[0] == "text":
-                        # Multiple WHERE filters ORing - e.g. title or summary
-                        pass
-                    elif (
+                    if (
                         list(filter_input.keys())[0] == "and"
                         or list(filter_input.keys())[0] == "or"
                     ):
@@ -42,7 +35,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         conditions = list(filter_input.values())[0]
                         for condition in conditions:
                             # Could be nested AND/OR
-                            filter_data = SearchAPIQueryFilterFactory.get_condition_values(
+                            filter_data = SearchAPIQueryFilterFactory.get_condition_values(  # noqa: B950
                                 condition,
                             )
                             for condition in filter_data:
@@ -59,10 +52,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             filter_input,
                         )
                         for condition in filter_data:
-
                             query_filters.append(
                                 SearchAPIWhereFilter(
-                                    condition[0], condition[1], condition[2],
+                                    field=condition[0],
+                                    value=condition[1],
+                                    operation=condition[2],
                                 ),
                             )
 
@@ -81,19 +75,41 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
                         if "scope" in related_model:
                             try:
-                                field_name = list(
+                                where_key = list(
                                     related_model["scope"]["where"].keys(),
                                 )[0]
-                                full_field_path = f"{included_entity}.{field_name}"
-                                related_model["scope"]["where"][
-                                    full_field_path
-                                ] = related_model["scope"]["where"].pop("name")
 
-                                query_filters.extend(
-                                    SearchAPIQueryFilterFactory.get_query_filter(
-                                        {"filter": related_model["scope"]},
-                                    ),
-                                )
+                                if where_key == "text":
+                                    # TODO - we might want to move this to the data
+                                    # definitions at a later point
+                                    text_operator_fields = {
+                                        "datasets": ["title"],
+                                        "documents": ["title", "summary"],
+                                        "files": ["name"],
+                                        "instrument": ["name", "facility"],
+                                        "samples": ["name", "description"],
+                                        "techniques": ["name"],
+                                    }
+                                    field_names = text_operator_fields[included_entity]
+                                else:
+                                    field_names = [where_key]
+
+                                for field_name in field_names:
+                                    full_field_path = f"{included_entity}.{field_name}"
+                                    where_filter = {
+                                        "filter": {
+                                            "where": {
+                                                full_field_path: related_model["scope"][
+                                                    "where"
+                                                ][where_key],
+                                            },
+                                        },
+                                    }
+                                    query_filters.extend(
+                                        SearchAPIQueryFilterFactory.get_query_filter(
+                                            where_filter,
+                                        ),
+                                    )
                             except KeyError:
                                 raise FilterError("Error in scope for include filter")
                 elif filter_name == "limit":

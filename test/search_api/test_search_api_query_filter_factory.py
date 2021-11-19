@@ -166,7 +166,8 @@ class TestSearchAPIQueryFilterFactory:
             assert test_filter.boolean_operator == boolean_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, expected_length, expected_included_entities, expected_where_filter_data",
+        "test_request_filter, expected_length, expected_included_entities"
+        ", expected_where_filter_data",
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
@@ -223,16 +224,36 @@ class TestSearchAPIQueryFilterFactory:
                     "filter": {
                         "include": [
                             {
-                                "relation": "parameters",
-                                "scope": {"where": {"text": "My parameter"}},
+                                "relation": "files",
+                                "scope": {"where": {"text": "file1"}},
                             },
                         ],
                     },
                 },
                 2,
-                [["parameters"], []],
-                [[], ["parameters.name", "ne", "My parameter"]],
+                [["files"], []],
+                [[], ["files.name", "eq", "file1"]],
                 id="Related model with scope (text operator)",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {"where": {"text": "document1"}},
+                            },
+                        ],
+                    },
+                },
+                3,
+                [["documents"], []],
+                [
+                    [],
+                    ["documents.title", "eq", "document1"],
+                    ["documents.summary", "eq", "document1"],
+                ],
+                id="Related model with scope (text operator, multiple fields)",
             ),
             pytest.param(
                 {
