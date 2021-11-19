@@ -10,8 +10,9 @@ from datagateway_api.common.datagateway_api.icat.filters import (
 
 
 class SearchAPIWhereFilter(PythonICATWhereFilter):
-    def __init__(self, field, value, operation):
+    def __init__(self, field, value, operation, boolean_operator="and"):
         super().__init__(field, value, operation)
+        self.boolean_operator = boolean_operator
 
     def apply_filter(self, query):
         return super().apply_filter(query)
