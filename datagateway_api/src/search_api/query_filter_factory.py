@@ -104,21 +104,19 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     raise FilterError(
                         "No valid filter name given within filter query param",
                     )
-
-            return query_filters
         elif query_param_name == "where":
             # For the count endpoints
-            """
             query_filters.extend(
                 SearchAPIQueryFilterFactory.get_query_filter(
-                    {"filter": related_model["scope"]},
+                    {"filter": request_filter},
                 ),
-            ),
-            """
+            )
         else:
             raise FilterError(
                 f"Bad filter, please check query parameters: {request_filter}",
             )
+
+        return query_filters
 
     @staticmethod
     def get_condition_values(filter_input):

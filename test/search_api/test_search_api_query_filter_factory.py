@@ -129,6 +129,15 @@ class TestSearchAPIQueryFilterFactory:
                 ["or", "or"],
                 id="OR, multiple conditions with operator",
             ),
+            pytest.param(
+                {"where": {"summary": {"like": "My Test Summary"}}},
+                1,
+                ["summary"],
+                ["like"],
+                ["My Test Summary"],
+                ["and"],
+                id="WHERE filter in syntax for count endpoints",
+            ),
         ],
     )
     def test_valid_where_filter(
