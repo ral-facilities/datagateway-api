@@ -1659,6 +1659,8 @@ components:
           type: string
         name:
           type: string
+        pid:
+          type: string
         startDate:
           format: datetime
           type: string

@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.common.datagateway_api.database.filters import (
+from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
     DatabaseIncludeFilter,
     DatabaseLimitFilter,
@@ -8,7 +8,7 @@ from datagateway_api.common.datagateway_api.database.filters import (
     DatabaseSkipFilter,
     DatabaseWhereFilter,
 )
-from datagateway_api.common.datagateway_api.query_filter_factory import (
+from datagateway_api.src.datagateway_api.query_filter_factory import (
     DataGatewayAPIQueryFilterFactory,
 )
 
@@ -18,7 +18,7 @@ class TestDataGatewayAPIQueryFilterFactory:
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_distinct_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
-            {"distinct": "TEST"}
+            {"distinct": "TEST"},
         )
         assert isinstance(test_filter[0], DatabaseDistinctFieldFilter)
         assert len(test_filter) == 1
@@ -49,7 +49,7 @@ class TestDataGatewayAPIQueryFilterFactory:
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_order_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
-            {"order": "id DESC"}
+            {"order": "id DESC"},
         )
         assert isinstance(test_filter[0], DatabaseOrderFilter)
         assert len(test_filter) == 1

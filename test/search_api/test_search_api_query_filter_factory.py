@@ -1,13 +1,13 @@
 import pytest
 
-from datagateway_api.common.exceptions import FilterError
-from datagateway_api.common.search_api.filters import (
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
-from datagateway_api.common.search_api.query_filter_factory import (
+from datagateway_api.src.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
 
