@@ -1,5 +1,7 @@
 from flask_restful import Resource
 
+from datagateway_api.common.helpers import get_filters_from_query_string
+
 
 # TODO - Might need kwargs on get_search_endpoint(), get_single_endpoint(),
 # get_number_count_endpoint(), get_files_endpoint(), get_number_count_files_endpoint()
@@ -11,6 +13,7 @@ def get_search_endpoint(name):
 
     class Endpoint(Resource):
         def get(self):
+            filters = get_filters_from_query_string("search_api")
             """
             TODO - Need to return similar to
             return (
@@ -38,6 +41,7 @@ def get_single_endpoint(name):
 
     class EndpointWithID(Resource):
         def get(self, pid):
+            filters = get_filters_from_query_string("search_api")
             # TODO - Add return
             pass
 
@@ -54,6 +58,8 @@ def get_number_count_endpoint(name):
 
     class CountEndpoint(Resource):
         def get(self):
+            # Only WHERE included on count endpoints
+            filters = get_filters_from_query_string("search_api")
             # TODO - Add return
             pass
 
@@ -70,6 +76,7 @@ def get_files_endpoint(name):
 
     class FilesEndpoint(Resource):
         def get(self, pid):
+            filters = get_filters_from_query_string("search_api")
             # TODO - Add return
             pass
 
@@ -86,6 +93,8 @@ def get_number_count_files_endpoint(name):
 
     class CountFilesEndpoint(Resource):
         def get(self, pid):
+            # Only WHERE included on count endpoints
+            filters = get_filters_from_query_string("search_api")
             # TODO - Add return
             pass
 
