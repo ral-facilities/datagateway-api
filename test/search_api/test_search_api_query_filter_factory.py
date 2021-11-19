@@ -15,7 +15,7 @@ from datagateway_api.common.search_api.query_filter_factory import (
 class TestSearchAPIQueryFilterFactory:
     @pytest.mark.parametrize(
         "test_request_filter, expected_length, expected_fields, expected_operations"
-        ", expected_values",
+        ", expected_values, expected_boolean_operators",
         [
             pytest.param(
                 {"filter": {"where": {"title": "My Title"}}},
@@ -23,6 +23,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["title"],
                 ["eq"],
                 ["My Title"],
+                ["and"],
                 id="Property value, no specified operator",
             ),
             pytest.param(
@@ -31,6 +32,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["summary"],
                 ["like"],
                 ["My Test Summary"],
+                ["and"],
                 id="Property value with operator",
             ),
             pytest.param(
@@ -39,6 +41,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["summary"],
                 ["eq"],
                 ["My Test Summary"],
+                ["and"],
                 id="AND with single condition, no specified operator",
             ),
             pytest.param(
@@ -56,6 +59,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["summary", "title"],
                 ["eq", "eq"],
                 ["My Test Summary", "Test title"],
+                ["and", "and"],
                 id="AND with multiple conditions, no specified operator",
             ),
             pytest.param(
@@ -64,6 +68,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["value"],
                 ["lt"],
                 [50],
+                ["and"],
                 id="AND, single condition with operator",
             ),
             pytest.param(
@@ -77,10 +82,11 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                1,
+                2,
                 ["name", "value"],
                 ["like", "gte"],
                 ["Test name", 275],
+                ["and", "and"],
                 id="AND, multiple conditions with operator",
             ),
             pytest.param(
@@ -98,10 +104,11 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                1,
+                2,
                 ["name", "value"],
                 ["like", "gte"],
                 ["Test name", 275],
+                ["and", "and"],
                 id="Nested AND, multiple conditions with operator",
             ),
         ],
@@ -113,17 +120,23 @@ class TestSearchAPIQueryFilterFactory:
         expected_fields,
         expected_operations,
         expected_values,
+        expected_boolean_operators,
     ):
         filters = SearchAPIQueryFilterFactory.get_query_filter(test_request_filter)
 
         assert len(filters) == expected_length
-        for test_filter, field, operation, value in zip(
-            filters, expected_fields, expected_operations, expected_values,
+        for test_filter, field, operation, value, boolean_operator in zip(
+            filters,
+            expected_fields,
+            expected_operations,
+            expected_values,
+            expected_boolean_operators,
         ):
             assert isinstance(test_filter, SearchAPIWhereFilter)
             assert test_filter.field == field
             assert test_filter.operation == operation
             assert test_filter.value == value
+            assert test_filter.boolean_operator == boolean_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, expected_length, expected_included_entities, expected_where_filter_data",
