@@ -423,6 +423,8 @@ class UserGroupGenerator(Generator):
 class StudyGenerator(Generator):
     tier = 3
     amount = UserGenerator.amount
+    pid_faker = Faker()
+    pid_faker.seed_instance(SEED)
 
     def generate(self):
         for i in range(1, self.amount):
@@ -434,6 +436,7 @@ class StudyGenerator(Generator):
         apply_common_attributes(study, i)
         study.startDate = get_start_date(i)
         study.status = faker.random_int(0, 1)
+        study.pid = StudyGenerator.pid_faker.isbn10(separator="-")
         study.userID = i
         post_entity(study)
 
