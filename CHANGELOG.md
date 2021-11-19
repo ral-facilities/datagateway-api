@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2021-11-19)
+### Feature
+* Add unimplemented endpoint definitions for search API #257 ([`d0e52d9`](https://github.com/ral-facilities/datagateway-api/commit/d0e52d96dd3b94ce54dcc9b81969e777a196922a))
+
+### Documentation
+* Rebuild openapi docs #257 ([`de15357`](https://github.com/ral-facilities/datagateway-api/commit/de1535772db64916f75e16d79be3f3fdf10fc47c))
+
 ## v1.0.1 (2021-11-15)
 ### Fix
 * Add PID field for study in DB backend #287 ([`18379be`](https://github.com/ral-facilities/datagateway-api/commit/18379becafd23ff2957e556de2bd3fc210a71f5b))
