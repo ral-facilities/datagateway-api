@@ -48,7 +48,10 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             for condition in filter_data:
                                 query_filters.append(
                                     SearchAPIWhereFilter(
-                                        condition[0], condition[1], condition[2],
+                                        field=condition[0],
+                                        value=condition[1],
+                                        operation=condition[2],
+                                        boolean_operator=boolean_operator,
                                     ),
                                 )
                     else:
