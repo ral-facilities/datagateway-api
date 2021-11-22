@@ -314,10 +314,7 @@ fix: fix bug found with count endpoints #issue-number
 feat: add endpoints for search API #issue-number
 
 # Commit which introduces a breaking change for users
-BREAKING CHANGE: change format of `config.json`, the previous version is no longer supported #issue-number
-
-# You can also use `BREAKING CHANGE:` in the additional information if the commit also adds a new feature, like so:
-feat: my new feature #issue-number
+<commit-type>: change format of `config.json`, the previous version is no longer supported #issue-number
 
 BREAKING CHANGE: this feature means X functionality has been removed
 ```
