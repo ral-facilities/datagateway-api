@@ -36,6 +36,24 @@ class TestSearchAPIQueryFilterFactory:
                 id="Property value with operator",
             ),
             pytest.param(
+                {"filter": {"where": {"text": "Dataset 1"}}},
+                1,
+                ["title"],
+                ["eq"],
+                ["Dataset 1"],
+                ["and"],
+                id="Text operator on dataset",
+            ),
+            pytest.param(
+                {"filter": {"where": {"text": "Instrument 1"}}},
+                2,
+                ["name", "facility"],
+                ["eq", "eq"],
+                ["Instrument 1", "Instrument 1"],
+                ["and", "and"],
+                id="Text operator on instrument",
+            ),
+            pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
                 1,
                 ["summary"],
@@ -202,6 +220,31 @@ class TestSearchAPIQueryFilterFactory:
                 [["parameters"], []],
                 [[], ["parameters.name", "eq", "My parameter"]],
                 id="Related model with scope",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "parameters",
+                                "scope": {"where": {"name": "My parameter"}},
+                            },
+                            {
+                                "relation": "documents",
+                                "scope": {"where": {"title": "Document title"}},
+                            },
+                        ],
+                    },
+                },
+                4,
+                [["parameters"], [], ["documents"], []],
+                [
+                    [],
+                    ["parameters.name", "eq", "My parameter"],
+                    [],
+                    ["documents.title", "eq", "Document title"],
+                ],
+                id="Multiple related models with scopes",
             ),
             pytest.param(
                 {
