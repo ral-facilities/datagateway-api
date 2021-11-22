@@ -1,6 +1,5 @@
 import pytest
 
-
 import datagateway_api.src.common.config as config
 from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.filters import QueryFilter
