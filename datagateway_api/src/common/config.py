@@ -17,6 +17,24 @@ from pydantic import (
 log = logging.getLogger()
 
 
+def validate_extension(extension):
+    """
+    Checks that the API extension starts and does not end with a '/'. An error is
+    raised, at which point the application exits, if the extension does not meet
+    these validation rules.
+
+    :param extension: The extension for the API
+    """
+    extension = extension.strip()
+
+    if not extension.startswith("/"):
+        raise ValueError("must start with '/'")
+    if extension.endswith("/"):
+        raise ValueError("must not end with '/'")
+
+    return extension
+
+
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
@@ -34,16 +52,18 @@ class DataGatewayAPI(BaseModel):
     icat_check_cert: Optional[StrictBool]
     icat_url: Optional[StrictStr]
 
+    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+
     @validator("db_url", always=True)
     def require_db_config_value(cls, value, values):  # noqa: B902, N805
         """
         By default the `db_url` config field is optional so that it does not have to be
         present in the config file if `backend` is set to `python_icat`. However, if the
         `backend` is set to `db`, this validator esentially makes the `db_url` config
-        field mandatory. This means that if the an error is raised, at which point the
+        field mandatory. This means that an error is raised, at which point the
         application exits, if a `db_url` config value is not present in the config file.
 
-        :param cls: :class:`APIConfig` pointer
+        :param cls: :class:`DataGatewayAPI` pointer
         :param value: The value of the given config field
         :param values: The config field values loaded before the given config field
         """
@@ -62,13 +82,13 @@ class DataGatewayAPI(BaseModel):
     def require_icat_config_value(cls, value, values):  # noqa: B902, N805
         """
         By default the above config fields that are passed to the `@validator` decorator
-        are optional so that they not have to be present in the config file if `backend`
-        is set to `db`. However, if the `backend` is set to `python_icat`, this
-        validator esentially makes these config fields mandatory. This means that an
-        error is raised, at which point the application exits, if any of these config
+        are optional so that they do not have to be present in the config file if
+        `backend` is set to `db`. However, if the `backend` is set to `python_icat`,
+        this validator esentially makes these config fields mandatory. This means that
+        an error is raised, at which point the application exits, if any of these config
         values are not present in the config file.
 
-        :param cls: :class:`APIConfig` pointer
+        :param cls: :class:`DataGatewayAPI` pointer
         :param value: The value of the given config field
         :param values: The config field values loaded before the given config field
         """
@@ -111,6 +131,8 @@ class SearchAPI(BaseModel):
     extension: StrictStr
     icat_check_cert: StrictBool
     icat_url: StrictStr
+
+    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 
 
 class TestUserCredentials(BaseModel):
@@ -158,6 +180,7 @@ class APIConfig(BaseModel):
         model. Exits the application if it fails to locate the JSON config file or
         the APIConfig model validation fails.
 
+        :param cls: :class:`APIConfig` pointer
         :param path: path to the configuration file
         :return: APIConfig model object that contains the config data
         """
@@ -167,6 +190,29 @@ class APIConfig(BaseModel):
                 return cls(**data)
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
+
+    @validator("search_api")
+    def validate_api_extensions(cls, value, values):  # noqa: B902, N805
+        """
+        Checks that the DataGateway API and Search API extensions are not the same. An
+        error is raised, at which point the application exits, if the extensions are the
+        same.
+
+        :param cls: :class:`APIConfig` pointer
+        :param value: The value of the given config field
+        :param values: The config field values loaded before the given config field
+        """
+        if (
+            "datagateway_api" in values
+            and values["datagateway_api"] is not None
+            and value is not None
+            and values["datagateway_api"].extension == value.extension
+        ):
+            raise ValueError(
+                "extension cannot be the same as datagateway_api extension",
+            )
+
+        return value
 
 
 config = APIConfig.load()
