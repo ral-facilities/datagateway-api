@@ -1,102 +1,101 @@
-from enum import Enum
 import json
 import logging
 from pathlib import Path
 import sys
+from typing import Optional
 
-import requests
+from pydantic import (
+    BaseModel,
+    StrictBool,
+    StrictInt,
+    StrictStr,
+    ValidationError,
+    validator,
+)
 
 
 log = logging.getLogger()
 
 
-class APIConfigOptions(Enum):
+def validate_extension(extension):
     """
-    Class to map config keys to variables in Python - implemented for ease of
-    development (IntelliSense in IDEs)
+    Checks that the API extension starts and does not end with a '/'. An error is
+    raised, at which point the application exits, if the extension does not meet
+    these validation rules.
+
+    :param extension: The extension for the API
+    """
+    extension = extension.strip()
+
+    if not extension.startswith("/"):
+        raise ValueError("must start with '/'")
+    if extension.endswith("/"):
+        raise ValueError("must not end with '/'")
+
+    return extension
+
+
+class DataGatewayAPI(BaseModel):
+    """
+    Configuration model class that implements pydantic's BaseModel class to allow for
+    validation of the DataGatewayAPI config data using Python type annotations. It takes
+    the backend into account, meaning only the config options for the backend used are
+    required.
     """
 
-    BACKEND = "backend"
-    CLIENT_CACHE_SIZE = "client_cache_size"
-    CLIENT_POOL_INIT_SIZE = "client_pool_init_size"
-    CLIENT_POOL_MAX_SIZE = "client_pool_max_size"
-    DB_URL = "db_url"
-    DEBUG_MODE = "debug_mode"
-    FLASK_RELOADER = "flask_reloader"
-    GENERATE_SWAGGER = "generate_swagger"
-    HOST = "host"
-    ICAT_CHECK_CERT = "icat_check_cert"
-    ICAT_URL = "icat_url"
-    LOG_LEVEL = "log_level"
-    LOG_LOCATION = "log_location"
-    PORT = "port"
-    TEST_MECHANISM = "test_mechanism"
-    TEST_USER_CREDENTIALS = "test_user_credentials"
+    backend: StrictStr
+    client_cache_size: Optional[StrictInt]
+    client_pool_init_size: Optional[StrictInt]
+    client_pool_max_size: Optional[StrictInt]
+    db_url: Optional[StrictStr]
+    extension: StrictStr
+    icat_check_cert: Optional[StrictBool]
+    icat_url: Optional[StrictStr]
 
+    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 
-class Config(object):
-    def __init__(self, path=Path(__file__).parent.parent.parent / "config.json"):
-        self.path = path
-        with open(self.path) as target:
-            self._config = json.load(target)
-
-        self._check_config_items_exist()
-
-    def _check_config_items_exist(self):
+    @validator("db_url", always=True)
+    def require_db_config_value(cls, value, values):  # noqa: B902, N805
         """
-        A function to check that all config options exist before getting too far into
-        the setup of the API. This check takes the backend into account, meaning only
-        the config options for the backend used is required.
+        By default the `db_url` config field is optional so that it does not have to be
+        present in the config file if `backend` is set to `python_icat`. However, if the
+        `backend` is set to `db`, this validator esentially makes the `db_url` config
+        field mandatory. This means that an error is raised, at which point the
+        application exits, if a `db_url` config value is not present in the config file.
 
-        If a config option is missing, this will be picked up in `get_config_value()` by
-        exiting the application
-
-        Config options used for testing are not checked here as they should only be used
-        during tests, not in the typical running of the API.
-
-        Some options used when running the API (host, debug_mode etc.) aren't mandatory
-        when running the API in production (these options aren't used in the `wsgi.py`
-        entrypoint). As a result, they're not present in `config_keys`. However, they
-        are required when using `main.py` as an entrypoint. In any case of these
-        specific missing config options when using that entrypoint, they are checked at
-        API startup so any missing options will be caught quickly.
+        :param cls: :class:`DataGatewayAPI` pointer
+        :param value: The value of the given config field
+        :param values: The config field values loaded before the given config field
         """
-        # These keys are non-backend specific and therefore are mandatory for all uses
-        config_keys = [
-            APIConfigOptions.BACKEND,
-            APIConfigOptions.GENERATE_SWAGGER,
-            APIConfigOptions.LOG_LEVEL,
-            APIConfigOptions.LOG_LOCATION,
-        ]
+        if "backend" in values and values["backend"] == "db" and value is None:
+            raise TypeError("field required")
+        return value
 
-        if self.get_config_value(APIConfigOptions.BACKEND) == "python_icat":
-            icat_backend_specific_config_keys = [
-                APIConfigOptions.CLIENT_CACHE_SIZE,
-                APIConfigOptions.CLIENT_POOL_INIT_SIZE,
-                APIConfigOptions.CLIENT_POOL_MAX_SIZE,
-                APIConfigOptions.ICAT_CHECK_CERT,
-                APIConfigOptions.ICAT_URL,
-            ]
-            config_keys.extend(icat_backend_specific_config_keys)
-        elif self.get_config_value(APIConfigOptions.BACKEND) == "db":
-            db_backend_specific_config_keys = [APIConfigOptions.DB_URL]
-            config_keys.extend(db_backend_specific_config_keys)
-
-        for key in config_keys:
-            self.get_config_value(key)
-
-    def get_config_value(self, config_key):
+    @validator(
+        "client_cache_size",
+        "client_pool_init_size",
+        "client_pool_max_size",
+        "icat_check_cert",
+        "icat_url",
+        always=True,
+    )
+    def require_icat_config_value(cls, value, values):  # noqa: B902, N805
         """
-        Given a config key, the corresponding config value is returned
+        By default the above config fields that are passed to the `@validator` decorator
+        are optional so that they do not have to be present in the config file if
+        `backend` is set to `db`. However, if the `backend` is set to `python_icat`,
+        this validator esentially makes these config fields mandatory. This means that
+        an error is raised, at which point the application exits, if any of these config
+        values are not present in the config file.
 
-        :param config_key: Enum of a configuration key that's in `config.json`
-        :type config_key: :class:`APIConfigOptions`
-        :return: Config value of the given key
+        :param cls: :class:`DataGatewayAPI` pointer
+        :param value: The value of the given config field
+        :param values: The config field values loaded before the given config field
         """
-        try:
-            return self._config[config_key.value]
-        except KeyError:
-            sys.exit(f"Missing config value: {config_key.value}")
+
+        if "backend" in values and values["backend"] == "python_icat" and value is None:
+            raise TypeError("field required")
+        return value
 
     def set_backend_type(self, backend_type):
         """
@@ -109,25 +108,111 @@ class Config(object):
         type must be fetched. This must be done using this module (rather than directly
         importing and checking the Flask app's config) to avoid circular import issues.
         """
-        self._config["backend"] = backend_type
+        self.backend = backend_type
 
-    def get_icat_properties(self):
+    class Config:
         """
-        ICAT properties can be retrieved using Python ICAT's client object, however this
-        requires the client object to be authenticated which may not always be the case
-        when requesting these properties, hence a HTTP request is sent as an alternative
+        The behaviour of the BaseModel class can be controlled via this class.
         """
-        properties_url = (
-            f"{config.get_config_value(APIConfigOptions.ICAT_URL)}/icat/properties"
-        )
-        r = requests.request(
-            "GET",
-            properties_url,
-            verify=config.get_config_value(APIConfigOptions.ICAT_CHECK_CERT),
-        )
-        icat_properties = r.json()
 
-        return icat_properties
+        # Enables assignment validation on the BaseModel fields. Useful for when the
+        # backend type is changed using the set_backend_type function.
+        validate_assignment = True
 
 
-config = Config()
+class SearchAPI(BaseModel):
+    """
+    Configuration model class that implements pydantic's BaseModel class to allow for
+    validation of the SearchAPI config data using Python type annotations.
+    """
+
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
+    extension: StrictStr
+    icat_check_cert: StrictBool
+    icat_url: StrictStr
+
+    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+
+
+class TestUserCredentials(BaseModel):
+    username: StrictStr
+    password: StrictStr
+
+
+class APIConfig(BaseModel):
+    """
+    Configuration model class that implements pydantic's BaseModel class to allow for
+    validation of the API config data using Python type annotations. It ensures that
+    all required config options exist before getting too far into the setup of the API.
+
+    If a mandatory config option is missing or misspelled, or has a wrong value type,
+    Pydantic raises a validation error with a breakdown of what was wrong and the
+    application is exited.
+
+    Config options used for testing are not checked here as they should only be used
+    during tests, not in the typical running of the API.
+
+    Some options used when running the API (host, debug_mode etc.) aren't mandatory
+    when running the API in production (these options aren't used in the `wsgi.py`
+    entrypoint). As a result, they're not present in `config_keys`. However, they
+    are required when using `main.py` as an entrypoint. In any case of these
+    specific missing config options when using that entrypoint, they are checked at
+    API startup so any missing options will be caught quickly.
+    """
+
+    datagateway_api: Optional[DataGatewayAPI]
+    debug_mode: Optional[StrictBool]
+    flask_reloader: Optional[StrictBool]
+    generate_swagger: StrictBool
+    host: Optional[StrictStr]
+    log_level: StrictStr
+    log_location: StrictStr
+    port: Optional[StrictStr]
+    search_api: Optional[SearchAPI]
+    test_mechanism: Optional[StrictStr]
+    test_user_credentials: Optional[TestUserCredentials]
+
+    @classmethod
+    def load(cls, path=Path(__file__).parent.parent.parent / "config.json"):
+        """
+        Loads the config data from the JSON file and returns it as a APIConfig pydantic
+        model. Exits the application if it fails to locate the JSON config file or
+        the APIConfig model validation fails.
+
+        :param cls: :class:`APIConfig` pointer
+        :param path: path to the configuration file
+        :return: APIConfig model object that contains the config data
+        """
+        try:
+            with open(path, encoding="utf-8") as target:
+                data = json.load(target)
+                return cls(**data)
+        except (IOError, ValidationError) as error:
+            sys.exit(f"An error occurred while trying to load the config data: {error}")
+
+    @validator("search_api")
+    def validate_api_extensions(cls, value, values):  # noqa: B902, N805
+        """
+        Checks that the DataGateway API and Search API extensions are not the same. An
+        error is raised, at which point the application exits, if the extensions are the
+        same.
+
+        :param cls: :class:`APIConfig` pointer
+        :param value: The value of the given config field
+        :param values: The config field values loaded before the given config field
+        """
+        if (
+            "datagateway_api" in values
+            and values["datagateway_api"] is not None
+            and value is not None
+            and values["datagateway_api"].extension == value.extension
+        ):
+            raise ValueError(
+                "extension cannot be the same as datagateway_api extension",
+            )
+
+        return value
+
+
+config = APIConfig.load()

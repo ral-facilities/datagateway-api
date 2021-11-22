@@ -1,6 +1,6 @@
 import logging
 
-from datagateway_api.src.common.config import APIConfigOptions, config
+from datagateway_api.src.common.config import config
 from datagateway_api.src.common.exceptions import (
     ApiError,
     FilterError,
@@ -27,7 +27,7 @@ class QueryFilterFactory(object):
         :raises FilterError: If the filter name is not recognised
         """
 
-        backend_type = config.get_config_value(APIConfigOptions.BACKEND)
+        backend_type = config.datagateway_api.backend
         if backend_type == "db":
             from datagateway_api.src.datagateway_api.database.filters import (
                 DatabaseDistinctFieldFilter as DistinctFieldFilter,
