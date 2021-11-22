@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.0 (2021-11-22)
+### Breaking
+* Adding breaking change to correct the version bump which didn't happen when merging #285  ([`44c48e8`](https://github.com/ral-facilities/datagateway-api/commit/44c48e8b772147bfcf395d1430e067730d66df44))
+
+### Documentation
+* Adjust versioning documentation ([`44c48e8`](https://github.com/ral-facilities/datagateway-api/commit/44c48e8b772147bfcf395d1430e067730d66df44))
+
 ## v1.1.0 (2021-11-19)
 ### Feature
 * Add unimplemented endpoint definitions for search API #257 ([`d0e52d9`](https://github.com/ral-facilities/datagateway-api/commit/d0e52d96dd3b94ce54dcc9b81969e777a196922a))
