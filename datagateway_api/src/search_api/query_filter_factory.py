@@ -21,11 +21,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         if query_param_name == "filter":
             log.debug("Filter: %s", request_filter["filter"])
             for filter_name, filter_input in request_filter["filter"].items():
-                # {"where": {"property": "value"}}
-                # {"where": {"property": {"operator": "value"}}}
-                # {"where": {"text": "value"}}
-                # {"where": {"and": [{"property": "value"}, {"property": "value"}]}}
-                # {"where": {"or": [{"property": "value"}, {"property": "value"}]}}
                 if filter_name == "where":
                     if (
                         list(filter_input.keys())[0] == "and"
@@ -61,14 +56,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             )
 
                 elif filter_name == "include":
-                    # {"include": [{"relation": "relatedModel"}]}
-                    #
-                    # {"include": [{"relation": "relatedModel1"},
-                    # {"relation": "relatedModel2"}]}
-                    #
-                    # {"include": [{"relation": "relatedModel",
-                    # "scope": {"where": {"property": "value"}}}]}
-
                     for related_model in filter_input:
                         included_entity = related_model["relation"]
                         query_filters.append(SearchAPIIncludeFilter(included_entity))
@@ -141,12 +128,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         filter_data = list(filter_input.values())[0]
 
         if isinstance(filter_data, str):
-            # {"where": {"property": "value"}}
+            # Format: {"where": {"property": "value"}}
             value = filter_input[field]
             operation = "eq"
         elif isinstance(filter_data, dict):
-            # {"where": {"property": {"operator": "value"}}}
-            print(f"filter data: {filter_data}")
+            # Format: {"where": {"property": {"operator": "value"}}}
             value = list(filter_input[field].values())[0]
             operation = list(filter_input[field].keys())[0]
 
