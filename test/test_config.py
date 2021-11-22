@@ -77,6 +77,28 @@ class TestAPIConfig:
             with pytest.raises(SystemExit):
                 APIConfig.load("test/path")
 
+    def test_load_with_invalid_api_extension_does_not_start_with_slash(
+        self, test_config_data,
+    ):
+        test_config_data["datagateway_api"]["extension"] = "datagateway-api"
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
+
+    def test_load_with_invalid_api_extension_ends_with_slash(
+        self, test_config_data,
+    ):
+        test_config_data["search_api"]["extension"] = "/search-api/"
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
+
+    def test_load_with_same_api_extensions(self, test_config_data):
+        test_config_data["search_api"]["extension"] = "/datagateway-api"
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+            with pytest.raises(SystemExit):
+                APIConfig.load("test/path")
+
     def test_set_backend_type(self, test_config):
         test_config.datagateway_api.set_backend_type("backend_name_changed")
 
