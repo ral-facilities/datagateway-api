@@ -221,7 +221,6 @@ def create_api_endpoints(flask_app, api, spec):
 
     # Search API endpoints
     if config.search_api is not None:
-        # TODO - Use config value when new config style is implemented
         search_api_extension = config.search_api.extension
         search_api_entity_endpoints = ["datasets", "documents", "instruments"]
 
