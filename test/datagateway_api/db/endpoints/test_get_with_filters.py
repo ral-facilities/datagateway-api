@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.src.common.config import config
 from datagateway_api.src.common.constants import Constants
 from datagateway_api.src.common.date_handler import DateHandler
 
@@ -12,8 +13,8 @@ class TestDBGetWithFilters:
         single_investigation_test_data_db,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"title": {"like": "Title for DataGateway API'
-            ' Testing (DB)"}}',
+            f"{config.datagateway_api.extension}/investigations?where="
+            '{"title": {"like": "Title for DataGateway API Testing (DB)"}}',
             headers=valid_db_credentials_header,
         )
 
@@ -23,8 +24,9 @@ class TestDBGetWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"title": {"eq": "This filter should cause a 404 for'
-            'testing purposes..."}}',
+            f"{config.datagateway_api.extension}/investigations?where="
+            '{"title": {"eq": "This filter should cause a 404 fortesting '
+            'purposes..."}}',
             headers=valid_db_credentials_header,
         )
 
@@ -35,8 +37,9 @@ class TestDBGetWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"title": {"like": "Title for DataGateway API'
-            ' Testing (DB)"}}&distinct="title"',
+            f"{config.datagateway_api.extension}/investigations?where="
+            '{"title": {"like": "Title for DataGateway API Testing (DB)"}}'
+            '&distinct="title"',
             headers=valid_db_credentials_header,
         )
 
@@ -125,8 +128,8 @@ class TestDBGetWithFilters:
         expected_response,
     ):
         test_response = flask_test_app_db.get(
-            '/investigations?where={"title": {"like": "Title for DataGateway API'
-            ' Testing (DB)"}}'
+            f"{config.datagateway_api.extension}/investigations?where="
+            '{"title": {"like": "Title for DataGateway API Testing (DB)"}}'
             f"&distinct={distinct_param}",
             headers=valid_db_credentials_header,
         )
@@ -145,8 +148,8 @@ class TestDBGetWithFilters:
         limit_value = 2
 
         test_response = flask_test_app_db.get(
-            '/investigations?where={"title": {"like": "Title for DataGateway API'
-            ' Testing (DB)"}}'
+            f"{config.datagateway_api.extension}/investigations?where="
+            '{"title": {"like": "Title for DataGateway API Testing (DB)"}}'
             f'&skip={skip_value}&limit={limit_value}&order="id ASC"',
             headers=valid_db_credentials_header,
         )
