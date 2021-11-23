@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.0 (2021-11-23)
+### Feature
+* Configure end part of endpoint urls to contain api extension #283 ([`5bdd72e`](https://github.com/ral-facilities/datagateway-api/commit/5bdd72ea911323cdf0fc7d9ec6fb419b8dd6006c))
+
+### Breaking
+* modify endpoint urls to use relevant api extension  ([`5bdd72e`](https://github.com/ral-facilities/datagateway-api/commit/5bdd72ea911323cdf0fc7d9ec6fb419b8dd6006c))
+
 ## v2.0.0 (2021-11-22)
 ### Breaking
 * Adding breaking change to correct the version bump which didn't happen when merging #285  ([`44c48e8`](https://github.com/ral-facilities/datagateway-api/commit/44c48e8b772147bfcf395d1430e067730d66df44))
