@@ -15,7 +15,7 @@ class SessionHandler:
     anon user
     """
 
-    client = ICATClient()
+    client = ICATClient(client_use="search_api")
 
 
 def client_manager(method):

@@ -11,11 +11,16 @@ log = logging.getLogger()
 class ICATClient(Client):
     """Wrapper class to allow an object pool of client objects to be created"""
 
-    def __init__(self):
-        super().__init__(
-            config.datagateway_api.icat_url,
-            checkCert=config.datagateway_api.icat_check_cert,
-        )
+    def __init__(self, client_use="datagateway_api"):
+        if client_use == "datagateway_api":
+            icat_url = config.datagateway_api.icat_url
+            icat_check_cert = config.datagateway_api.icat_check_cert
+        else:
+            # Search API use cases
+            icat_url = config.search_api.icat_url
+            icat_check_cert = config.search_api.icat_check_cert
+
+        super().__init__(icat_url, checkCert=icat_check_cert)
         # When clients are cleaned up, sessions won't be logged out
         self.autoLogout = False
 
