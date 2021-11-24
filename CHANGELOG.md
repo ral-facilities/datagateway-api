@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2021-11-24)
+### Fix
+* Allow blank extensions and slash extension to be valid ([`70ddb7a`](https://github.com/ral-facilities/datagateway-api/commit/70ddb7a4fd89ba10b06cd71c3ab2a98648cfb773))
+
 ## v3.0.0 (2021-11-23)
 ### Feature
 * Configure end part of endpoint urls to contain api extension #283 ([`5bdd72e`](https://github.com/ral-facilities/datagateway-api/commit/5bdd72ea911323cdf0fc7d9ec6fb419b8dd6006c))
