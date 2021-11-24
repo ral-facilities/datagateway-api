@@ -13,13 +13,9 @@ log = logging.getLogger()
 # given to these functions
 @client_manager
 def get_search(entity_name, filters=None):
-    # TODO - Remove this debug logging when implementing the endpoints, this is just to
-    # show the client handling works
-    log.debug(
-        "Client: %s, Session ID: %s",
-        SessionHandler.client,
-        SessionHandler.client.sessionId,
-    )
+    # TODO - `getApiVersion()` used as a placeholder for testing client handling
+    # Replace with endpoint functionality when implementing the endpoints
+    return SessionHandler.client.getApiVersion()
 
 
 @client_manager
