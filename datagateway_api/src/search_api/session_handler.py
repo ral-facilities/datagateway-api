@@ -1,20 +1,40 @@
-# TODO - can we enforce a singleton pattern on the class?
+from functools import wraps
+import logging
+
+from icat.exception import ICATSessionError
+
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
+
+log = logging.getLogger()
+
+
 class SessionHandler:
-    def __init__(self):
-        self.client = None
-        self.session_id = None
+    """
+    Class to store Python ICAT client to be used within the search API. As the API
+    requires no authentication, the same client object can be used which logs in as the
+    anon user
+    """
+
+    client = ICATClient()
 
 
-def requires_session_id(method):
+def client_manager(method):
     """
-    TODO
-    """
-    pass
+    Decorator to manage the client object at the beginning of each request. This
+    decorator checks if the client has a valid session, and if not, logs in as the anon
+    user
 
+    :param method: The function used to process an incoming request
     """
+
     @wraps(method)
-    def wrapper_requires_session(*args, **kwargs):
-        pass
+    def wrapper_client_manager(*args, **kwargs):
+        try:
+            SessionHandler.client.getRemainingMinutes()
+        except ICATSessionError as e:
+            log.debug("Current client session expired: %s", e)
+            SessionHandler.client.login("anon", {})
 
-    return wrapper_requires_session
-    """
+        return method(*args, **kwargs)
+
+    return wrapper_client_manager
