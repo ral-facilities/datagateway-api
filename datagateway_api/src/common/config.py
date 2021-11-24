@@ -27,10 +27,11 @@ def validate_extension(extension):
     """
     extension = extension.strip()
 
-    if not extension.startswith("/"):
-        raise ValueError("must start with '/'")
-    if extension.endswith("/"):
-        raise ValueError("must not end with '/'")
+    if extension:
+        if not extension.startswith("/"):
+            raise ValueError("must start with '/'")
+        if extension.endswith("/") and len(extension) != 1:
+            raise ValueError("must not end with '/'")
 
     return extension
 
