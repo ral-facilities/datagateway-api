@@ -133,7 +133,7 @@ class TestAPIConfig:
         [
             pytest.param("datagateway-api", id="DataGateway API with no leading slash"),
             pytest.param("search-api", id="Search API with no leading slash"),
-            pytest.param("my-extension/", id="Extension with trailing slash"),
+            pytest.param("/my-extension/", id="Extension with trailing slash"),
         ],
     )
     def test_invalid_extension_validation(self, input_extension):
