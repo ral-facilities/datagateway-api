@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 
 class TestDBCountWithFilters:
@@ -9,7 +9,7 @@ class TestDBCountWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/investigations/count?where="
+            f"{Config.config.datagateway_api.extension}/investigations/count?where="
             '{"title": {"like": "Title for DataGateway API Testing (DB)"}}',
             headers=valid_db_credentials_header,
         )
@@ -20,7 +20,7 @@ class TestDBCountWithFilters:
         self, flask_test_app_db, valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/investigations/count?where="
+            f"{Config.config.datagateway_api.extension}/investigations/count?where="
             '{"title": {"like": "This filter should cause a404 for testing '
             'purposes..."}}',
             headers=valid_db_credentials_header,

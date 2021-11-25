@@ -126,8 +126,6 @@ class SearchAPI(BaseModel):
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    client_pool_init_size: StrictInt
-    client_pool_max_size: StrictInt
     extension: StrictStr
     icat_check_cert: StrictBool
     icat_url: StrictStr
@@ -215,4 +213,7 @@ class APIConfig(BaseModel):
         return value
 
 
-config = APIConfig.load()
+class Config:
+    """Class containing config as a class variable so it can mocked during testing"""
+
+    config = APIConfig.load()

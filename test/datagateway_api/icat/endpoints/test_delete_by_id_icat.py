@@ -1,4 +1,4 @@
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 
 class TestDeleteByID:
@@ -9,7 +9,7 @@ class TestDeleteByID:
         single_investigation_test_data,
     ):
         test_response = flask_test_app_icat.delete(
-            f"{config.datagateway_api.extension}/investigations"
+            f"{Config.config.datagateway_api.extension}/investigations"
             f'/{single_investigation_test_data[0]["id"]}',
             headers=valid_icat_credentials_header,
         )
@@ -22,7 +22,7 @@ class TestDeleteByID:
         """Request with a non-existent ID"""
 
         final_investigation_result = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations"
+            f"{Config.config.datagateway_api.extension}/investigations"
             '/findone?order="id DESC"',
             headers=valid_icat_credentials_header,
         )
@@ -30,7 +30,8 @@ class TestDeleteByID:
 
         # Adding 100 onto the ID to the most recent result should ensure a 404
         test_response = flask_test_app_icat.delete(
-            f"{config.datagateway_api.extension}/investigations/{test_data_id + 100}",
+            f"{Config.config.datagateway_api.extension}/investigations"
+            f"/{test_data_id + 100}",
             headers=valid_icat_credentials_header,
         )
 

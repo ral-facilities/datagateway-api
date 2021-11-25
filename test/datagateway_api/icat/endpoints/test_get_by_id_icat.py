@@ -1,4 +1,4 @@
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -11,7 +11,7 @@ class TestICATGetByID:
     ):
         # Need to identify the ID given to the test data
         investigation_data = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations?where="
+            f"{Config.config.datagateway_api.extension}/investigations?where="
             '{"title": {"like": "Test data for the Python ICAT Backend on '
             'DataGateway API"}}',
             headers=valid_icat_credentials_header,
@@ -19,7 +19,7 @@ class TestICATGetByID:
         test_data_id = investigation_data.json[0]["id"]
 
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations/{test_data_id}",
+            f"{Config.config.datagateway_api.extension}/investigations/{test_data_id}",
             headers=valid_icat_credentials_header,
         )
         # Get with ID gives a dictionary response (only ever one result from that kind
@@ -34,7 +34,7 @@ class TestICATGetByID:
         """Request with a non-existent ID"""
 
         final_investigation_result = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations/findone?order="
+            f"{Config.config.datagateway_api.extension}/investigations/findone?order="
             '"id DESC"',
             headers=valid_icat_credentials_header,
         )
@@ -42,7 +42,8 @@ class TestICATGetByID:
 
         # Adding 100 onto the ID to the most recent result should ensure a 404
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations/{test_data_id + 100}",
+            f"{Config.config.datagateway_api.extension}/investigations"
+            f"/{test_data_id + 100}",
             headers=valid_icat_credentials_header,
         )
 
