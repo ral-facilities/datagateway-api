@@ -1,8 +1,8 @@
 import logging
 
 from datagateway_api.src.search_api.session_handler import (
-    SessionHandler,
     client_manager,
+    SessionHandler,
 )
 
 
@@ -19,7 +19,7 @@ def get_search(entity_name, filters=None):
 
 
 @client_manager
-def get_with_id(entity_name, id, filters=None):
+def get_with_id(entity_name, id_, filters=None):
     pass
 
 
@@ -34,5 +34,5 @@ def get_files(entity_name, filters=None):
 
 
 @client_manager
-def get_files_count(entity_name, id, filters=None):
+def get_files_count(entity_name, id_, filters=None):
     pass

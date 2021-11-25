@@ -32,7 +32,7 @@ def client_manager(method):
         try:
             SessionHandler.client.getRemainingMinutes()
         except ICATSessionError as e:
-            log.debug("Current client session expired: %s", e)
+            log.debug("Current client session expired: %s", e.args)
             SessionHandler.client.login("anon", {})
 
         return method(*args, **kwargs)
