@@ -44,7 +44,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["title"],
                 ["eq"],
                 ["Dataset 1"],
-                ["and"],
+                ["or"],
                 id="Text operator on dataset",
             ),
             pytest.param(
@@ -54,7 +54,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["name", "facility"],
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
-                ["and", "and"],
+                ["or", "or"],
                 id="Text operator on instrument",
             ),
             pytest.param(
