@@ -64,18 +64,16 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             conditions = list(filter_input.values())[0]
             for condition in conditions:
                 # Could be nested AND/OR
-                filter_data = SearchAPIQueryFilterFactory.get_condition_values(
-                    condition,
+                where_filter = {
+                    "filter": {"where": condition},
+                }
+                conditional_where_filters = SearchAPIQueryFilterFactory.get_query_filter(
+                    where_filter, entity_name,
                 )
-                for condition in filter_data:
-                    where_filters.append(
-                        SearchAPIWhereFilter(
-                            field=condition[0],
-                            value=condition[1],
-                            operation=condition[2],
-                            boolean_operator=boolean_operator,
-                        ),
-                    )
+
+                for conditional_where_filter in conditional_where_filters:
+                    conditional_where_filter.boolean_operator = boolean_operator
+                where_filters.extend(conditional_where_filters)
         elif list(filter_input.keys())[0] == "text":
             # TODO - we might want to move this to the data
             # definitions at a later point
