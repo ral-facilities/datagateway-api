@@ -14,7 +14,7 @@ log = logging.getLogger()
 
 class SearchAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
-    def get_query_filter(request_filter):
+    def get_query_filter(request_filter, entity_name=None):
         query_param_name = list(request_filter)[0].lower()
         query_filters = []
 
@@ -23,7 +23,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             for filter_name, filter_input in request_filter["filter"].items():
                 if filter_name == "where":
                     query_filters.extend(
-                        SearchAPIQueryFilterFactory.get_where_filter(filter_input),
+                        SearchAPIQueryFilterFactory.get_where_filter(
+                            filter_input, entity_name,
+                        ),
                     )
                 elif filter_name == "include":
                     query_filters.extend(
@@ -41,7 +43,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             # For the count endpoints
             query_filters.extend(
                 SearchAPIQueryFilterFactory.get_query_filter(
-                    {"filter": request_filter},
+                    {"filter": request_filter}, entity_name,
                 ),
             )
         else:
@@ -52,7 +54,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         return query_filters
 
     @staticmethod
-    def get_where_filter(filter_input):
+    def get_where_filter(filter_input, entity_name):
         where_filters = []
         if (
             list(filter_input.keys())[0] == "and"
@@ -74,6 +76,34 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             boolean_operator=boolean_operator,
                         ),
                     )
+        elif list(filter_input.keys())[0] == "text":
+            # TODO - we might want to move this to the data
+            # definitions at a later point
+            text_operator_fields = {
+                "datasets": ["title"],
+                "documents": ["title", "summary"],
+                "files": ["name"],
+                "instrument": ["name", "facility"],
+                "samples": ["name", "description"],
+                "techniques": ["name"],
+            }
+
+            try:
+                field_names = text_operator_fields[entity_name]
+                for field_name in field_names:
+                    where_filter = {
+                        "filter": {"where": {field_name: filter_input["text"]}},
+                    }
+                    where_filters.extend(
+                        SearchAPIQueryFilterFactory.get_query_filter(
+                            where_filter, entity_name,
+                        ),
+                    )
+            except KeyError:
+                # Do not raise FilterError nor attempt to create filters. Simply
+                # ignore text operator queries on fields that are not part of the
+                # text_operator_fields dict.
+                pass
         else:
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(
                 filter_input,
@@ -94,40 +124,17 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             query_filters.append(SearchAPIIncludeFilter(included_entity))
 
             if "scope" in related_model:
-                try:
-                    where_key = list(related_model["scope"]["where"].keys(),)[0]
+                # Scope filter can have WHERE, INCLUDE, LIMIT and SKIP filters
+                scope_query_filters = SearchAPIQueryFilterFactory.get_query_filter(
+                    {"filter": related_model["scope"]}, included_entity,
+                )
 
-                    if where_key == "text":
-                        # TODO - we might want to move this to the data
-                        # definitions at a later point
-                        text_operator_fields = {
-                            "datasets": ["title"],
-                            "documents": ["title", "summary"],
-                            "files": ["name"],
-                            "instrument": ["name", "facility"],
-                            "samples": ["name", "description"],
-                            "techniques": ["name"],
-                        }
-                        field_names = text_operator_fields[included_entity]
-                    else:
-                        field_names = [where_key]
-
-                    for field_name in field_names:
-                        full_field_path = f"{included_entity}.{field_name}"
-                        where_filter = {
-                            "filter": {
-                                "where": {
-                                    full_field_path: related_model["scope"]["where"][
-                                        where_key
-                                    ],
-                                },
-                            },
-                        }
-                        query_filters.extend(
-                            SearchAPIQueryFilterFactory.get_query_filter(where_filter,),
+                for scope_query_filter in scope_query_filters:
+                    if isinstance(scope_query_filter, SearchAPIWhereFilter):
+                        scope_query_filter.field = (
+                            f"{included_entity}.{scope_query_filter.field}"
                         )
-                except KeyError:
-                    raise FilterError("Error in scope for include filter")
+                query_filters.extend(scope_query_filters)
 
         return query_filters
 
