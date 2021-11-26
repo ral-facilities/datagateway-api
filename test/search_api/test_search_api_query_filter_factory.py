@@ -14,11 +14,12 @@ from datagateway_api.src.search_api.query_filter_factory import (
 
 class TestSearchAPIQueryFilterFactory:
     @pytest.mark.parametrize(
-        "test_request_filter, expected_length, expected_fields, expected_operations"
-        ", expected_values, expected_boolean_operators",
+        "test_request_filter, test_entity_name, expected_length, expected_fields,"
+        "expected_operations, expected_values, expected_boolean_operators",
         [
             pytest.param(
                 {"filter": {"where": {"title": "My Title"}}},
+                "documents",
                 1,
                 ["title"],
                 ["eq"],
@@ -28,6 +29,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
+                "documents",
                 1,
                 ["summary"],
                 ["like"],
@@ -37,6 +39,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"text": "Dataset 1"}}},
+                "datasets",
                 1,
                 ["title"],
                 ["eq"],
@@ -46,6 +49,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"text": "Instrument 1"}}},
+                "instrument",
                 2,
                 ["name", "facility"],
                 ["eq", "eq"],
@@ -55,6 +59,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
+                "documents",
                 1,
                 ["summary"],
                 ["eq"],
@@ -73,6 +78,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
+                "documents",
                 2,
                 ["summary", "title"],
                 ["eq", "eq"],
@@ -82,6 +88,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"value": {"lt": 50}}]}}},
+                "parameters",
                 1,
                 ["value"],
                 ["lt"],
@@ -100,6 +107,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
+                "parameters",
                 2,
                 ["name", "value"],
                 ["like", "gte"],
@@ -122,6 +130,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
+                "parameters",
                 2,
                 ["name", "value"],
                 ["like", "gte"],
@@ -140,6 +149,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
+                "parameters",
                 2,
                 ["name", "value"],
                 ["like", "gte"],
@@ -149,6 +159,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
+                "documents",
                 1,
                 ["summary"],
                 ["like"],
@@ -161,13 +172,16 @@ class TestSearchAPIQueryFilterFactory:
     def test_valid_where_filter(
         self,
         test_request_filter,
+        test_entity_name,
         expected_length,
         expected_fields,
         expected_operations,
         expected_values,
         expected_boolean_operators,
     ):
-        filters = SearchAPIQueryFilterFactory.get_query_filter(test_request_filter)
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
 
         assert len(filters) == expected_length
         for test_filter, field, operation, value, boolean_operator in zip(
@@ -184,11 +198,12 @@ class TestSearchAPIQueryFilterFactory:
             assert test_filter.boolean_operator == boolean_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, expected_length, expected_included_entities"
-        ", expected_where_filter_data",
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_where_filter_data",
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
+                "datasets",
                 1,
                 [["files"]],
                 [[]],
@@ -200,6 +215,7 @@ class TestSearchAPIQueryFilterFactory:
                         "include": [{"relation": "files"}, {"relation": "instrument"}],
                     },
                 },
+                "datasets",
                 2,
                 [["files"], ["instrument"]],
                 [[], []],
@@ -216,6 +232,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 2,
                 [["parameters"], []],
                 [[], ["parameters.name", "eq", "My parameter"]],
@@ -236,6 +253,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 4,
                 [["parameters"], [], ["documents"], []],
                 [
@@ -257,6 +275,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 2,
                 [["parameters"], []],
                 [[], ["parameters.name", "ne", "My parameter"]],
@@ -273,10 +292,28 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 2,
                 [["files"], []],
                 [[], ["files.name", "eq", "file1"]],
-                id="Related model with scope (text operator)",
+                id="Related model with scope (text operator on defined field)",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "parameters",
+                                "scope": {"where": {"text": "My parameter"}},
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                1,
+                [["parameters"], []],
+                [[], []],
+                id="Related model with scope (text operator on non-defined field)",
             ),
             pytest.param(
                 {
@@ -289,6 +326,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 3,
                 [["documents"], []],
                 [
@@ -316,6 +354,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
+                "datasets",
                 3,
                 [["documents"], [], []],
                 [
@@ -325,16 +364,51 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 id="Related model with scope (boolean operator)",
             ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {
+                                    "where": {"title": "Dataset 1"},
+                                    "include": [
+                                        {
+                                            "relation": "instrument",
+                                            "scope": {
+                                                "where": {"name": "Instrument 1"},
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                },
+                "documents",
+                4,
+                [["datasets"], [], ["instrument"], []],
+                [
+                    [],
+                    ["datasets.title", "eq", "Dataset 1"],
+                    [],
+                    ["datasets.instrument.name", "eq", "Instrument 1"],
+                ],
+                id="Nested related models (with scope and where filters)",
+            ),
         ],
     )
     def test_valid_include_filter(
         self,
         test_request_filter,
+        test_entity_name,
         expected_length,
         expected_included_entities,
         expected_where_filter_data,
     ):
-        filters = SearchAPIQueryFilterFactory.get_query_filter(test_request_filter)
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
 
         assert len(filters) == expected_length
 
