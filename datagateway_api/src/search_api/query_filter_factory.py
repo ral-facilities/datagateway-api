@@ -87,16 +87,19 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             }
 
             try:
+                or_conditional_filters = []
                 field_names = text_operator_fields[entity_name]
                 for field_name in field_names:
-                    where_filter = {
-                        "filter": {"where": {field_name: filter_input["text"]}},
-                    }
-                    where_filters.extend(
-                        SearchAPIQueryFilterFactory.get_query_filter(
-                            where_filter, entity_name,
-                        ),
-                    )
+                    or_conditional_filters.append({field_name: filter_input["text"]})
+
+                where_filter = {
+                    "filter": {"where": {"or": or_conditional_filters}},
+                }
+                where_filters.extend(
+                    SearchAPIQueryFilterFactory.get_query_filter(
+                        where_filter, entity_name,
+                    ),
+                )
             except KeyError:
                 # Do not raise FilterError nor attempt to create filters. Simply
                 # ignore text operator queries on fields that are not part of the
