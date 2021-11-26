@@ -6,6 +6,7 @@ import logging
 from dateutil.tz.tz import tzlocal
 from flask import request
 from flask_restful import reqparse
+import requests
 from sqlalchemy.exc import IntegrityError
 
 from datagateway_api.src.common.date_handler import DateHandler
@@ -145,6 +146,19 @@ def get_entity_object_from_name(entity_name):
         raise ApiError(
             f"Entity class cannot be found, missing class for {entity_name}",
         )
+
+
+def get_icat_properties(icat_url, icat_check_cert):
+    """
+    ICAT properties can be retrieved using Python ICAT's client object, however this
+    requires the client object to be authenticated which may not always be the case
+    when requesting these properties, hence a HTTP request is sent as an alternative
+    """
+    properties_url = f"{icat_url}/icat/properties"
+    r = requests.request("GET", properties_url, verify=icat_check_cert)
+    icat_properties = r.json()
+
+    return icat_properties
 
 
 def map_distinct_attributes_to_results(distinct_attributes, query_result):

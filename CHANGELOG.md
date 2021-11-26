@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2021-11-24)
+### Fix
+* Allow blank extensions and slash extension to be valid ([`70ddb7a`](https://github.com/ral-facilities/datagateway-api/commit/70ddb7a4fd89ba10b06cd71c3ab2a98648cfb773))
+
+## v3.0.0 (2021-11-23)
+### Feature
+* Configure end part of endpoint urls to contain api extension #283 ([`5bdd72e`](https://github.com/ral-facilities/datagateway-api/commit/5bdd72ea911323cdf0fc7d9ec6fb419b8dd6006c))
+
+### Breaking
+* modify endpoint urls to use relevant api extension  ([`5bdd72e`](https://github.com/ral-facilities/datagateway-api/commit/5bdd72ea911323cdf0fc7d9ec6fb419b8dd6006c))
+
+## v2.0.0 (2021-11-22)
+### Breaking
+* Adding breaking change to correct the version bump which didn't happen when merging #285  ([`44c48e8`](https://github.com/ral-facilities/datagateway-api/commit/44c48e8b772147bfcf395d1430e067730d66df44))
+
+### Documentation
+* Adjust versioning documentation ([`44c48e8`](https://github.com/ral-facilities/datagateway-api/commit/44c48e8b772147bfcf395d1430e067730d66df44))
+
 ## v1.1.0 (2021-11-19)
 ### Feature
 * Add unimplemented endpoint definitions for search API #257 ([`d0e52d9`](https://github.com/ral-facilities/datagateway-api/commit/d0e52d96dd3b94ce54dcc9b81969e777a196922a))
