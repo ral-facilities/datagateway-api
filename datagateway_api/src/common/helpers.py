@@ -87,7 +87,7 @@ def is_valid_json(string):
     return True
 
 
-def get_filters_from_query_string(api_type):
+def get_filters_from_query_string(api_type, entity_name=None):
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
@@ -95,6 +95,9 @@ def get_filters_from_query_string(api_type):
     :param api_type: Type of API this function is being used for i.e. DataGateway API or
         Search API
     :type api_type: :class:`str`
+    :param entity_name: Entity name of the endpoint, optional (only used for search
+            API, not DataGateway API)
+    :type entity_name: :class:`str`
     :raises ApiError: If `api_type` isn't a valid value
     :return: The list of filters
     """
@@ -117,7 +120,9 @@ def get_filters_from_query_string(api_type):
         for arg in request.args:
             for value in request.args.getlist(arg):
                 filters.extend(
-                    QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
+                    QueryFilterFactory.get_query_filter(
+                        {arg: json.loads(value)}, entity_name,
+                    ),
                 )
         return filters
     except Exception as e:

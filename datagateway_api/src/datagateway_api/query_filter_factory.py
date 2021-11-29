@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
-    def get_query_filter(request_filter):
+    def get_query_filter(request_filter, entity_name=None):
         """
         Given a filter, return a matching Query filter object
 
@@ -23,6 +23,11 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
 
         :param request_filter: The filter to create the QueryFilter for
         :type request_filter: :class:`dict`
+        :param entity_name: Not utilised in DataGateway API implementation of this
+            static function, used in the search API. It is part of the method signature
+            as the same function call (called in `get_filters_from_query_string()`) is
+            used for both implementations
+        :type entity_name: :class:`str`
         :return: The QueryFilter object created
         :raises ApiError: If the backend type contains an invalid value
         :raises FilterError: If the filter name is not recognised
