@@ -25,7 +25,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["My Title"],
                 ["and"],
-                id="Property value, no specified operator",
+                id="Property value with no operator",
             ),
             pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
@@ -58,6 +58,50 @@ class TestSearchAPIQueryFilterFactory:
                 id="Text operator on instrument",
             ),
             pytest.param(
+                {"where": {"summary": {"like": "My Test Summary"}}},
+                "documents",
+                1,
+                ["summary"],
+                ["like"],
+                ["My Test Summary"],
+                ["and"],
+                id="WHERE filter in syntax for count endpoints",
+            ),
+        ],
+    )
+    def test_valid_where_filter(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_fields,
+        expected_operations,
+        expected_values,
+        expected_boolean_operators,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+        for test_filter, field, operation, value, boolean_operator in zip(
+            filters,
+            expected_fields,
+            expected_operations,
+            expected_values,
+            expected_boolean_operators,
+        ):
+            assert isinstance(test_filter, SearchAPIWhereFilter)
+            assert test_filter.field == field
+            assert test_filter.operation == operation
+            assert test_filter.value == value
+            assert test_filter.boolean_operator == boolean_operator
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length, expected_fields,"
+        "expected_operations, expected_values, expected_boolean_operators",
+        [
+            pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
                 "documents",
                 1,
@@ -65,7 +109,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["My Test Summary"],
                 ["and"],
-                id="AND with single condition, no specified operator",
+                id="Single condition, property value with no operator",
             ),
             pytest.param(
                 {
@@ -84,7 +128,27 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["My Test Summary", "Test title"],
                 ["and", "and"],
-                id="AND with multiple conditions, no specified operator",
+                id="Multiple conditions (two), property values with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {"summary": "My Test Summary"},
+                                {"title": "Test title"},
+                                {"type": "Test type"},
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                3,
+                ["summary", "title", "type"],
+                ["eq", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test type"],
+                ["and", "and", "and"],
+                id="Multiple conditions (three), property values with no operator",
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"value": {"lt": 50}}]}}},
@@ -94,7 +158,7 @@ class TestSearchAPIQueryFilterFactory:
                 ["lt"],
                 [50],
                 ["and"],
-                id="AND, single condition with operator",
+                id="Single condition, property value with operator",
             ),
             pytest.param(
                 {
@@ -113,30 +177,212 @@ class TestSearchAPIQueryFilterFactory:
                 ["like", "gte"],
                 ["Test name", 275],
                 ["and", "and"],
-                id="AND, multiple conditions with operator",
+                id="Multiple conditions (two), property values with operator",
             ),
             pytest.param(
                 {
                     "filter": {
                         "where": {
                             "and": [
-                                {
-                                    "and": [
-                                        {"name": {"like": "Test name"}},
-                                        {"value": {"gte": 275}},
-                                    ],
-                                },
+                                {"name": {"like": "Test name"}},
+                                {"value": {"gte": 275}},
+                                {"unit": {"nlike": "Test unit"}},
                             ],
                         },
                     },
                 },
                 "parameters",
+                3,
+                ["name", "value", "unit"],
+                ["like", "gte", "nlike"],
+                ["Test name", 275, "Test unit"],
+                ["and", "and", "and"],
+                id="Multiple conditions (three), property values with operator",
+            ),
+            pytest.param(
+                {"filter": {"where": {"and": [{"text": "Dataset 1"}]}}},
+                "datasets",
+                1,
+                ["title"],
+                ["eq"],
+                ["Dataset 1"],
+                ["or"],
+                id="Single condition, text operator on dataset",
+            ),
+            pytest.param(
+                {"filter": {"where": {"and": [{"text": "Instrument 1"}]}}},
+                "instrument",
                 2,
-                ["name", "value"],
-                ["like", "gte"],
-                ["Test name", 275],
-                ["and", "and"],
-                id="Nested AND, multiple conditions with operator",
+                ["name", "facility"],
+                ["eq", "eq"],
+                ["Instrument 1", "Instrument 1"],
+                ["or", "or"],
+                id="Single condition, text operator on instrument",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {"and": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
+                    },
+                },
+                "datasets",
+                2,
+                ["title", "pid"],
+                ["eq", "eq"],
+                ["Dataset 1", "Test pid"],
+                ["or", "and"],
+                id="Multiple conditions (two), text operator on dataset and "
+                "property value with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [{"text": "Instrument 1"}, {"pid": "Test pid"}],
+                        },
+                    },
+                },
+                "instrument",
+                3,
+                ["name", "facility", "pid"],
+                ["eq", "eq", "eq"],
+                ["Instrument 1", "Instrument 1", "Test pid"],
+                ["or", "or", "and"],
+                id="Multiple conditions (two), text operator on instrument and "
+                "property value with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {"text": "Dataset 1"},
+                                {"pid": {"eq": "Test pid"}},
+                            ],
+                        },
+                    },
+                },
+                "datasets",
+                2,
+                ["title", "pid"],
+                ["eq", "eq"],
+                ["Dataset 1", "Test pid"],
+                ["or", "and"],
+                id="Multiple conditions (two), text operator on dataset and "
+                "property value with operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {"text": "Instrument 1"},
+                                {"pid": {"eq": "Test pid"}},
+                            ],
+                        },
+                    },
+                },
+                "instrument",
+                3,
+                ["name", "facility", "pid"],
+                ["eq", "eq", "eq"],
+                ["Instrument 1", "Instrument 1", "Test pid"],
+                ["or", "or", "and"],
+                id="Multiple conditions (two), text operator on instrument and "
+                "property value with operator",
+            ),
+        ],
+    )
+    def test_valid_where_filter_with_and_boolean_operator(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_fields,
+        expected_operations,
+        expected_values,
+        expected_boolean_operators,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+        for test_filter, field, operation, value, boolean_operator in zip(
+            filters,
+            expected_fields,
+            expected_operations,
+            expected_values,
+            expected_boolean_operators,
+        ):
+            assert isinstance(test_filter, SearchAPIWhereFilter)
+            assert test_filter.field == field
+            assert test_filter.operation == operation
+            assert test_filter.value == value
+            assert test_filter.boolean_operator == boolean_operator
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length, expected_fields,"
+        "expected_operations, expected_values, expected_boolean_operators",
+        [
+            pytest.param(
+                {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
+                "documents",
+                1,
+                ["summary"],
+                ["eq"],
+                ["My Test Summary"],
+                ["or"],
+                id="Single condition, property value with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {"summary": "My Test Summary"},
+                                {"title": "Test title"},
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                2,
+                ["summary", "title"],
+                ["eq", "eq"],
+                ["My Test Summary", "Test title"],
+                ["or", "or"],
+                id="Multiple conditions (two), property values with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {"summary": "My Test Summary"},
+                                {"title": "Test title"},
+                                {"type": "Test type"},
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                3,
+                ["summary", "title", "type"],
+                ["eq", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test type"],
+                ["or", "or", "or"],
+                id="Multiple conditions (three), property values with no operator",
+            ),
+            pytest.param(
+                {"filter": {"where": {"or": [{"value": {"lt": 50}}]}}},
+                "parameters",
+                1,
+                ["value"],
+                ["lt"],
+                [50],
+                ["or"],
+                id="Single condition, property value with operator",
             ),
             pytest.param(
                 {
@@ -155,21 +401,698 @@ class TestSearchAPIQueryFilterFactory:
                 ["like", "gte"],
                 ["Test name", 275],
                 ["or", "or"],
-                id="OR, multiple conditions with operator",
+                id="Multiple conditions (two), property values with operator",
             ),
             pytest.param(
-                {"where": {"summary": {"like": "My Test Summary"}}},
-                "documents",
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {"name": {"like": "Test name"}},
+                                {"value": {"gte": 275}},
+                                {"unit": {"nlike": "Test unit"}},
+                            ],
+                        },
+                    },
+                },
+                "parameters",
+                3,
+                ["name", "value", "unit"],
+                ["like", "gte", "nlike"],
+                ["Test name", 275, "Test unit"],
+                ["or", "or", "or"],
+                id="Multiple conditions (three), property values with operator",
+            ),
+            pytest.param(
+                {"filter": {"where": {"or": [{"text": "Dataset 1"}]}}},
+                "datasets",
                 1,
-                ["summary"],
-                ["like"],
-                ["My Test Summary"],
-                ["and"],
-                id="WHERE filter in syntax for count endpoints",
+                ["title"],
+                ["eq"],
+                ["Dataset 1"],
+                ["or"],
+                id="Single condition, text operator on dataset",
+            ),
+            pytest.param(
+                {"filter": {"where": {"or": [{"text": "Instrument 1"}]}}},
+                "instrument",
+                2,
+                ["name", "facility"],
+                ["eq", "eq"],
+                ["Instrument 1", "Instrument 1"],
+                ["or", "or"],
+                id="Single condition, text operator on instrument",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {"or": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
+                    },
+                },
+                "datasets",
+                2,
+                ["title", "pid"],
+                ["eq", "eq"],
+                ["Dataset 1", "Test pid"],
+                ["or", "or"],
+                id="Multiple conditions (two), text operator on dataset and "
+                "property value with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [{"text": "Instrument 1"}, {"pid": "Test pid"}],
+                        },
+                    },
+                },
+                "instrument",
+                3,
+                ["name", "facility", "pid"],
+                ["eq", "eq", "eq"],
+                ["Instrument 1", "Instrument 1", "Test pid"],
+                ["or", "or", "or"],
+                id="Multiple conditions (two), text operator on instrument and "
+                "property value with no operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [{"text": "Dataset 1"}, {"pid": {"eq": "Test pid"}}],
+                        },
+                    },
+                },
+                "datasets",
+                2,
+                ["title", "pid"],
+                ["eq", "eq"],
+                ["Dataset 1", "Test pid"],
+                ["or", "or"],
+                id="Multiple conditions (two), text operator on dataset and "
+                "property value with operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {"text": "Instrument 1"},
+                                {"pid": {"eq": "Test pid"}},
+                            ],
+                        },
+                    },
+                },
+                "instrument",
+                3,
+                ["name", "facility", "pid"],
+                ["eq", "eq", "eq"],
+                ["Instrument 1", "Instrument 1", "Test pid"],
+                ["or", "or", "or"],
+                id="Multiple conditions (two), text operator on instrument and "
+                "property value with operator",
             ),
         ],
     )
-    def test_valid_where_filter(
+    def test_valid_where_filter_with_or_boolean_operator(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_fields,
+        expected_operations,
+        expected_values,
+        expected_boolean_operators,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+        for test_filter, field, operation, value, boolean_operator in zip(
+            filters,
+            expected_fields,
+            expected_operations,
+            expected_values,
+            expected_boolean_operators,
+        ):
+            assert isinstance(test_filter, SearchAPIWhereFilter)
+            assert test_filter.field == field
+            assert test_filter.operation == operation
+            assert test_filter.value == value
+            assert test_filter.boolean_operator == boolean_operator
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length, expected_fields,"
+        "expected_operations, expected_values, expected_boolean_operators",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["and", "and", "and", "and"],
+                id="With two AND boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["and", "and", "or", "or"],
+                id="With AND and OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "or": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["or", "or", "or", "or"],
+                id="With two OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "and", "and", "and", "and"],
+                id="With three AND boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "and", "and", "or", "or"],
+                id="With two AND and one OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "or", "or", "or", "or"],
+                id="With one AND and two OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "or": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["or", "or", "or", "or", "or", "or"],
+                id="With three OR boolean operators",
+            ),
+        ],
+    )
+    def test_valid_where_filter_with_nested_and_boolean_operator(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_fields,
+        expected_operations,
+        expected_values,
+        expected_boolean_operators,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+        for test_filter, field, operation, value, boolean_operator in zip(
+            filters,
+            expected_fields,
+            expected_operations,
+            expected_values,
+            expected_boolean_operators,
+        ):
+            assert isinstance(test_filter, SearchAPIWhereFilter)
+            assert test_filter.field == field
+            assert test_filter.operation == operation
+            assert test_filter.value == value
+            assert test_filter.boolean_operator == boolean_operator
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length, expected_fields,"
+        "expected_operations, expected_values, expected_boolean_operators",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["and", "and", "and", "and"],
+                id="With two AND boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["and", "and", "or", "or"],
+                id="With AND and OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "or": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                4,
+                ["summary", "title", "pid", "type"],
+                ["eq", "like", "eq", "eq"],
+                ["My Test Summary", "Test title", "Test pid", "Test type"],
+                ["or", "or", "or", "or"],
+                id="With two OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "and", "and", "and", "and"],
+                id="With three AND boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "and", "and", "or", "or"],
+                id="With two AND and one OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["and", "and", "or", "or", "or", "or"],
+                id="With one AND and two OR boolean operators",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "or": [
+                                {
+                                    "or": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                },
+                "documents",
+                6,
+                ["summary", "title", "pid", "type", "doi", "license"],
+                ["eq", "like", "eq", "eq", "eq", "like"],
+                [
+                    "My Test Summary",
+                    "Test title",
+                    "Test pid",
+                    "Test type",
+                    "Test doi",
+                    "Test license",
+                ],
+                ["or", "or", "or", "or", "or", "or"],
+                id="With three OR boolean operators",
+            ),
+        ],
+    )
+    def test_valid_where_filter_with_nested_or_boolean_operator(
         self,
         test_request_filter,
         test_entity_name,
