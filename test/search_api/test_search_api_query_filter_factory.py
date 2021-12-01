@@ -1122,14 +1122,13 @@ class TestSearchAPIQueryFilterFactory:
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
-        ", expected_included_entities, expected_where_filter_data",
+        ", expected_included_entities",
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
                 "datasets",
                 1,
                 [["files"]],
-                [[]],
                 id="Single related model",
             ),
             pytest.param(
@@ -1141,9 +1140,31 @@ class TestSearchAPIQueryFilterFactory:
                 "datasets",
                 2,
                 [["files"], ["instrument"]],
-                [[], []],
                 id="Multiple related models",
             ),
+        ],
+    )
+    def test_valid_include_filter(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for test_filter, included_entities in zip(filters, expected_included_entities):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_where_filter_data",
+        [
             pytest.param(
                 {
                     "filter": {
@@ -1158,34 +1179,8 @@ class TestSearchAPIQueryFilterFactory:
                 "datasets",
                 2,
                 [["parameters"], []],
-                [[], ["parameters.name", "eq", "My parameter"]],
-                id="Related model with scope",
-            ),
-            pytest.param(
-                {
-                    "filter": {
-                        "include": [
-                            {
-                                "relation": "parameters",
-                                "scope": {"where": {"name": "My parameter"}},
-                            },
-                            {
-                                "relation": "documents",
-                                "scope": {"where": {"title": "Document title"}},
-                            },
-                        ],
-                    },
-                },
-                "datasets",
-                4,
-                [["parameters"], [], ["documents"], []],
-                [
-                    [],
-                    ["parameters.name", "eq", "My parameter"],
-                    [],
-                    ["documents.title", "eq", "Document title"],
-                ],
-                id="Multiple related models with scopes",
+                [[], ["parameters.name", "eq", "My parameter", "and"]],
+                id="Property value with no operator",
             ),
             pytest.param(
                 {
@@ -1201,8 +1196,8 @@ class TestSearchAPIQueryFilterFactory:
                 "datasets",
                 2,
                 [["parameters"], []],
-                [[], ["parameters.name", "ne", "My parameter"]],
-                id="Related model with scope (with operator)",
+                [[], ["parameters.name", "ne", "My parameter", "and"]],
+                id="Property value with operator",
             ),
             pytest.param(
                 {
@@ -1218,8 +1213,8 @@ class TestSearchAPIQueryFilterFactory:
                 "datasets",
                 2,
                 [["files"], []],
-                [[], ["files.name", "eq", "file1"]],
-                id="Related model with scope (text operator on defined field)",
+                [[], ["files.name", "eq", "file1", "or"]],
+                id="Text operator on defined field mapping to single field",
             ),
             pytest.param(
                 {
@@ -1236,7 +1231,7 @@ class TestSearchAPIQueryFilterFactory:
                 1,
                 [["parameters"], []],
                 [[], []],
-                id="Related model with scope (text operator on non-defined field)",
+                id="Text operator on non-defined field",
             ),
             pytest.param(
                 {
@@ -1254,10 +1249,10 @@ class TestSearchAPIQueryFilterFactory:
                 [["documents"], []],
                 [
                     [],
-                    ["documents.title", "eq", "document1"],
-                    ["documents.summary", "eq", "document1"],
+                    ["documents.title", "eq", "document1", "or"],
+                    ["documents.summary", "eq", "document1", "or"],
                 ],
-                id="Related model with scope (text operator, multiple fields)",
+                id="Text operator on defined field mapping to multiple field",
             ),
             pytest.param(
                 {
@@ -1282,10 +1277,168 @@ class TestSearchAPIQueryFilterFactory:
                 [["documents"], [], []],
                 [
                     [],
-                    ["documents.summary", "eq", "My Test Summary"],
-                    ["documents.title", "eq", "Test title"],
+                    ["documents.summary", "eq", "My Test Summary", "and"],
+                    ["documents.title", "eq", "Test title", "and"],
                 ],
-                id="Related model with scope (boolean operator)",
+                id="AND boolean operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {
+                                    "where": {
+                                        "and": [
+                                            {"summary": "My Test Summary"},
+                                            {"title": "Test title"},
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                3,
+                [["documents"], [], []],
+                [
+                    [],
+                    ["documents.summary", "eq", "My Test Summary", "and"],
+                    ["documents.title", "eq", "Test title", "and"],
+                ],
+                id="OR boolean operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {
+                                    "where": {
+                                        "and": [
+                                            {
+                                                "and": [
+                                                    {"summary": "My Test Summary"},
+                                                    {"title": {"like": "Test title"}},
+                                                ],
+                                            },
+                                            {
+                                                "and": [
+                                                    {"pid": "Test pid"},
+                                                    {"type": {"eq": "Test type"}},
+                                                ],
+                                            },
+                                            {
+                                                "or": [
+                                                    {"doi": "Test doi"},
+                                                    {
+                                                        "license": {
+                                                            "like": "Test license",
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                7,
+                [["documents"], [], [], [], [], [], []],
+                [
+                    [],
+                    ["documents.summary", "eq", "My Test Summary", "and"],
+                    ["documents.title", "like", "Test title", "and"],
+                    ["documents.pid", "eq", "Test pid", "and"],
+                    ["documents.type", "eq", "Test type", "and"],
+                    ["documents.doi", "eq", "Test doi", "or"],
+                    ["documents.license", "like", "Test license", "or"],
+                ],
+                id="Nested AND boolean operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {
+                                    "where": {
+                                        "or": [
+                                            {
+                                                "and": [
+                                                    {"summary": "My Test Summary"},
+                                                    {"title": {"like": "Test title"}},
+                                                ],
+                                            },
+                                            {
+                                                "and": [
+                                                    {"pid": "Test pid"},
+                                                    {"type": {"eq": "Test type"}},
+                                                ],
+                                            },
+                                            {
+                                                "or": [
+                                                    {"doi": "Test doi"},
+                                                    {
+                                                        "license": {
+                                                            "like": "Test license",
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                7,
+                [["documents"], [], [], [], [], [], []],
+                [
+                    [],
+                    ["documents.summary", "eq", "My Test Summary", "and"],
+                    ["documents.title", "like", "Test title", "and"],
+                    ["documents.pid", "eq", "Test pid", "and"],
+                    ["documents.type", "eq", "Test type", "and"],
+                    ["documents.doi", "eq", "Test doi", "or"],
+                    ["documents.license", "like", "Test license", "or"],
+                ],
+                id="Nested OR boolean operator",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "parameters",
+                                "scope": {"where": {"name": "My parameter"}},
+                            },
+                            {
+                                "relation": "documents",
+                                "scope": {"where": {"title": "Document title"}},
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                4,
+                [["parameters"], [], ["documents"], []],
+                [
+                    [],
+                    ["parameters.name", "eq", "My parameter", "and"],
+                    [],
+                    ["documents.title", "eq", "Document title", "and"],
+                ],
+                id="Multiple related models",
             ),
             pytest.param(
                 {
@@ -1310,18 +1463,18 @@ class TestSearchAPIQueryFilterFactory:
                 },
                 "documents",
                 4,
-                [["datasets"], [], ["instrument"], []],
+                [["datasets"], [], ["datasets.instrument"], []],
                 [
                     [],
-                    ["datasets.title", "eq", "Dataset 1"],
+                    ["datasets.title", "eq", "Dataset 1", "and"],
                     [],
-                    ["datasets.instrument.name", "eq", "Instrument 1"],
+                    ["datasets.instrument.name", "eq", "Instrument 1", "and"],
                 ],
-                id="Nested related models (with scope and where filters)",
+                id="Nested related models",
             ),
         ],
     )
-    def test_valid_include_filter(
+    def test_valid_include_filter_with_where_filter_in_scope(
         self,
         test_request_filter,
         test_entity_name,
@@ -1344,7 +1497,429 @@ class TestSearchAPIQueryFilterFactory:
                 assert test_filter.field == where_filter_data[0]
                 assert test_filter.operation == where_filter_data[1]
                 assert test_filter.value == where_filter_data[2]
-                # TODO - Assert for boolean_operator
+                assert test_filter.boolean_operator == where_filter_data[3]
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {"include": [{"relation": "parameters"}]},
+                            },
+                        ],
+                    },
+                },
+                "documents",
+                2,
+                [["datasets"], ["datasets.parameters"]],
+                id="Single related model",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {
+                                    "include": [
+                                        {"relation": "parameters"},
+                                        {"relation": "instrument"},
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                },
+                "documents",
+                3,
+                [["datasets"], ["datasets.parameters"], ["datasets.instrument"]],
+                id="Multiple related models",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {
+                                    "include": [
+                                        {
+                                            "relation": "documents",
+                                            "scope": {
+                                                "include": [{"relation": "parameters"}],
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                    },
+                },
+                "instruments",
+                3,
+                [
+                    ["datasets"],
+                    ["datasets.documents"],
+                    ["datasets.documents.parameters"],
+                ],
+                id="Nested related models",
+            ),
+        ],
+    )
+    def test_valid_include_filter_with_include_filter_in_scope(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for test_filter, included_entities in zip(filters, expected_included_entities):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_limit_values",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [{"relation": "datasets", "scope": {"limit": 50}}],
+                    },
+                },
+                "documents",
+                2,
+                [["datasets"], []],
+                [None, 50],
+                id="Single related model",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {"relation": "datasets", "scope": {"limit": 50}},
+                            {"relation": "parameters", "scope": {"limit": 20}},
+                        ],
+                    },
+                },
+                "documents",
+                4,
+                [["datasets"], [], ["parameters"], []],
+                [None, 50, None, 20],
+                id="Multiple related model",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {
+                                    "include": [
+                                        {
+                                            "relation": "documents",
+                                            "scope": {
+                                                "include": [{"relation": "parameters"}],
+                                                "limit": 20,
+                                            },
+                                        },
+                                    ],
+                                    "limit": 50,
+                                },
+                            },
+                        ],
+                    },
+                },
+                "documents",
+                5,
+                [
+                    ["datasets"],
+                    ["datasets.documents"],
+                    ["datasets.documents.parameters"],
+                    [],
+                    [],
+                ],
+                [None, None, None, 20, 50],
+                id="Nested related models",
+            ),
+        ],
+    )
+    def test_valid_include_filter_with_limit_filter_in_scope(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+        expected_limit_values,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for test_filter, included_entities, limit_value in zip(
+            filters, expected_included_entities, expected_limit_values,
+        ):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+            if isinstance(test_filter, SearchAPILimitFilter):
+                assert test_filter.limit_value == limit_value
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_skip_values",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [{"relation": "datasets", "scope": {"skip": 50}}],
+                    },
+                },
+                "documents",
+                2,
+                [["datasets"], []],
+                [None, 50],
+                id="Single related model",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {"relation": "datasets", "scope": {"skip": 50}},
+                            {"relation": "parameters", "scope": {"skip": 20}},
+                        ],
+                    },
+                },
+                "documents",
+                4,
+                [["datasets"], [], ["parameters"], []],
+                [None, 50, None, 20],
+                id="Multiple related model",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {
+                                    "include": [
+                                        {
+                                            "relation": "documents",
+                                            "scope": {
+                                                "include": [{"relation": "parameters"}],
+                                                "skip": 20,
+                                            },
+                                        },
+                                    ],
+                                    "skip": 50,
+                                },
+                            },
+                        ],
+                    },
+                },
+                "documents",
+                5,
+                [
+                    ["datasets"],
+                    ["datasets.documents"],
+                    ["datasets.documents.parameters"],
+                    [],
+                    [],
+                ],
+                [None, None, None, 20, 50],
+                id="Nested related models",
+            ),
+        ],
+    )
+    def test_valid_include_filter_with_skip_filter_in_scope(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+        expected_skip_values,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for test_filter, included_entities, skip_value in zip(
+            filters, expected_included_entities, expected_skip_values,
+        ):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+            if isinstance(test_filter, SearchAPISkipFilter):
+                assert test_filter.skip_value == skip_value
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_where_filter_data"
+        ", expected_limit_values, expected_skip_values",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {
+                                    "where": {"title": "My Title"},
+                                    "include": [{"relation": "instrument"}],
+                                    "limit": 50,
+                                    "skip": 20,
+                                },
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                5,
+                [["documents"], [], ["documents.instrument"], [], []],
+                [[], ["documents.title", "eq", "My Title", "and"], [], [], []],
+                [None, None, None, 50, None],
+                [None, None, None, None, 20],
+                id="Simple case",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {
+                                "relation": "documents",
+                                "scope": {
+                                    "where": {
+                                        "and": [
+                                            {
+                                                "and": [
+                                                    {"summary": "My Test Summary"},
+                                                    {"title": {"like": "Test title"}},
+                                                ],
+                                            },
+                                            {
+                                                "and": [
+                                                    {"pid": "Test pid"},
+                                                    {"type": {"eq": "Test type"}},
+                                                ],
+                                            },
+                                            {
+                                                "or": [
+                                                    {"doi": "Test doi"},
+                                                    {
+                                                        "license": {
+                                                            "like": "Test license",
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                    "include": [
+                                        {
+                                            "relation": "instrument",
+                                            "scope": {
+                                                "where": {"name": "Instrument 1"},
+                                                "limit": 2,
+                                            },
+                                        },
+                                    ],
+                                    "limit": 50,
+                                    "skip": 20,
+                                },
+                            },
+                        ],
+                    },
+                },
+                "datasets",
+                12,
+                [
+                    ["documents"],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    [],
+                    ["documents.instrument"],
+                    [],
+                    [],
+                    [],
+                    [],
+                ],
+                [
+                    [],
+                    ["documents.summary", "eq", "My Test Summary", "and"],
+                    ["documents.title", "like", "Test title", "and"],
+                    ["documents.pid", "eq", "Test pid", "and"],
+                    ["documents.type", "eq", "Test type", "and"],
+                    ["documents.doi", "eq", "Test doi", "or"],
+                    ["documents.license", "like", "Test license", "or"],
+                    [],
+                    ["documents.instrument.name", "eq", "Instrument 1", "and"],
+                    [],
+                    [],
+                    [],
+                ],
+                [None, None, None, None, None, None, None, None, None, 2, 50, None],
+                [None, None, None, None, None, None, None, None, None, None, None, 20],
+                id="Complex case",
+            ),
+        ],
+    )
+    def test_valid_include_filter_with_all_filters_in_scope(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+        expected_where_filter_data,
+        expected_limit_values,
+        expected_skip_values,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for (
+            test_filter,
+            included_entities,
+            where_filter_data,
+            limit_value,
+            skip_value,
+        ) in zip(
+            filters,
+            expected_included_entities,
+            expected_where_filter_data,
+            expected_limit_values,
+            expected_skip_values,
+        ):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+            if isinstance(test_filter, SearchAPIWhereFilter):
+                assert test_filter.field == where_filter_data[0]
+                assert test_filter.operation == where_filter_data[1]
+                assert test_filter.value == where_filter_data[2]
+                assert test_filter.boolean_operator == where_filter_data[3]
+            if isinstance(test_filter, SearchAPILimitFilter):
+                assert test_filter.limit_value == limit_value
+            if isinstance(test_filter, SearchAPISkipFilter):
+                assert test_filter.skip_value == skip_value
 
     @pytest.mark.parametrize(
         "test_request_filter, expected_limit_value",
