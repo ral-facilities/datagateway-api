@@ -1952,6 +1952,129 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].skip_value == expected_skip_value
 
     @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length"
+        ", expected_included_entities, expected_where_filter_data"
+        ", expected_limit_values, expected_skip_values",
+        [
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {"title": "My Title"},
+                        "include": [{"relation": "instrument"}],
+                        "limit": 50,
+                        "skip": 20,
+                    },
+                },
+                "datasets",
+                4,
+                [[], ["instrument"], [], []],
+                [["title", "eq", "My Title", "and"], [], [], []],
+                [None, None, 50, None],
+                [None, None, None, 20],
+                id="Simple case",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "where": {
+                            "and": [
+                                {
+                                    "and": [
+                                        {"summary": "My Test Summary"},
+                                        {"title": {"like": "Test title"}},
+                                    ],
+                                },
+                                {
+                                    "and": [
+                                        {"pid": "Test pid"},
+                                        {"type": {"eq": "Test type"}},
+                                    ],
+                                },
+                                {
+                                    "or": [
+                                        {"doi": "Test doi"},
+                                        {"license": {"like": "Test license"}},
+                                    ],
+                                },
+                            ],
+                        },
+                        "include": [
+                            {
+                                "relation": "instrument",
+                                "scope": {
+                                    "where": {"name": "Instrument 1"},
+                                    "limit": 2,
+                                },
+                            },
+                        ],
+                        "limit": 50,
+                        "skip": 20,
+                    },
+                },
+                "datasets",
+                11,
+                [[], [], [], [], [], [], ["instrument"], [], [], [], []],
+                [
+                    ["summary", "eq", "My Test Summary", "and"],
+                    ["title", "like", "Test title", "and"],
+                    ["pid", "eq", "Test pid", "and"],
+                    ["type", "eq", "Test type", "and"],
+                    ["doi", "eq", "Test doi", "or"],
+                    ["license", "like", "Test license", "or"],
+                    [],
+                    ["instrument.name", "eq", "Instrument 1", "and"],
+                    [],
+                    [],
+                    [],
+                ],
+                [None, None, None, None, None, None, None, None, 2, 50, None],
+                [None, None, None, None, None, None, None, None, None, None, 20],
+                id="Complex case",
+            ),
+        ],
+    )
+    def test_valid_filter_input_with_all_filters(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_included_entities,
+        expected_where_filter_data,
+        expected_limit_values,
+        expected_skip_values,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == expected_length
+
+        for (
+            test_filter,
+            included_entities,
+            where_filter_data,
+            limit_value,
+            skip_value,
+        ) in zip(
+            filters,
+            expected_included_entities,
+            expected_where_filter_data,
+            expected_limit_values,
+            expected_skip_values,
+        ):
+            if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.included_filters == included_entities
+            if isinstance(test_filter, SearchAPIWhereFilter):
+                assert test_filter.field == where_filter_data[0]
+                assert test_filter.operation == where_filter_data[1]
+                assert test_filter.value == where_filter_data[2]
+                assert test_filter.boolean_operator == where_filter_data[3]
+            if isinstance(test_filter, SearchAPILimitFilter):
+                assert test_filter.limit_value == limit_value
+            if isinstance(test_filter, SearchAPISkipFilter):
+                assert test_filter.skip_value == skip_value
+
+    @pytest.mark.parametrize(
         "test_request_filter",
         [
             pytest.param("invalid query filter input", id="Generally invalid input"),
