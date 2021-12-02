@@ -18,6 +18,12 @@ class NestedWhereFilters:
         :type joining_operator: :class:`str`
         """
 
+        # Ensure each side is in a list for consistency for string conversion
+        if not isinstance(lhs, list):
+            lhs = [lhs]
+        if not isinstance(rhs, list):
+            rhs = [rhs]
+
         self.lhs = lhs
         self.rhs = rhs
         self.joining_operator = f" {joining_operator} "
@@ -34,14 +40,10 @@ class NestedWhereFilters:
             # If neither side contains `None`, we should continue as normal
             pass
 
-        for i in range(len(boolean_algebra_list)):
-            # Convert inputs to JPQL-ready
-            boolean_algebra_list[i] = str(boolean_algebra_list[i])
+        # If either side contains a list of WHERE filter objects, flatten the conditions
+        conditions = [str(m) for n in (i for i in boolean_algebra_list) for m in n]
 
-        # TODO - LHS and RHS need to be able to deal with a list of
-        # `SearchAPIWhereFilters`
-
-        return f"({self.joining_operator.join(boolean_algebra_list)})"
+        return f"({self.joining_operator.join(conditions)})"
 
     def __repr__(self):
         return f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator: {repr(self.joining_operator)}"

@@ -80,11 +80,50 @@ class TestNestedWhereFilters:
                 "(o.name = 'test name' OR o.id = '3')",
                 id="(o.name = 'test name' OR o.id = '3')",
             ),
+            pytest.param(
+                [SearchAPIWhereFilter("name", "test name", "eq", "and")],
+                SearchAPIWhereFilter("id", 3, "eq", "and"),
+                "OR",
+                "(o.name = 'test name' OR o.id = '3')",
+                id="Single filter list in LHS",
+            ),
+            pytest.param(
+                [SearchAPIWhereFilter("name", "test name", "eq", "and")],
+                [SearchAPIWhereFilter("id", 3, "eq", "and")],
+                "OR",
+                "(o.name = 'test name' OR o.id = '3')",
+                id="Single filter list in LHS and RHS",
+            ),
+            pytest.param(
+                [
+                    SearchAPIWhereFilter("name", "test name", "eq", "and"),
+                    SearchAPIWhereFilter("id", 10, "lt"),
+                ],
+                [SearchAPIWhereFilter("id", 3, "gt", "and")],
+                "AND",
+                "(o.name = 'test name' AND o.id < '10' AND o.id > '3')",
+                id="Multiple filters on LHS",
+            ),
+            pytest.param(
+                [
+                    SearchAPIWhereFilter("name", "test name", "eq", "and"),
+                    SearchAPIWhereFilter("id", 10, "lt"),
+                ],
+                [
+                    SearchAPIWhereFilter("id", 3, "gt", "and"),
+                    SearchAPIWhereFilter("doi", "Test DOI", "like"),
+                ],
+                "AND",
+                "(o.name = 'test name' AND o.id < '10' AND o.id > '3')",
+                id="Multiple filters on LHS and RHS",
+            ),
         ],
     )
     def test_search_api_filters(
         self, lhs, rhs, joining_operator, expected_where_clause,
     ):
+        # TODO - Is creating clients causing this to be slow? Test once session handler
+        # work merged
         test_nest = NestedWhereFilters(lhs, rhs, joining_operator)
         where_clause = str(test_nest)
         assert where_clause == expected_where_clause
