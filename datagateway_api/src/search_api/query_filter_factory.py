@@ -8,6 +8,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
+from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 
 log = logging.getLogger()
 
@@ -62,6 +63,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         ):
             boolean_operator = list(filter_input.keys())[0]
             conditions = list(filter_input.values())[0]
+            test_where_filters = []
+
             for condition in conditions:
                 # Could be nested AND/OR
                 where_filter = {
@@ -70,10 +73,19 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 conditional_where_filters = SearchAPIQueryFilterFactory.get_query_filter(
                     where_filter, entity_name,
                 )
+                # TODO - could just go to extend the function call?
+                test_where_filters.extend(conditional_where_filters)
 
-                for conditional_where_filter in conditional_where_filters:
-                    conditional_where_filter.boolean_operator = boolean_operator
-                where_filters.extend(conditional_where_filters)
+                # for conditional_where_filter in conditional_where_filters:
+                # conditional_where_filter.boolean_operator = boolean_operator
+                # where_filters.extend(conditional_where_filters)
+
+            print(f"test Cond where filters: {test_where_filters}")
+
+            nested = NestedWhereFilters(
+                test_where_filters[:-1], test_where_filters[-1], boolean_operator,
+            )
+            where_filters.append(nested)
         elif list(filter_input.keys())[0] == "text":
             # TODO - we might want to move this to the data
             # definitions at a later point
