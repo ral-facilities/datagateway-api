@@ -32,6 +32,9 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
         return str_conds[0]
 
+    def __repr__(self):
+        return f"Field: '{self.field}', Value: '{self.value}', Operation: '{self.operation}'"
+
 
 class SearchAPISkipFilter(PythonICATSkipFilter):
     def __init__(self, skip_value):
