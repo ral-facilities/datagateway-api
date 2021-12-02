@@ -18,13 +18,12 @@ class NestedWhereFilters:
         :type joining_operator: :class:`str`
         """
 
-        self.lhs = str(lhs)
-        self.rhs = str(rhs)
-        self.joining_operator = joining_operator
+        self.lhs = lhs
+        self.rhs = rhs
 
     def __str__(self):
         """
         Join the condition on the left with the one on the right with the boolean
         operator
         """
-        return f"({self.lhs} {self.joining_operator} {self.rhs})"
+        return f"({str(self.lhs)} {self.joining_operator} {str(self.rhs)})"
