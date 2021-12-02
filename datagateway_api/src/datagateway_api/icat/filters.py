@@ -210,13 +210,20 @@ class PythonICATOrderFilter(OrderFilter):
 
 
 class PythonICATSkipFilter(SkipFilter):
-    def __init__(self, skip_value):
+    def __init__(self, skip_value, client_use="datagateway_api"):
         super().__init__(skip_value)
+        self.client_use = client_use
 
     def apply_filter(self, query):
-        icat_properties = get_icat_properties(
-            config.datagateway_api.icat_url, config.datagateway_api.icat_check_cert,
-        )
+        if self.client_use == "datagateway_api":
+            icat_properties = get_icat_properties(
+                config.datagateway_api.icat_url, config.datagateway_api.icat_check_cert,
+            )
+        else:
+            icat_properties = get_icat_properties(
+                config.search_api.icat_url, config.search_api.icat_check_cert,
+            )
+
         icat_set_limit(query, self.skip_value, icat_properties["maxEntities"])
 
 

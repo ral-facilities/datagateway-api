@@ -19,7 +19,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
 class SearchAPISkipFilter(PythonICATSkipFilter):
     def __init__(self, skip_value):
-        super().__init__(skip_value)
+        super().__init__(skip_value, client_use="search_api")
 
     def apply_filter(self, query):
         return super().apply_filter(query)
