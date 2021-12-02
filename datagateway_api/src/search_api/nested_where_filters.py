@@ -20,13 +20,28 @@ class NestedWhereFilters:
 
         self.lhs = lhs
         self.rhs = rhs
+        self.joining_operator = f" {joining_operator} "
 
     def __str__(self):
         """
         Join the condition on the left with the one on the right with the boolean
         operator
         """
-        return f"({str(self.lhs)} {self.joining_operator} {str(self.rhs)})"
+        boolean_algebra_list = [self.lhs, self.rhs]
+        try:
+            boolean_algebra_list.remove(None)
+        except ValueError:
+            # If neither side contains `None`, we should continue as normal
+            pass
+
+        for i in range(len(boolean_algebra_list)):
+            # Convert inputs to JPQL-ready
+            boolean_algebra_list[i] = str(boolean_algebra_list[i])
+
+        # TODO - LHS and RHS need to be able to deal with a list of
+        # `SearchAPIWhereFilters`
+
+        return f"({self.joining_operator.join(boolean_algebra_list)})"
 
     def __repr__(self):
         return f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator: {repr(self.joining_operator)}"

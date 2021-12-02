@@ -8,6 +8,8 @@ class TestNestedWhereFilters:
     @pytest.mark.parametrize(
         "lhs, rhs, joining_operator, expected_where_clause",
         [
+            pytest.param("A", None, "AND", "(A)", id="(A) w/ misc. AND"),
+            pytest.param("A", None, "OR", "(A)", id="(A) w/ misc. OR"),
             pytest.param("A", "B", "AND", "(A AND B)", id="(A AND B)"),
             pytest.param("A", "B", "OR", "(A OR B)", id="(A OR B)"),
             pytest.param(
