@@ -7,6 +7,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
+from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.src.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
@@ -45,16 +46,18 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["Dataset 1"],
                 ["or"],
+                # TODO
                 id="Text operator on dataset",
             ),
             pytest.param(
                 {"filter": {"where": {"text": "Instrument 1"}}},
                 "instrument",
-                2,
+                1,
                 ["name", "facility"],
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
                 ["or", "or"],
+                # TODO
                 id="Text operator on instrument",
             ),
             pytest.param(
@@ -99,7 +102,8 @@ class TestSearchAPIQueryFilterFactory:
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators",
+        "expected_operations, expected_values, expected_boolean_operators"
+        ", expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
@@ -109,6 +113,9 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["My Test Summary"],
                 ["and"],
+                [],
+                [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                "and",
                 id="Single condition, property value with no operator",
             ),
             pytest.param(
@@ -123,11 +130,14 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                2,
+                1,
                 ["summary", "title"],
                 ["eq", "eq"],
                 ["My Test Summary", "Test title"],
                 ["and", "and"],
+                [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                [SearchAPIWhereFilter("title", "Test title", "eq")],
+                "and",
                 id="Multiple conditions (two), property values with no operator",
             ),
             pytest.param(
@@ -143,11 +153,17 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                3,
+                1,
                 ["summary", "title", "type"],
                 ["eq", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test type"],
                 ["and", "and", "and"],
+                [
+                    SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
+                    SearchAPIWhereFilter("title", "Test title", "eq"),
+                ],
+                [SearchAPIWhereFilter("type", "Test type", "eq")],
+                "and",
                 id="Multiple conditions (three), property values with no operator",
             ),
             pytest.param(
@@ -158,6 +174,9 @@ class TestSearchAPIQueryFilterFactory:
                 ["lt"],
                 [50],
                 ["and"],
+                [],
+                [SearchAPIWhereFilter("value", 50, "lt")],
+                "and",
                 id="Single condition, property value with operator",
             ),
             pytest.param(
@@ -172,11 +191,14 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                2,
+                1,
                 ["name", "value"],
                 ["like", "gte"],
                 ["Test name", 275],
                 ["and", "and"],
+                [SearchAPIWhereFilter("name", "Test name", "like")],
+                [SearchAPIWhereFilter("value", 275, "gte")],
+                "and",
                 id="Multiple conditions (two), property values with operator",
             ),
             pytest.param(
@@ -192,11 +214,17 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                3,
+                1,
                 ["name", "value", "unit"],
                 ["like", "gte", "nlike"],
                 ["Test name", 275, "Test unit"],
                 ["and", "and", "and"],
+                [
+                    SearchAPIWhereFilter("name", "Test name", "like"),
+                    SearchAPIWhereFilter("value", 275, "gte"),
+                ],
+                [SearchAPIWhereFilter("unit", "Test unit", "nlike")],
+                "and",
                 id="Multiple conditions (three), property values with operator",
             ),
             pytest.param(
@@ -207,6 +235,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["Dataset 1"],
                 ["or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Single condition, text operator on dataset",
             ),
             pytest.param(
@@ -217,6 +249,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
                 ["or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Single condition, text operator on instrument",
             ),
             pytest.param(
@@ -231,6 +267,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "and"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with no operator",
             ),
@@ -248,6 +288,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "and"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with no operator",
             ),
@@ -268,6 +312,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "and"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with operator",
             ),
@@ -288,6 +336,10 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "and"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with operator",
             ),
@@ -302,28 +354,29 @@ class TestSearchAPIQueryFilterFactory:
         expected_operations,
         expected_values,
         expected_boolean_operators,
+        expected_lhs,
+        expected_rhs,
+        expected_joining_operator,
     ):
+        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
+        # TODO - Will expected length always be 1?
         assert len(filters) == expected_length
-        for test_filter, field, operation, value, boolean_operator in zip(
-            filters,
-            expected_fields,
-            expected_operations,
-            expected_values,
-            expected_boolean_operators,
-        ):
-            assert isinstance(test_filter, SearchAPIWhereFilter)
-            assert test_filter.field == field
-            assert test_filter.operation == operation
-            assert test_filter.value == value
-            assert test_filter.boolean_operator == boolean_operator
+        assert isinstance(filters[0], NestedWhereFilters)
+        print(type(filters[0]))
+        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
+        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
+        assert repr(filters[0].lhs) == repr(expected_lhs)
+        assert repr(filters[0].rhs) == repr(expected_rhs)
+        assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators",
+        "expected_operations, expected_values, expected_boolean_operators"
+        ", expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
@@ -333,6 +386,9 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["My Test Summary"],
                 ["or"],
+                [],
+                [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                "or",
                 id="Single condition, property value with no operator",
             ),
             pytest.param(
@@ -347,11 +403,15 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                2,
+                1,
                 ["summary", "title"],
                 ["eq", "eq"],
                 ["My Test Summary", "Test title"],
                 ["or", "or"],
+                # TODO
+                [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                [SearchAPIWhereFilter("title", "Test title", "eq")],
+                "or",
                 id="Multiple conditions (two), property values with no operator",
             ),
             pytest.param(
@@ -367,11 +427,17 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                3,
+                1,
                 ["summary", "title", "type"],
                 ["eq", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test type"],
                 ["or", "or", "or"],
+                [
+                    SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
+                    SearchAPIWhereFilter("title", "Test title", "eq"),
+                ],
+                [SearchAPIWhereFilter("type", "Test type", "eq")],
+                "or",
                 id="Multiple conditions (three), property values with no operator",
             ),
             pytest.param(
@@ -382,6 +448,9 @@ class TestSearchAPIQueryFilterFactory:
                 ["lt"],
                 [50],
                 ["or"],
+                [],
+                [SearchAPIWhereFilter("value", 50, "lt")],
+                "or",
                 id="Single condition, property value with operator",
             ),
             pytest.param(
@@ -396,11 +465,14 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                2,
+                1,
                 ["name", "value"],
                 ["like", "gte"],
                 ["Test name", 275],
                 ["or", "or"],
+                [SearchAPIWhereFilter("name", "Test name", "like")],
+                [SearchAPIWhereFilter("value", 275, "gte")],
+                "or",
                 id="Multiple conditions (two), property values with operator",
             ),
             pytest.param(
@@ -416,11 +488,17 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                3,
+                1,
                 ["name", "value", "unit"],
                 ["like", "gte", "nlike"],
                 ["Test name", 275, "Test unit"],
                 ["or", "or", "or"],
+                [
+                    SearchAPIWhereFilter("name", "Test name", "like"),
+                    SearchAPIWhereFilter("value", 275, "gte"),
+                ],
+                [SearchAPIWhereFilter("unit", "Test unit", "nlike")],
+                "or",
                 id="Multiple conditions (three), property values with operator",
             ),
             pytest.param(
@@ -431,16 +509,24 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["Dataset 1"],
                 ["or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Single condition, text operator on dataset",
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Instrument 1"}]}}},
                 "instrument",
-                2,
+                1,
                 ["name", "facility"],
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
                 ["or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Single condition, text operator on instrument",
             ),
             pytest.param(
@@ -450,11 +536,15 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                2,
+                1,
                 ["title", "pid"],
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with no operator",
             ),
@@ -467,11 +557,15 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                3,
+                1,
                 ["name", "facility", "pid"],
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with no operator",
             ),
@@ -484,11 +578,15 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                2,
+                1,
                 ["title", "pid"],
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with operator",
             ),
@@ -504,11 +602,15 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                3,
+                1,
                 ["name", "facility", "pid"],
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "or"],
+                # TODO
+                "lhs",
+                "rhs",
+                "joining operator",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with operator",
             ),
@@ -523,28 +625,29 @@ class TestSearchAPIQueryFilterFactory:
         expected_operations,
         expected_values,
         expected_boolean_operators,
+        expected_lhs,
+        expected_rhs,
+        expected_joining_operator,
     ):
+        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
+        # TODO - Will expected length always be 1?
         assert len(filters) == expected_length
-        for test_filter, field, operation, value, boolean_operator in zip(
-            filters,
-            expected_fields,
-            expected_operations,
-            expected_values,
-            expected_boolean_operators,
-        ):
-            assert isinstance(test_filter, SearchAPIWhereFilter)
-            assert test_filter.field == field
-            assert test_filter.operation == operation
-            assert test_filter.value == value
-            assert test_filter.boolean_operator == boolean_operator
+        assert isinstance(filters[0], NestedWhereFilters)
+        print(type(filters[0]))
+        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
+        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
+        assert repr(filters[0].lhs) == repr(expected_lhs)
+        assert repr(filters[0].rhs) == repr(expected_rhs)
+        assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators",
+        "expected_operations, expected_values, expected_boolean_operators"
+        ", expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {
@@ -568,11 +671,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["and", "and", "and", "and"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                "and",
                 id="With two AND boolean operators",
             ),
             pytest.param(
@@ -597,11 +715,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["and", "and", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="With AND and OR boolean operators",
             ),
             pytest.param(
@@ -626,11 +759,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="With two OR boolean operators",
             ),
             pytest.param(
@@ -661,7 +809,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -673,6 +821,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "and", "and", "and", "and"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "and",
+                    ),
+                ],
+                "and",
                 id="With three AND boolean operators",
             ),
             pytest.param(
@@ -703,7 +871,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -715,6 +883,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "and", "and", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="With two AND and one OR boolean operators",
             ),
             pytest.param(
@@ -745,7 +933,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -757,6 +945,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="With one AND and two OR boolean operators",
             ),
             pytest.param(
@@ -787,7 +995,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -799,6 +1007,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["or", "or", "or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "or",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="With three OR boolean operators",
             ),
         ],
@@ -812,28 +1040,29 @@ class TestSearchAPIQueryFilterFactory:
         expected_operations,
         expected_values,
         expected_boolean_operators,
+        expected_lhs,
+        expected_rhs,
+        expected_joining_operator,
     ):
+        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
+        # TODO - Will expected length always be 1?
         assert len(filters) == expected_length
-        for test_filter, field, operation, value, boolean_operator in zip(
-            filters,
-            expected_fields,
-            expected_operations,
-            expected_values,
-            expected_boolean_operators,
-        ):
-            assert isinstance(test_filter, SearchAPIWhereFilter)
-            assert test_filter.field == field
-            assert test_filter.operation == operation
-            assert test_filter.value == value
-            assert test_filter.boolean_operator == boolean_operator
+        assert isinstance(filters[0], NestedWhereFilters)
+        print(type(filters[0]))
+        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
+        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
+        assert repr(filters[0].lhs) == repr(expected_lhs)
+        assert repr(filters[0].rhs) == repr(expected_rhs)
+        assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators",
+        "expected_operations, expected_values, expected_boolean_operators"
+        ", expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {
@@ -857,11 +1086,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["and", "and", "and", "and"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                "or",
                 id="With two AND boolean operators",
             ),
             pytest.param(
@@ -886,11 +1130,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["and", "and", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="With AND and OR boolean operators",
             ),
             pytest.param(
@@ -915,11 +1174,26 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
+                1,
                 ["summary", "title", "pid", "type"],
                 ["eq", "like", "eq", "eq"],
                 ["My Test Summary", "Test title", "Test pid", "Test type"],
                 ["or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="With two OR boolean operators",
             ),
             pytest.param(
@@ -950,7 +1224,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -962,6 +1236,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "and", "and", "and", "and"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "and",
+                    ),
+                ],
+                "or",
                 id="With three AND boolean operators",
             ),
             pytest.param(
@@ -992,7 +1286,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -1004,6 +1298,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "and", "and", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "and",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="With two AND and one OR boolean operators",
             ),
             pytest.param(
@@ -1034,7 +1348,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -1046,6 +1360,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["and", "and", "or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "and",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="With one AND and two OR boolean operators",
             ),
             pytest.param(
@@ -1076,7 +1410,7 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                6,
+                1,
                 ["summary", "title", "pid", "type", "doi", "license"],
                 ["eq", "like", "eq", "eq", "eq", "like"],
                 [
@@ -1088,6 +1422,26 @@ class TestSearchAPIQueryFilterFactory:
                     "Test license",
                 ],
                 ["or", "or", "or", "or", "or", "or"],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
+                        [SearchAPIWhereFilter("title", "Test title", "like")],
+                        "or",
+                    ),
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                        [SearchAPIWhereFilter("type", "Test type", "eq")],
+                        "or",
+                    ),
+                ],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                        [SearchAPIWhereFilter("license", "Test license", "like")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="With three OR boolean operators",
             ),
         ],
@@ -1101,24 +1455,24 @@ class TestSearchAPIQueryFilterFactory:
         expected_operations,
         expected_values,
         expected_boolean_operators,
+        expected_lhs,
+        expected_rhs,
+        expected_joining_operator,
     ):
+        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
+        # TODO - Will expected length always be 1?
         assert len(filters) == expected_length
-        for test_filter, field, operation, value, boolean_operator in zip(
-            filters,
-            expected_fields,
-            expected_operations,
-            expected_values,
-            expected_boolean_operators,
-        ):
-            assert isinstance(test_filter, SearchAPIWhereFilter)
-            assert test_filter.field == field
-            assert test_filter.operation == operation
-            assert test_filter.value == value
-            assert test_filter.boolean_operator == boolean_operator
+        assert isinstance(filters[0], NestedWhereFilters)
+        print(type(filters[0]))
+        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
+        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
+        assert repr(filters[0].lhs) == repr(expected_lhs)
+        assert repr(filters[0].rhs) == repr(expected_rhs)
+        assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
@@ -1482,6 +1836,7 @@ class TestSearchAPIQueryFilterFactory:
         expected_included_entities,
         expected_where_filter_data,
     ):
+        # TODO
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
@@ -1663,6 +2018,7 @@ class TestSearchAPIQueryFilterFactory:
         expected_included_entities,
         expected_limit_values,
     ):
+        # TODO - do we need to support this??
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
@@ -1752,6 +2108,7 @@ class TestSearchAPIQueryFilterFactory:
         expected_included_entities,
         expected_skip_values,
     ):
+        # TODO - do we need to support this??
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
@@ -1890,6 +2247,7 @@ class TestSearchAPIQueryFilterFactory:
         expected_limit_values,
         expected_skip_values,
     ):
+        # TODO - are we going to support limit in include? If not, probably remove test?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
@@ -2043,6 +2401,7 @@ class TestSearchAPIQueryFilterFactory:
         expected_limit_values,
         expected_skip_values,
     ):
+        # TODO - remove limit from scope
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
