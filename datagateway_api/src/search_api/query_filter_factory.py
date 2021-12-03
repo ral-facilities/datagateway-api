@@ -143,6 +143,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 )
 
                 for scope_query_filter in scope_query_filters:
+                    # TODO - fix for AND boolean operator test needs to go in here
+                    # Search through scope_query_filter to find where filters via nested
                     if isinstance(scope_query_filter, SearchAPIWhereFilter):
                         scope_query_filter.field = (
                             f"{included_entity}.{scope_query_filter.field}"
