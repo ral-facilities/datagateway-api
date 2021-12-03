@@ -15,77 +15,45 @@ from datagateway_api.src.search_api.query_filter_factory import (
 
 class TestSearchAPIQueryFilterFactory:
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators",
+        "test_request_filter, test_entity_name, expected_where",
         [
             pytest.param(
                 {"filter": {"where": {"title": "My Title"}}},
                 "documents",
-                1,
-                ["title"],
-                ["eq"],
-                ["My Title"],
-                ["and"],
+                SearchAPIWhereFilter("title", "My Title", "eq"),
                 id="Property value with no operator",
             ),
             pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
                 "documents",
-                1,
-                ["summary"],
-                ["like"],
-                ["My Test Summary"],
-                ["and"],
+                SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="Property value with operator",
             ),
             pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
                 "documents",
-                1,
-                ["summary"],
-                ["like"],
-                ["My Test Summary"],
-                ["and"],
+                SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="WHERE filter in syntax for count endpoints",
             ),
         ],
     )
     def test_valid_where_filter(
-        self,
-        test_request_filter,
-        test_entity_name,
-        expected_length,
-        expected_fields,
-        expected_operations,
-        expected_values,
-        expected_boolean_operators,
+        self, test_request_filter, test_entity_name, expected_where,
     ):
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
-        assert len(filters) == expected_length
-        for test_filter, field, operation, value, boolean_operator in zip(
-            filters,
-            expected_fields,
-            expected_operations,
-            expected_values,
-            expected_boolean_operators,
-        ):
-            assert isinstance(test_filter, SearchAPIWhereFilter)
-            assert test_filter.field == field
-            assert test_filter.operation == operation
-            assert test_filter.value == value
-            assert test_filter.boolean_operator == boolean_operator
+        assert len(filters) == 1
+        assert repr(filters[0]) == repr(expected_where)
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_lhs"
-        ", expected_rhs, expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
+        ", expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"text": "Dataset 1"}}},
                 "datasets",
-                1,
                 [],
                 [SearchAPIWhereFilter("title", "Dataset 1", "eq")],
                 "or",
@@ -94,7 +62,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"text": "Instrument 1"}}},
                 "instrument",
-                1,
                 [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
                 [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
                 "or",
@@ -106,7 +73,6 @@ class TestSearchAPIQueryFilterFactory:
         self,
         test_request_filter,
         test_entity_name,
-        expected_length,
         expected_lhs,
         expected_rhs,
         expected_joining_operator,
@@ -115,29 +81,19 @@ class TestSearchAPIQueryFilterFactory:
             test_request_filter, test_entity_name,
         )
 
-        # TODO - Will expected length always be 1?
-        assert len(filters) == expected_length
+        assert len(filters) == 1
         assert isinstance(filters[0], NestedWhereFilters)
-        print(type(filters[0]))
-        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
-        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators"
-        ", expected_lhs, expected_rhs, expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
+        ", expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
                 "documents",
-                1,
-                ["summary"],
-                ["eq"],
-                ["My Test Summary"],
-                ["and"],
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "and",
@@ -155,11 +111,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title"],
-                ["eq", "eq"],
-                ["My Test Summary", "Test title"],
-                ["and", "and"],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "and",
@@ -178,11 +129,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "type"],
-                ["eq", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test type"],
-                ["and", "and", "and"],
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -194,11 +140,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"and": [{"value": {"lt": 50}}]}}},
                 "parameters",
-                1,
-                ["value"],
-                ["lt"],
-                [50],
-                ["and"],
                 [],
                 [SearchAPIWhereFilter("value", 50, "lt")],
                 "and",
@@ -216,11 +157,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                1,
-                ["name", "value"],
-                ["like", "gte"],
-                ["Test name", 275],
-                ["and", "and"],
                 [SearchAPIWhereFilter("name", "Test name", "like")],
                 [SearchAPIWhereFilter("value", 275, "gte")],
                 "and",
@@ -239,11 +175,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                1,
-                ["name", "value", "unit"],
-                ["like", "gte", "nlike"],
-                ["Test name", 275, "Test unit"],
-                ["and", "and", "and"],
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
                     SearchAPIWhereFilter("value", 275, "gte"),
@@ -255,11 +186,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Dataset 1"}]}}},
                 "datasets",
-                1,
-                ["title"],
-                ["eq"],
-                ["Dataset 1"],
-                ["or"],
                 [],
                 [
                     NestedWhereFilters(
@@ -272,11 +198,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Instrument 1"}]}}},
                 "instrument",
-                1,
-                ["name", "facility"],
-                ["eq", "eq"],
-                ["Instrument 1", "Instrument 1"],
-                ["or", "or"],
                 [],
                 [
                     NestedWhereFilters(
@@ -295,11 +216,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                1,
-                ["title", "pid"],
-                ["eq", "eq"],
-                ["Dataset 1", "Test pid"],
-                ["or", "and"],
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
@@ -319,11 +235,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                1,
-                ["name", "facility", "pid"],
-                ["eq", "eq", "eq"],
-                ["Instrument 1", "Instrument 1", "Test pid"],
-                ["or", "or", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
@@ -348,11 +259,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                1,
-                ["title", "pid"],
-                ["eq", "eq"],
-                ["Dataset 1", "Test pid"],
-                ["or", "and"],
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
@@ -375,11 +281,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                1,
-                ["name", "facility", "pid"],
-                ["eq", "eq", "eq"],
-                ["Instrument 1", "Instrument 1", "Test pid"],
-                ["or", "or", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
@@ -398,43 +299,27 @@ class TestSearchAPIQueryFilterFactory:
         self,
         test_request_filter,
         test_entity_name,
-        expected_length,
-        expected_fields,
-        expected_operations,
-        expected_values,
-        expected_boolean_operators,
         expected_lhs,
         expected_rhs,
         expected_joining_operator,
     ):
-        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
-        # TODO - Will expected length always be 1?
-        assert len(filters) == expected_length
+        assert len(filters) == 1
         assert isinstance(filters[0], NestedWhereFilters)
-        print(type(filters[0]))
-        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
-        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators"
-        ", expected_lhs, expected_rhs, expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
+        ", expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
                 "documents",
-                1,
-                ["summary"],
-                ["eq"],
-                ["My Test Summary"],
-                ["or"],
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "or",
@@ -452,11 +337,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title"],
-                ["eq", "eq"],
-                ["My Test Summary", "Test title"],
-                ["or", "or"],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "or",
@@ -475,11 +355,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "type"],
-                ["eq", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test type"],
-                ["or", "or", "or"],
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -491,11 +366,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"or": [{"value": {"lt": 50}}]}}},
                 "parameters",
-                1,
-                ["value"],
-                ["lt"],
-                [50],
-                ["or"],
                 [],
                 [SearchAPIWhereFilter("value", 50, "lt")],
                 "or",
@@ -513,11 +383,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                1,
-                ["name", "value"],
-                ["like", "gte"],
-                ["Test name", 275],
-                ["or", "or"],
                 [SearchAPIWhereFilter("name", "Test name", "like")],
                 [SearchAPIWhereFilter("value", 275, "gte")],
                 "or",
@@ -536,11 +401,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "parameters",
-                1,
-                ["name", "value", "unit"],
-                ["like", "gte", "nlike"],
-                ["Test name", 275, "Test unit"],
-                ["or", "or", "or"],
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
                     SearchAPIWhereFilter("value", 275, "gte"),
@@ -552,11 +412,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Dataset 1"}]}}},
                 "datasets",
-                1,
-                ["title"],
-                ["eq"],
-                ["Dataset 1"],
-                ["or"],
                 [],
                 [
                     NestedWhereFilters(
@@ -569,11 +424,6 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Instrument 1"}]}}},
                 "instrument",
-                1,
-                ["name", "facility"],
-                ["eq", "eq"],
-                ["Instrument 1", "Instrument 1"],
-                ["or", "or"],
                 [],
                 [
                     NestedWhereFilters(
@@ -592,11 +442,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                1,
-                ["title", "pid"],
-                ["eq", "eq"],
-                ["Dataset 1", "Test pid"],
-                ["or", "or"],
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
@@ -616,11 +461,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                1,
-                ["name", "facility", "pid"],
-                ["eq", "eq", "eq"],
-                ["Instrument 1", "Instrument 1", "Test pid"],
-                ["or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
@@ -642,11 +482,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                1,
-                ["title", "pid"],
-                ["eq", "eq"],
-                ["Dataset 1", "Test pid"],
-                ["or", "or"],
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
@@ -669,11 +504,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                1,
-                ["name", "facility", "pid"],
-                ["eq", "eq", "eq"],
-                ["Instrument 1", "Instrument 1", "Test pid"],
-                ["or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
@@ -692,34 +522,23 @@ class TestSearchAPIQueryFilterFactory:
         self,
         test_request_filter,
         test_entity_name,
-        expected_length,
-        expected_fields,
-        expected_operations,
-        expected_values,
-        expected_boolean_operators,
         expected_lhs,
         expected_rhs,
         expected_joining_operator,
     ):
-        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
-        # TODO - Will expected length always be 1?
-        assert len(filters) == expected_length
+        assert len(filters) == 1
         assert isinstance(filters[0], NestedWhereFilters)
-        print(type(filters[0]))
-        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
-        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators"
-        ", expected_lhs, expected_rhs, expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
+        ", expected_joining_operator",
         [
             pytest.param(
                 {
@@ -743,11 +562,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["and", "and", "and", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -787,11 +601,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["and", "and", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -831,11 +640,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -881,18 +685,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "and", "and", "and", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -943,18 +735,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "and", "and", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1005,18 +785,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1067,18 +835,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["or", "or", "or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1107,34 +863,23 @@ class TestSearchAPIQueryFilterFactory:
         self,
         test_request_filter,
         test_entity_name,
-        expected_length,
-        expected_fields,
-        expected_operations,
-        expected_values,
-        expected_boolean_operators,
         expected_lhs,
         expected_rhs,
         expected_joining_operator,
     ):
-        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
-        # TODO - Will expected length always be 1?
-        assert len(filters) == expected_length
+        assert len(filters) == 1
         assert isinstance(filters[0], NestedWhereFilters)
-        print(type(filters[0]))
-        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
-        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length, expected_fields,"
-        "expected_operations, expected_values, expected_boolean_operators"
-        ", expected_lhs, expected_rhs, expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
+        ", expected_joining_operator",
         [
             pytest.param(
                 {
@@ -1158,11 +903,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["and", "and", "and", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1202,11 +942,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["and", "and", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1246,11 +981,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type"],
-                ["eq", "like", "eq", "eq"],
-                ["My Test Summary", "Test title", "Test pid", "Test type"],
-                ["or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1296,18 +1026,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "and", "and", "and", "and"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1358,18 +1076,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "and", "and", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1420,18 +1126,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["and", "and", "or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1482,18 +1176,6 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                1,
-                ["summary", "title", "pid", "type", "doi", "license"],
-                ["eq", "like", "eq", "eq", "eq", "like"],
-                [
-                    "My Test Summary",
-                    "Test title",
-                    "Test pid",
-                    "Test type",
-                    "Test doi",
-                    "Test license",
-                ],
-                ["or", "or", "or", "or", "or", "or"],
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1522,26 +1204,16 @@ class TestSearchAPIQueryFilterFactory:
         self,
         test_request_filter,
         test_entity_name,
-        expected_length,
-        expected_fields,
-        expected_operations,
-        expected_values,
-        expected_boolean_operators,
         expected_lhs,
         expected_rhs,
         expected_joining_operator,
     ):
-        # TODO - Could test_entity_name just be hardcoded to the same entity?
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
-        # TODO - Will expected length always be 1?
-        assert len(filters) == expected_length
+        assert len(filters) == 1
         assert isinstance(filters[0], NestedWhereFilters)
-        print(type(filters[0]))
-        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
-        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
