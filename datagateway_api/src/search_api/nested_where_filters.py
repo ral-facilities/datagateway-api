@@ -26,7 +26,7 @@ class NestedWhereFilters:
 
         self.lhs = lhs
         self.rhs = rhs
-        self.joining_operator = f" {joining_operator} "
+        self.joining_operator = joining_operator
 
     def __str__(self):
         """
@@ -35,15 +35,16 @@ class NestedWhereFilters:
         """
         boolean_algebra_list = [self.lhs, self.rhs]
         try:
-            boolean_algebra_list.remove(None)
+            boolean_algebra_list.remove([None])
         except ValueError:
             # If neither side contains `None`, we should continue as normal
             pass
 
         # If either side contains a list of WHERE filter objects, flatten the conditions
         conditions = [str(m) for n in (i for i in boolean_algebra_list) for m in n]
+        operator = f" {self.joining_operator} "
 
-        return f"({self.joining_operator.join(conditions)})"
+        return f"({operator.join(conditions)})"
 
     def __repr__(self):
         return f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator: {repr(self.joining_operator)}"

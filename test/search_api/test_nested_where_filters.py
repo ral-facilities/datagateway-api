@@ -8,8 +8,10 @@ class TestNestedWhereFilters:
     @pytest.mark.parametrize(
         "lhs, rhs, joining_operator, expected_where_clause",
         [
-            pytest.param("A", None, "AND", "(A)", id="(A) w/ misc. AND"),
-            pytest.param("A", None, "OR", "(A)", id="(A) w/ misc. OR"),
+            pytest.param("A", None, "AND", "(A)", id="LHS (A) w/ misc. AND"),
+            pytest.param("A", None, "OR", "(A)", id="LHS (A) w/ misc. OR"),
+            pytest.param([], "A", "AND", "(A)", id="RHS (A) w/ misc. AND"),
+            pytest.param([], "A", "OR", "(A)", id="RHS (A) w/ misc. OR"),
             pytest.param("A", "B", "AND", "(A AND B)", id="(A AND B)"),
             pytest.param("A", "B", "OR", "(A OR B)", id="(A OR B)"),
             pytest.param(
@@ -114,7 +116,8 @@ class TestNestedWhereFilters:
                     SearchAPIWhereFilter("doi", "Test DOI", "like"),
                 ],
                 "AND",
-                "(o.name = 'test name' AND o.id < '10' AND o.id > '3')",
+                "(o.name = 'test name' AND o.id < '10' AND o.id > '3' AND o.doi like"
+                " '%Test DOI%')",
                 id="Multiple filters on LHS and RHS",
             ),
         ],
