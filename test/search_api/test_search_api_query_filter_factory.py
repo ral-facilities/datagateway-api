@@ -1790,10 +1790,11 @@ class TestSearchAPIQueryFilterFactory:
         )
 
         assert len(filters) == expected_length
-
-        for test_filter, included_entities in zip(filters, expected_included_entities):
+        for test_filter in filters:
             if isinstance(test_filter, SearchAPIIncludeFilter):
-                assert test_filter.included_filters == included_entities
+                for expected_include in expected_included_entities:
+                    assert test_filter.included_filters == expected_include
+                    expected_included_entities.remove(expected_include)
 
     @pytest.mark.parametrize(
         "test_request_filter, expected_limit_value",
@@ -1828,7 +1829,7 @@ class TestSearchAPIQueryFilterFactory:
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
         ", expected_included_entities, expected_where_filter_data"
-        ", expected_limit_values, expected_skip_values",
+        ", expected_nested_wheres, expected_limit_values, expected_skip_values",
         [
             pytest.param(
                 {
@@ -1841,10 +1842,11 @@ class TestSearchAPIQueryFilterFactory:
                 },
                 "datasets",
                 4,
-                [[], ["instrument"], [], []],
-                [["title", "eq", "My Title", "and"], [], [], []],
-                [None, None, 50, None],
-                [None, None, None, 20],
+                [["instrument"]],
+                [SearchAPIWhereFilter("title", "My Title", "eq")],
+                [],
+                [50],
+                [20],
                 id="Simple case",
             ),
             pytest.param(
@@ -1883,23 +1885,43 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                11,
-                [[], [], [], [], [], [], ["instrument"], [], [], [], []],
+                5,
+                [["instrument"]],
+                [SearchAPIWhereFilter("instrument.name", "Instrument 1", "eq")],
                 [
-                    ["summary", "eq", "My Test Summary", "and"],
-                    ["title", "like", "Test title", "and"],
-                    ["pid", "eq", "Test pid", "and"],
-                    ["type", "eq", "Test type", "and"],
-                    ["doi", "eq", "Test doi", "or"],
-                    ["license", "like", "Test license", "or"],
-                    [],
-                    ["instrument.name", "eq", "Instrument 1", "and"],
-                    [],
-                    [],
-                    [],
+                    NestedWhereFilters(
+                        [
+                            NestedWhereFilters(
+                                [
+                                    SearchAPIWhereFilter(
+                                        "summary", "My Test Summary", "eq"
+                                    )
+                                ],
+                                [SearchAPIWhereFilter("title", "Test title", "like")],
+                                "and",
+                            ),
+                            NestedWhereFilters(
+                                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                                [SearchAPIWhereFilter("type", "Test type", "eq")],
+                                "and",
+                            ),
+                        ],
+                        [
+                            NestedWhereFilters(
+                                [SearchAPIWhereFilter("doi", "Test doi", "eq")],
+                                [
+                                    SearchAPIWhereFilter(
+                                        "license", "Test license", "like"
+                                    )
+                                ],
+                                "or",
+                            ),
+                        ],
+                        "and",
+                    )
                 ],
-                [None, None, None, None, None, None, None, None, 2, 50, None],
-                [None, None, None, None, None, None, None, None, None, None, 20],
+                [50],
+                [20],
                 id="Complex case",
             ),
         ],
@@ -1911,40 +1933,36 @@ class TestSearchAPIQueryFilterFactory:
         expected_length,
         expected_included_entities,
         expected_where_filter_data,
+        expected_nested_wheres,
         expected_limit_values,
         expected_skip_values,
     ):
-        # TODO - remove limit from scope
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
         assert len(filters) == expected_length
-
-        for (
-            test_filter,
-            included_entities,
-            where_filter_data,
-            limit_value,
-            skip_value,
-        ) in zip(
-            filters,
-            expected_included_entities,
-            expected_where_filter_data,
-            expected_limit_values,
-            expected_skip_values,
-        ):
+        for test_filter in filters:
             if isinstance(test_filter, SearchAPIIncludeFilter):
-                assert test_filter.included_filters == included_entities
+                for expected_include in expected_included_entities:
+                    assert test_filter.included_filters == expected_include
+                    expected_included_entities.remove(expected_include)
+            if isinstance(test_filter, NestedWhereFilters):
+                for expected_nested in expected_nested_wheres:
+                    assert repr(test_filter) == repr(expected_nested)
+                    expected_nested_wheres.remove(expected_nested)
             if isinstance(test_filter, SearchAPIWhereFilter):
-                assert test_filter.field == where_filter_data[0]
-                assert test_filter.operation == where_filter_data[1]
-                assert test_filter.value == where_filter_data[2]
-                assert test_filter.boolean_operator == where_filter_data[3]
+                for expected_where in expected_where_filter_data:
+                    assert repr(test_filter) == repr(expected_where)
+                    expected_where_filter_data.remove(expected_where)
             if isinstance(test_filter, SearchAPILimitFilter):
-                assert test_filter.limit_value == limit_value
+                for expected_limit in expected_limit_values:
+                    assert test_filter.limit_value == expected_limit
+                    expected_limit_values.remove(expected_limit)
             if isinstance(test_filter, SearchAPISkipFilter):
-                assert test_filter.skip_value == skip_value
+                for expected_skip in expected_skip_values:
+                    assert test_filter.skip_value == expected_skip
+                    expected_skip_values.remove(expected_skip)
 
     @pytest.mark.parametrize(
         "test_request_filter",
