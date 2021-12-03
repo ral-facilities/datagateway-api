@@ -39,28 +39,6 @@ class TestSearchAPIQueryFilterFactory:
                 id="Property value with operator",
             ),
             pytest.param(
-                {"filter": {"where": {"text": "Dataset 1"}}},
-                "datasets",
-                1,
-                ["title"],
-                ["eq"],
-                ["Dataset 1"],
-                ["or"],
-                # TODO
-                id="Text operator on dataset",
-            ),
-            pytest.param(
-                {"filter": {"where": {"text": "Instrument 1"}}},
-                "instrument",
-                1,
-                ["name", "facility"],
-                ["eq", "eq"],
-                ["Instrument 1", "Instrument 1"],
-                ["or", "or"],
-                # TODO
-                id="Text operator on instrument",
-            ),
-            pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
                 "documents",
                 1,
@@ -99,6 +77,53 @@ class TestSearchAPIQueryFilterFactory:
             assert test_filter.operation == operation
             assert test_filter.value == value
             assert test_filter.boolean_operator == boolean_operator
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_length, expected_lhs"
+        ", expected_rhs, expected_joining_operator",
+        [
+            pytest.param(
+                {"filter": {"where": {"text": "Dataset 1"}}},
+                "datasets",
+                1,
+                [],
+                [SearchAPIWhereFilter("title", "Dataset 1", "eq")],
+                "or",
+                id="Text operator on dataset",
+            ),
+            pytest.param(
+                {"filter": {"where": {"text": "Instrument 1"}}},
+                "instrument",
+                1,
+                [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                "or",
+                id="Text operator on instrument",
+            ),
+        ],
+    )
+    def test_valid_where_filter_text_operator(
+        self,
+        test_request_filter,
+        test_entity_name,
+        expected_length,
+        expected_lhs,
+        expected_rhs,
+        expected_joining_operator,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        # TODO - Will expected length always be 1?
+        assert len(filters) == expected_length
+        assert isinstance(filters[0], NestedWhereFilters)
+        print(type(filters[0]))
+        print(f"LHS: {repr(filters[0].lhs)}, Type: {type(filters[0].lhs)}")
+        print(f"RHS: {repr(filters[0].rhs)}, Type: {type(filters[0].rhs)}")
+        assert repr(filters[0].lhs) == repr(expected_lhs)
+        assert repr(filters[0].rhs) == repr(expected_rhs)
+        assert filters[0].joining_operator == expected_joining_operator
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length, expected_fields,"
@@ -235,24 +260,32 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["Dataset 1"],
                 ["or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [],
+                [
+                    NestedWhereFilters(
+                        [], SearchAPIWhereFilter("title", "Dataset 1", "eq"), "or",
+                    ),
+                ],
+                "and",
                 id="Single condition, text operator on dataset",
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Instrument 1"}]}}},
                 "instrument",
-                2,
+                1,
                 ["name", "facility"],
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
                 ["or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                "and",
                 id="Single condition, text operator on instrument",
             ),
             pytest.param(
@@ -262,15 +295,18 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                2,
+                1,
                 ["title", "pid"],
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "and"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "and",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with no operator",
             ),
@@ -283,15 +319,20 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                3,
+                1,
                 ["name", "facility", "pid"],
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "and"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "and",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with no operator",
             ),
@@ -307,15 +348,18 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "datasets",
-                2,
+                1,
                 ["title", "pid"],
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "and"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "and",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with operator",
             ),
@@ -331,15 +375,20 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instrument",
-                3,
+                1,
                 ["name", "facility", "pid"],
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "and"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "and",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with operator",
             ),
@@ -408,7 +457,6 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["My Test Summary", "Test title"],
                 ["or", "or"],
-                # TODO
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "or",
@@ -509,10 +557,13 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq"],
                 ["Dataset 1"],
                 ["or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [],
+                [
+                    NestedWhereFilters(
+                        [], SearchAPIWhereFilter("title", "Dataset 1", "eq"), "or",
+                    ),
+                ],
+                "or",
                 id="Single condition, text operator on dataset",
             ),
             pytest.param(
@@ -523,10 +574,15 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Instrument 1", "Instrument 1"],
                 ["or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [],
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                "or",
                 id="Single condition, text operator on instrument",
             ),
             pytest.param(
@@ -541,10 +597,13 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "or",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with no operator",
             ),
@@ -562,10 +621,15 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "or",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with no operator",
             ),
@@ -583,10 +647,13 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq"],
                 ["Dataset 1", "Test pid"],
                 ["or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [], [SearchAPIWhereFilter("title", "Dataset 1", "eq")], "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "or",
                 id="Multiple conditions (two), text operator on dataset and "
                 "property value with operator",
             ),
@@ -607,10 +674,15 @@ class TestSearchAPIQueryFilterFactory:
                 ["eq", "eq", "eq"],
                 ["Instrument 1", "Instrument 1", "Test pid"],
                 ["or", "or", "or"],
-                # TODO
-                "lhs",
-                "rhs",
-                "joining operator",
+                [
+                    NestedWhereFilters(
+                        [SearchAPIWhereFilter("name", "Instrument 1", "eq")],
+                        [SearchAPIWhereFilter("facility", "Instrument 1", "eq")],
+                        "or",
+                    ),
+                ],
+                [SearchAPIWhereFilter("pid", "Test pid", "eq")],
+                "or",
                 id="Multiple conditions (two), text operator on instrument and "
                 "property value with operator",
             ),
