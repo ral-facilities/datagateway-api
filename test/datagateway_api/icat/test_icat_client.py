@@ -35,7 +35,6 @@ class TestICATClient:
     ):
         class MockClient:
             def __init__(url, checkCert=True):  # noqa
-                print(f"URL: {url}, Cert: {checkCert}")
                 # Would've preferred to assign these values to self but this didn't
                 # seem to be possible
                 Client.url = f"{url}/ICATService/ICAT?wsdl"
