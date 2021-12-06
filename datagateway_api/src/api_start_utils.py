@@ -7,12 +7,12 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 # Only attempt to create a DataGateway API backend if the datagateway_api object
 # is present in the config. This ensures that the API does not error on startup
 # due to an AttributeError exception being thrown if the object is missing.
-if config.datagateway_api is not None:
+if Config.config.datagateway_api is not None:
     from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.database.helpers import db  # noqa: I202
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
@@ -73,15 +73,17 @@ def create_app_infrastructure(flask_app):
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
 
-    if config.datagateway_api is not None:
+    if Config.config.datagateway_api is not None:
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
-            config.datagateway_api.set_backend_type(backend_type)
+            Config.config.datagateway_api.set_backend_type(backend_type)
         except KeyError:
-            backend_type = config.datagateway_api.backend
+            backend_type = Config.config.datagateway_api.backend
 
         if backend_type == "db":
-            flask_app.config["SQLALCHEMY_DATABASE_URI"] = config.datagateway_api.db_url
+            flask_app.config[
+                "SQLALCHEMY_DATABASE_URI"
+            ] = Config.config.datagateway_api.db_url
             flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
             db.init_app(flask_app)
 
@@ -92,12 +94,12 @@ def create_app_infrastructure(flask_app):
 
 def create_api_endpoints(flask_app, api, spec):
     # DataGateway API endpoints
-    if config.datagateway_api is not None:
+    if Config.config.datagateway_api is not None:
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
-            config.datagateway_api.set_backend_type(backend_type)
+            Config.config.datagateway_api.set_backend_type(backend_type)
         except KeyError:
-            backend_type = config.datagateway_api.backend
+            backend_type = Config.config.datagateway_api.backend
 
         backend = create_backend(backend_type)
 
@@ -106,7 +108,7 @@ def create_api_endpoints(flask_app, api, spec):
             # Create client pool
             icat_client_pool = create_client_pool()
 
-        datagateway_api_extension = config.datagateway_api.extension
+        datagateway_api_extension = Config.config.datagateway_api.extension
         for entity_name in endpoints:
             get_endpoint_resource = get_endpoint(
                 entity_name,
@@ -220,8 +222,8 @@ def create_api_endpoints(flask_app, api, spec):
         spec.path(resource=ping_resource, api=api)
 
     # Search API endpoints
-    if config.search_api is not None:
-        search_api_extension = config.search_api.extension
+    if Config.config.search_api is not None:
+        search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = ["datasets", "documents", "instruments"]
 
         for entity_name in search_api_entity_endpoints:
@@ -271,7 +273,7 @@ def create_api_endpoints(flask_app, api, spec):
 def openapi_config(spec):
     # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
     # change to the Swagger docs, rather than changing on each startup
-    if config.generate_swagger:
+    if Config.config.generate_swagger:
         log.debug("Reordering OpenAPI docs to alphabetical order")
         for entity_data in spec._paths.values():
             for endpoint_name in sorted(entity_data.keys()):

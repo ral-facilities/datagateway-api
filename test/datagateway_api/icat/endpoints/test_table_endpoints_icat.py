@@ -1,4 +1,4 @@
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -15,7 +15,7 @@ class TestICATableEndpoints:
         isis_specific_endpoint_data,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data[0]}/facilitycycles",
             headers=valid_icat_credentials_header,
         )
@@ -28,7 +28,7 @@ class TestICATableEndpoints:
         self, flask_test_app_icat, valid_icat_credentials_header, final_instrument_id,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles",
             headers=valid_icat_credentials_header,
         )
@@ -42,7 +42,7 @@ class TestICATableEndpoints:
         isis_specific_endpoint_data,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data[0]}/facilitycycles/count",
             headers=valid_icat_credentials_header,
         )
@@ -53,7 +53,7 @@ class TestICATableEndpoints:
         self, flask_test_app_icat, valid_icat_credentials_header, final_instrument_id,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles/count",
             headers=valid_icat_credentials_header,
         )
@@ -67,7 +67,7 @@ class TestICATableEndpoints:
         isis_specific_endpoint_data,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data[0]}/facilitycycles"
             f"/{isis_specific_endpoint_data[2]}/investigations",
             headers=valid_icat_credentials_header,
@@ -85,7 +85,7 @@ class TestICATableEndpoints:
         final_facilitycycle_id,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles"
             f"/{final_facilitycycle_id + 100}/investigations",
             headers=valid_icat_credentials_header,
@@ -100,7 +100,7 @@ class TestICATableEndpoints:
         isis_specific_endpoint_data,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data[0]}/facilitycycles"
             f"/{isis_specific_endpoint_data[2]}/investigations/count",
             headers=valid_icat_credentials_header,
@@ -116,7 +116,7 @@ class TestICATableEndpoints:
         final_facilitycycle_id,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles"
             f"/{final_facilitycycle_id + 100}/investigations/count",
             headers=valid_icat_credentials_header,

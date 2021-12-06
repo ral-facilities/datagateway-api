@@ -1,4 +1,4 @@
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 
 class TestDBTableEndpoints:
@@ -14,7 +14,7 @@ class TestDBTableEndpoints:
         isis_specific_endpoint_data_db,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{int(isis_specific_endpoint_data_db[0])}/facilitycycles",
             headers=valid_db_credentials_header,
         )
@@ -25,7 +25,7 @@ class TestDBTableEndpoints:
         self, flask_test_app_db, valid_db_credentials_header, final_instrument_id,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles",
             headers=valid_db_credentials_header,
         )
@@ -39,7 +39,7 @@ class TestDBTableEndpoints:
         isis_specific_endpoint_data_db,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data_db[0]}/facilitycycles/count",
             headers=valid_db_credentials_header,
         )
@@ -50,7 +50,7 @@ class TestDBTableEndpoints:
         self, flask_test_app_db, valid_db_credentials_header, final_instrument_id,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles/count",
             headers=valid_db_credentials_header,
         )
@@ -64,7 +64,7 @@ class TestDBTableEndpoints:
         isis_specific_endpoint_data_db,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data_db[0]}/facilitycycles"
             f"/{isis_specific_endpoint_data_db[1].to_dict()['id']}/investigations",
             headers=valid_db_credentials_header,
@@ -80,7 +80,7 @@ class TestDBTableEndpoints:
         final_facilitycycle_id,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles"
             f"/{final_facilitycycle_id + 100}/investigations",
             headers=valid_db_credentials_header,
@@ -95,7 +95,7 @@ class TestDBTableEndpoints:
         isis_specific_endpoint_data_db,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{isis_specific_endpoint_data_db[0]}/facilitycycles"
             f"/{isis_specific_endpoint_data_db[1].to_dict()['id']}"
             "/investigations/count",
@@ -112,7 +112,7 @@ class TestDBTableEndpoints:
         final_facilitycycle_id,
     ):
         test_response = flask_test_app_db.get(
-            f"{config.datagateway_api.extension}/instruments"
+            f"{Config.config.datagateway_api.extension}/instruments"
             f"/{final_instrument_id + 100}/facilitycycles"
             f"/{final_facilitycycle_id + 100}/investigations/count",
             headers=valid_db_credentials_header,
