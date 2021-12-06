@@ -2,16 +2,17 @@ from icat.client import Client
 from icat.query import Query
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 
 @pytest.fixture(scope="package")
 def icat_client():
     client = Client(
-        config.search_api.icat_url, checkCert=config.search_api.icat_check_cert,
+        Config.config.search_api.icat_url,
+        checkCert=Config.config.search_api.icat_check_cert,
     )
     client.login(
-        config.test_mechanism, config.test_user_credentials.dict(),
+        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
     )
     return client
 
