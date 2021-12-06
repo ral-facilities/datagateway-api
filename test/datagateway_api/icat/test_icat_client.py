@@ -33,28 +33,25 @@ class TestICATClient:
         ],
     )
     def test_client_use(
-        self, test_config_data, client_use, expected_url, expected_check_cert,
+        self, test_config, client_use, expected_url, expected_check_cert,
     ):
-        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-            api_config = APIConfig.load("test/path")
+        class MockClient:
+            def __init__(url, checkCert=True):  # noqa
+                print(f"URL: {url}, Cert: {checkCert}")
+                # Would've preferred to assign these values to self but this didn't
+                # seem to be possible
+                Client.url = f"{url}/ICATService/ICAT?wsdl"
+                Client.checkCert = checkCert
 
-            class MockClient:
-                def __init__(url, checkCert=True):  # noqa
-                    print(f"URL: {url}, Cert: {checkCert}")
-                    # Would've preferred to assign these values to self but this didn't
-                    # seem to be possible
-                    Client.url = f"{url}/ICATService/ICAT?wsdl"
-                    Client.checkCert = checkCert
-
+        with patch(
+            "datagateway_api.src.common.config.Config.config", test_config,
+        ):
             with patch(
-                "datagateway_api.src.common.config.Config.config", api_config,
+                "icat.client.Client.__init__", side_effect=MockClient.__init__,
             ):
-                with patch(
-                    "icat.client.Client.__init__", side_effect=MockClient.__init__,
-                ):
-                    test_icat_client = ICATClient(client_use)
-                    assert test_icat_client.url == expected_url
-                    assert test_icat_client.checkCert == expected_check_cert
+                test_icat_client = ICATClient(client_use)
+                assert test_icat_client.url == expected_url
+                assert test_icat_client.checkCert == expected_check_cert
 
     def test_clean_up(self):
         test_icat_client = ICATClient()
