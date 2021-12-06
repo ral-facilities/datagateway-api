@@ -5,7 +5,7 @@ from dateutil.tz import tzlocal
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import AuthenticationError
 from datagateway_api.src.datagateway_api.backends import create_backend
@@ -18,7 +18,7 @@ class TestSessionHandling:
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         session_details = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=valid_icat_credentials_header,
         )
 
@@ -34,8 +34,8 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
         # Check username is correct
-        test_mechanism = config.test_mechanism
-        test_username = config.test_user_credentials.username
+        test_mechanism = Config.config.test_mechanism
+        test_username = Config.config.test_user_credentials.username
         assert session_details.json["username"] == f"{test_mechanism}/{test_username}"
 
         # Check session ID matches the header from the request
@@ -48,7 +48,7 @@ class TestSessionHandling:
         self, bad_credentials_header, flask_test_app_icat,
     ):
         session_details = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=bad_credentials_header,
         )
 
@@ -56,17 +56,17 @@ class TestSessionHandling:
 
     def test_refresh_session(self, valid_icat_credentials_header, flask_test_app_icat):
         pre_refresh_session_details = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=valid_icat_credentials_header,
         )
 
         refresh_session = flask_test_app_icat.put(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=valid_icat_credentials_header,
         )
 
         post_refresh_session_details = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=valid_icat_credentials_header,
         )
 
@@ -83,16 +83,16 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": config.test_user_credentials.username,
-                    "password": config.test_user_credentials.password,
-                    "mechanism": config.test_mechanism,
+                    "username": Config.config.test_user_credentials.username,
+                    "password": Config.config.test_user_credentials.password,
+                    "mechanism": Config.config.test_mechanism,
                 },
                 id="Normal request body",
             ),
             pytest.param(
                 {
-                    "username": config.test_user_credentials.username,
-                    "password": config.test_user_credentials.password,
+                    "username": Config.config.test_user_credentials.username,
+                    "password": Config.config.test_user_credentials.password,
                 },
                 id="Missing mechanism in request body",
             ),
@@ -102,7 +102,7 @@ class TestSessionHandling:
         self, flask_test_app_icat, icat_client, icat_query, request_body,
     ):
         login_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/sessions", json=request_body,
+            f"{Config.config.datagateway_api.extension}/sessions", json=request_body,
         )
 
         icat_client.sessionId = login_response.json["sessionID"]
@@ -123,7 +123,7 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": config.test_mechanism,
+                    "mechanism": Config.config.test_mechanism,
                 },
                 403,
                 id="Invalid credentials",
@@ -135,7 +135,7 @@ class TestSessionHandling:
         self, flask_test_app_icat, request_body, expected_response_code,
     ):
         login_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/sessions", json=request_body,
+            f"{Config.config.datagateway_api.extension}/sessions", json=request_body,
         )
 
         assert login_response.status_code == expected_response_code
@@ -149,23 +149,23 @@ class TestSessionHandling:
 
     def test_valid_logout(self, flask_test_app_icat):
         client = Client(
-            config.datagateway_api.icat_url,
-            checkCert=config.datagateway_api.icat_check_cert,
+            Config.config.datagateway_api.icat_url,
+            checkCert=Config.config.datagateway_api.icat_check_cert,
         )
         client.login(
-            config.test_mechanism, config.test_user_credentials.dict(),
+            Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
         )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = flask_test_app_icat.delete(
-            f"{config.datagateway_api.extension}/sessions", headers=creds_header,
+            f"{Config.config.datagateway_api.extension}/sessions", headers=creds_header,
         )
 
         assert logout_response.status_code == 200
 
     def test_invalid_logout(self, bad_credentials_header, flask_test_app_icat):
         logout_response = flask_test_app_icat.delete(
-            f"{config.datagateway_api.extension}/sessions",
+            f"{Config.config.datagateway_api.extension}/sessions",
             headers=bad_credentials_header,
         )
 

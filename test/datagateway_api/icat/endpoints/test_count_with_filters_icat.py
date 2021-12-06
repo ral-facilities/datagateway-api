@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 
 
 class TestICATCountWithFilters:
@@ -30,7 +30,8 @@ class TestICATCountWithFilters:
         expected_result,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations/count{query_params}",
+            f"{Config.config.datagateway_api.extension}/investigations"
+            f"/count{query_params}",
             headers=valid_icat_credentials_header,
         )
 
@@ -40,7 +41,7 @@ class TestICATCountWithFilters:
         self, flask_test_app_icat, valid_icat_credentials_header,
     ):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations/count?where="
+            f"{Config.config.datagateway_api.extension}/investigations/count?where="
             '{"title": {"like": "This filter should cause 0results to be found '
             'for testing purposes..."}}',
             headers=valid_icat_credentials_header,

@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 
@@ -24,7 +24,7 @@ class TestEndpointRules:
 
             for rule in flask_test_app.url_map.iter_rules():
                 if (
-                    f"{config.datagateway_api.extension}"
+                    f"{Config.config.datagateway_api.extension}"
                     f"/{endpoint_entity.lower()}{endpoint_ending}" == rule.rule
                 ):
                     endpoint_found = True
@@ -40,86 +40,87 @@ class TestEndpointRules:
         "endpoint_name, expected_methods",
         [
             pytest.param(
-                f"{config.datagateway_api.extension}/sessions",
+                f"{Config.config.datagateway_api.extension}/sessions",
                 ["DELETE", "GET", "POST", "PUT"],
                 id="sessions",
             ),
             pytest.param(
-                f"{config.datagateway_api.extension}/instruments/<int:id_>"
+                f"{Config.config.datagateway_api.extension}/instruments/<int:id_>"
                 f"/facilitycycles",
                 ["GET"],
                 id="ISIS instrument's facility cycles",
             ),
             pytest.param(
-                f"{config.datagateway_api.extension}/instruments/<int:id_>"
+                f"{Config.config.datagateway_api.extension}/instruments/<int:id_>"
                 f"/facilitycycles/count",
                 ["GET"],
                 id="count ISIS instrument's facility cycles",
             ),
             pytest.param(
-                f"{config.datagateway_api.extension}/instruments/<int:instrument_id>"
-                "/facilitycycles/<int:cycle_id>/investigations",
+                f"{Config.config.datagateway_api.extension}/instruments"
+                "/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations",
                 ["GET"],
                 id="ISIS investigations",
             ),
             pytest.param(
-                f"{config.datagateway_api.extension}/instruments/<int:instrument_id>"
-                f"/facilitycycles/<int:cycle_id>/investigations/count",
+                f"{Config.config.datagateway_api.extension}/instruments"
+                "/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations"
+                "/count",
                 ["GET"],
                 id="count ISIS investigations",
             ),
             pytest.param(
-                f"{config.search_api.extension}/datasets",
+                f"{Config.config.search_api.extension}/datasets",
                 ["GET"],
                 id="Search API search datasets",
             ),
             pytest.param(
-                f"{config.search_api.extension}/documents",
+                f"{Config.config.search_api.extension}/documents",
                 ["GET"],
                 id="Search API search documents",
             ),
             pytest.param(
-                f"{config.search_api.extension}/instruments",
+                f"{Config.config.search_api.extension}/instruments",
                 ["GET"],
                 id="Search API search instruments",
             ),
             pytest.param(
-                f"{config.search_api.extension}/datasets/<int:pid>",
+                f"{Config.config.search_api.extension}/datasets/<int:pid>",
                 ["GET"],
                 id="Search API get single dataset",
             ),
             pytest.param(
-                f"{config.search_api.extension}/documents/<int:pid>",
+                f"{Config.config.search_api.extension}/documents/<int:pid>",
                 ["GET"],
                 id="Search API get single document",
             ),
             pytest.param(
-                f"{config.search_api.extension}/instruments/<int:pid>",
+                f"{Config.config.search_api.extension}/instruments/<int:pid>",
                 ["GET"],
                 id="Search API get single instrument",
             ),
             pytest.param(
-                f"{config.search_api.extension}/datasets/count",
+                f"{Config.config.search_api.extension}/datasets/count",
                 ["GET"],
                 id="Search API dataset count",
             ),
             pytest.param(
-                f"{config.search_api.extension}/documents/count",
+                f"{Config.config.search_api.extension}/documents/count",
                 ["GET"],
                 id="Search API document count",
             ),
             pytest.param(
-                f"{config.search_api.extension}/instruments/count",
+                f"{Config.config.search_api.extension}/instruments/count",
                 ["GET"],
                 id="Search API instrument count",
             ),
             pytest.param(
-                f"{config.search_api.extension}/datasets/<int:pid>/files",
+                f"{Config.config.search_api.extension}/datasets/<int:pid>/files",
                 ["GET"],
                 id="Search API get dataset files",
             ),
             pytest.param(
-                f"{config.search_api.extension}/datasets/<int:pid>/files/count",
+                f"{Config.config.search_api.extension}/datasets/<int:pid>/files/count",
                 ["GET"],
                 id="Search API dataset files count",
             ),

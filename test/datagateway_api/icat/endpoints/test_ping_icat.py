@@ -3,7 +3,7 @@ from unittest.mock import patch
 from icat.exception import ICATError
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.constants import Constants
 from datagateway_api.src.common.exceptions import PythonICATError
 from datagateway_api.src.datagateway_api.backends import create_backend
@@ -13,7 +13,7 @@ from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_cli
 class TestICATPing:
     def test_valid_ping(self, flask_test_app_icat):
         test_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/ping",
+            f"{Config.config.datagateway_api.extension}/ping",
         )
 
         assert test_response.json == Constants.PING_OK_RESPONSE

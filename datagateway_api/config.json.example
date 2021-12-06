@@ -12,9 +12,7 @@
     "search_api": {
         "extension": "/search-api",
         "icat_url": "https://localhost:8181",
-        "icat_check_cert": false,
-        "client_pool_init_size": 2,
-        "client_pool_max_size": 5
+        "icat_check_cert": false
     },
     "flask_reloader": false,
     "log_level": "WARN",
