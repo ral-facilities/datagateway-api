@@ -1,10 +1,8 @@
-import json
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.common.config import APIConfig
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
 
 
