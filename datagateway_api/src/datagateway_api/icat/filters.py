@@ -210,12 +210,12 @@ class PythonICATOrderFilter(OrderFilter):
 
 
 class PythonICATSkipFilter(SkipFilter):
-    def __init__(self, skip_value, client_use="datagateway_api"):
+    def __init__(self, skip_value, filter_use="datagateway_api"):
         super().__init__(skip_value)
-        self.client_use = client_use
+        self.filter_use = filter_use
 
     def apply_filter(self, query):
-        if self.client_use == "datagateway_api":
+        if self.filter_use == "datagateway_api":
             icat_properties = get_icat_properties(
                 config.datagateway_api.icat_url, config.datagateway_api.icat_check_cert,
             )
