@@ -3,7 +3,7 @@ from abc import abstractstaticmethod
 
 class QueryFilterFactory(object):
     @abstractstaticmethod
-    def get_query_filter(request_filter, entity_name=None):
+    def get_query_filter(request_filter, entity_name=None):  # noqa: B902, N805
         """
         Given a filter, return a matching Query filter object
 

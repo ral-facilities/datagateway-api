@@ -47,4 +47,7 @@ class NestedWhereFilters:
         return f"({operator.join(conditions)})"
 
     def __repr__(self):
-        return f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator: {repr(self.joining_operator)}"
+        return (
+            f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator:"
+            f" {repr(self.joining_operator)}"
+        )

@@ -1390,8 +1390,8 @@ class TestSearchAPIQueryFilterFactory:
                     NestedWhereFilters(
                         [
                             SearchAPIWhereFilter(
-                                "documents.summary", "My Test Summary", "eq"
-                            )
+                                "documents.summary", "My Test Summary", "eq",
+                            ),
                         ],
                         [SearchAPIWhereFilter("documents.title", "Test title", "eq")],
                         "and",
@@ -1425,8 +1425,8 @@ class TestSearchAPIQueryFilterFactory:
                     NestedWhereFilters(
                         [
                             SearchAPIWhereFilter(
-                                "documents.summary", "My Test Summary", "eq"
-                            )
+                                "documents.summary", "My Test Summary", "eq",
+                            ),
                         ],
                         [SearchAPIWhereFilter("documents.title", "Test title", "eq")],
                         "or",
@@ -1482,26 +1482,26 @@ class TestSearchAPIQueryFilterFactory:
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.summary", "My Test Summary", "eq"
-                                    )
+                                        "documents.summary", "My Test Summary", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.title", "Test title", "like"
-                                    )
+                                        "documents.title", "Test title", "like",
+                                    ),
                                 ],
                                 "and",
                             ),
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.pid", "Test pid", "eq"
-                                    )
+                                        "documents.pid", "Test pid", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.type", "Test type", "eq"
-                                    )
+                                        "documents.type", "Test type", "eq",
+                                    ),
                                 ],
                                 "and",
                             ),
@@ -1510,13 +1510,13 @@ class TestSearchAPIQueryFilterFactory:
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.doi", "Test doi", "eq"
-                                    )
+                                        "documents.doi", "Test doi", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.license", "Test license", "like"
-                                    )
+                                        "documents.license", "Test license", "like",
+                                    ),
                                 ],
                                 "or",
                             ),
@@ -1574,26 +1574,26 @@ class TestSearchAPIQueryFilterFactory:
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.summary", "My Test Summary", "eq"
-                                    )
+                                        "documents.summary", "My Test Summary", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.title", "Test title", "like"
-                                    )
+                                        "documents.title", "Test title", "like",
+                                    ),
                                 ],
                                 "and",
                             ),
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.pid", "Test pid", "eq"
-                                    )
+                                        "documents.pid", "Test pid", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.type", "Test type", "eq"
-                                    )
+                                        "documents.type", "Test type", "eq",
+                                    ),
                                 ],
                                 "and",
                             ),
@@ -1602,13 +1602,13 @@ class TestSearchAPIQueryFilterFactory:
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.doi", "Test doi", "eq"
-                                    )
+                                        "documents.doi", "Test doi", "eq",
+                                    ),
                                 ],
                                 [
                                     SearchAPIWhereFilter(
-                                        "documents.license", "Test license", "like"
-                                    )
+                                        "documents.license", "Test license", "like",
+                                    ),
                                 ],
                                 "or",
                             ),
@@ -1670,7 +1670,7 @@ class TestSearchAPIQueryFilterFactory:
                 [
                     SearchAPIWhereFilter("datasets.title", "Dataset 1", "eq"),
                     SearchAPIWhereFilter(
-                        "datasets.instrument.name", "Instrument 1", "eq"
+                        "datasets.instrument.name", "Instrument 1", "eq",
                     ),
                 ],
                 [],
@@ -1894,8 +1894,8 @@ class TestSearchAPIQueryFilterFactory:
                             NestedWhereFilters(
                                 [
                                     SearchAPIWhereFilter(
-                                        "summary", "My Test Summary", "eq"
-                                    )
+                                        "summary", "My Test Summary", "eq",
+                                    ),
                                 ],
                                 [SearchAPIWhereFilter("title", "Test title", "like")],
                                 "and",
@@ -1911,14 +1911,14 @@ class TestSearchAPIQueryFilterFactory:
                                 [SearchAPIWhereFilter("doi", "Test doi", "eq")],
                                 [
                                     SearchAPIWhereFilter(
-                                        "license", "Test license", "like"
-                                    )
+                                        "license", "Test license", "like",
+                                    ),
                                 ],
                                 "or",
                             ),
                         ],
                         "and",
-                    )
+                    ),
                 ],
                 [50],
                 [20],

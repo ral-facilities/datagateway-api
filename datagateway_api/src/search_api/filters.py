@@ -1,11 +1,12 @@
+from icat.client import Client
+from icat.query import Query
+
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
-from icat.query import Query
-from icat.client import Client
 
 # TODO - Implement each of these filters for Search API, inheriting from the Python ICAT
 # versions
@@ -32,7 +33,10 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         return str_conds[0]
 
     def __repr__(self):
-        return f"Field: '{self.field}', Value: '{self.value}', Operation: '{self.operation}'"
+        return (
+            f"Field: '{self.field}', Value: '{self.value}', Operation:"
+            f" '{self.operation}'"
+        )
 
 
 class SearchAPISkipFilter(PythonICATSkipFilter):
