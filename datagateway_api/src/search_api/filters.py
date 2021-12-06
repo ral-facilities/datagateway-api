@@ -12,9 +12,8 @@ from icat.client import Client
 
 
 class SearchAPIWhereFilter(PythonICATWhereFilter):
-    def __init__(self, field, value, operation, boolean_operator="and"):
+    def __init__(self, field, value, operation):
         super().__init__(field, value, operation)
-        self.boolean_operator = boolean_operator
 
     def apply_filter(self, query):
         return super().apply_filter(query)

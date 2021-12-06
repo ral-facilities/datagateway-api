@@ -76,43 +76,43 @@ class TestNestedWhereFilters:
         "lhs, rhs, joining_operator, expected_where_clause",
         [
             pytest.param(
-                SearchAPIWhereFilter("name", "test name", "eq", "and"),
-                SearchAPIWhereFilter("id", 3, "eq", "and"),
+                SearchAPIWhereFilter("name", "test name", "eq"),
+                SearchAPIWhereFilter("id", 3, "eq"),
                 "OR",
                 "(o.name = 'test name' OR o.id = '3')",
                 id="(o.name = 'test name' OR o.id = '3')",
             ),
             pytest.param(
-                [SearchAPIWhereFilter("name", "test name", "eq", "and")],
-                SearchAPIWhereFilter("id", 3, "eq", "and"),
+                [SearchAPIWhereFilter("name", "test name", "eq")],
+                SearchAPIWhereFilter("id", 3, "eq"),
                 "OR",
                 "(o.name = 'test name' OR o.id = '3')",
                 id="Single filter list in LHS",
             ),
             pytest.param(
-                [SearchAPIWhereFilter("name", "test name", "eq", "and")],
-                [SearchAPIWhereFilter("id", 3, "eq", "and")],
+                [SearchAPIWhereFilter("name", "test name", "eq")],
+                [SearchAPIWhereFilter("id", 3, "eq")],
                 "OR",
                 "(o.name = 'test name' OR o.id = '3')",
                 id="Single filter list in LHS and RHS",
             ),
             pytest.param(
                 [
-                    SearchAPIWhereFilter("name", "test name", "eq", "and"),
+                    SearchAPIWhereFilter("name", "test name", "eq"),
                     SearchAPIWhereFilter("id", 10, "lt"),
                 ],
-                [SearchAPIWhereFilter("id", 3, "gt", "and")],
+                [SearchAPIWhereFilter("id", 3, "gt")],
                 "AND",
                 "(o.name = 'test name' AND o.id < '10' AND o.id > '3')",
                 id="Multiple filters on LHS",
             ),
             pytest.param(
                 [
-                    SearchAPIWhereFilter("name", "test name", "eq", "and"),
+                    SearchAPIWhereFilter("name", "test name", "eq"),
                     SearchAPIWhereFilter("id", 10, "lt"),
                 ],
                 [
-                    SearchAPIWhereFilter("id", 3, "gt", "and"),
+                    SearchAPIWhereFilter("id", 3, "gt"),
                     SearchAPIWhereFilter("doi", "Test DOI", "like"),
                 ],
                 "AND",
