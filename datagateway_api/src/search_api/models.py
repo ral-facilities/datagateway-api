@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractclassmethod, abstractmethod
 from datetime import datetime
+from decimal import Decimal
 from typing import List, Optional, Union
 
 from pydantic import (
@@ -59,6 +60,7 @@ class Dataset(PaNOSCAttribute):
     title: StrictStr
     is_public: StrictBool = Field(alias="isPublic")
     creation_date: datetime = Field(alias="creationDate")
+    score: Decimal
 
     documents: List[Document]
     techniques: List[Technique]
@@ -91,6 +93,7 @@ class Document(PaNOSCAttribute):
     release_date: Optional[datetime] = Field(alias="releaseDate")
     license_: Optional[StrictStr] = Field(alias="license")
     keywords: Optional[List[StrictStr]]
+    score: Decimal
 
     datasets: List[Dataset]
     members: Optional[List[Member]]
@@ -128,6 +131,7 @@ class Instrument(PaNOSCAttribute):
     id_: StrictStr = Field(alias="id")
     name: StrictStr
     facility: StrictStr
+    score: Decimal
 
     datasets: Optional[List[Dataset]]
 
@@ -145,6 +149,7 @@ class Member(PaNOSCAttribute):
     id_: StrictStr = Field(alias="id")
     role: Optional[StrictStr] = Field(alias="role")
 
+    # Should a member be able to be part of many documents?
     document: Document
     person: Optional[Person]
     affiliations: Optional[List[Affiliation]]
@@ -201,7 +206,9 @@ class Person(PaNOSCAttribute):
     first_name: Optional[StrictStr] = Field(alias="firstName")
     last_name: Optional[StrictStr] = Field(alias="lastName")
 
-    mambers: Optional[Member]
+    # ICAT has InvestigationUser meaning a user can have multiple roles, one for each
+    # investigation
+    member: Optional[Member]
 
     @classmethod
     def from_icat(cls):
@@ -214,8 +221,9 @@ class Person(PaNOSCAttribute):
 class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
-    pid: Optional[StrictStr]  # TODO - Oprtional or not?
     name: StrictStr
+    # ID used as an identifier in example implementation
+    pid: Optional[StrictStr]
     description: Optional[StrictStr]
 
     datasets: Optional[List[Dataset]]
