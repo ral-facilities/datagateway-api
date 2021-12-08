@@ -3,7 +3,9 @@ import pytest
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.filters import QueryFilter
-from datagateway_api.src.datagateway_api.query_filter_factory import QueryFilterFactory
+from datagateway_api.src.datagateway_api.query_filter_factory import (
+    DataGatewayAPIQueryFilterFactory,
+)
 
 
 class TestQueryFilter:
@@ -25,4 +27,4 @@ class TestQueryFilter:
     def test_invalid_query_filter_getter(self):
         Config.config.datagateway_api.backend = "invalid_backend"
         with pytest.raises(ApiError):
-            QueryFilterFactory.get_query_filter({"order": "id DESC"})
+            DataGatewayAPIQueryFilterFactory.get_query_filter({"order": "id DESC"})
