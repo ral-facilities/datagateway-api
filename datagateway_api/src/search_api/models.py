@@ -1,10 +1,3 @@
-"""
-Code to define the PaNOSC data model
-TODO - Implement these using pydantic
-"""
-
-from __future__ import annotations
-
 from abc import ABC, abstractclassmethod, abstractmethod
 from datetime import datetime
 from decimal import Decimal
@@ -40,7 +33,7 @@ class Affiliation(PaNOSCAttribute):
     city: Optional[StrictStr]
     country: Optional[StrictStr]
 
-    members: Optional[List[Member]]
+    members: Optional[List["Member"]]
 
     @classmethod
     def from_icat(cls):
@@ -62,12 +55,12 @@ class Dataset(PaNOSCAttribute):
     creation_date: datetime = Field(alias="creationDate")
     score: Decimal
 
-    documents: List[Document]
-    techniques: List[Technique]
-    instrument: Optional[instrument]
-    files: Optional[List[File]]
-    parameters: Optional[List[Parameter]]
-    samples: Optional[List[Sample]]
+    documents: List["Document"]
+    techniques: List["Technique"]
+    instrument: Optional["instrument"]
+    files: Optional[List["File"]]
+    parameters: Optional[List["Parameter"]]
+    samples: Optional[List["Sample"]]
 
     @classmethod
     def from_icat(cls):
@@ -96,8 +89,8 @@ class Document(PaNOSCAttribute):
     score: Decimal
 
     datasets: List[Dataset]
-    members: Optional[List[Member]]
-    parameters: Optional[List[Parameter]]
+    members: Optional[List["Member"]]
+    parameters: Optional[List["Parameter"]]
 
     @classmethod
     def from_icat(cls):
@@ -151,7 +144,7 @@ class Member(PaNOSCAttribute):
 
     # Should a member be able to be part of many documents?
     document: Document
-    person: Optional[Person]
+    person: Optional["Person"]
     affiliations: Optional[List[Affiliation]]
 
     @classmethod
