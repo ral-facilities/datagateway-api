@@ -1,4 +1,4 @@
-from abc import ABC, abstractclassmethod, abstractmethod
+from abc import ABC, abstractclassmethod
 from datetime import datetime
 from decimal import Decimal
 from typing import List, Optional, Union
@@ -19,10 +19,6 @@ class PaNOSCAttribute(ABC, BaseModel):
     def from_icat(self):
         pass
 
-    @abstractmethod
-    def to_icat(self):
-        pass
-
 
 class Affiliation(PaNOSCAttribute):
     """Information about which facility a member is located at"""
@@ -37,9 +33,6 @@ class Affiliation(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls):
-        pass
-
-    def to_icat(self):
         pass
 
 
@@ -64,9 +57,6 @@ class Dataset(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls):
-        pass
-
-    def to_icat(self):
         pass
 
 
@@ -96,9 +86,6 @@ class Document(PaNOSCAttribute):
     def from_icat(cls):
         pass
 
-    def to_icat(self):
-        pass
-
 
 class File(PaNOSCAttribute):
     """Name of file and optionally location"""
@@ -112,9 +99,6 @@ class File(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls):
-        pass
-
-    def to_icat(self):
         pass
 
 
@@ -132,9 +116,6 @@ class Instrument(PaNOSCAttribute):
     def from_icat(cls):
         pass
 
-    def to_icat(self):
-        pass
-
 
 class Member(PaNOSCAttribute):
     """Proposal team member or paper co-author"""
@@ -149,9 +130,6 @@ class Member(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls):
-        pass
-
-    def to_icat(self):
         pass
 
 
@@ -185,9 +163,6 @@ class Parameter(PaNOSCAttribute):
     def from_icat(cls):
         pass
 
-    def to_icat(self):
-        pass
-
 
 class Person(PaNOSCAttribute):
     """Human who carried out experiment"""
@@ -207,9 +182,6 @@ class Person(PaNOSCAttribute):
     def from_icat(cls):
         pass
 
-    def to_icat(self):
-        pass
-
 
 class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
@@ -225,9 +197,6 @@ class Sample(PaNOSCAttribute):
     def from_icat(cls):
         pass
 
-    def to_icat(self):
-        pass
-
 
 class Technique(PaNOSCAttribute):
     """Common name of scientific method used"""
@@ -239,9 +208,6 @@ class Technique(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls):
-        pass
-
-    def to_icat(self):
         pass
 
 
