@@ -51,7 +51,7 @@ class SearchAPISkipFilter(PythonICATSkipFilter):
         super().__init__(skip_value, filter_use="search_api")
 
     def apply_filter(self, query):
-        return super().apply_filter(query)
+        return super().apply_filter(query.query.query)
 
 
 class SearchAPILimitFilter(PythonICATLimitFilter):
@@ -59,7 +59,7 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
         super().__init__(limit_value)
 
     def apply_filter(self, query):
-        return super().apply_filter(query)
+        return super().apply_filter(query.query.query)
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
@@ -67,4 +67,4 @@ class SearchAPIIncludeFilter(PythonICATIncludeFilter):
         super().__init__(included_filters)
 
     def apply_filter(self, query):
-        return super().apply_filter(query)
+        return super().apply_filter(query.query.query)
