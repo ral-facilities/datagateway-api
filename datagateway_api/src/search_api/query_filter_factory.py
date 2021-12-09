@@ -16,6 +16,19 @@ log = logging.getLogger()
 class SearchAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
     def get_query_filter(request_filter, entity_name=None):
+        """
+        Given a filter, return a list of matching query filter objects
+
+        :param request_filter: The filter from which to create a list of query filter
+            objects
+        :type request_filter: :class:`dict`
+        :param entity_name: Entity name of the endpoint or the name of the included
+            entity - this is needed for when there is a text operator inside a where
+            filter
+        :type entity_name: :class:`str`
+        :return: The list of query filter objects created
+        :raises FilterError: If the filter name is not recognised
+        """
         query_param_name = list(request_filter)[0].lower()
         query_filters = []
 
@@ -56,6 +69,27 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
     @staticmethod
     def get_where_filter(filter_input, entity_name):
+        """
+        Given a where filter input, return a list of `NestedWhereFilters` and/ or
+        `SearchAPIWhereFilter` objects
+
+        `NestedWhereFilters` objects are created when there is an AND or OR inside the
+        where filter input, otherwise `SearchAPIWhereFilter` objects are created. If
+        there is a text operator inside the where filter input then the number of
+        `SearchAPIWhereFilter` objects that will be created depends on the number of
+        text operator fields that will be matched for the provided entity.
+
+        :param filter_input: The filter from which to create a list of
+            `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
+        :type filter_input: :class:`dict`
+        :param entity_name: Entity name of the endpoint or the name of the included
+            entity - this is needed for when there is a text operator inside a where
+            filter so that the value provided can be matched with the relevant text
+            operator fields for the entity.
+        :type entity_name: :class:`str`
+        :return: The list of `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
+            created
+        """
         where_filters = []
         if (
             list(filter_input.keys())[0] == "and"
@@ -131,6 +165,22 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
     @staticmethod
     def get_include_filter(filter_input):
+        """
+        Given an include filter input, return a list of `SearchAPIIncludeFilter` and any
+        `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects if there is a scope
+        filter inside the filter input
+
+        Currently, we do not support limit and skip filters inside scope filters that
+        are part of include filters.
+
+        :param filter_input: The filter from which to create a list of
+            `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/ or
+            `SearchAPIWhereFilter` objects
+        :type filter_input: :class:`dict`
+        :return: The list of `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/
+            or `SearchAPIWhereFilter` objects created
+        :raises FilterError: If scope filter has a limit or skip filter
+        """
         query_filters = []
         for related_model in filter_input:
             included_entity = related_model["relation"]
@@ -175,6 +225,15 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
     @staticmethod
     def get_condition_values(filter_input):
+        """
+        Given a simplified where filter input, return a field name, value and operation
+        as a tuple
+
+        :param filter_input: The filter from which to return a field name, value and
+            operation
+        :type filter_input: :class:`dict`
+        :return: The tuple that includes field name, value and operation
+        """
         field = list(filter_input.keys())[0]
         filter_data = list(filter_input.values())[0]
 
