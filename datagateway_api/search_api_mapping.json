@@ -1,0 +1,77 @@
+{
+    "Affiliation": {
+        "base_icat_entity": "",
+        "id": "",
+        "name": "",
+        "address": "",
+        "city": "",
+        "country": ""
+    },
+    "Dataset": {
+        "base_icat_entity": "",
+        "pid": "",
+        "title": "",
+        "isPublic": "",
+        "size": "",
+        "creationDate": ""
+    },
+    "Document": {
+        "base_icat_entity": "",
+        "pid": "",
+        "isPublic": "",
+        "type": "",
+        "title": "",
+        "summary": "",
+        "doi": "",
+        "startDate": "",
+        "endDate": "",
+        "releaseDate": "",
+        "license": "",
+        "keywords": ""
+    },
+    "File": {
+        "base_icat_entity": "",
+        "id": "",
+        "name": "",
+        "path": "",
+        "size": ""
+    },
+    "Instrument": {
+        "base_icat_entity": "",
+        "id": "",
+        "name": "",
+        "facility": ""
+    },
+    "Member": {
+        "base_icat_entity": "",
+        "id": "",
+        "role": ""
+    },
+    "Parameter": {
+        "base_icat_entity": "",
+        "id": "",
+        "name": "",
+        "value": "",
+        "unit": ""
+    },
+    "Person": {
+        "base_icat_entity": "",
+        "id": "",
+        "fullName": "",
+        "orcid": "",
+        "researcherId": "",
+        "firstName": "",
+        "lastName": ""
+    },
+    "Sample": {
+        "base_icat_entity": "",
+        "name": "",
+        "pid": "",
+        "description": ""
+    },
+    "Technique": {
+        "base_icat_entity": "",
+        "pid": "",
+        "name": ""
+    }
+}
