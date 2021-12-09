@@ -1,4 +1,5 @@
-from icat.client import Client
+import logging
+
 from icat.query import Query
 
 from datagateway_api.src.datagateway_api.icat.filters import (
@@ -7,6 +8,10 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.src.search_api.panosc_mappings import mappings
+
+log = logging.getLogger()
+
 
 # TODO - Implement each of these filters for Search API, inheriting from the Python ICAT
 # versions
@@ -17,13 +22,15 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
-        return super().apply_filter(query)
+        # Convert the field from a PaNOSC field name to an ICAT one
+        icat_field_name = mappings.mappings[query.panosc_entity_name][self.field]
+        self.field = icat_field_name
+
+        # TODO - `query.query.query` might be confusing, might rename `query` in
+        # function signature
+        return super().apply_filter(query.query.query)
 
     def __str__(self):
-        # TODO - replace with `SessionHandler.client` when that work is merged
-        client = Client("https://localhost.localdomain:8181", checkCert=False)
-        client.login("simple", {"username": "root", "password": "pw"})
-
         # TODO - can't just hardcode investigation entity. Might need `icat_entity_name`
         # to be passed into init
         query = Query(client, "Investigation")
