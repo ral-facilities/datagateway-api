@@ -1981,6 +1981,24 @@ class TestSearchAPIQueryFilterFactory:
                 },
                 id="Invalid scope syntax on include filter",
             ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [
+                            {"relation": "parameters", "scope": {"limit": 50}},
+                        ],
+                    },
+                },
+                id="Unsupported limit filter in scope of include filter",
+            ),
+            pytest.param(
+                {
+                    "filter": {
+                        "include": [{"relation": "parameters", "scope": {"skip": 20}}],
+                    },
+                },
+                id="Unsupported skip filter in scope of include filter",
+            ),
         ],
     )
     def test_invalid_filter_input(self, test_request_filter):
