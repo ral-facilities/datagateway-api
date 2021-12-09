@@ -1317,7 +1317,7 @@ class TestSearchAPIQueryFilterFactory:
                 [],
                 [
                     NestedWhereFilters(
-                        [], [SearchAPIWhereFilter("name", "file1", "eq")], "or",
+                        [], [SearchAPIWhereFilter("files.name", "file1", "eq")], "or",
                     ),
                 ],
                 id="Text operator on defined field mapping to single field",
