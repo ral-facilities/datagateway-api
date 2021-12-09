@@ -1665,8 +1665,8 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                4,
-                [["datasets"], ["datasets.instrument"]],
+                3,
+                [["datasets.instrument"]],
                 [
                     SearchAPIWhereFilter("datasets.title", "Dataset 1", "eq"),
                     SearchAPIWhereFilter(
@@ -1722,8 +1722,8 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                2,
-                [["datasets"], ["datasets.parameters"]],
+                1,
+                [["datasets.parameters"]],
                 id="Single related model",
             ),
             pytest.param(
@@ -1743,8 +1743,8 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "documents",
-                3,
-                [["datasets"], ["datasets.parameters"], ["datasets.instrument"]],
+                2,
+                [["datasets.parameters"], ["datasets.instrument"]],
                 id="Multiple related models",
             ),
             pytest.param(
@@ -1768,12 +1768,8 @@ class TestSearchAPIQueryFilterFactory:
                     },
                 },
                 "instruments",
-                3,
-                [
-                    ["datasets"],
-                    ["datasets.documents"],
-                    ["datasets.documents.parameters"],
-                ],
+                1,
+                [["datasets.documents.parameters"]],
                 id="Nested related models",
             ),
         ],
