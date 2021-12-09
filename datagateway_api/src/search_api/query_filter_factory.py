@@ -123,6 +123,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         field=condition[0], value=condition[1], operation=condition[2],
                     ),
                 )
+
         return where_filters
 
     @staticmethod
@@ -139,11 +140,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 )
 
                 for scope_query_filter in scope_query_filters:
-                    # TODO - fix for AND boolean operator test needs to go in here
-                    # Search through scope_query_filter to find where filters via nested
-                    if isinstance(scope_query_filter, SearchAPIWhereFilter):
-                        scope_query_filter.field = (
-                            f"{included_entity}.{scope_query_filter.field}"
+                    if isinstance(
+                        scope_query_filter, (NestedWhereFilters, SearchAPIWhereFilter),
+                    ):
+                        SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(  # noqa: B950
+                            scope_query_filter, included_entity,
                         )
                 query_filters.extend(scope_query_filters)
 
@@ -167,3 +168,38 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         where_filter_data.append((field, value, operation))
 
         return where_filter_data
+
+    @staticmethod
+    def prefix_where_filter_field_with_entity_name(where_filters, entity_name):
+        """
+        Given a `NestedWhereFilters` or `SearchAPIWhereFilter` object, or a list of
+        these objects, prefix the field attribute of the `SearchAPIWhereFilter` object
+        with the provided entity name
+
+        When dealing with `NestedWhereFilters`, this function is called recursively in
+        order to drill down and get hold of the `SearchAPIWhereFilter` objects so that
+        their field attributes can be prefixed. The field attributes of are prefixed
+        only if the where filters are part of a scope filter that is inside an include
+        filter. This is done to make it clear that the where filter is related to the
+        included entity rather than the endpoint entity.
+
+        :param where_filters: The filter(s) whose field attribute(s) require(s)
+            prefixing
+        :type where_filters: :class:`NestedWhereFilters` or `SearchAPIWhereFilter`, or a
+            :class:`list` of :class:`NestedWhereFilters` and/ or `SearchAPIWhereFilter`
+        :param entity_name: The name of the included entity to prefix the where filter
+            field with
+        :type entity_name: :class:`str`
+        """
+        if not isinstance(where_filters, list):
+            where_filters = [where_filters]
+
+        for where_filter in where_filters:
+            if isinstance(where_filter, NestedWhereFilters):
+                nested_where_filters = where_filter.lhs + where_filter.rhs
+                for nested_where_filter in nested_where_filters:
+                    SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(  # noqa: B950
+                        nested_where_filter, entity_name,
+                    )
+            if isinstance(where_filter, SearchAPIWhereFilter):
+                where_filter.field = f"{entity_name}.{where_filter.field}"
