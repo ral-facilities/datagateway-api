@@ -120,7 +120,6 @@ class Member(PaNOSCAttribute):
     id_: StrictStr = Field(alias="id")
     role: Optional[StrictStr] = Field(alias="role")
 
-    # Should a member be able to be part of many documents?
     document: Document
     person: Optional["Person"]
     affiliation: Optional[Affiliation]
@@ -170,8 +169,6 @@ class Person(PaNOSCAttribute):
     first_name: Optional[StrictStr] = Field(alias="firstName")
     last_name: Optional[StrictStr] = Field(alias="lastName")
 
-    # ICAT has InvestigationUser meaning a user can have multiple roles, one for each
-    # investigation
     members: Optional[List[Member]]
 
     @classmethod
