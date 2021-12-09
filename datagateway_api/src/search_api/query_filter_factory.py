@@ -119,12 +119,13 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(
                 filter_input,
             )
-            for condition in filter_data:
-                where_filters.append(
-                    SearchAPIWhereFilter(
-                        field=condition[0], value=condition[1], operation=condition[2],
-                    ),
-                )
+            where_filters.append(
+                SearchAPIWhereFilter(
+                    field=filter_data[0],
+                    value=filter_data[1],
+                    operation=filter_data[2],
+                ),
+            )
 
         return where_filters
 
@@ -174,7 +175,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
     @staticmethod
     def get_condition_values(filter_input):
-        where_filter_data = []
         field = list(filter_input.keys())[0]
         filter_data = list(filter_input.values())[0]
 
@@ -187,9 +187,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             value = list(filter_input[field].values())[0]
             operation = list(filter_input[field].keys())[0]
 
-        where_filter_data.append((field, value, operation))
-
-        return where_filter_data
+        return field, value, operation
 
     @staticmethod
     def prefix_where_filter_field_with_entity_name(where_filters, entity_name):
