@@ -1,15 +1,14 @@
-import logging
-
 from flask_restful import Resource
 
-from datagateway_api.src.common.helpers import get_filters_from_query_string
+from datagateway_api.src.search_api.helpers import (
+    get_count,
+    get_files,
+    get_files_count,
+    get_search,
+    get_with_id,
+)
 
-log = logging.getLogger()
 
-
-# TODO - Might need kwargs on get_search_endpoint(), get_single_endpoint(),
-# get_number_count_endpoint(), get_files_endpoint(), get_number_count_files_endpoint()
-# for client handling?
 def get_search_endpoint(name):
     """
     TODO - Add docstring
@@ -17,21 +16,7 @@ def get_search_endpoint(name):
 
     class Endpoint(Resource):
         def get(self):
-            filters = get_filters_from_query_string("search_api", name)
-            log.debug("Filters: %s", filters)
-            """
-            TODO - Need to return similar to
-            return (
-                backend.get_with_filters(
-                    get_session_id_from_auth_header(),
-                    entity_type,
-                    get_filters_from_query_string(),
-                    **kwargs,
-                ),
-                200,
-            )
-            """
-            pass
+            return get_search(name), 200
 
         # TODO - Add `get.__doc__`
 
@@ -46,10 +31,7 @@ def get_single_endpoint(name):
 
     class EndpointWithID(Resource):
         def get(self, pid):
-            filters = get_filters_from_query_string("search_api", name)
-            log.debug("Filters: %s", filters)
-            # TODO - Add return
-            pass
+            return get_with_id(name, pid), 200
 
         # TODO - Add `get.__doc__`
 
@@ -64,11 +46,7 @@ def get_number_count_endpoint(name):
 
     class CountEndpoint(Resource):
         def get(self):
-            # Only WHERE included on count endpoints
-            filters = get_filters_from_query_string("search_api", name)
-            log.debug("Filters: %s", filters)
-            # TODO - Add return
-            pass
+            return get_count(name), 200
 
         # TODO - Add `get.__doc__`
 
@@ -83,10 +61,7 @@ def get_files_endpoint(name):
 
     class FilesEndpoint(Resource):
         def get(self, pid):
-            filters = get_filters_from_query_string("search_api", name)
-            log.debug("Filters: %s", filters)
-            # TODO - Add return
-            pass
+            return get_files(name), 200
 
         # TODO - Add `get.__doc__`
 
@@ -101,11 +76,7 @@ def get_number_count_files_endpoint(name):
 
     class CountFilesEndpoint(Resource):
         def get(self, pid):
-            # Only WHERE included on count endpoints
-            filters = get_filters_from_query_string("search_api", name)
-            log.debug("Filters: %s", filters)
-            # TODO - Add return
-            pass
+            return get_files_count(name, pid)
 
         # TODO - Add `get.__doc__`
 

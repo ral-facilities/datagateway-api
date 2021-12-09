@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
@@ -28,7 +28,7 @@ class TestICATCreateData:
         ]
 
         test_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/investigations",
+            f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigations_json,
         )
@@ -63,7 +63,7 @@ class TestICATCreateData:
         }
 
         test_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/investigations",
+            f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
@@ -87,7 +87,7 @@ class TestICATCreateData:
         }
 
         test_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/investigations",
+            f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=invalid_request_body,
         )
@@ -113,7 +113,7 @@ class TestICATCreateData:
         }
 
         test_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/investigations",
+            f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=existing_object_json,
         )
@@ -142,13 +142,13 @@ class TestICATCreateData:
         ]
 
         create_response = flask_test_app_icat.post(
-            f"{config.datagateway_api.extension}/investigations",
+            f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_icat_credentials_header,
             json=request_body,
         )
 
         get_response = flask_test_app_icat.get(
-            f"{config.datagateway_api.extension}/investigations?where="
+            f"{Config.config.datagateway_api.extension}/investigations?where="
             '{"title": {"eq": "'
             f'{request_body[0]["title"]}'
             '"}}',

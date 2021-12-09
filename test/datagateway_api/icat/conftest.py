@@ -12,7 +12,7 @@ from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
-from datagateway_api.src.common.config import config
+from datagateway_api.src.common.config import Config
 from test.datagateway_api.icat.endpoints.test_create_icat import TestICATCreateData
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
@@ -20,11 +20,11 @@ from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 @pytest.fixture(scope="package")
 def icat_client():
     client = Client(
-        config.datagateway_api.icat_url,
-        checkCert=config.datagateway_api.icat_check_cert,
+        Config.config.datagateway_api.icat_url,
+        checkCert=Config.config.datagateway_api.icat_check_cert,
     )
     client.login(
-        config.test_mechanism, config.test_user_credentials.dict(),
+        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
     )
     return client
 
@@ -149,7 +149,8 @@ def isis_specific_endpoint_data(icat_client):
 @pytest.fixture()
 def final_instrument_id(flask_test_app_icat, valid_icat_credentials_header):
     final_instrument_result = flask_test_app_icat.get(
-        f'{config.datagateway_api.extension}/instruments/findone?order="id DESC"',
+        f"{Config.config.datagateway_api.extension}/instruments/findone"
+        '?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_instrument_result.json["id"]
@@ -158,7 +159,8 @@ def final_instrument_id(flask_test_app_icat, valid_icat_credentials_header):
 @pytest.fixture()
 def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
     final_facilitycycle_result = flask_test_app_icat.get(
-        f'{config.datagateway_api.extension}/facilitycycles/findone?order="id DESC"',
+        f"{Config.config.datagateway_api.extension}/facilitycycles/findone"
+        '?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
@@ -181,7 +183,7 @@ def remove_test_created_investigation_data(
     yield
 
     created_test_data = flask_test_app_icat.get(
-        f"{config.datagateway_api.extension}/investigations?where="
+        f"{Config.config.datagateway_api.extension}/investigations?where="
         '{"name":{"like":'
         f'"{TestICATCreateData.investigation_name_prefix}"'
         "}}",
@@ -194,6 +196,7 @@ def remove_test_created_investigation_data(
 
     for investigation_id in investigation_ids:
         flask_test_app_icat.delete(
-            f"{config.datagateway_api.extension}/investigations/{investigation_id}",
+            f"{Config.config.datagateway_api.extension}/investigations"
+            f"/{investigation_id}",
             headers=valid_icat_credentials_header,
         )

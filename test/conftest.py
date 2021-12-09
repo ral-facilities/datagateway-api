@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import json
+from unittest.mock import mock_open, patch
 
 from flask import Flask
 import pytest
@@ -7,6 +9,7 @@ from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
+from datagateway_api.src.common.config import APIConfig
 from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
@@ -63,3 +66,39 @@ def valid_db_credentials_header():
     yield {"Authorization": f"Bearer {session.id}"}
 
     delete_row_by_id(SESSION, "Test")
+
+
+@pytest.fixture()
+def test_config_data():
+    return {
+        "datagateway_api": {
+            "extension": "/datagateway-api",
+            "backend": "db",
+            "client_cache_size": 5,
+            "client_pool_init_size": 2,
+            "client_pool_max_size": 5,
+            "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
+            "icat_url": "https://localhost:8181",
+            "icat_check_cert": False,
+        },
+        "search_api": {
+            "extension": "/search-api",
+            "icat_url": "https://localhost.testdomain:8181",
+            "icat_check_cert": True,
+        },
+        "flask_reloader": False,
+        "log_level": "WARN",
+        "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",
+        "debug_mode": False,
+        "generate_swagger": False,
+        "host": "127.0.0.1",
+        "port": "5000",
+        "test_user_credentials": {"username": "root", "password": "pw"},
+        "test_mechanism": "simple",
+    }
+
+
+@pytest.fixture()
+def test_config(test_config_data):
+    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+        return APIConfig.load("test/path")
