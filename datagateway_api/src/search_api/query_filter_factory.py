@@ -98,7 +98,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 or_conditional_filters = []
                 field_names = text_operator_fields[entity_name]
                 for field_name in field_names:
-                    or_conditional_filters.append({field_name: filter_input["text"]})
+                    or_conditional_filters.append(
+                        {field_name: {"like": filter_input["text"]}},
+                    )
 
                 where_filter = {
                     "filter": {"where": {"or": or_conditional_filters}},
