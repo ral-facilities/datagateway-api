@@ -136,7 +136,16 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
             nested_include = False
             if "scope" in related_model:
-                # Scope filter can have WHERE, INCLUDE, LIMIT and SKIP filters
+                if "limit" in related_model["scope"]:
+                    raise FilterError(
+                        "Bad Include filter: Scope filter cannot have a limit filter",
+                    )
+                if "skip" in related_model["scope"]:
+                    raise FilterError(
+                        "Bad Include filter: Scope filter cannot have a skip filter",
+                    )
+
+                # Scope filter can have WHERE and/ or INCLUDE filters
                 scope_query_filters = SearchAPIQueryFilterFactory.get_query_filter(
                     {"filter": related_model["scope"]}, included_entity,
                 )
