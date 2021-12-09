@@ -131,8 +131,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         query_filters = []
         for related_model in filter_input:
             included_entity = related_model["relation"]
-            query_filters.append(SearchAPIIncludeFilter(included_entity))
 
+            nested_include = False
             if "scope" in related_model:
                 # Scope filter can have WHERE, INCLUDE, LIMIT and SKIP filters
                 scope_query_filters = SearchAPIQueryFilterFactory.get_query_filter(
@@ -146,7 +146,18 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(  # noqa: B950
                             scope_query_filter, included_entity,
                         )
+                    if isinstance(scope_query_filter, SearchAPIIncludeFilter):
+                        nested_include = True
+                        included_filter = scope_query_filter.included_filters[0]
+
+                        scope_query_filter.included_filters[
+                            0
+                        ] = f"{included_entity}.{included_filter}"
+
                 query_filters.extend(scope_query_filters)
+
+            if not nested_include:
+                query_filters.append(SearchAPIIncludeFilter(included_entity))
 
         return query_filters
 
