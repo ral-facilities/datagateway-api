@@ -1,77 +1,77 @@
 {
     "Affiliation": {
-        "base_icat_entity": "",
-        "id": "",
-        "name": "",
-        "address": "",
+        "base_icat_entity": "Affiliation",
+        "id": "id",
+        "name": "name",
+        "address": "fullReference",
         "city": "",
         "country": ""
     },
     "Dataset": {
-        "base_icat_entity": "",
-        "pid": "",
-        "title": "",
-        "isPublic": "",
+        "base_icat_entity": "Dataset",
+        "pid": "doi",
+        "title": "name",
+        "isPublic": "createTime",
         "size": "",
-        "creationDate": ""
+        "creationDate": "createTime"
     },
     "Document": {
-        "base_icat_entity": "",
-        "pid": "",
-        "isPublic": "",
-        "type": "",
-        "title": "",
-        "summary": "",
-        "doi": "",
-        "startDate": "",
-        "endDate": "",
-        "releaseDate": "",
+        "base_icat_entity": "Investigation",
+        "pid": "doi",
+        "isPublic": "releaseDate",
+        "type": "type.name",
+        "title": "name",
+        "summary": "summary",
+        "doi": "doi",
+        "startDate": "startDate",
+        "endDate": "endDate",
+        "releaseDate": "releaseDate",
         "license": "",
-        "keywords": ""
+        "keywords": "keywords.name"
     },
     "File": {
-        "base_icat_entity": "",
-        "id": "",
-        "name": "",
-        "path": "",
-        "size": ""
+        "base_icat_entity": "Datafile",
+        "id": "id",
+        "name": "name",
+        "path": "location",
+        "size": "fileSize"
     },
     "Instrument": {
-        "base_icat_entity": "",
-        "id": "",
-        "name": "",
-        "facility": ""
+        "base_icat_entity": "Instrument",
+        "pid": "id",
+        "name": "name",
+        "facility": "facility.name"
     },
     "Member": {
-        "base_icat_entity": "",
-        "id": "",
-        "role": ""
+        "base_icat_entity": "InvestigationUser",
+        "id": "id",
+        "role": "role"
     },
     "Parameter": {
-        "base_icat_entity": "",
-        "id": "",
-        "name": "",
-        "value": "",
-        "unit": ""
+        "base_icat_entity": "InvestigationParameter",
+        "id": "id",
+        "name": "name",
+        "value": ["numericValue", "stringValue", "dateTimeValue"],
+        "unit": "type.units"
     },
     "Person": {
-        "base_icat_entity": "",
-        "id": "",
-        "fullName": "",
-        "orcid": "",
+        "base_icat_entity": "User",
+        "id": "id",
+        "fullName": "fullName",
+        "orcid": "orcidId",
         "researcherId": "",
-        "firstName": "",
-        "lastName": ""
+        "firstName": "givenName",
+        "lastName": "familyName"
     },
     "Sample": {
-        "base_icat_entity": "",
-        "name": "",
-        "pid": "",
-        "description": ""
+        "base_icat_entity": "Sample",
+        "name": "name",
+        "pid": "pid",
+        "description": "sample.parameters.type.description"
     },
     "Technique": {
-        "base_icat_entity": "",
-        "pid": "",
-        "name": ""
+        "base_icat_entity": "Technique",
+        "pid": "pid",
+        "name": "name"
     }
 }
