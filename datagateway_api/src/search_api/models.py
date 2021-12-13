@@ -1,16 +1,15 @@
 from abc import ABC, abstractclassmethod
 from datetime import datetime
-from decimal import Decimal
 from typing import List, Optional, Union
 
 from pydantic import (
     BaseModel,
     Field,
+    root_validator,
     StrictBool,
     StrictFloat,
     StrictInt,
     StrictStr,
-    validator,
 )
 
 
@@ -23,8 +22,8 @@ class PaNOSCAttribute(ABC, BaseModel):
 class Affiliation(PaNOSCAttribute):
     """Information about which facility a member is located at"""
 
-    id_: StrictStr = Field(alias="id")
     name: Optional[StrictStr]
+    id_: Optional[StrictStr] = Field(alias="id")
     address: Optional[StrictStr]
     city: Optional[StrictStr]
     country: Optional[StrictStr]
@@ -46,7 +45,7 @@ class Dataset(PaNOSCAttribute):
     title: StrictStr
     is_public: StrictBool = Field(alias="isPublic")
     creation_date: datetime = Field(alias="creationDate")
-    score: Decimal
+    size: Optional[StrictInt]
 
     documents: List["Document"]
     techniques: List["Technique"]
@@ -76,7 +75,6 @@ class Document(PaNOSCAttribute):
     release_date: Optional[datetime] = Field(alias="releaseDate")
     license_: Optional[StrictStr] = Field(alias="license")
     keywords: Optional[List[StrictStr]]
-    score: Decimal
 
     datasets: List[Dataset]
     members: Optional[List["Member"]]
@@ -105,10 +103,9 @@ class File(PaNOSCAttribute):
 class Instrument(PaNOSCAttribute):
     """Beam line where experiment took place"""
 
-    id_: StrictStr = Field(alias="id")
+    pid: StrictStr
     name: StrictStr
     facility: StrictStr
-    score: Decimal
 
     datasets: Optional[List[Dataset]]
 
@@ -123,10 +120,9 @@ class Member(PaNOSCAttribute):
     id_: StrictStr = Field(alias="id")
     role: Optional[StrictStr] = Field(alias="role")
 
-    # Should a member be able to be part of many documents?
     document: Document
     person: Optional["Person"]
-    affiliations: Optional[List[Affiliation]]
+    affiliation: Optional[Affiliation]
 
     @classmethod
     def from_icat(cls):
@@ -147,17 +143,16 @@ class Parameter(PaNOSCAttribute):
     dataset: Optional[Dataset]
     document: Optional[Document]
 
-    @validator(
-        "document", always=True,
-    )
-    def validate_dataset_and_document(cls, value, values):  # noqa: B902, N805
-        # TODO - Should there be a check for if both document and dataset are None?
+    @root_validator(skip_on_failure=True)
+    def validate_dataset_and_document(cls, values):  # noqa: B902, N805
+        if values["dataset"] is None and values["document"] is None:
+            raise TypeError("must have a dataset or document")
 
-        if "dataset" in values and values["dataset"] is not None and value is not None:
+        if values["dataset"] is not None and values["document"] is not None:
             # TODO - Should an exception be raised here instead?
-            return None
+            values["Document"] = None
 
-        return value
+        return values
 
     @classmethod
     def from_icat(cls):
@@ -174,9 +169,7 @@ class Person(PaNOSCAttribute):
     first_name: Optional[StrictStr] = Field(alias="firstName")
     last_name: Optional[StrictStr] = Field(alias="lastName")
 
-    # ICAT has InvestigationUser meaning a user can have multiple roles, one for each
-    # investigation
-    member: Optional[Member]
+    members: Optional[List[Member]]
 
     @classmethod
     def from_icat(cls):
@@ -188,7 +181,7 @@ class Sample(PaNOSCAttribute):
 
     name: StrictStr
     # ID used as an identifier in example implementation
-    pid: Optional[StrictStr]
+    pid: StrictStr
     description: Optional[StrictStr]
 
     datasets: Optional[List[Dataset]]
