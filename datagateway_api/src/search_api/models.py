@@ -180,7 +180,6 @@ class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
     name: StrictStr
-    # ID used as an identifier in example implementation
     pid: StrictStr
     description: Optional[StrictStr]
 
