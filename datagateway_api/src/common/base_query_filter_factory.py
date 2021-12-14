@@ -1,7 +1,7 @@
-from abc import abstractstaticmethod
+from abc import ABC, abstractstaticmethod
 
 
-class QueryFilterFactory(object):
+class QueryFilterFactory(ABC):
     @abstractstaticmethod
     def get_query_filter(request_filter, entity_name=None):  # noqa: B902, N805
         """

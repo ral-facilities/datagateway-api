@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.exceptions import ApiError, FilterError
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
@@ -52,3 +52,15 @@ class TestGetFiltersFromQueryString:
             filters = get_filters_from_query_string("datagateway_api")
 
             assert len(filters) == 2
+
+    def test_valid_search_api_filter(self, flask_test_app_db):
+        with flask_test_app_db:
+            flask_test_app_db.get('/?filter={"skip": 5, "limit": 10}')
+
+            filters = get_filters_from_query_string("search_api", "Dataset")
+
+            assert len(filters) == 2
+
+    def test_invalid_api_type(self):
+        with pytest.raises(ApiError):
+            get_filters_from_query_string("unknown_api")

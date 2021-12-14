@@ -2004,3 +2004,25 @@ class TestSearchAPIQueryFilterFactory:
     def test_invalid_filter_input(self, test_request_filter):
         with pytest.raises(FilterError):
             SearchAPIQueryFilterFactory.get_query_filter(test_request_filter)
+
+    @pytest.mark.parametrize(
+        "filter_input, expected_return",
+        [
+            pytest.param(
+                {"property": "value"},
+                ("property", "value", "eq"),
+                id="No operator specified",
+            ),
+            pytest.param(
+                {"property": {"ne": "value"}},
+                ("property", "value", "ne"),
+                id="Specific operator given in input",
+            ),
+        ],
+    )
+    def test_get_condition_values(self, filter_input, expected_return):
+        test_condition_values = SearchAPIQueryFilterFactory.get_condition_values(
+            filter_input,
+        )
+
+        assert test_condition_values == expected_return
