@@ -49,7 +49,7 @@ class Dataset(PaNOSCAttribute):
 
     documents: List["Document"]
     techniques: List["Technique"]
-    instrument: Optional["instrument"]
+    instrument: Optional["Instrument"]
     files: Optional[List["File"]]
     parameters: Optional[List["Parameter"]]
     samples: Optional[List["Sample"]]
