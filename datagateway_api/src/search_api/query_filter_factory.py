@@ -68,7 +68,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         return query_filters
 
     @staticmethod
-    def get_where_filter(filter_input, entity_name):
+    def get_where_filter(where_filter_input, entity_name):
         """
         Given a where filter input, return a list of `NestedWhereFilters` and/ or
         `SearchAPIWhereFilter` objects
@@ -79,9 +79,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         `SearchAPIWhereFilter` objects that will be created depends on the number of
         text operator fields that will be matched for the provided entity.
 
-        :param filter_input: The filter from which to create a list of
+        :param where_filter_input: The filter from which to create a list of
             `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
-        :type filter_input: :class:`dict`
+        :type where_filter_input: :class:`dict`
         :param entity_name: Entity name of the endpoint or the name of the included
             entity - this is needed for when there is a text operator inside a where
             filter so that the value provided can be matched with the relevant text
@@ -92,11 +92,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         """
         where_filters = []
         if (
-            list(filter_input.keys())[0] == "and"
-            or list(filter_input.keys())[0] == "or"
+            list(where_filter_input.keys())[0] == "and"
+            or list(where_filter_input.keys())[0] == "or"
         ):
-            boolean_operator = list(filter_input.keys())[0]
-            conditions = list(filter_input.values())[0]
+            boolean_operator = list(where_filter_input.keys())[0]
+            conditions = list(where_filter_input.values())[0]
             conditional_where_filters = []
 
             for condition in conditions:
@@ -116,7 +116,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 boolean_operator,
             )
             where_filters.append(nested)
-        elif list(filter_input.keys())[0] == "text":
+        elif list(where_filter_input.keys())[0] == "text":
             # TODO - we might want to move this to the data
             # definitions at a later point
             text_operator_fields = {
@@ -133,7 +133,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 field_names = text_operator_fields[entity_name]
                 for field_name in field_names:
                     or_conditional_filters.append(
-                        {field_name: {"like": filter_input["text"]}},
+                        {field_name: {"like": where_filter_input["text"]}},
                     )
 
                 where_filter = {
@@ -151,7 +151,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 pass
         else:
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(
-                filter_input,
+                where_filter_input,
             )
             where_filters.append(
                 SearchAPIWhereFilter(
@@ -164,7 +164,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         return where_filters
 
     @staticmethod
-    def get_include_filter(filter_input):
+    def get_include_filter(include_filter_input):
         """
         Given an include filter input, return a list of `SearchAPIIncludeFilter` and any
         `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects if there is a scope
@@ -173,16 +173,16 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         Currently, we do not support limit and skip filters inside scope filters that
         are part of include filters.
 
-        :param filter_input: The filter from which to create a list of
+        :param include_filter_input: The filter from which to create a list of
             `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/ or
             `SearchAPIWhereFilter` objects
-        :type filter_input: :class:`dict`
+        :type include_filter_input: :class:`dict`
         :return: The list of `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/
             or `SearchAPIWhereFilter` objects created
         :raises FilterError: If scope filter has a limit or skip filter
         """
         query_filters = []
-        for related_model in filter_input:
+        for related_model in include_filter_input:
             included_entity = related_model["relation"]
 
             nested_include = False
@@ -224,27 +224,27 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         return query_filters
 
     @staticmethod
-    def get_condition_values(filter_input):
+    def get_condition_values(conditions_dict):
         """
         Given a simplified where filter input, return a field name, value and operation
         as a tuple
 
-        :param filter_input: The filter from which to return a field name, value and
+        :param conditions_dict: The filter from which to return a field name, value and
             operation
-        :type filter_input: :class:`dict`
+        :type conditions_dict: :class:`dict`
         :return: The tuple that includes field name, value and operation
         """
-        field = list(filter_input.keys())[0]
-        filter_data = list(filter_input.values())[0]
+        field = list(conditions_dict.keys())[0]
+        filter_data = list(conditions_dict.values())[0]
 
         if isinstance(filter_data, str):
             # Format: {"where": {"property": "value"}}
-            value = filter_input[field]
+            value = conditions_dict[field]
             operation = "eq"
         elif isinstance(filter_data, dict):
             # Format: {"where": {"property": {"operator": "value"}}}
-            value = list(filter_input[field].values())[0]
-            operation = list(filter_input[field].keys())[0]
+            value = list(conditions_dict[field].values())[0]
+            operation = list(conditions_dict[field].keys())[0]
 
         return field, value, operation
 
