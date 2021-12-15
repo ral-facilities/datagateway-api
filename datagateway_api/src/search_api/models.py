@@ -49,7 +49,7 @@ class Dataset(PaNOSCAttribute):
 
     documents: List["Document"]
     techniques: List["Technique"]
-    instrument: Optional["instrument"]
+    instrument: Optional["Instrument"]
     files: Optional[List["File"]]
     parameters: Optional[List["Parameter"]]
     samples: Optional[List["Sample"]]
@@ -180,7 +180,6 @@ class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
     name: StrictStr
-    # ID used as an identifier in example implementation
     pid: StrictStr
     description: Optional[StrictStr]
 
