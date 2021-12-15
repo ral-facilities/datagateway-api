@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.1.1 (2021-12-15)
+### Fix
+* Correct reference to class name #264 ([`fc4c180`](https://github.com/ral-facilities/datagateway-api/commit/fc4c18085ab496d838e8d1e9e3f8c77f07826e9d))
+
 ## v3.1.0 (2021-12-06)
 ### Feature
 * Implement session/client handling for search API #258 ([`46a1539`](https://github.com/ral-facilities/datagateway-api/commit/46a1539398f63e9c8a6539d703a164dd7c8749e7))
