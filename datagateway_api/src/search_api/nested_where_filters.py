@@ -1,5 +1,15 @@
+import logging
+
+from datagateway_api.src.common.filters import WhereFilter
+from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
+
+log = logging.getLogger()
+
+
 class NestedWhereFilters:
-    def __init__(self, lhs, rhs, joining_operator):
+    precedence = WhereFilter.precedence
+
+    def __init__(self, lhs, rhs, joining_operator, search_api_query=None):
         """
         Class to represent nested conditions that use different boolean operators e.g.
         `(A OR B) AND (C OR D)`. This works by joining the two conditions with a boolean
@@ -27,6 +37,37 @@ class NestedWhereFilters:
         self.lhs = lhs
         self.rhs = rhs
         self.joining_operator = joining_operator
+        self.search_api_query = search_api_query
+
+    def apply_filter(self, query):
+        query.query.query.setConditionsByString(str(self))
+
+    @staticmethod
+    def set_search_api_query_static(query_filter, search_api_query):
+        """
+        TODO
+        """
+
+        log.debug(
+            "Query filter: %s, Search API query: %s",
+            repr(query_filter),
+            search_api_query,
+        )
+
+        if isinstance(query_filter, SearchAPIWhereFilter):
+            query_filter.search_api_query = search_api_query
+        elif isinstance(query_filter, NestedWhereFilters):
+            NestedWhereFilters.set_search_api_query_static(
+                query_filter.lhs, search_api_query,
+            )
+            NestedWhereFilters.set_search_api_query_static(
+                query_filter.rhs, search_api_query,
+            )
+        elif isinstance(query_filter, list):
+            for where_filter in query_filter:
+                NestedWhereFilters.set_search_api_query_static(
+                    where_filter, search_api_query,
+                )
 
     def __str__(self):
         """

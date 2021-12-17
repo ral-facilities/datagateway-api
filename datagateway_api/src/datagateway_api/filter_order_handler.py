@@ -5,6 +5,7 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
+from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 
 log = logging.getLogger()
 
@@ -101,3 +102,13 @@ class FilterOrderHandler(object):
         self.merge_python_icat_limit_skip_filters()
         self.clear_python_icat_order_filters()
         self.apply_filters(query)
+
+    def add_query_to_where_filters(self, search_api_query):
+        """
+        TODO
+        """
+        for filter_ in self.filters:
+            if isinstance(filter_, NestedWhereFilters):
+                NestedWhereFilters.set_search_api_query_static(
+                    filter_, search_api_query,
+                )

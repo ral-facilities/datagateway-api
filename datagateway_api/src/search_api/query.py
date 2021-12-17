@@ -8,7 +8,7 @@ class SearchAPIQuery:
     def __init__(self, panosc_entity_name):
         self.panosc_entity_name = panosc_entity_name
         self.icat_entity_name = mappings.mappings[panosc_entity_name][
-            "base_icat_entity",
+            "base_icat_entity"
         ]
 
         self.query = ICATQuery(SessionHandler.client, self.icat_entity_name)
