@@ -7,7 +7,8 @@ from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 class TestSearchAPIWhereFilter:
-    # TODO - Add test case for fields we can't map to ICAT
+    # TODO - Add test case for fields we can't map to ICAT - do we 400/500 or just
+    # ignore the filter?
     # TODO - Add test case for isPublic
     # TODO - Add test case for Dataset.size
     # TODO - Add test case for Parameter.value (where we map to a list of ICAT fields)
@@ -48,12 +49,20 @@ class TestSearchAPIWhereFilter:
                 " '%Keyword%'",
                 id="WHERE filter on ICAT related entity with 0-many relationship",
             ),
+            # TODO - add in the rest of the PaNOSC hops
             pytest.param(
                 SearchAPIWhereFilter("samples.description", "Test description", "like"),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 JOIN s1.parameters AS s2"
                 " JOIN s2.type AS s3 WHERE s3.description like '%Test description%'",
                 id="WHERE filter on ICAT related entity with a PaNOSC hop",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("parameters.value", "My Parameter", "eq"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.stringValue = 'My Parameter'",
+                id="WHERE filter using mapping that maps to multiple ICAT fields",
             ),
         ],
     )
@@ -77,7 +86,7 @@ class TestSearchAPIWhereFilter:
                     [], [SearchAPIWhereFilter("name", "SANS2D", "like")], "and",
                 ),
                 "Instrument",
-                "SELECT o FROM Instrument o WHERE (o.name like  '%SANS2D%')",
+                "SELECT o FROM Instrument o WHERE (o.name like '%SANS2D%')",
                 id="Nested input with single filter",
             ),
             pytest.param(
@@ -114,14 +123,18 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 NestedWhereFilters(
-                    [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
-                    [SearchAPIWhereFilter("keywords", "Test keyword", "eq")],
+                    [SearchAPIWhereFilter("title", "Test title", "eq")],
+                    [
+                        SearchAPIWhereFilter(
+                            "samples.description", "Test description", "like",
+                        ),
+                    ],
                     "and",
                 ),
                 "Dataset",
-                "SELECT o FROM Dataset o JOIN o.sample AS s1 JOIN s1.paramaters AS s2"
-                " JOIN s2.type AS s3 WHERE (o.summary = 'My Test Summary' and"
-                " s3.description like '%Test description%'",
+                "SELECT o FROM Dataset o JOIN o.sample AS s1 JOIN s1.parameters AS s2"
+                " JOIN s2.type AS s3 WHERE (o.name = 'Test title' and"
+                " s3.description like '%Test description%')",
                 id="Nested input with filter on ICAT related entity with multiple hops",
             ),
             pytest.param(
@@ -144,7 +157,7 @@ class TestSearchAPIWhereFilter:
                 ),
                 "Document",
                 "SELECT o FROM Investigation o WHERE ((o.summary = 'My Test Summary' or"
-                " o.name = 'Test title') and (o.doi = 'Test pid' or o.doi ="
+                " o.name like '%Test title%') and (o.doi = 'Test pid' or o.doi ="
                 " 'Test doi'))",
                 id="Nested input - (A or B) and (C or D)",
             ),
