@@ -5,15 +5,22 @@
         "name": "name",
         "address": "fullReference",
         "city": "",
-        "country": ""
+        "country": "",
+        "members": {"TODO": "TODO"}
     },
     "Dataset": {
         "base_icat_entity": "Dataset",
         "pid": "doi",
         "title": "name",
         "isPublic": "createTime",
+        "creationDate": "createTime",
         "size": "",
-        "creationDate": "createTime"
+        "documents": {"Document": "investigation"},
+        "techniques": {"Technique": "TODO"},
+        "instrument": {"Instrument": "investigation.investigationInstruments.instrument"},
+        "files": {"File": "datafiles"},
+        "parameters": {"Parameter": "parameters"},
+        "samples": {"Sample": "sample"}
     },
     "Document": {
         "base_icat_entity": "Investigation",
@@ -27,32 +34,42 @@
         "endDate": "endDate",
         "releaseDate": "releaseDate",
         "license": "",
-        "keywords": "keywords.name"
+        "keywords": "keywords.name",
+        "datasets": {"Dataset": "datasets"},
+        "members": {"Member": "investigationUsers"},
+        "parameters": {"Parameter": "parameters"}
     },
     "File": {
         "base_icat_entity": "Datafile",
         "id": "id",
         "name": "name",
         "path": "location",
-        "size": "fileSize"
+        "size": "fileSize",
+        "dataset": {"Dataset": "dataset"}
     },
     "Instrument": {
         "base_icat_entity": "Instrument",
         "pid": "id",
         "name": "name",
-        "facility": "facility.name"
+        "facility": "facility.name",
+        "datasets": {"Dataset": "investigationInstruments.investigation.datasets"}
     },
     "Member": {
         "base_icat_entity": "InvestigationUser",
         "id": "id",
-        "role": "role"
+        "role": "role",
+        "document": {"Document": "investigation"},
+        "person": {"Person": "user"},
+        "affiliation": {"Affiliation": "TODO"}
     },
     "Parameter": {
         "base_icat_entity": "InvestigationParameter",
         "id": "id",
         "name": "name",
         "value": ["numericValue", "stringValue", "dateTimeValue"],
-        "unit": "type.units"
+        "unit": "type.units",
+        "dataset": {"Dataset": "TODO"},
+        "document": {"Document": "investigation"}
     },
     "Person": {
         "base_icat_entity": "User",
@@ -61,17 +78,20 @@
         "orcid": "orcidId",
         "researcherId": "",
         "firstName": "givenName",
-        "lastName": "familyName"
+        "lastName": "familyName",
+        "members": {"Member": "investigationUsers"}
     },
     "Sample": {
         "base_icat_entity": "Sample",
         "name": "name",
         "pid": "pid",
-        "description": "sample.parameters.type.description"
+        "description": "parameters.type.description",
+        "datasets": {"Dataset": "datasets"}
     },
     "Technique": {
         "base_icat_entity": "Technique",
         "pid": "pid",
-        "name": "name"
+        "name": "name",
+        "datasets": {"Dataset": "TODO"}
     }
 }
