@@ -41,9 +41,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         # code written in `PythonICATWhereFilter.apply_filter()`
         self.field = ".".join(icat_field_names)
 
-        # TODO - `query.query.query` might be confusing, might rename `query` in
-        # function signature
-        return super().apply_filter(query.query.query)
+        return super().apply_filter(query.icat_query.query)
 
     def get_icat_mapping(self, panosc_entity_name, field_name):
         """
@@ -113,12 +111,12 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
             # Replicating the condition in Python ICAT format so it can be searched on
             # the query and return as string representation
             conds_dict = self.create_filter()
-            a, jpql_func = query.query.query._split_db_functs(self.field)
-            conds_dict[self.field] = query.query.query._cond_value(
+            a, jpql_func = query.icat_query.query._split_db_functs(self.field)
+            conds_dict[self.field] = query.icat_query.query._cond_value(
                 conds_dict[self.field], jpql_func,
             )
 
-            str_conds = query.query.query.search_conditions(self.field, conds_dict)
+            str_conds = query.icat_query.query.search_conditions(self.field, conds_dict)
 
             try:
                 return str_conds[0]
@@ -139,7 +137,7 @@ class SearchAPISkipFilter(PythonICATSkipFilter):
         super().__init__(skip_value, filter_use="search_api")
 
     def apply_filter(self, query):
-        return super().apply_filter(query.query.query)
+        return super().apply_filter(query.icat_query.query)
 
 
 class SearchAPILimitFilter(PythonICATLimitFilter):
@@ -147,7 +145,7 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
         super().__init__(limit_value)
 
     def apply_filter(self, query):
-        return super().apply_filter(query.query.query)
+        return super().apply_filter(query.icat_query.query)
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
@@ -155,4 +153,4 @@ class SearchAPIIncludeFilter(PythonICATIncludeFilter):
         super().__init__(included_filters)
 
     def apply_filter(self, query):
-        return super().apply_filter(query.query.query)
+        return super().apply_filter(query.icat_query.query)

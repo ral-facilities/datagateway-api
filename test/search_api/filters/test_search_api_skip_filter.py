@@ -19,7 +19,7 @@ class TestSearchAPISkipFilter:
         test_query = SearchAPIQuery("Document")
         test_filter.apply_filter(test_query)
 
-        assert test_query.query.query.limit == (
+        assert test_query.icat_query.query.limit == (
             skip_value,
             get_icat_properties(
                 Config.config.search_api.icat_url,

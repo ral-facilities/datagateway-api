@@ -19,7 +19,7 @@ class TestSearchAPILimitFilter:
         test_query = SearchAPIQuery("Document")
         test_filter.apply_filter(test_query)
 
-        assert test_query.query.query.limit == (0, limit_value)
+        assert test_query.icat_query.query.limit == (0, limit_value)
 
     @pytest.mark.parametrize(
         "limit_value",

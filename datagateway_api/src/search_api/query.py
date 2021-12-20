@@ -11,4 +11,4 @@ class SearchAPIQuery:
             "base_icat_entity"
         ]
 
-        self.query = ICATQuery(SessionHandler.client, self.icat_entity_name)
+        self.icat_query = ICATQuery(SessionHandler.client, self.icat_entity_name)

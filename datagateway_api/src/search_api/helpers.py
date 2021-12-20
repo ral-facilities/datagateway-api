@@ -24,7 +24,7 @@ def get_search(endpoint_name, entity_name, filters=list()):
     filter_handler.add_query_to_where_filters(query)
     filter_handler.apply_filters(query)
 
-    log.debug("Python ICAT Query: %s", query.query.query)
+    log.debug("Python ICAT Query: %s", query.icat_query.query)
     # TODO - `getApiVersion()` used as a placeholder for testing client handling
     # Replace with endpoint functionality when implementing the endpoints
     return SessionHandler.client.getApiVersion()
