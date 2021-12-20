@@ -38,6 +38,8 @@ class NestedWhereFilters:
         self.rhs = rhs
         self.joining_operator = joining_operator
         self.search_api_query = search_api_query
+        if self.search_api_query is not None:
+            NestedWhereFilters.set_search_api_query_static(self, search_api_query)
 
     def apply_filter(self, query):
         query.query.query.setConditionsByString(str(self))
