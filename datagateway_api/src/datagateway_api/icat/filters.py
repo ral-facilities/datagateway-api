@@ -25,9 +25,10 @@ class PythonICATWhereFilter(WhereFilter):
         try:
             log.info("Adding ICAT where filter (for %s) to query", self.value)
             query.addConditions(self.create_filter())
-        except ValueError:
+        except ValueError as e:
             raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query",
+                "Something went wrong when adding WHERE filter to ICAT query:"
+                f" {e.args}",
             )
 
     def create_filter(self):
