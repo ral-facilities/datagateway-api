@@ -120,12 +120,12 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             # TODO - we might want to move this to the data
             # definitions at a later point
             text_operator_fields = {
-                "datasets": ["title"],
-                "documents": ["title", "summary"],
-                "files": ["name"],
-                "instrument": ["name", "facility"],
-                "samples": ["name", "description"],
-                "techniques": ["name"],
+                "Dataset": ["title"],
+                "Document": ["title", "summary"],
+                "File": ["name"],
+                "Instrument": ["name", "facility"],
+                "Sample": ["name", "description"],
+                "Technique": ["name"],
             }
 
             try:
