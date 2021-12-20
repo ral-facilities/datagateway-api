@@ -11,10 +11,8 @@ from datagateway_api.src.search_api.session_handler import (
 log = logging.getLogger()
 
 
-# TODO - Make filters mandatory, if no filters are in a request an empty list will be
-# given to these functions
 @client_manager
-def get_search(endpoint_name, entity_name, filters=list()):
+def get_search(endpoint_name, entity_name, filters):
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
     query = SearchAPIQuery(entity_name)
@@ -31,20 +29,20 @@ def get_search(endpoint_name, entity_name, filters=list()):
 
 
 @client_manager
-def get_with_id(endpoint_name, entity_name, id_, filters=None):
+def get_with_id(endpoint_name, entity_name, id_, filters):
     pass
 
 
 @client_manager
-def get_count(endpoint_name, entity_name, filters=None):
+def get_count(endpoint_name, entity_name, filters):
     pass
 
 
 @client_manager
-def get_files(endpoint_name, entity_name, filters=None):
+def get_files(endpoint_name, entity_name, filters):
     pass
 
 
 @client_manager
-def get_files_count(endpoint_name, entity_name, id_, filters=None):
+def get_files_count(endpoint_name, entity_name, id_, filters):
     pass
