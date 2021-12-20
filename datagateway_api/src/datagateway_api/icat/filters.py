@@ -43,6 +43,9 @@ class PythonICATWhereFilter(WhereFilter):
         :raises FilterError: If the operation provided to the instance isn't valid
         """
 
+        # TODO - need to add support for the rest of search API operators
+        # For things like inq, think we just call this function again with the DG API
+        # version. This will prevent a breaking change from occurring
         log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
             where_filter = self.create_condition(self.field, "=", self.value)
