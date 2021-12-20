@@ -19,19 +19,19 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"title": "My Title"}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("title", "My Title", "eq"),
                 id="Property value with no operator",
             ),
             pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="Property value with operator",
             ),
             pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="WHERE filter in syntax for count endpoints",
             ),
@@ -53,7 +53,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"text": "Dataset 1"}}},
-                "datasets",
+                "Dataset",
                 [],
                 [SearchAPIWhereFilter("title", "Dataset 1", "like")],
                 "or",
@@ -61,7 +61,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"text": "Instrument 1"}}},
-                "instrument",
+                "Instrument",
                 [SearchAPIWhereFilter("name", "Instrument 1", "like")],
                 [SearchAPIWhereFilter("facility", "Instrument 1", "like")],
                 "or",
@@ -93,7 +93,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
-                "documents",
+                "Document",
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "and",
@@ -110,7 +110,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "and",
@@ -128,7 +128,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -139,7 +139,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"value": {"lt": 50}}]}}},
-                "parameters",
+                "Parameter",
                 [],
                 [SearchAPIWhereFilter("value", 50, "lt")],
                 "and",
@@ -156,7 +156,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "parameters",
+                "Parameter",
                 [SearchAPIWhereFilter("name", "Test name", "like")],
                 [SearchAPIWhereFilter("value", 275, "gte")],
                 "and",
@@ -174,7 +174,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "parameters",
+                "Parameter",
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
                     SearchAPIWhereFilter("value", 275, "gte"),
@@ -185,7 +185,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Dataset 1"}]}}},
-                "datasets",
+                "Dataset",
                 [],
                 [
                     NestedWhereFilters(
@@ -197,7 +197,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Instrument 1"}]}}},
-                "instrument",
+                "Instrument",
                 [],
                 [
                     NestedWhereFilters(
@@ -215,7 +215,7 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {"and": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -234,7 +234,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -258,7 +258,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -280,7 +280,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -319,7 +319,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
-                "documents",
+                "Document",
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "or",
@@ -336,7 +336,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "or",
@@ -354,7 +354,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -365,7 +365,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"value": {"lt": 50}}]}}},
-                "parameters",
+                "Parameter",
                 [],
                 [SearchAPIWhereFilter("value", 50, "lt")],
                 "or",
@@ -382,7 +382,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "parameters",
+                "Parameter",
                 [SearchAPIWhereFilter("name", "Test name", "like")],
                 [SearchAPIWhereFilter("value", 275, "gte")],
                 "or",
@@ -400,7 +400,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "parameters",
+                "Parameter",
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
                     SearchAPIWhereFilter("value", 275, "gte"),
@@ -411,7 +411,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Dataset 1"}]}}},
-                "datasets",
+                "Dataset",
                 [],
                 [
                     NestedWhereFilters(
@@ -423,7 +423,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Instrument 1"}]}}},
-                "instrument",
+                "Instrument",
                 [],
                 [
                     NestedWhereFilters(
@@ -441,7 +441,7 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {"or": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -460,7 +460,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -481,7 +481,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -503,7 +503,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -561,7 +561,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -600,7 +600,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -639,7 +639,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -684,7 +684,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -734,7 +734,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -784,7 +784,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -834,7 +834,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -902,7 +902,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -941,7 +941,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -980,7 +980,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1025,7 +1025,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1075,7 +1075,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1125,7 +1125,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1175,7 +1175,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1224,7 +1224,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
-                "datasets",
+                "Dataset",
                 1,
                 [["files"]],
                 id="Single related model",
@@ -1235,7 +1235,7 @@ class TestSearchAPIQueryFilterFactory:
                         "include": [{"relation": "files"}, {"relation": "instrument"}],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["files"], ["instrument"]],
                 id="Multiple related models",
@@ -1275,7 +1275,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["parameters"]],
                 [SearchAPIWhereFilter("parameters.name", "My parameter", "eq")],
@@ -1293,7 +1293,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["parameters"]],
                 [SearchAPIWhereFilter("parameters.name", "My parameter", "ne")],
@@ -1311,7 +1311,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["files"]],
                 [],
@@ -1333,7 +1333,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 1,
                 [["parameters"]],
                 [],
@@ -1351,7 +1351,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1386,7 +1386,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1421,7 +1421,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1476,7 +1476,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1568,7 +1568,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1637,7 +1637,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 4,
                 [["parameters"], ["documents"]],
                 [
@@ -1668,7 +1668,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 3,
                 [["datasets.instrument"]],
                 [
@@ -1725,7 +1725,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 1,
                 [["datasets.parameters"]],
                 id="Single related model",
@@ -1746,7 +1746,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 2,
                 [["datasets.parameters"], ["datasets.instrument"]],
                 id="Multiple related models",
@@ -1771,7 +1771,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "instruments",
+                "Instrument",
                 1,
                 [["datasets.documents.parameters"]],
                 id="Nested related models",
@@ -1840,7 +1840,7 @@ class TestSearchAPIQueryFilterFactory:
                         "skip": 20,
                     },
                 },
-                "datasets",
+                "Dataset",
                 4,
                 [["instrument"]],
                 [SearchAPIWhereFilter("title", "My Title", "eq")],
@@ -1884,7 +1884,7 @@ class TestSearchAPIQueryFilterFactory:
                         "skip": 20,
                     },
                 },
-                "datasets",
+                "Dataset",
                 5,
                 [["instrument"]],
                 [SearchAPIWhereFilter("instrument.name", "Instrument 1", "eq")],
