@@ -18,7 +18,8 @@ log = logging.getLogger()
 
 
 class SearchAPIWhereFilter(PythonICATWhereFilter):
-    def __init__(self, field, value, operation):
+    def __init__(self, field, value, operation, search_api_query=None):
+        self.search_api_query = search_api_query
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
@@ -84,13 +85,33 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         return (panosc_entity_name, icat_field_name)
 
     def __str__(self):
-        # TODO - can't just hardcode investigation entity. Might need `icat_entity_name`
-        # to be passed into init
-        query = Query(client, "Investigation")
-        query.addConditions(self.create_filter())
-        str_conds = query.get_conditions_as_str()
+        """
+        String representation which is also used to apply WHERE filters that are inside
+        a `NestedWhereFilters` object
+        """
 
-        return str_conds[0]
+        log.debug(f"SAPI Query on where filter: {self.search_api_query}")
+        print(f"Str of where filter: {self.search_api_query}")
+        if isinstance(self.search_api_query, SearchAPIQuery):
+            query = self.search_api_query
+
+            self.apply_filter(query)
+            # Replicating the condition in Python ICAT format so it can be searched on
+            # the query and return as string representation
+            conds_dict = self.create_filter()
+            a, jpql_func = query.query.query._split_db_functs(self.field)
+            conds_dict[self.field] = query.query.query._cond_value(
+                conds_dict[self.field], jpql_func,
+            )
+
+            str_conds = query.query.query.search_conditions(self.field, conds_dict)
+
+            try:
+                return str_conds[0]
+            except IndexError:
+                raise FilterError("Condition could not be found in Python ICAT query")
+        else:
+            return repr(self)
 
     def __repr__(self):
         return (
