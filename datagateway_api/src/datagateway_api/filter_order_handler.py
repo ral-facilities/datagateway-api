@@ -109,6 +109,6 @@ class FilterOrderHandler(object):
         """
         for filter_ in self.filters:
             if isinstance(filter_, NestedWhereFilters):
-                NestedWhereFilters.set_search_api_query_static(
+                NestedWhereFilters.set_search_api_query(
                     filter_, search_api_query,
                 )

@@ -39,13 +39,13 @@ class NestedWhereFilters:
         self.joining_operator = joining_operator
         self.search_api_query = search_api_query
         if self.search_api_query is not None:
-            NestedWhereFilters.set_search_api_query_static(self, search_api_query)
+            NestedWhereFilters.set_search_api_query(self, search_api_query)
 
     def apply_filter(self, query):
         query.query.query.setConditionsByString(str(self))
 
     @staticmethod
-    def set_search_api_query_static(query_filter, search_api_query):
+    def set_search_api_query(query_filter, search_api_query):
         """
         TODO
         """
@@ -59,15 +59,15 @@ class NestedWhereFilters:
         if isinstance(query_filter, SearchAPIWhereFilter):
             query_filter.search_api_query = search_api_query
         elif isinstance(query_filter, NestedWhereFilters):
-            NestedWhereFilters.set_search_api_query_static(
+            NestedWhereFilters.set_search_api_query(
                 query_filter.lhs, search_api_query,
             )
-            NestedWhereFilters.set_search_api_query_static(
+            NestedWhereFilters.set_search_api_query(
                 query_filter.rhs, search_api_query,
             )
         elif isinstance(query_filter, list):
             for where_filter in query_filter:
-                NestedWhereFilters.set_search_api_query_static(
+                NestedWhereFilters.set_search_api_query(
                     where_filter, search_api_query,
                 )
 
