@@ -44,13 +44,31 @@ class TestSearchAPIWhereFilter:
                 " '%Keyword%'",
                 id="WHERE filter on ICAT related entity with 0-many relationship",
             ),
-            # TODO - add in the rest of the PaNOSC hops
             pytest.param(
                 SearchAPIWhereFilter("samples.description", "Test description", "like"),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 JOIN s1.parameters AS s2"
                 " JOIN s2.type AS s3 WHERE s3.description like '%Test description%'",
                 id="WHERE filter on ICAT related entity with a PaNOSC hop",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("datasets.files.name", "Test filename", "like"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.datasets AS s1 JOIN s1.datafiles"
+                " AS s2 WHERE s2.name like '%Test filename%'",
+                id="WHERE filter on ICAT related entity with two PaNOSC hops",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter(
+                    "instrument.datasets.parameters.unit", "Dataset parameter", "eq",
+                ),
+                "Dataset",
+                "SELECT o FROM Dataset o JOIN o.investigation AS i JOIN"
+                " i.investigationInstruments AS s1 JOIN s1.instrument AS s2 JOIN"
+                " s2.investigationInstruments AS s3 JOIN s3.investigation AS s4 JOIN"
+                " s4.datasets AS s5 JOIN s5.parameters AS s6 JOIN s6.type AS s7 WHERE"
+                " s7.units = 'Dataset parameter'",
+                id="WHERE filter on ICAT related entity with three PaNOSC hops",
             ),
             pytest.param(
                 SearchAPIWhereFilter("parameters.value", "My Parameter", "eq"),
