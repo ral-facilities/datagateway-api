@@ -2,6 +2,7 @@ import logging
 
 from flask_restful import Resource
 
+from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
     get_count,
     get_files,
@@ -9,7 +10,6 @@ from datagateway_api.src.search_api.helpers import (
     get_search,
     get_with_id,
 )
-from datagateway_api.src.common.helpers import get_filters_from_query_string
 
 log = logging.getLogger()
 

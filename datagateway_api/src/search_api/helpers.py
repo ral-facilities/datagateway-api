@@ -14,7 +14,7 @@ log = logging.getLogger()
 # TODO - Make filters mandatory, if no filters are in a request an empty list will be
 # given to these functions
 @client_manager
-def get_search(endpoint_name, entity_name, filters=[]):
+def get_search(endpoint_name, entity_name, filters=list()):
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
     query = SearchAPIQuery(entity_name)
