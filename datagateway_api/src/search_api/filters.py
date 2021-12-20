@@ -50,6 +50,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         :return: Tuple containing the PaNOSC entity name (which will change from the
             input if a related entity is found) and the ICAT field name
             mapping/translation from the PaNOSC data model
+        :raises FilterError: If a valid mapping cannot be found
         """
 
         try:
