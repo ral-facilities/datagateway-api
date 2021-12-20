@@ -1,7 +1,8 @@
+from datetime import datetime
 import logging
 
-from icat.query import Query
-
+from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.exceptions import FilterError
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -9,6 +10,7 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATWhereFilter,
 )
 from datagateway_api.src.search_api.panosc_mappings import mappings
+from datagateway_api.src.search_api.query import SearchAPIQuery
 
 log = logging.getLogger()
 
@@ -23,9 +25,21 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         super().__init__(field, value, operation)
 
     def apply_filter(self, query):
-        # Convert the field from a PaNOSC field name to an ICAT one
-        icat_field_name = mappings.mappings[query.panosc_entity_name][self.field]
-        self.field = icat_field_name
+        panosc_field_names = self.field.split(".")
+        icat_field_names = []
+        panosc_mapping_name = query.panosc_entity_name
+
+        # Convert PaNOSC field names to ICAT field names
+        for field_name in panosc_field_names:
+            panosc_mapping_name, icat_field_name = self.get_icat_mapping(
+                panosc_mapping_name, field_name,
+            )
+            icat_field_names.append(icat_field_name)
+
+        # Once we have got ICAT field names we no longer need the PaNOSC versions so
+        # overwriting them is all good. ICAT version needs to be in `self.field` due to
+        # code written in `PythonICATWhereFilter.apply_filter()`
+        self.field = ".".join(icat_field_names)
 
         # TODO - `query.query.query` might be confusing, might rename `query` in
         # function signature
