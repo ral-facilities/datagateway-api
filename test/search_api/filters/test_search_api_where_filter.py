@@ -7,11 +7,6 @@ from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 class TestSearchAPIWhereFilter:
-    # TODO - Add test case for fields we can't map to ICAT - do we 400/500 or just
-    # ignore the filter?
-    # TODO - Add test case for isPublic
-    # TODO - Add test case for Dataset.size
-    # TODO - Add test case for Parameter.value (where we map to a list of ICAT fields)
     @pytest.mark.parametrize(
         "filter_input, entity_name, expected_query",
         [
@@ -62,7 +57,33 @@ class TestSearchAPIWhereFilter:
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
                 " p.stringValue = 'My Parameter'",
-                id="WHERE filter using mapping that maps to multiple ICAT fields",
+                id="String parameter value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter(
+                    "parameters.value", "2018-05-05T15:00:00.000Z", "eq",
+                ),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.dateTimeValue = '2018-05-05T15:00:00.000Z'",
+                id="Datetime parameter value (mapping that maps to multiple ICAT"
+                " fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("parameters.value", 20, "eq"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.numericValue = '20'",
+                id="Numeric (int) parameter value (mapping that maps to multiple ICAT"
+                " fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("parameters.value", 20.0, "eq"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.numericValue = '20.0'",
+                id="Numeric (float) parameter value (mapping that maps to multiple ICAT"
+                "fields)",
             ),
         ],
     )
