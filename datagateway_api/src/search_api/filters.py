@@ -71,7 +71,6 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         except KeyError as e:
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
 
-        print(f"ICAT Mapping: {icat_mapping}, Type: {type(icat_mapping)}")
         if isinstance(icat_mapping, str):
             # Field name
             icat_field_name = icat_mapping
@@ -102,8 +101,6 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         a `NestedWhereFilters` object
         """
 
-        log.debug(f"SAPI Query on where filter: {self.search_api_query}")
-        print(f"Str of where filter: {self.search_api_query}")
         if isinstance(self.search_api_query, SearchAPIQuery):
             query = self.search_api_query
 

@@ -5,7 +5,6 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
-from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 
 log = logging.getLogger()
 

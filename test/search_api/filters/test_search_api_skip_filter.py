@@ -4,7 +4,6 @@ from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import FilterError
 from datagateway_api.src.common.helpers import get_icat_properties
 from datagateway_api.src.search_api.filters import SearchAPISkipFilter
-from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 class TestSearchAPISkipFilter:
