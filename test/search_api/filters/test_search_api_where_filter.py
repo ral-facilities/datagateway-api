@@ -122,7 +122,10 @@ class TestSearchAPIWhereFilter:
         [
             pytest.param(
                 NestedWhereFilters(
-                    [], [SearchAPIWhereFilter("name", "SANS2D", "like")], "and",
+                    [],
+                    [SearchAPIWhereFilter("name", "SANS2D", "like")],
+                    "and",
+                    SearchAPIQuery("Instrument"),
                 ),
                 "Instrument",
                 "SELECT o FROM Instrument o WHERE (o.name like '%SANS2D%')",
@@ -130,7 +133,10 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 NestedWhereFilters(
-                    [], [SearchAPIWhereFilter("facility", "ISIS", "like")], "or",
+                    [],
+                    [SearchAPIWhereFilter("facility", "ISIS", "like")],
+                    "or",
+                    SearchAPIQuery("Instrument"),
                 ),
                 "Instrument",
                 "SELECT o FROM Instrument o JOIN o.facility AS f WHERE (f.name like"
@@ -142,6 +148,7 @@ class TestSearchAPIWhereFilter:
                     [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                     [SearchAPIWhereFilter("title", "Test title", "eq")],
                     "or",
+                    SearchAPIQuery("Document"),
                 ),
                 "Document",
                 "SELECT o FROM Investigation o WHERE (o.summary = 'My Test Summary' or"
@@ -153,6 +160,7 @@ class TestSearchAPIWhereFilter:
                     [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                     [SearchAPIWhereFilter("keywords", "Test keyword", "eq")],
                     "and",
+                    SearchAPIQuery("Document"),
                 ),
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.keywords AS s1 WHERE (o.summary ="
@@ -169,6 +177,7 @@ class TestSearchAPIWhereFilter:
                         ),
                     ],
                     "and",
+                    SearchAPIQuery("Dataset"),
                 ),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 JOIN s1.parameters AS s2"
@@ -193,6 +202,7 @@ class TestSearchAPIWhereFilter:
                         ),
                     ],
                     "and",
+                    SearchAPIQuery("Document"),
                 ),
                 "Document",
                 "SELECT o FROM Investigation o WHERE ((o.summary = 'My Test Summary' or"
@@ -205,13 +215,10 @@ class TestSearchAPIWhereFilter:
     def test_valid_apply_nested_filters(
         self, filter_input, entity_name, expected_query,
     ):
+        test_query = SearchAPIQuery(entity_name)
+
         filter_handler = FilterOrderHandler()
         filter_handler.add_filter(filter_input)
-        test_query = SearchAPIQuery(entity_name)
-        filter_handler.add_query_to_where_filters(test_query)
-
         filter_handler.apply_filters(test_query)
-
-        print(f"JPQL Query: {str(test_query.icat_query.query)}")
 
         assert str(test_query.icat_query.query) == expected_query

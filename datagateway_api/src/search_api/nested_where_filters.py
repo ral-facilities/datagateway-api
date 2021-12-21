@@ -42,6 +42,7 @@ class NestedWhereFilters:
             NestedWhereFilters.set_search_api_query(self, search_api_query)
 
     def apply_filter(self, query):
+        NestedWhereFilters.set_search_api_query(self, query)
         query.icat_query.query.setConditionsByString(str(self))
 
     @staticmethod

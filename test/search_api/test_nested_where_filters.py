@@ -131,8 +131,6 @@ class TestNestedWhereFilters:
     def test_search_api_filters(
         self, lhs, rhs, joining_operator, query, expected_where_clause,
     ):
-        # TODO - Is creating clients causing this to be slow? Test once session handler
-        # work merged
         test_nest = NestedWhereFilters(lhs, rhs, joining_operator, query)
         where_clause = str(test_nest)
         assert where_clause == expected_where_clause

@@ -19,7 +19,6 @@ def get_search(endpoint_name, entity_name, filters):
 
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
-    filter_handler.add_query_to_where_filters(query)
     filter_handler.apply_filters(query)
 
     log.debug("Python ICAT Query: %s", query.icat_query.query)

@@ -8,6 +8,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPIWhereFilter,
 )
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
@@ -86,6 +87,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -312,6 +316,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -535,6 +542,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -876,6 +886,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -1217,6 +1230,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
