@@ -13,7 +13,6 @@ from datagateway_api.src.datagateway_api.query_filter_factory import (
 )
 
 
-# TODO - Move outside of db/
 class TestDataGatewayAPIQueryFilterFactory:
     @pytest.mark.usefixtures("flask_test_app_db")
     def test_valid_distinct_filter(self):
