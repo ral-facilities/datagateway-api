@@ -59,7 +59,8 @@ class NestedWhereFilters:
         """
 
         log.debug(
-            "Query filter: %s, Search API query: %s",
+            "Setting SearchAPIQuery for NestedWhereFilters. Query filter: %s, Search"
+            " API query: %s",
             repr(query_filter),
             search_api_query,
         )
@@ -67,6 +68,10 @@ class NestedWhereFilters:
         if isinstance(query_filter, SearchAPIWhereFilter):
             query_filter.search_api_query = search_api_query
         elif isinstance(query_filter, NestedWhereFilters):
+            log.debug(
+                "Calling set_search_api_query(), with LHS and RHS from"
+                " NestedWhereFilters object (one per call)",
+            )
             NestedWhereFilters.set_search_api_query(
                 query_filter.lhs, search_api_query,
             )
@@ -74,6 +79,9 @@ class NestedWhereFilters:
                 query_filter.rhs, search_api_query,
             )
         elif isinstance(query_filter, list):
+            log.debug(
+                "List of WHERE filters found, calling set_search_api_query() for each",
+            )
             for where_filter in query_filter:
                 NestedWhereFilters.set_search_api_query(
                     where_filter, search_api_query,

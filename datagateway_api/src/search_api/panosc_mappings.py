@@ -1,7 +1,10 @@
 import json
+import logging
 from pathlib import Path
 
 from datagateway_api.src.common.exceptions import SearchAPIError
+
+log = logging.getLogger()
 
 
 class PaNOSCMappings:
@@ -11,6 +14,7 @@ class PaNOSCMappings:
         """Load contents of `search_api_mapping.json` into this class"""
         try:
             with open(path, encoding="utf-8") as target:
+                log.info("Loading PaNOSC to ICAT mappings from %s", path)
                 self.mappings = json.load(target)
         except IOError as e:
             raise SearchAPIError(e)

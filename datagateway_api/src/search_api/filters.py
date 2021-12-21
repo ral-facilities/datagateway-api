@@ -23,11 +23,22 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
     def __init__(self, field, value, operation, search_api_query=None):
         self.search_api_query = search_api_query
         super().__init__(field, value, operation)
+        log.info("SearchAPIWhereFilter created: %s", repr(self))
 
     def apply_filter(self, query):
+        log.info("Applying SearchAPIWhereFilter to: %s", type(query))
+        log.debug("Current WHERE filter data: %s", repr(self))
+
         panosc_field_names = self.field.split(".")
         icat_field_names = []
         panosc_mapping_name = query.panosc_entity_name
+
+        log.debug(
+            "Converting PaNOSC where input to ICAT using: %s (PaNOSC field names) and"
+            " %s (PaNOSC mapping name)",
+            panosc_field_names,
+            panosc_mapping_name,
+        )
 
         # Convert PaNOSC field names to ICAT field names
         for field_name in panosc_field_names:
@@ -35,6 +46,12 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
                 panosc_mapping_name, field_name,
             )
             icat_field_names.append(icat_field_name)
+
+        log.debug(
+            "PaNOSC to ICAT translation for where filter: %s (PaNOSC), %s (ICAT)",
+            panosc_field_names,
+            icat_field_names,
+        )
 
         # Once we have got ICAT field names we no longer need the PaNOSC versions so
         # overwriting them is all good. ICAT version needs to be in `self.field` due to
@@ -66,8 +83,14 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         :raises FilterError: If a valid mapping cannot be found
         """
 
+        log.info(
+            "Searching mapping file to find ICAT translation for %s",
+            f"{panosc_entity_name}.{field_name}",
+        )
+
         try:
             icat_mapping = mappings.mappings[panosc_entity_name][field_name]
+            log.debug("ICAT mapping/translation found: %s", icat_mapping)
         except KeyError as e:
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
 
@@ -93,6 +116,10 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
                 self.value = str(self.value)
                 icat_field_name = icat_mapping[1]
 
+        log.debug(
+            "Output of get_icat_mapping(): %s, %s", panosc_entity_name, icat_field_name,
+        )
+
         return (panosc_entity_name, icat_field_name)
 
     def __str__(self):
@@ -102,6 +129,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         """
 
         if isinstance(self.search_api_query, SearchAPIQuery):
+            log.info("__str__ for SearchAPIWhereFilter, SearchAPIQuery found")
             query = self.search_api_query
 
             self.apply_filter(query)
@@ -120,6 +148,10 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
             except IndexError:
                 raise FilterError("Condition could not be found in Python ICAT query")
         else:
+            log.info(
+                "__str__ for SearchAPIWhereFilter, no query found so repr() will be"
+                " returned",
+            )
             return repr(self)
 
     def __repr__(self):
