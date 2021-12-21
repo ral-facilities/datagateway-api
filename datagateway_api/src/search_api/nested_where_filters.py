@@ -48,7 +48,14 @@ class NestedWhereFilters:
     @staticmethod
     def set_search_api_query(query_filter, search_api_query):
         """
-        TODO
+        Using recursion, set the search API query to each of the WHERE filters contained
+        within the top-level `NestedWhereFilters` object
+
+        :param query_filter: Search API where filter or an instance of this class
+        :type query_filter: :class:`NestedWhereFilters` or an object inherited from
+            :class:`QueryFilter`
+        :param search_api_query: Search API query object
+        :type search_api_query: :class:`SearchAPIQuery`
         """
 
         log.debug(
