@@ -6,7 +6,7 @@
         "address": "fullReference",
         "city": "",
         "country": "",
-        "members": {"TODO": "TODO"}
+        "members": {"Member": "user.user.investigationUsers"}
     },
     "Dataset": {
         "base_icat_entity": "Dataset",
@@ -16,8 +16,8 @@
         "creationDate": "createTime",
         "size": "",
         "documents": {"Document": "investigation"},
-        "techniques": {"Technique": "TODO"},
-        "instrument": {"Instrument": "investigation.investigationInstruments.instrument"},
+        "techniques": {"Technique": "datasetTechniques.technique"},
+        "instrument": {"Instrument": "datasetInstruments.instrument"},
         "files": {"File": "datafiles"},
         "parameters": {"Parameter": "parameters"},
         "samples": {"Sample": "sample"}
@@ -52,7 +52,7 @@
         "pid": "id",
         "name": "name",
         "facility": "facility.name",
-        "datasets": {"Dataset": "investigationInstruments.investigation.datasets"}
+        "datasets": {"Dataset": "datasetInstruments.dataset"}
     },
     "Member": {
         "base_icat_entity": "InvestigationUser",
@@ -60,7 +60,7 @@
         "role": "role",
         "document": {"Document": "investigation"},
         "person": {"Person": "user"},
-        "affiliation": {"Affiliation": "TODO"}
+        "affiliation": {"Affiliation": "user.dataPublicationUsers.affiliations"}
     },
     "Parameter": {
         "base_icat_entity": "InvestigationParameter",
@@ -68,7 +68,7 @@
         "name": "name",
         "value": ["numericValue", "stringValue", "dateTimeValue"],
         "unit": "type.units",
-        "dataset": {"Dataset": "TODO"},
+        "dataset": {"Dataset": "investigation.investigationInstruments.instrument.datasetInstruments.dataset"},
         "document": {"Document": "investigation"}
     },
     "Person": {
@@ -92,6 +92,6 @@
         "base_icat_entity": "Technique",
         "pid": "pid",
         "name": "name",
-        "datasets": {"Dataset": "TODO"}
+        "datasets": {"Dataset": "datasetTechniques.dataset"}
     }
 }
