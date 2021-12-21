@@ -14,12 +14,11 @@ class TestSearchAPILimitFilter:
             pytest.param(9999, id="high boundary"),
         ],
     )
-    def test_valid_limit_value(self, limit_value):
+    def test_valid_limit_value(self, limit_value, search_api_query_document):
         test_filter = SearchAPILimitFilter(limit_value)
-        test_query = SearchAPIQuery("Document")
-        test_filter.apply_filter(test_query)
+        test_filter.apply_filter(search_api_query_document)
 
-        assert test_query.icat_query.query.limit == (0, limit_value)
+        assert search_api_query_document.icat_query.query.limit == (0, limit_value)
 
     @pytest.mark.parametrize(
         "limit_value",

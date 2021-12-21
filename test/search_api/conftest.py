@@ -3,6 +3,7 @@ from icat.query import Query
 import pytest
 
 from datagateway_api.src.common.config import Config
+from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 @pytest.fixture(scope="package")
@@ -18,5 +19,15 @@ def icat_client():
 
 
 @pytest.fixture()
-def icat_query(icat_client):
-    return Query(icat_client, "Investigation")
+def search_api_query_dataset():
+    return SearchAPIQuery("Dataset")
+
+
+@pytest.fixture()
+def search_api_query_document():
+    return SearchAPIQuery("Document")
+
+
+@pytest.fixture()
+def search_api_query_instrument():
+    return SearchAPIQuery("Instrument")

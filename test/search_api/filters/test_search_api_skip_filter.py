@@ -11,15 +11,11 @@ class TestSearchAPISkipFilter:
     @pytest.mark.parametrize(
         "skip_value", [pytest.param(10, id="typical"), pytest.param(0, id="boundary")],
     )
-    # TODO - needs to be changed to `SearchAPIQuery`
-    def test_valid_skip_value(self, icat_query, skip_value):
+    def test_valid_skip_value(self, search_api_query_document, skip_value):
         test_filter = SearchAPISkipFilter(skip_value)
-        # TODO - probably could make this a fixture? Might need different ones for each
-        # entity name entrypoint because you can't have args that aren't other fixtures
-        test_query = SearchAPIQuery("Document")
-        test_filter.apply_filter(test_query)
+        test_filter.apply_filter(search_api_query_document)
 
-        assert test_query.icat_query.query.limit == (
+        assert search_api_query_document.icat_query.query.limit == (
             skip_value,
             get_icat_properties(
                 Config.config.search_api.icat_url,
