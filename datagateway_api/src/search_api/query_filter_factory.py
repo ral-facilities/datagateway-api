@@ -1,3 +1,4 @@
+import importlib
 import logging
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
@@ -123,20 +124,24 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             )
             where_filters.append(nested)
         elif list(where_filter_input.keys())[0] == "text":
-            # TODO - we might want to move this to the data
-            # definitions at a later point
-            text_operator_fields = {
-                "Dataset": ["title"],
-                "Document": ["title", "summary"],
-                "File": ["name"],
-                "Instrument": ["name", "facility"],
-                "Sample": ["name", "description"],
-                "Technique": ["name"],
-            }
+            try:
+                search_api_models = importlib.import_module(
+                    "datagateway_api.src.search_api.models",
+                )
+                entity_class = getattr(search_api_models, entity_name)
+            except AttributeError as e:
+                raise SearchAPIError(
+                    f"No text operator fields have been defined for {entity_name}"
+                    f", {e.args}",
+                )
 
             try:
                 or_conditional_filters = []
-                field_names = text_operator_fields[entity_name]
+                field_names = entity_class._text_operator_fields
+                if not field_names:
+                    # No text operator fields present, raise KeyError to be caught in
+                    # this try/except block
+                    raise KeyError()
                 for field_name in field_names:
                     or_conditional_filters.append(
                         {field_name: {"like": where_filter_input["text"]}},
