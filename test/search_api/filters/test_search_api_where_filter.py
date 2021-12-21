@@ -60,14 +60,11 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 SearchAPIWhereFilter(
-                    "instrument.datasets.parameters.unit", "Dataset parameter", "eq",
+                    "documents.parameters.document.pid", "Test DOI", "eq",
                 ),
                 "Dataset",
-                "SELECT o FROM Dataset o JOIN o.investigation AS i JOIN"
-                " i.investigationInstruments AS s1 JOIN s1.instrument AS s2 JOIN"
-                " s2.investigationInstruments AS s3 JOIN s3.investigation AS s4 JOIN"
-                " s4.datasets AS s5 JOIN s5.parameters AS s6 JOIN s6.type AS s7 WHERE"
-                " s7.units = 'Dataset parameter'",
+                "SELECT o FROM Dataset o JOIN o.investigation AS i JOIN i.parameters AS"
+                " s1 JOIN s1.investigation AS s2 WHERE s2.doi = 'Test DOI'",
                 id="WHERE filter on ICAT related entity with three PaNOSC hops",
             ),
             pytest.param(
@@ -112,8 +109,6 @@ class TestSearchAPIWhereFilter:
         test_query = SearchAPIQuery(entity_name)
 
         filter_handler.apply_filters(test_query)
-
-        print(f"JPQL Query: {str(test_query.icat_query.query)}")
 
         assert expected_query == str(test_query.icat_query.query)
 
