@@ -3,6 +3,7 @@ venv/
 *.pyc
 logs.log*
 config.json*
+search_api_mapping.json*
 .vscode/
 .nox/
 .python-version
