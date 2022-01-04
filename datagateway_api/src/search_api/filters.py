@@ -178,8 +178,33 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
-    def __init__(self, included_filters):
+    def __init__(self, included_filters, panosc_entity_name):
+        self.included_filters = included_filters
+        self.panosc_entity_name = panosc_entity_name
         super().__init__(included_filters)
 
     def apply_filter(self, query):
+        icat_field_names = []
+
+        for panosc_field_name in self.included_filters:
+            # Need an empty list at start of each iteration to clear field names from
+            # previous iterations
+            split_icat_field_name = []
+
+            panosc_entity_name = self.panosc_entity_name
+            split_panosc_fields = panosc_field_name.split(".")
+
+            for split_field in split_panosc_fields:
+                panosc_entity_name, icat_field_name = mappings.get_icat_mapping(
+                    panosc_entity_name, split_field,
+                )
+                split_icat_field_name.append(icat_field_name)
+
+            icat_field_names.append(".".join(split_icat_field_name))
+
+        # All PaNOSC field names translated to ICAT, so we can overwrite the PaNOSC
+        # versions with the ICAT mappings so they can be used to apply the filter via
+        # `super().apply_filter()`
+        self.included_filters = icat_field_names
+
         return super().apply_filter(query.icat_query.query)
