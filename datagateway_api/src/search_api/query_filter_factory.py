@@ -9,6 +9,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
+import datagateway_api.src.search_api.models as search_api_models
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
@@ -133,9 +134,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         elif list(where_filter_input.keys())[0] == "text":
             log.debug("Text operator found within JSON where object")
             try:
-                search_api_models = importlib.import_module(
-                    "datagateway_api.src.search_api.models",
-                )
                 entity_class = getattr(search_api_models, entity_name)
             except AttributeError as e:
                 raise SearchAPIError(

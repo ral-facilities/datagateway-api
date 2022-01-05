@@ -120,7 +120,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
             "Output of get_icat_mapping(): %s, %s", panosc_entity_name, icat_field_name,
         )
 
-        return (panosc_entity_name, icat_field_name)
+        return panosc_entity_name, icat_field_name
 
     def __str__(self):
         """
@@ -130,18 +130,21 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
         if isinstance(self.search_api_query, SearchAPIQuery):
             log.info("__str__ for SearchAPIWhereFilter, SearchAPIQuery found")
-            query = self.search_api_query
 
-            self.apply_filter(query)
+            self.apply_filter(self.search_api_query)
             # Replicating the condition in Python ICAT format so it can be searched on
             # the query and return as string representation
             conds_dict = self.create_filter()
-            a, jpql_func = query.icat_query.query._split_db_functs(self.field)
-            conds_dict[self.field] = query.icat_query.query._cond_value(
+            a, jpql_func = self.search_api_query.icat_query.query._split_db_functs(
+                self.field,
+            )
+            conds_dict[self.field] = self.search_api_query.icat_query.query._cond_value(
                 conds_dict[self.field], jpql_func,
             )
 
-            str_conds = query.icat_query.query.search_conditions(self.field, conds_dict)
+            str_conds = self.search_api_query.icat_query.query.search_conditions(
+                self.field, conds_dict,
+            )
 
             try:
                 return str_conds[0]
