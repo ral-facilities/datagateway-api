@@ -141,21 +141,22 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     f", {e.args}",
                 )
 
-            try:
-                or_conditional_filters = []
-                field_names = entity_class._text_operator_fields
-                log.debug(
-                    "Text operators found for PaNOSC %s: %s", entity_name, field_names,
+            or_conditional_filters = []
+            field_names = entity_class._text_operator_fields
+            log.debug(
+                "Text operators found for PaNOSC %s: %s", entity_name, field_names,
+            )
+            if not field_names:
+                # No text operator fields present, simply log and move on, we should
+                # ignore text operator queries on entities where `_text_operator_fields`
+                # is empty (meaning they are not present in the origina PaNOSC data
+                # model)
+                log.info(
+                    "No text operator fields found for PaNOSC entity %s, will"
+                    " ignore",
+                    entity_name,
                 )
-                if not field_names:
-                    # No text operator fields present, raise KeyError to be caught in
-                    # this try/except block
-                    log.warning(
-                        "No text operator fields found for PaNOSC entity %s, will"
-                        " ignore",
-                        entity_name,
-                    )
-                    raise KeyError()
+            else:
                 for field_name in field_names:
                     or_conditional_filters.append(
                         {field_name: {"like": where_filter_input["text"]}},
@@ -169,11 +170,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         where_filter, entity_name,
                     ),
                 )
-            except KeyError:
-                # Do not raise FilterError nor attempt to create filters. Simply
-                # ignore text operator queries on fields that are not part of the
-                # text_operator_fields dict.
-                pass
         else:
             log.info("Basic where filter found, extracting field, value and operation")
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(

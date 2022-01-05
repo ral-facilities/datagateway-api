@@ -12,7 +12,7 @@ from datagateway_api.src.common.config import Config
 # Only attempt to create a DataGateway API backend if the datagateway_api object
 # is present in the config. This ensures that the API does not error on startup
 # due to an AttributeError exception being thrown if the object is missing.
-if Config.config.datagateway_api is not None:
+if Config.config.datagateway_api:
     from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.database.helpers import db  # noqa: I202
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
@@ -27,13 +27,15 @@ from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoi
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
-from datagateway_api.src.resources.search_api_endpoints import (
-    get_files_endpoint,
-    get_number_count_endpoint,
-    get_number_count_files_endpoint,
-    get_search_endpoint,
-    get_single_endpoint,
-)
+
+if Config.config.search_api:
+    from datagateway_api.src.resources.search_api_endpoints import (
+        get_files_endpoint,
+        get_number_count_endpoint,
+        get_number_count_files_endpoint,
+        get_search_endpoint,
+        get_single_endpoint,
+    )
 from datagateway_api.src.resources.table_endpoints.table_endpoints import (
     count_instrument_facility_cycles_endpoint,
     count_instrument_investigation_endpoint,
