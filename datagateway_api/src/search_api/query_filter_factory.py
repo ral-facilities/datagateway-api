@@ -1,4 +1,3 @@
-import importlib
 import logging
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory

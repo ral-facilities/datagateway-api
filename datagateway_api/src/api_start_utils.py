@@ -36,7 +36,7 @@ if Config.config.search_api:
         get_search_endpoint,
         get_single_endpoint,
     )
-from datagateway_api.src.resources.table_endpoints.table_endpoints import (
+from datagateway_api.src.resources.table_endpoints.table_endpoints import (  # noqa: I202, B950
     count_instrument_facility_cycles_endpoint,
     count_instrument_investigation_endpoint,
     instrument_facility_cycles_endpoint,
