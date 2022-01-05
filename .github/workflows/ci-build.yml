@@ -76,6 +76,13 @@ jobs:
       run: pip install nox==2020.8.22
     - name: Install Poetry
       run: pip install poetry==1.1.9
+
+    # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+    - name: Uninstall setuptools
+      run: poetry run pip uninstall -y setuptools
+    - name: Install older setuptools
+      run: poetry run pip install 'setuptools<58.0.0'
+
     - name: Install dependencies
       run: poetry install
 
@@ -207,6 +214,13 @@ jobs:
         run: cp datagateway_api/config.json.example datagateway_api/config.json
       - name: Install Poetry
         run: pip install poetry==1.1.9
+
+      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
+
       - name: Install dependencies
         run: poetry install
 
@@ -251,6 +265,13 @@ jobs:
 
       - name: Create config.json
         run: cp datagateway_api/config.json.example datagateway_api/config.json
+
+      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
+
       - name: Install dependencies
         run: poetry install
 
