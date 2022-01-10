@@ -15,10 +15,6 @@ from datagateway_api.src.search_api.query import SearchAPIQuery
 log = logging.getLogger()
 
 
-# TODO - Implement each of these filters for Search API, inheriting from the Python ICAT
-# versions
-
-
 class SearchAPIWhereFilter(PythonICATWhereFilter):
     def __init__(self, field, value, operation, search_api_query=None):
         self.search_api_query = search_api_query

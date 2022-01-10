@@ -45,7 +45,6 @@ class PaNOSCMappings:
             icat_mapping = mappings.mappings[panosc_entity_name][field_name]
             log.debug("ICAT mapping/translation found: %s", icat_mapping)
         except KeyError as e:
-            # TODO - do we want to change the exception?
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
 
         if isinstance(icat_mapping, str):
