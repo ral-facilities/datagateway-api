@@ -1,7 +1,9 @@
 import json
 import logging
 from pathlib import Path
+import sys
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 
 log = logging.getLogger()
@@ -17,7 +19,12 @@ class PaNOSCMappings:
                 log.info("Loading PaNOSC to ICAT mappings from %s", path)
                 self.mappings = json.load(target)
         except IOError as e:
-            raise SearchAPIError(e)
+            # The API shouldn't exit if there's an exception (e.g. file not found) if
+            # the user is only using DataGateway API and not the search API
+            if Config.config.search_api:
+                sys.exit(
+                    f"An error occurred while trying to load the PaNOSC mappings: {e}",
+                )
 
     def get_icat_mapping(self, panosc_entity_name, field_name):
         """
@@ -60,7 +67,7 @@ class PaNOSCMappings:
             # delegated to other code in this repo so the entire list is returned here
             icat_field_name = icat_mapping
 
-        return (panosc_entity_name, icat_field_name)
+        return panosc_entity_name, icat_field_name
 
     def get_panosc_related_entity_name(
         self, panosc_entity_name, panosc_related_field_name,
