@@ -14,7 +14,7 @@ from datagateway_api.src.search_api.helpers import (
 log = logging.getLogger()
 
 
-def get_search_endpoint(endpoint_name, entity_name):
+def get_search_endpoint(entity_name):
     """
     TODO - Add docstring
     """
@@ -23,7 +23,7 @@ def get_search_endpoint(endpoint_name, entity_name):
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_search(endpoint_name, entity_name, filters), 200
+            return get_search(entity_name, filters), 200
 
         # TODO - Add `get.__doc__`
 
@@ -31,7 +31,7 @@ def get_search_endpoint(endpoint_name, entity_name):
     return Endpoint
 
 
-def get_single_endpoint(endpoint_name, entity_name):
+def get_single_endpoint(entity_name):
     """
     TODO - Add docstring
     """
@@ -40,7 +40,7 @@ def get_single_endpoint(endpoint_name, entity_name):
         def get(self, pid):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_with_id(entity_name, pid), 200
+            return get_with_pid(entity_name, pid, filters), 200
 
         # TODO - Add `get.__doc__`
 
@@ -48,7 +48,7 @@ def get_single_endpoint(endpoint_name, entity_name):
     return EndpointWithID
 
 
-def get_number_count_endpoint(endpoint_name, entity_name):
+def get_number_count_endpoint(entity_name):
     """
     TODO - Add docstring
     """
@@ -58,7 +58,7 @@ def get_number_count_endpoint(endpoint_name, entity_name):
             # Only WHERE included on count endpoints
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_count(entity_name), 200
+            return get_count(entity_name, filters), 200
 
         # TODO - Add `get.__doc__`
 
@@ -66,7 +66,7 @@ def get_number_count_endpoint(endpoint_name, entity_name):
     return CountEndpoint
 
 
-def get_files_endpoint(endpoint_name, entity_name):
+def get_files_endpoint(entity_name):
     """
     TODO - Add docstring
     """
@@ -75,7 +75,7 @@ def get_files_endpoint(endpoint_name, entity_name):
         def get(self, pid):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_files(entity_name), 200
+            return get_files(entity_name, pid, filters), 200
 
         # TODO - Add `get.__doc__`
 
@@ -83,7 +83,7 @@ def get_files_endpoint(endpoint_name, entity_name):
     return FilesEndpoint
 
 
-def get_number_count_files_endpoint(endpoint_name, entity_name):
+def get_number_count_files_endpoint(entity_name):
     """
     TODO - Add docstring
     """
@@ -93,7 +93,7 @@ def get_number_count_files_endpoint(endpoint_name, entity_name):
             # Only WHERE included on count endpoints
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_files_count(entity_name, pid)
+            return get_files_count(entity_name, filters, pid)
 
         # TODO - Add `get.__doc__`
 

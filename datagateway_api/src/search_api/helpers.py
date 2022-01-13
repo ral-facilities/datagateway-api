@@ -12,7 +12,7 @@ log = logging.getLogger()
 
 
 @client_manager
-def get_search(endpoint_name, entity_name, filters):
+def get_search(entity_name, filters):
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
     query = SearchAPIQuery(entity_name)
@@ -28,20 +28,20 @@ def get_search(endpoint_name, entity_name, filters):
 
 
 @client_manager
-def get_with_id(endpoint_name, entity_name, id_, filters):
+def get_with_pid(entity_name, pid, filters):
     pass
 
 
 @client_manager
-def get_count(endpoint_name, entity_name, filters):
+def get_count(entity_name, filters):
     pass
 
 
 @client_manager
-def get_files(endpoint_name, entity_name, filters):
+def get_files(entity_name, pid, filters):
     pass
 
 
 @client_manager
-def get_files_count(endpoint_name, entity_name, id_, filters):
+def get_files_count(entity_name, filters, pid):
     pass
