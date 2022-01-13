@@ -8,7 +8,7 @@ from datagateway_api.src.search_api.helpers import (
     get_files,
     get_files_count,
     get_search,
-    get_with_id,
+    get_with_pid,
 )
 
 log = logging.getLogger()

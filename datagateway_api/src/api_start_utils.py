@@ -244,7 +244,7 @@ def create_api_endpoints(flask_app, api, spec):
             get_single_endpoint_resource = get_single_endpoint(entity_name)
             api.add_resource(
                 get_single_endpoint_resource,
-                f"{search_api_extension}/{endpoint_name}/<int:pid>",
+                f"{search_api_extension}/{endpoint_name}/<string:pid>",
                 endpoint=f"search_api_get_single_{endpoint_name}",
             )
             spec.path(resource=get_single_endpoint_resource, api=api)
@@ -260,7 +260,7 @@ def create_api_endpoints(flask_app, api, spec):
         get_files_endpoint_resource = get_files_endpoint("File")
         api.add_resource(
             get_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<int:pid>/files",
+            f"{search_api_extension}/datasets/<string:pid>/files",
             endpoint="search_api_get_dataset_files",
         )
         spec.path(resource=get_files_endpoint_resource, api=api)
@@ -270,7 +270,7 @@ def create_api_endpoints(flask_app, api, spec):
         )
         api.add_resource(
             get_number_count_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<int:pid>/files/count",
+            f"{search_api_extension}/datasets/<string:pid>/files/count",
             endpoint="search_api_count_dataset_files",
         )
         spec.path(resource=get_number_count_files_endpoint_resource, api=api)
