@@ -1,8 +1,14 @@
 import json
-from unittest.mock import mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch
 
+from flask import Flask
 import pytest
 
+from datagateway_api.src.api_start_utils import (
+    create_api_endpoints,
+    create_app_infrastructure,
+)
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
@@ -132,3 +138,14 @@ def test_panosc_mappings(test_search_api_mappings_data):
         "builtins.open", mock_open(read_data=json.dumps(test_search_api_mappings_data)),
     ):
         return PaNOSCMappings("test/path")
+
+
+@pytest.fixture(scope="package")
+def flask_test_app_search_api(flask_test_app):
+    search_api_app = Flask(__name__)
+    search_api_app.config["TESTING"] = True
+
+    api, spec = create_app_infrastructure(search_api_app)
+    create_api_endpoints(search_api_app, api, spec)
+
+    yield search_api_app.test_client()
