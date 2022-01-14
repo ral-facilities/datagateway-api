@@ -73,7 +73,7 @@ def get_with_pid(entity_name, pid, filters):
     log.info("Getting %s from ID %s", entity_name, pid)
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
-    filters.append(SearchAPIWhereFilter("pid", "eq", pid))
+    filters.append(SearchAPIWhereFilter("pid", pid, "eq"))
 
     query = SearchAPIQuery(entity_name)
 
