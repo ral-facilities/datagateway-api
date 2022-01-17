@@ -572,3 +572,19 @@ class TestModels:
         sample_entity = models.Sample.from_icat(icat_data, ["datasets"])
 
         assert sample_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_technique_entity_without_data_for_related_entities(self):
+        technique_entity = models.Technique.from_icat(TECHNIQUE_ICAT_DATA, [])
+
+        assert technique_entity.dict(by_alias=True) == TECHNIQUE_PANOSC_DATA
+
+    def test_from_icat_technique_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = TECHNIQUE_PANOSC_DATA.copy()
+        expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
+
+        icat_data = TECHNIQUE_ICAT_DATA.copy()
+        icat_data["datasetTechniques"] = [{"dataset": DATASET_ICAT_DATA}]
+
+        technique_entity = models.Technique.from_icat(icat_data, ["datasets"])
+
+        assert technique_entity.dict(by_alias=True) == expected_entity_data
