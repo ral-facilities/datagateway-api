@@ -8,7 +8,9 @@ from pydantic import (
     BaseModel,
     Field,
     root_validator,
+    ValidationError,
 )
+from pydantic.error_wrappers import ErrorWrapper
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
@@ -36,7 +38,7 @@ def _get_icat_field_value(icat_field_name, icat_data):
 class PaNOSCAttribute(ABC, BaseModel):
     @classmethod
     @abc.abstractmethod
-    def from_icat(cls, icat_data):  # noqa: B902, N805
+    def from_icat(cls, icat_data, required_related_fields):  # noqa: B902, N805
         model_fields = cls.__fields__
 
         model_data = {}
@@ -77,7 +79,10 @@ class PaNOSCAttribute(ABC, BaseModel):
 
                 # Get the class of the referenced model
                 panosc_model_attr = getattr(sys.modules[__name__], panosc_entity_name)
-                field_value = [panosc_model_attr.from_icat(d) for d in data]
+                field_value = [
+                    panosc_model_attr.from_icat(d, required_related_fields)
+                    for d in data
+                ]
 
             field_outer_type = cls.__fields__[field].outer_type_
             if (
@@ -90,12 +95,29 @@ class PaNOSCAttribute(ABC, BaseModel):
 
             model_data[field_alias] = field_value
 
+        for required_related_field in required_related_fields:
+            if (
+                required_related_field in model_fields
+                and required_related_field
+                in cls._related_fields_with_min_cardinality_one
+                and required_related_field not in model_data
+            ):
+                # If we are here, it means that a related entity, which has a minimum
+                # cardinality of one, has been specified to be included as part of the entity
+                # but the relevant ICAT data needed for its creation cannot be found in the
+                # provided ICAT response. Because of this, a ValidationError is raised.
+                error_wrapper = ErrorWrapper(
+                    TypeError("field required"), loc=required_related_field,
+                )
+                raise ValidationError(errors=[error_wrapper], model=cls)
+
         return cls(**model_data)
 
 
 class Affiliation(PaNOSCAttribute):
     """Information about which facility a member is located at"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["members"]
     _text_operator_fields: ClassVar[List[str]] = []
 
     name: Optional[str] = None
@@ -107,8 +129,8 @@ class Affiliation(PaNOSCAttribute):
     members: Optional[List["Member"]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Affiliation, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Affiliation, cls).from_icat(icat_data, required_related_fields)
 
 
 class Dataset(PaNOSCAttribute):
@@ -117,6 +139,10 @@ class Dataset(PaNOSCAttribute):
     and Technique
     """
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = [
+        "documents",
+        "techniques",
+    ]
     _text_operator_fields: ClassVar[List[str]] = ["title"]
 
     pid: str
@@ -133,8 +159,8 @@ class Dataset(PaNOSCAttribute):
     samples: Optional[List["Sample"]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Dataset, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Dataset, cls).from_icat(icat_data, required_related_fields)
 
 
 class Document(PaNOSCAttribute):
@@ -142,6 +168,7 @@ class Document(PaNOSCAttribute):
     Proposal which includes the dataset or published paper which references the dataset
     """
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["datasets"]
     _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
     pid: str
@@ -161,13 +188,14 @@ class Document(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Document, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Document, cls).from_icat(icat_data, required_related_fields)
 
 
 class File(PaNOSCAttribute):
     """Name of file and optionally location"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["dataset"]
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
     id_: str = Field(alias="id")
@@ -178,13 +206,14 @@ class File(PaNOSCAttribute):
     dataset: Dataset = None
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(File, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(File, cls).from_icat(icat_data, required_related_fields)
 
 
 class Instrument(PaNOSCAttribute):
     """Beam line where experiment took place"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
 
     pid: str
@@ -194,13 +223,14 @@ class Instrument(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Instrument, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Instrument, cls).from_icat(icat_data, required_related_fields)
 
 
 class Member(PaNOSCAttribute):
     """Proposal team member or paper co-author"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["document"]
     _text_operator_fields: ClassVar[List[str]] = []
 
     id_: str = Field(alias="id")
@@ -211,8 +241,8 @@ class Member(PaNOSCAttribute):
     affiliation: Optional[Affiliation] = None
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Member, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Member, cls).from_icat(icat_data, required_related_fields)
 
 
 class Parameter(PaNOSCAttribute):
@@ -221,6 +251,7 @@ class Parameter(PaNOSCAttribute):
     Note: a parameter is either related to a dataset or a document, but not both.
     """
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
     id_: str = Field(alias="id")
@@ -243,13 +274,14 @@ class Parameter(PaNOSCAttribute):
         return values
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Parameter, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Parameter, cls).from_icat(icat_data, required_related_fields)
 
 
 class Person(PaNOSCAttribute):
     """Human who carried out experiment"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
     id_: str = Field(alias="id")
@@ -262,13 +294,14 @@ class Person(PaNOSCAttribute):
     members: Optional[List[Member]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Person, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Person, cls).from_icat(icat_data, required_related_fields)
 
 
 class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
 
     name: str
@@ -278,13 +311,14 @@ class Sample(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Sample, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Sample, cls).from_icat(icat_data, required_related_fields)
 
 
 class Technique(PaNOSCAttribute):
     """Common name of scientific method used"""
 
+    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
     pid: str
@@ -293,8 +327,8 @@ class Technique(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @classmethod
-    def from_icat(cls, icat_query_data):
-        return super(Technique, cls).from_icat(icat_query_data)
+    def from_icat(cls, icat_data, required_related_fields):
+        return super(Technique, cls).from_icat(icat_data, required_related_fields)
 
 
 # The below models reference other models that may not be defined during their
