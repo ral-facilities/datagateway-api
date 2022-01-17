@@ -15,11 +15,22 @@ from datagateway_api.src.search_api.panosc_mappings import mappings
 
 def _get_icat_field_value(icat_field_name, icat_data):
     icat_field_name = icat_field_name.split(".")
-    value = icat_data
-    for f in icat_field_name:
-        value = value[f]
+    for field_name in icat_field_name:
+        if isinstance(icat_data, list):
+            values = []
+            for data in icat_data:
+                value = _get_icat_field_value(field_name, data)
+                if isinstance(value, list):
+                    values.extend(value)
+                else:
+                    values.append(value)
 
-    return value
+            icat_data = values
+
+        if isinstance(icat_data, dict):
+            icat_data = icat_data[field_name]
+
+    return icat_data
 
 
 class PaNOSCAttribute(ABC, BaseModel):
