@@ -445,3 +445,42 @@ class TestModels:
         instrument_entity = models.Instrument.from_icat(icat_data, ["datasets"])
 
         assert instrument_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_member_entity_without_data_for_related_entities(self):
+        member_entity = models.Member.from_icat(INVESTIGATION_USER_ICAT_DATA, [])
+
+        assert member_entity.dict(by_alias=True) == MEMBER_PANOSC_DATA
+
+    def test_from_icat_member_entity_with_data_for_mandatory_related_entities(self):
+        expected_entity_data = MEMBER_PANOSC_DATA.copy()
+        expected_entity_data["document"] = DOCUMENT_PANOSC_DATA
+
+        icat_data = INVESTIGATION_USER_ICAT_DATA.copy()
+        icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
+
+        member_entity = models.Member.from_icat(icat_data, ["document"])
+
+        assert member_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_member_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = MEMBER_PANOSC_DATA.copy()
+        expected_entity_data["document"] = DOCUMENT_PANOSC_DATA
+        expected_entity_data["person"] = PERSON_PANOSC_DATA
+        expected_entity_data["affiliation"] = AFFILIATION_PANOSC_DATA
+
+        icat_data = INVESTIGATION_USER_ICAT_DATA.copy()
+        icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["user"] = USER_ICAT_DATA.copy()
+        icat_data["user"]["dataPublicationUsers"] = [
+            {"affiliations": [AFFILIATION_ICAT_DATA]},
+        ]
+
+        member_entity = models.Member.from_icat(
+            icat_data, ["document", "person", "affiliation"],
+        )
+
+        assert member_entity.dict(by_alias=True) == expected_entity_data
