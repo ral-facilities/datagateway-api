@@ -38,9 +38,21 @@ class PaNOSCAttribute(ABC, BaseModel):
             panosc_entity_name, icat_field_name = mappings.get_icat_mapping(
                 cls.__name__, field_alias,
             )
-            try:
-                field_value = _get_icat_field_value(icat_field_name, icat_data)
-            except KeyError:
+
+            if not isinstance(icat_field_name, list):
+                icat_field_name = [icat_field_name]
+
+            field_value = None
+            for field_name in icat_field_name:
+                try:
+                    value = _get_icat_field_value(field_name, icat_data)
+                    if value:
+                        field_value = value
+                        break
+                except KeyError:
+                    continue
+
+            if not field_value:
                 continue
 
             if panosc_entity_name != cls.__name__:
@@ -48,7 +60,7 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # have to get hold of its class definition and call its `from_icat` method
                 # to create an instance of itself with the ICAT data provided. Doing this
                 # allows for recursion.
-                data = icat_data[icat_field_name]
+                data = field_value
                 if not isinstance(data, list):
                     data = [data]
 
@@ -56,9 +68,14 @@ class PaNOSCAttribute(ABC, BaseModel):
                 panosc_model_attr = getattr(sys.modules[__name__], panosc_entity_name)
                 field_value = [panosc_model_attr.from_icat(d) for d in data]
 
-                field_type = cls.__fields__[field].outer_type_._name
-                if field_type != "List":
-                    field_value = field_value[0]
+            field_outer_type = cls.__fields__[field].outer_type_
+            if (
+                not hasattr(field_outer_type, "_name")
+                or field_outer_type._name != "List"
+            ) and isinstance(field_value, list):
+                # If the field does not hold list of values but `field_value`
+                # is a list, then just get its first element
+                field_value = field_value[0]
 
             model_data[field_alias] = field_value
 
