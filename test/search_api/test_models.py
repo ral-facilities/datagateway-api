@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-import json
 
 import datagateway_api.src.search_api.models as models
 
@@ -282,25 +281,20 @@ TECHNIQUE_PANOSC_DATA = {
 
 
 class TestModels:
-    def test_from_icat_person_model(self):
-        expected_model_data = {
-            "id": "1",
-            "fullName": "Test fullname",
-            "orcid": "1111",
-            "researcherId": None,
-            "firstName": "Test given name",
-            "lastName": "Test family name",
-            "members": None,
-        }
-        # TODO: `id` is returned as `int` from ICAT whereas Person model expects `str`
-        icat_data = {
-            "id": "1",
-            "fullName": "Test fullname",
-            "orcidId": "1111",
-            "givenName": "Test given name",
-            "familyName": "Test family name",
+    def test_from_icat_affiliation_entity_without_data_for_related_entities(self):
+        affiliation_entity = models.Affiliation.from_icat(AFFILIATION_ICAT_DATA, [])
+
+        assert affiliation_entity.dict(by_alias=True) == AFFILIATION_PANOSC_DATA
+
+    def test_from_icat_affiliation_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = AFFILIATION_PANOSC_DATA.copy()
+        expected_entity_data["members"] = [MEMBER_PANOSC_DATA]
+
+        icat_data = AFFILIATION_ICAT_DATA.copy()
+        icat_data["user"] = {
+            "user": {"investigationUsers": [INVESTIGATION_USER_ICAT_DATA]},
         }
 
-        person_model = models.Person.from_icat(icat_data)
+        affiliation_entity = models.Affiliation.from_icat(icat_data, ["members"])
 
-        assert person_model.json(by_alias=True) == json.dumps(expected_model_data)
+        assert affiliation_entity.dict(by_alias=True) == expected_entity_data
