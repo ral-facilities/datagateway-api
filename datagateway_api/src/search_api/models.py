@@ -99,7 +99,7 @@ class Dataset(PaNOSCAttribute):
 
     documents: List["Document"]
     techniques: List["Technique"]
-    instrument: Optional["Instrument"]
+    instrument: Optional["Instrument"] = None
     files: Optional[List["File"]]
     parameters: Optional[List["Parameter"]]
     samples: Optional[List["Sample"]]
@@ -147,7 +147,7 @@ class File(PaNOSCAttribute):
     path: Optional[str] = None
     size: Optional[int] = None
 
-    dataset: Dataset
+    dataset: Dataset = None
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -178,9 +178,9 @@ class Member(PaNOSCAttribute):
     id_: str = Field(alias="id")
     role: Optional[str] = Field(None, alias="role")
 
-    document: Document
-    person: Optional["Person"]
-    affiliation: Optional[Affiliation]
+    document: Document = None
+    person: Optional["Person"] = None
+    affiliation: Optional[Affiliation] = None
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -200,8 +200,8 @@ class Parameter(PaNOSCAttribute):
     value: Union[float, int, str]
     unit: Optional[str] = None
 
-    dataset: Optional[Dataset]
-    document: Optional[Document]
+    dataset: Optional[Dataset] = None
+    document: Optional[Document] = None
 
     @root_validator(skip_on_failure=True)
     def validate_dataset_and_document(cls, values):  # noqa: B902, N805
