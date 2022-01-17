@@ -76,7 +76,7 @@ class Affiliation(PaNOSCAttribute):
     city: Optional[str] = None
     country: Optional[str] = None
 
-    members: Optional[List["Member"]]
+    members: Optional[List["Member"]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -97,12 +97,12 @@ class Dataset(PaNOSCAttribute):
     creation_date: datetime = Field(alias="creationDate")
     size: Optional[int] = None
 
-    documents: List["Document"]
-    techniques: List["Technique"]
+    documents: List["Document"] = []
+    techniques: List["Technique"] = []
     instrument: Optional["Instrument"] = None
-    files: Optional[List["File"]]
-    parameters: Optional[List["Parameter"]]
-    samples: Optional[List["Sample"]]
+    files: Optional[List["File"]] = []
+    parameters: Optional[List["Parameter"]] = []
+    samples: Optional[List["Sample"]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -126,11 +126,11 @@ class Document(PaNOSCAttribute):
     end_date: Optional[datetime] = Field(None, alias="endDate")
     release_date: Optional[datetime] = Field(None, alias="releaseDate")
     license_: Optional[str] = Field(None, alias="license")
-    keywords: Optional[List[str]]
+    keywords: Optional[List[str]] = []
 
-    datasets: List[Dataset]
-    members: Optional[List["Member"]]
-    parameters: Optional[List["Parameter"]]
+    datasets: List[Dataset] = []
+    members: Optional[List["Member"]] = []
+    parameters: Optional[List["Parameter"]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -163,7 +163,7 @@ class Instrument(PaNOSCAttribute):
     name: str
     facility: str
 
-    datasets: Optional[List[Dataset]]
+    datasets: Optional[List[Dataset]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -231,7 +231,7 @@ class Person(PaNOSCAttribute):
     first_name: Optional[str] = Field(None, alias="firstName")
     last_name: Optional[str] = Field(None, alias="lastName")
 
-    members: Optional[List[Member]]
+    members: Optional[List[Member]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -247,7 +247,7 @@ class Sample(PaNOSCAttribute):
     pid: str
     description: Optional[str] = None
 
-    datasets: Optional[List[Dataset]]
+    datasets: Optional[List[Dataset]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
@@ -262,7 +262,7 @@ class Technique(PaNOSCAttribute):
     pid: str
     name: str
 
-    datasets: Optional[List[Dataset]]
+    datasets: Optional[List[Dataset]] = []
 
     @classmethod
     def from_icat(cls, icat_query_data):
