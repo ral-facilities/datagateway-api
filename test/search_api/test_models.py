@@ -425,3 +425,23 @@ class TestModels:
         file_entity = models.File.from_icat(icat_data, [])
 
         assert file_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_instrument_entity_without_data_for_related_entities(self):
+        icat_data = INSTRUMENT_ICAT_DATA.copy()
+        icat_data["facility"] = FACILITY_ICAT_DATA
+
+        instrument_entity = models.Instrument.from_icat(icat_data, [])
+
+        assert instrument_entity.dict(by_alias=True) == INSTRUMENT_PANOSC_DATA
+
+    def test_from_icat_instrument_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = INSTRUMENT_PANOSC_DATA.copy()
+        expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
+
+        icat_data = INSTRUMENT_ICAT_DATA.copy()
+        icat_data["facility"] = FACILITY_ICAT_DATA
+        icat_data["datasetInstruments"] = [{"dataset": DATASET_ICAT_DATA.copy()}]
+
+        instrument_entity = models.Instrument.from_icat(icat_data, ["datasets"])
+
+        assert instrument_entity.dict(by_alias=True) == expected_entity_data
