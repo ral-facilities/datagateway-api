@@ -17,21 +17,6 @@ from pydantic import (
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
 
-# TODO - Merge this with `get_icat_mapping` from src\search_api\filters.py
-def _get_icat_mapping(panosc_entity_name, field_name):
-    icat_mapping = mappings.mappings[panosc_entity_name][field_name]
-
-    if isinstance(icat_mapping, str):
-        # Field name
-        icat_field_name = icat_mapping
-    if isinstance(icat_mapping, dict):
-        # Relation - JSON format: {PaNOSC entity name: ICAT related field name}
-        panosc_entity_name = list(icat_mapping.keys())[0]
-        icat_field_name = icat_mapping[panosc_entity_name]
-
-    return panosc_entity_name, icat_field_name
-
-
 def _get_icat_field_value(icat_field_name, icat_data):
     icat_field_name = icat_field_name.split(".")
     value = icat_data
@@ -54,7 +39,7 @@ class PaNOSCAttribute(ABC, BaseModel):
             # of the field
             field_alias = cls.__fields__[field].alias
 
-            panosc_entity_name, icat_field_name = _get_icat_mapping(
+            panosc_entity_name, icat_field_name = mappings.get_icat_mapping(
                 cls.__name__, field_alias,
             )
             try:
