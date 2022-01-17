@@ -7,7 +7,6 @@ from typing import ClassVar, List, Optional, Union
 from pydantic import (
     BaseModel,
     Field,
-    root_validator,
     ValidationError,
 )
 from pydantic.error_wrappers import ErrorWrapper
@@ -262,16 +261,16 @@ class Parameter(PaNOSCAttribute):
     dataset: Optional[Dataset] = None
     document: Optional[Document] = None
 
-    @root_validator(skip_on_failure=True)
-    def validate_dataset_and_document(cls, values):  # noqa: B902, N805
-        if values["dataset"] is None and values["document"] is None:
-            raise TypeError("must have a dataset or document")
+    # @root_validator(skip_on_failure=True)
+    # def validate_dataset_and_document(cls, values):  # noqa: B902, N805
+    #     if values["dataset"] is None and values["document"] is None:
+    #         raise TypeError("must have a dataset or document")
 
-        if values["dataset"] is not None and values["document"] is not None:
-            # TODO - Should an exception be raised here instead?
-            values["Document"] = None
+    #     if values["dataset"] is not None and values["document"] is not None:
+    #         # TODO - Should an exception be raised here instead?
+    #         values["Document"] = None
 
-        return values
+    #     return values
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
