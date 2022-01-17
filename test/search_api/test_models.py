@@ -369,3 +369,43 @@ class TestModels:
         )
 
         assert dataset_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_document_entity_without_data_for_related_entities(self):
+        icat_data = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["keywords"] = [KEYWORD_ICAT_DATA]
+
+        document_entity = models.Document.from_icat(icat_data, [])
+
+        assert document_entity.dict(by_alias=True) == DOCUMENT_PANOSC_DATA
+
+    def test_from_icat_document_entity_with_data_for_mandatory_related_entities(self):
+        expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
+        expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
+
+        icat_data = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["datasets"] = [DATASET_ICAT_DATA, DATASET_ICAT_DATA]
+
+        document_entity = models.Document.from_icat(icat_data, ["datasets"])
+
+        assert document_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_document_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
+        expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
+        expected_entity_data["members"] = [MEMBER_PANOSC_DATA]
+        expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA]
+
+        icat_data = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["datasets"] = [DATASET_ICAT_DATA, DATASET_ICAT_DATA]
+        icat_data["investigationUsers"] = [INVESTIGATION_USER_ICAT_DATA]
+        icat_data["parameters"] = [INVESTIGATION_PARAMETER_ICAT_DATA.copy()]
+        icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
+
+        document_entity = models.Document.from_icat(icat_data, ["datasets"])
+
+        assert document_entity.dict(by_alias=True) == expected_entity_data
