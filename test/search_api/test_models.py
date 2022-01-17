@@ -409,3 +409,19 @@ class TestModels:
         document_entity = models.Document.from_icat(icat_data, ["datasets"])
 
         assert document_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_file_entity_without_data_for_related_entities(self):
+        file_entity = models.File.from_icat(DATAFILE_ICAT_DATA, [])
+
+        assert file_entity.dict(by_alias=True) == FILE_PANOSC_DATA
+
+    def test_from_icat_file_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = FILE_PANOSC_DATA.copy()
+        expected_entity_data["dataset"] = DATASET_PANOSC_DATA
+
+        icat_data = DATAFILE_ICAT_DATA.copy()
+        icat_data["dataset"] = DATASET_ICAT_DATA
+
+        file_entity = models.File.from_icat(icat_data, [])
+
+        assert file_entity.dict(by_alias=True) == expected_entity_data
