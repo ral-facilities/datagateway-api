@@ -530,3 +530,22 @@ class TestModels:
         parameter_entity = models.Parameter.from_icat(icat_data, ["dataset"])
 
         assert parameter_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_person_entity_without_data_for_related_entities(self):
+        person_entity = models.Person.from_icat(USER_ICAT_DATA, [])
+
+        assert person_entity.dict(by_alias=True) == PERSON_PANOSC_DATA
+
+    def test_from_icat_person_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = PERSON_PANOSC_DATA.copy()
+        expected_entity_data["members"] = [MEMBER_PANOSC_DATA, MEMBER_PANOSC_DATA]
+
+        icat_data = USER_ICAT_DATA.copy()
+        icat_data["investigationUsers"] = [
+            INVESTIGATION_USER_ICAT_DATA,
+            INVESTIGATION_USER_ICAT_DATA,
+        ]
+
+        person_entity = models.Person.from_icat(icat_data, ["members"])
+
+        assert person_entity.dict(by_alias=True) == expected_entity_data
