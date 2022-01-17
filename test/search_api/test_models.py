@@ -484,3 +484,49 @@ class TestModels:
         )
 
         assert member_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_parameter_entity_without_data_for_related_entities(self):
+        icat_data = INVESTIGATION_PARAMETER_ICAT_DATA.copy()
+        icat_data["type"] = PARAMETER_TYPE_ICAT_DATA
+
+        parameter_entity = models.Parameter.from_icat(icat_data, [])
+
+        assert parameter_entity.dict(by_alias=True) == PARAMETER_PANOSC_DATA
+
+    def test_from_icat_parameter_entity_with_investigation_parameter_data(self):
+        expected_entity_data = PARAMETER_PANOSC_DATA.copy()
+        expected_entity_data["dataset"] = DATASET_PANOSC_DATA
+        expected_entity_data["document"] = DOCUMENT_PANOSC_DATA
+
+        icat_data = INVESTIGATION_PARAMETER_ICAT_DATA.copy()
+        icat_data["type"] = PARAMETER_TYPE_ICAT_DATA
+        icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["investigation"]["investigationInstruments"] = [
+            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
+            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
+        ]
+        icat_data["investigation"]["investigationInstruments"][0]["instrument"][
+            "datasetInstruments"
+        ] = [{"dataset": DATASET_ICAT_DATA}, {"dataset": DATASET_ICAT_DATA}]
+        icat_data["investigation"]["investigationInstruments"][1]["instrument"][
+            "datasetInstruments"
+        ] = []
+
+        parameter_entity = models.Parameter.from_icat(icat_data, ["dataset"])
+
+        assert parameter_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_parameter_entity_with_dataset_parameter_data(self):
+        expected_entity_data = PARAMETER_PANOSC_DATA.copy()
+        expected_entity_data["value"] = DATASET_PARAMETER_ICAT_DATA["stringValue"]
+        expected_entity_data["dataset"] = DATASET_PANOSC_DATA
+
+        icat_data = DATASET_PARAMETER_ICAT_DATA.copy()
+        icat_data["dataset"] = DATASET_ICAT_DATA
+        icat_data["type"] = PARAMETER_TYPE_ICAT_DATA
+
+        parameter_entity = models.Parameter.from_icat(icat_data, ["dataset"])
+
+        assert parameter_entity.dict(by_alias=True) == expected_entity_data
