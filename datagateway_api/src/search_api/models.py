@@ -1,14 +1,11 @@
 import abc
 from abc import ABC
-from datetime import datetime
+from datetime import datetime, timezone
 import sys
 from typing import ClassVar, List, Optional, Union
 
-from pydantic import (
-    BaseModel,
-    Field,
-    ValidationError,
-)
+from dateutil.relativedelta import relativedelta
+from pydantic import BaseModel, Field, ValidationError, validator
 from pydantic.error_wrappers import ErrorWrapper
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
@@ -157,6 +154,16 @@ class Dataset(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
 
+    @validator("is_public", pre=True, always=True)
+    def set_is_public(cls, value):  # noqa: B902, N805
+        if not value:
+            return value
+
+        creation_date = datetime.fromisoformat(value)
+        current_datetime = datetime.now(timezone.utc)
+        three_years_ago = current_datetime - relativedelta(years=3)
+        return creation_date < three_years_ago
+
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Dataset, cls).from_icat(icat_data, required_related_fields)
@@ -185,6 +192,16 @@ class Document(PaNOSCAttribute):
     datasets: List[Dataset] = []
     members: Optional[List["Member"]] = []
     parameters: Optional[List["Parameter"]] = []
+
+    @validator("is_public", pre=True, always=True)
+    def set_is_public(cls, value):  # noqa: B902, N805
+        if not value:
+            return value
+
+        creation_date = datetime.fromisoformat(value)
+        current_datetime = datetime.now(timezone.utc)
+        three_years_ago = current_datetime - relativedelta(years=3)
+        return creation_date < three_years_ago
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
