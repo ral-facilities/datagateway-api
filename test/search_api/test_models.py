@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 
+from pydantic import ValidationError
+import pytest
+
 import datagateway_api.src.search_api.models as models
 
 
@@ -588,3 +591,76 @@ class TestModels:
         technique_entity = models.Technique.from_icat(icat_data, ["datasets"])
 
         assert technique_entity.dict(by_alias=True) == expected_entity_data
+
+    @pytest.mark.parametrize(
+        "panosc_entity_name, icat_data, required_related_fields",
+        [
+            pytest.param(
+                "Affiliation",
+                AFFILIATION_ICAT_DATA,
+                ["members"],
+                id="Affiliation - without data for mandatory related entity",
+            ),
+            pytest.param(
+                "Dataset", {}, [], id="Dataset - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Dataset",
+                DATASET_ICAT_DATA,
+                ["documents"],
+                id="Dataset - without data for mandatory related entity",
+            ),
+            pytest.param(
+                "Document", {}, [], id="Document - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Document",
+                INVESTIGATION_ICAT_DATA,
+                ["dataset"],
+                id="Document - without data for mandatory related entity",
+            ),
+            pytest.param(
+                "File", {}, [], id="File - without data for mandatory fields",
+            ),
+            pytest.param(
+                "File",
+                DATAFILE_ICAT_DATA,
+                ["dataset"],
+                id="File - without data for mandatory related entity",
+            ),
+            pytest.param(
+                "Instrument",
+                {},
+                [],
+                id="Instrument - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Member", {}, [], id="Member - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Member",
+                INVESTIGATION_USER_ICAT_DATA,
+                ["document"],
+                id="Member - without data for mandatory related entity",
+            ),
+            pytest.param(
+                "Parameter", {}, [], id="Parameter - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Person", {}, [], id="Person - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Sample", {}, [], id="Sample - without data for mandatory fields",
+            ),
+            pytest.param(
+                "Technique", {}, [], id="Technique - without data for mandatory fields",
+            ),
+        ],
+    )
+    def test_from_icat_raises_validation_error(
+        self, panosc_entity_name, icat_data, required_related_fields,
+    ):
+        with pytest.raises(ValidationError):
+            getattr(models, panosc_entity_name).from_icat(
+                icat_data, required_related_fields,
+            )
