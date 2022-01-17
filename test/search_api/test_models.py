@@ -298,3 +298,74 @@ class TestModels:
         affiliation_entity = models.Affiliation.from_icat(icat_data, ["members"])
 
         assert affiliation_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_dataset_entity_without_data_for_related_entities(self):
+        dataset_entity = models.Dataset.from_icat(DATASET_ICAT_DATA, [])
+
+        assert dataset_entity.dict(by_alias=True) == DATASET_PANOSC_DATA
+
+    def test_from_icat_dataset_entity_with_data_for_mandatory_related_entities(self):
+        expected_entity_data = DATASET_PANOSC_DATA.copy()
+        expected_entity_data["documents"] = [DOCUMENT_PANOSC_DATA]
+        expected_entity_data["techniques"] = [
+            TECHNIQUE_PANOSC_DATA,
+            TECHNIQUE_PANOSC_DATA,
+        ]
+
+        icat_data = DATASET_ICAT_DATA.copy()
+        icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["datasetTechniques"] = [
+            {"technique": TECHNIQUE_ICAT_DATA},
+            {"technique": TECHNIQUE_ICAT_DATA},
+        ]
+
+        dataset_entity = models.Dataset.from_icat(
+            icat_data, ["documents", "techniques"],
+        )
+
+        assert dataset_entity.dict(by_alias=True) == expected_entity_data
+
+    def test_from_icat_dataset_entity_with_data_for_all_related_entities(self):
+        expected_entity_data = DATASET_PANOSC_DATA.copy()
+        expected_entity_data["documents"] = [DOCUMENT_PANOSC_DATA]
+        expected_entity_data["techniques"] = [TECHNIQUE_PANOSC_DATA]
+        expected_entity_data["instrument"] = INSTRUMENT_PANOSC_DATA
+        expected_entity_data["files"] = [FILE_PANOSC_DATA, FILE_PANOSC_DATA]
+        expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA.copy()]
+        expected_entity_data["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA[
+            "stringValue"
+        ]
+        expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA]
+
+        icat_data = DATASET_ICAT_DATA.copy()
+        icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
+        icat_data["datasetTechniques"] = [{"technique": TECHNIQUE_ICAT_DATA}]
+        icat_data["datasetInstruments"] = [
+            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
+            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
+        ]
+        icat_data["datasetInstruments"][0]["instrument"][
+            "facility"
+        ] = FACILITY_ICAT_DATA
+        icat_data["datasetInstruments"][1]["instrument"][
+            "facility"
+        ] = FACILITY_ICAT_DATA
+        icat_data["datafiles"] = [DATAFILE_ICAT_DATA, DATAFILE_ICAT_DATA]
+        icat_data["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
+        icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
+        icat_data["sample"] = SAMPLE_ICAT_DATA.copy()
+        icat_data["sample"]["parameters"] = [
+            {"type": PARAMETER_TYPE_ICAT_DATA},
+            {"type": PARAMETER_TYPE_ICAT_DATA},
+        ]
+
+        dataset_entity = models.Dataset.from_icat(
+            icat_data,
+            ["documents", "techniques", "instrument", "files", "parameters", "samples"],
+        )
+
+        assert dataset_entity.dict(by_alias=True) == expected_entity_data
