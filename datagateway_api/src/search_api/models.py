@@ -8,10 +8,6 @@ from pydantic import (
     BaseModel,
     Field,
     root_validator,
-    StrictBool,
-    StrictFloat,
-    StrictInt,
-    StrictStr,
 )
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
@@ -74,11 +70,11 @@ class Affiliation(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = []
 
-    name: Optional[StrictStr]
-    id_: Optional[StrictStr] = Field(alias="id")
-    address: Optional[StrictStr]
-    city: Optional[StrictStr]
-    country: Optional[StrictStr]
+    name: Optional[str]
+    id_: Optional[str] = Field(alias="id")
+    address: Optional[str]
+    city: Optional[str]
+    country: Optional[str]
 
     members: Optional[List["Member"]]
 
@@ -95,11 +91,11 @@ class Dataset(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["title"]
 
-    pid: StrictStr
-    title: StrictStr
-    is_public: StrictBool = Field(alias="isPublic")
+    pid: str
+    title: str
+    is_public: bool = Field(alias="isPublic")
     creation_date: datetime = Field(alias="creationDate")
-    size: Optional[StrictInt]
+    size: Optional[int]
 
     documents: List["Document"]
     techniques: List["Technique"]
@@ -120,17 +116,17 @@ class Document(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
-    pid: StrictStr
-    is_public: StrictBool = Field(alias="isPublic")
-    type_: StrictStr = Field(alias="type")
-    title: StrictStr
-    summary: Optional[StrictStr]
-    doi: Optional[StrictStr]
+    pid: str
+    is_public: bool = Field(alias="isPublic")
+    type_: str = Field(alias="type")
+    title: str
+    summary: Optional[str]
+    doi: Optional[str]
     start_date: Optional[datetime] = Field(alias="startDate")
     end_date: Optional[datetime] = Field(alias="endDate")
     release_date: Optional[datetime] = Field(alias="releaseDate")
-    license_: Optional[StrictStr] = Field(alias="license")
-    keywords: Optional[List[StrictStr]]
+    license_: Optional[str] = Field(alias="license")
+    keywords: Optional[List[str]]
 
     datasets: List[Dataset]
     members: Optional[List["Member"]]
@@ -146,10 +142,10 @@ class File(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    id_: StrictStr = Field(alias="id")
-    name: StrictStr
-    path: Optional[StrictStr]
-    size: Optional[StrictInt]
+    id_: str = Field(alias="id")
+    name: str
+    path: Optional[str]
+    size: Optional[int]
 
     dataset: Dataset
 
@@ -163,9 +159,9 @@ class Instrument(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
 
-    pid: StrictStr
-    name: StrictStr
-    facility: StrictStr
+    pid: str
+    name: str
+    facility: str
 
     datasets: Optional[List[Dataset]]
 
@@ -179,8 +175,8 @@ class Member(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: StrictStr = Field(alias="id")
-    role: Optional[StrictStr] = Field(alias="role")
+    id_: str = Field(alias="id")
+    role: Optional[str] = Field(alias="role")
 
     document: Document
     person: Optional["Person"]
@@ -199,10 +195,10 @@ class Parameter(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: StrictStr = Field(alias="id")
-    name: StrictStr
-    value: Union[StrictFloat, StrictInt, StrictStr]
-    unit: Optional[StrictStr]
+    id_: str = Field(alias="id")
+    name: str
+    value: Union[float, int, str]
+    unit: Optional[str]
 
     dataset: Optional[Dataset]
     document: Optional[Document]
@@ -228,12 +224,12 @@ class Person(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: StrictStr = Field(alias="id")
-    full_name: StrictStr = Field(alias="fullName")
-    orcid: Optional[StrictStr]
-    researcher_id: Optional[StrictStr] = Field(alias="researcherId")
-    first_name: Optional[StrictStr] = Field(alias="firstName")
-    last_name: Optional[StrictStr] = Field(alias="lastName")
+    id_: str = Field(alias="id")
+    full_name: str = Field(alias="fullName")
+    orcid: Optional[str]
+    researcher_id: Optional[str] = Field(alias="researcherId")
+    first_name: Optional[str] = Field(alias="firstName")
+    last_name: Optional[str] = Field(alias="lastName")
 
     members: Optional[List[Member]]
 
@@ -247,9 +243,9 @@ class Sample(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
 
-    name: StrictStr
-    pid: StrictStr
-    description: Optional[StrictStr]
+    name: str
+    pid: str
+    description: Optional[str]
 
     datasets: Optional[List[Dataset]]
 
@@ -263,8 +259,8 @@ class Technique(PaNOSCAttribute):
 
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    pid: StrictStr
-    name: StrictStr
+    pid: str
+    name: str
 
     datasets: Optional[List[Dataset]]
 
