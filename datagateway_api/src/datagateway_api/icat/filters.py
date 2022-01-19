@@ -111,6 +111,8 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(
                 self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
             )
+        elif self.operation == "regexp":
+            where_filter = self.create_condition(self.field, "regexp", self.value)
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
