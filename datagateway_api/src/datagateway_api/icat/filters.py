@@ -88,6 +88,8 @@ class PythonICATWhereFilter(WhereFilter):
                 self.value = "(NULL)"
 
             where_filter = self.create_condition(self.field, "in", self.value)
+        elif self.operation == "inq":
+            self.operation = "in"
         elif self.operation == "between":
             where_filter = self.create_condition(
                 self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
