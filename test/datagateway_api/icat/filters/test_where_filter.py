@@ -21,8 +21,14 @@ class TestICATWhereFilter:
             pytest.param("lte", 5, ["%s <= '5'"], id="less than or equal"),
             pytest.param("gt", 5, ["%s > '5'"], id="greater than"),
             pytest.param("gte", 5, ["%s >= '5'"], id="greater than or equal"),
-            pytest.param("in", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list"),
-            pytest.param("in", [], ["%s in (NULL)"], id="empty list"),
+            pytest.param(
+                "in", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list (in)",
+            ),
+            pytest.param("in", [], ["%s in (NULL)"], id="in empty list (in)"),
+            pytest.param(
+                "inq", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list (inq)",
+            ),
+            pytest.param("inq", [], ["%s in (NULL)"], id="in empty list (inq)"),
             pytest.param("between", [1, 2], ["%s between '1' and '2'"], id="between"),
         ],
     )
@@ -38,6 +44,7 @@ class TestICATWhereFilter:
         "operation, value",
         [
             pytest.param("in", "1, 2, 3, 4, 5", id="in a list (in)"),
+            pytest.param("inq", "1, 2, 3, 4, 5", id="in a list (inq)"),
             pytest.param("between", "1, 2, 3, 4, 5", id="between - string value"),
             pytest.param("between", [], id="between - empty list"),
             pytest.param(
