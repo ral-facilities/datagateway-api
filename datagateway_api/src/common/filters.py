@@ -27,7 +27,7 @@ class WhereFilter(QueryFilter):
         self.value = value
         self.operation = operation
 
-        if self.operation in ["in", "inq"]:
+        if self.operation in ["in", "nin", "inq"]:
             if not isinstance(self.value, list):
                 raise BadRequestError(
                     f"When using the {self.operation} operation for a WHERE filter, the"
