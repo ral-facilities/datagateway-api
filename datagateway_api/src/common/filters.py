@@ -27,11 +27,11 @@ class WhereFilter(QueryFilter):
         self.value = value
         self.operation = operation
 
-        if self.operation == "in":
+        if self.operation in ["in", "inq"]:
             if not isinstance(self.value, list):
                 raise BadRequestError(
-                    "When using the 'in' operation for a WHERE filter, the values must"
-                    " be in a list format e.g. [1, 2, 3]",
+                    f"When using the {self.operation} operation for a WHERE filter, the"
+                    f" values must be in a list format e.g. [1, 2, 3]",
                 )
 
         if self.operation == "between":
