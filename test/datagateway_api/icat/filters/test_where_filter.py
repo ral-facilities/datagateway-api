@@ -23,6 +23,7 @@ class TestICATWhereFilter:
             pytest.param("gte", 5, ["%s >= '5'"], id="greater than or equal"),
             pytest.param("in", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list"),
             pytest.param("in", [], ["%s in (NULL)"], id="empty list"),
+            pytest.param("between", [1, 2], ["%s between '1' and '2'"], id="between"),
         ],
     )
     def test_valid_operations(
@@ -33,9 +34,23 @@ class TestICATWhereFilter:
 
         assert icat_query.conditions == {"id": expected_condition_value}
 
-    def test_invalid_in_operation(self, icat_query):
+    @pytest.mark.parametrize(
+        "operation, value",
+        [
+            pytest.param("in", "1, 2, 3, 4, 5", id="in a list (in)"),
+            pytest.param("between", "1, 2, 3, 4, 5", id="between - string value"),
+            pytest.param("between", [], id="between - empty list"),
+            pytest.param(
+                "between", [1], id="between - list with less than two elements",
+            ),
+            pytest.param(
+                "between", [1, 2, 3], id="between - list with more than two elements",
+            ),
+        ],
+    )
+    def test_invalid_operations_raise_bad_request_error(self, operation, value):
         with pytest.raises(BadRequestError):
-            PythonICATWhereFilter("id", "1, 2, 3, 4, 5", "in")
+            PythonICATWhereFilter("id", value, operation)
 
     def test_invalid_operation(self, icat_query):
         test_filter = PythonICATWhereFilter("id", 10, "non")
