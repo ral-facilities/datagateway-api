@@ -88,6 +88,10 @@ class PythonICATWhereFilter(WhereFilter):
                 self.value = "(NULL)"
 
             where_filter = self.create_condition(self.field, "in", self.value)
+        elif self.operation == "between":
+            where_filter = self.create_condition(
+                self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
+            )
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
@@ -116,8 +120,7 @@ class PythonICATWhereFilter(WhereFilter):
         # distinct filter is used in a request
         jpql_value = (
             f"{value}"
-            if operator == "in"
-            or operator == "!="
+            if operator in ("in", "not in", "!=", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
             else f"'{value}'"
