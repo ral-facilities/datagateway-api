@@ -35,6 +35,7 @@ class TestICATWhereFilter:
             ),
             pytest.param("nin", [], ["%s not in (NULL)"], id="not in empty list"),
             pytest.param("between", [1, 2], ["%s between '1' and '2'"], id="between"),
+            pytest.param("regexp", "^Test", ["%s regexp '^Test'"], id="regexp"),
         ],
     )
     def test_valid_operations(
