@@ -119,3 +119,75 @@ class TestPaNOSCMappings:
             test_panosc_entity_name,
         )
         assert icat_relations == expected_icat_relations
+
+    @pytest.mark.parametrize(
+        "test_panosc_entity_name, test_entity_relation, expected_icat_relations",
+        [
+            pytest.param(
+                "Affiliation", "members", [], id="Affiliation members relation",
+            ),
+            pytest.param(
+                "Affiliation",
+                "members.document.datasets.samples",
+                [
+                    "user.user.investigationUsers.investigation.type",
+                    "user.user.investigationUsers.investigation.keywords",
+                    "user.user.investigationUsers.investigation.datasets.sample"
+                    ".parameters.type",
+                ],
+                id="Affiliation members.document.datasets.sample relation",
+            ),
+            pytest.param(
+                "Dataset",
+                "documents",
+                ["investigation.type", "investigation.keywords"],
+                id="Dataset documents relation",
+            ),
+            pytest.param(
+                "Dataset",
+                "documents.parameters",
+                [
+                    "investigation.type",
+                    "investigation.keywords",
+                    "investigation.parameters.type",
+                    "investigation.parameters.type",
+                ],
+                id="Dataset documents.parameters relations",
+            ),
+            pytest.param(
+                "Dataset",
+                "parameters.dataset.documents",
+                [
+                    "parameters.type",
+                    "parameters.type",
+                    "parameters.dataset.investigation.type",
+                    "parameters.dataset.investigation.keywords",
+                ],
+                id="Dataset parameters.dataset.documents relations",
+            ),
+            pytest.param(
+                "Document",
+                "parameters.dataset.documents",
+                [
+                    "parameters.type",
+                    "parameters.type",
+                    "parameters.investigation.investigationInstruments.instrument"
+                    ".datasetInstruments.dataset.investigation.type",
+                    "parameters.investigation.investigationInstruments.instrument"
+                    ".datasetInstruments.dataset.investigation.keywords",
+                ],
+                id="Document parameters.dataset.documents relations",
+            ),
+        ],
+    )
+    def test_get_icat_relations_for_non_related_fields_of_panosc_relation(
+        self,
+        test_panosc_mappings,
+        test_panosc_entity_name,
+        test_entity_relation,
+        expected_icat_relations,
+    ):
+        icat_relations = test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+            test_panosc_entity_name, test_entity_relation,
+        )
+        assert icat_relations == expected_icat_relations
