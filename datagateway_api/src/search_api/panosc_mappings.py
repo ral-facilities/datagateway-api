@@ -151,5 +151,49 @@ class PaNOSCMappings:
 
         return icat_relations
 
+    def get_icat_relations_for_non_related_fields_of_panosc_relation(
+        self, panosc_entity_name, entity_relation,
+    ):
+        """
+        THis function retrieves the ICAT relations for the non related fields of all the
+        PaNOSC entities that form a given PaNOSC entity relation which is applied to a
+        given PaNOSC entity. Relations can be non-nested or nested. Those that are
+        nested are represented in a dotted format e.g. "documents.members.person". When
+        a given relation is nested, this function retrieves the ICAT relations for the
+        first PaNOSC entity and then recursively calls itself until the ICAT relations
+        for the last PaNOSC entity in the relation are retrieved.
+
+        :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset" to which the
+            PaNOSC entity relation is applied
+        :type panosc_entity_name: :class:`str`
+        :param panosc_entity_name: A PaNOSC entity relation e.g. "documents" or
+            "documents.members.person" if nested
+        :type panosc_entity_name: :class:`str`
+        :return: List containing the ICAT relations for the non related fields of all
+            the PaNOSC entitities that form the given PaNOSC entity relation
+        """
+        icat_relations = []
+
+        split_entity_relation = entity_relation.split(".")
+        related_entity_name, icat_field_name = self.get_icat_mapping(
+            panosc_entity_name, split_entity_relation[0],
+        )
+        relations = self.get_icat_relations_for_panosc_non_related_fields(
+            related_entity_name,
+        )
+        icat_relations.extend(relations)
+
+        if len(split_entity_relation) > 1:
+            entity_relation = ".".join(split_entity_relation[1:])
+            relations = self.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+                related_entity_name, entity_relation,
+            )
+            icat_relations.extend(relations)
+
+        for i, icat_relation in enumerate(icat_relations):
+            icat_relations[i] = f"{icat_field_name}.{icat_relation}"
+
+        return icat_relations
+
 
 mappings = PaNOSCMappings()
