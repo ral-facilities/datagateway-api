@@ -1,6 +1,9 @@
 import logging
 
 from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.datagateway_api.icat.filters import PythonICATIncludeFilter
+from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
+from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.session_handler import (
     client_manager,
@@ -14,6 +17,25 @@ log = logging.getLogger()
 @client_manager
 def get_search(endpoint_name, entity_name, filters):
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
+
+    icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
+        entity_name,
+    )
+
+    for filter_ in filters:
+        if isinstance(filter_, SearchAPIIncludeFilter):
+            included_filters = filter_.included_filters
+            for included_filter in included_filters:
+                icat_relations.extend(
+                    mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+                        entity_name, included_filter,
+                    ),
+                )
+
+    # Remove any duplicate ICAT relations
+    icat_relations = list(dict.fromkeys(icat_relations))
+    if icat_relations:
+        filters.append(PythonICATIncludeFilter(icat_relations))
 
     query = SearchAPIQuery(entity_name)
 
