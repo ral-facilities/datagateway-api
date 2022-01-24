@@ -73,10 +73,23 @@ class PaNOSCAttribute(ABC, BaseModel):
                 if not isinstance(data, list):
                     data = [data]
 
+                required_related_fields_for_next_entity = []
+                for required_related_field in required_related_fields:
+                    required_related_field = required_related_field.split(".")
+                    if (
+                        len(required_related_field) > 1
+                        and field_alias in required_related_field
+                    ):
+                        required_related_fields_for_next_entity.extend(
+                            required_related_field[1:],
+                        )
+
                 # Get the class of the referenced model
                 panosc_model_attr = getattr(sys.modules[__name__], panosc_entity_name)
                 field_value = [
-                    panosc_model_attr.from_icat(d, required_related_fields)
+                    panosc_model_attr.from_icat(
+                        d, required_related_fields_for_next_entity,
+                    )
                     for d in data
                 ]
 
@@ -92,6 +105,8 @@ class PaNOSCAttribute(ABC, BaseModel):
             model_data[field_alias] = field_value
 
         for required_related_field in required_related_fields:
+            required_related_field = required_related_field.split(".")[0]
+
             if (
                 required_related_field in model_fields
                 and required_related_field
