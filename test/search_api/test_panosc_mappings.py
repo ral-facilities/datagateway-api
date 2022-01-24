@@ -96,3 +96,26 @@ class TestPaNOSCMappings:
     ):
         with pytest.raises(FilterError):
             test_panosc_mappings.get_panosc_non_related_field_names("UnknownEntity")
+
+    @pytest.mark.parametrize(
+        "test_panosc_entity_name, expected_icat_relations",
+        [
+            pytest.param("Affiliation", [], id="Affiliation"),
+            pytest.param("Dataset", [], id="Dataset"),
+            pytest.param("Document", ["type", "keywords"], id="Document"),
+            pytest.param("File", [], id="File"),
+            pytest.param("Instrument", ["facility"], id="Instrument"),
+            pytest.param("Member", [], id="Member"),
+            pytest.param("Parameter", ["type", "type"], id="Parameter"),
+            pytest.param("Person", [], id="Person"),
+            pytest.param("Sample", ["parameters.type"], id="Sample"),
+            pytest.param("Technique", [], id="Technique"),
+        ],
+    )
+    def test_get_icat_relations_for_panosc_non_related_fields(
+        self, test_panosc_mappings, test_panosc_entity_name, expected_icat_relations,
+    ):
+        icat_relations = test_panosc_mappings.get_icat_relations_for_panosc_non_related_fields(  # noqa: B950
+            test_panosc_entity_name,
+        )
+        assert icat_relations == expected_icat_relations
