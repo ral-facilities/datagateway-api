@@ -592,6 +592,85 @@ class TestModels:
 
         assert technique_entity.dict(by_alias=True) == expected_entity_data
 
+    def test_from_icat_multiple_and_nested_relations(self):
+        expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
+        expected_entity_data["keywords"] = []
+        expected_entity_data["datasets"] = [DATASET_PANOSC_DATA.copy()]
+        expected_entity_data["datasets"][0]["instrument"] = INSTRUMENT_PANOSC_DATA
+        expected_entity_data["datasets"][0]["files"] = [
+            FILE_PANOSC_DATA,
+            FILE_PANOSC_DATA,
+        ]
+        expected_entity_data["datasets"][0]["parameters"] = [
+            PARAMETER_PANOSC_DATA.copy(),
+        ]
+        expected_entity_data["datasets"][0]["parameters"][0][
+            "value"
+        ] = DATASET_PARAMETER_ICAT_DATA["stringValue"]
+        expected_entity_data["datasets"][0]["samples"] = [SAMPLE_PANOSC_DATA.copy()]
+        expected_entity_data["datasets"][0]["samples"][0]["description"] = None
+        expected_entity_data["members"] = [MEMBER_PANOSC_DATA.copy()]
+        expected_entity_data["members"][0]["affiliation"] = AFFILIATION_PANOSC_DATA
+        expected_entity_data["members"][0]["person"] = PERSON_PANOSC_DATA
+        expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA.copy()]
+        expected_entity_data["parameters"][0]["value"]
+        expected_entity_data["parameters"][0]["dataset"] = DATASET_PANOSC_DATA.copy()
+        expected_entity_data["parameters"][0]["document"] = DOCUMENT_PANOSC_DATA.copy()
+        expected_entity_data["parameters"][0]["document"]["keywords"] = []
+        expected_entity_data["parameters"][0]["dataset"]["techniques"] = [
+            TECHNIQUE_PANOSC_DATA,
+        ]
+
+        icat_data = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["datasets"] = [DATASET_ICAT_DATA.copy()]
+        icat_data["datasets"][0]["datasetInstruments"] = [
+            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
+        ]
+        icat_data["datasets"][0]["datasetInstruments"][0]["instrument"][
+            "facility"
+        ] = FACILITY_ICAT_DATA
+        icat_data["datasets"][0]["datafiles"] = [DATAFILE_ICAT_DATA, DATAFILE_ICAT_DATA]
+        icat_data["datasets"][0]["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
+        icat_data["datasets"][0]["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
+        icat_data["datasets"][0]["sample"] = SAMPLE_ICAT_DATA
+        icat_data["investigationUsers"] = [INVESTIGATION_USER_ICAT_DATA.copy()]
+        icat_data["investigationUsers"][0]["user"] = USER_ICAT_DATA.copy()
+        icat_data["investigationUsers"][0]["user"]["dataPublicationUsers"] = [
+            {"affiliations": [AFFILIATION_ICAT_DATA]},
+        ]
+        icat_data["parameters"] = [INVESTIGATION_PARAMETER_ICAT_DATA.copy()]
+        icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
+        icat_data["parameters"][0]["investigation"] = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["parameters"][0]["investigation"][
+            "type"
+        ] = INVESTIGATION_TYPE_ICAT_DATA
+        dataset_with_techniques_icat = DATASET_ICAT_DATA.copy()
+        dataset_with_techniques_icat.update(
+            {"datasetTechniques": [{"technique": TECHNIQUE_ICAT_DATA}]},
+        )
+        icat_data["parameters"][0]["investigation"]["investigationInstruments"] = [
+            {
+                "instrument": {
+                    "datasetInstruments": [{"dataset": dataset_with_techniques_icat}],
+                },
+            },
+        ]
+
+        relations = [
+            "datasets.instrument",
+            "datasets.files",
+            "datasets.parameters",
+            "datasets.samples",
+            "members.affiliation",
+            "members.person",
+            "parameters.dataset.techniques",
+        ]
+
+        document_entity = models.Document.from_icat(icat_data, relations)
+
+        assert document_entity.dict(by_alias=True) == expected_entity_data
+
     @pytest.mark.parametrize(
         "panosc_entity_name, icat_data, required_related_fields",
         [
