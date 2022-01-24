@@ -98,5 +98,32 @@ class PaNOSCMappings:
 
         return panosc_related_entity_name
 
+    def get_panosc_non_related_field_names(self, panosc_entity_name):
+        """
+        This function retrieves the names of the non related fields of a given PaNOSC
+        entity.
+
+        :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
+        :type panosc_entity_name: :class:`str`
+        :return: List containing the names of the non related fields of the given
+            PaNOSC entity
+        :raises FilterError: If mappings for the given entity name cannot be found
+        """
+        try:
+            entity_mappings = self.mappings[panosc_entity_name]
+        except KeyError:
+            raise FilterError(
+                f"Cannot find mappings for {[panosc_entity_name]} PaNOSC entity",
+            )
+
+        non_related_field_names = []
+        for mapping_key, mapping_value in entity_mappings.items():
+            # The mappings for the non-related fields are of type `str` whereas for
+            # the related fields, they are of type `dict`. We only need the former.
+            if mapping_key != "base_icat_entity" and isinstance(mapping_value, str):
+                non_related_field_names.append(mapping_key)
+
+        return non_related_field_names
+
 
 mappings = PaNOSCMappings()
