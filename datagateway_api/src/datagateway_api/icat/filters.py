@@ -75,7 +75,7 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, ">", self.value)
         elif self.operation == "gte":
             where_filter = self.create_condition(self.field, ">=", self.value)
-        elif self.operation == "in":
+        elif self.operation in ["in", "inq"]:
             # Convert self.value into a string with brackets equivalent to tuple format.
             # Cannot convert straight to tuple as single element tuples contain a
             # trailing comma which Python ICAT/JPQL doesn't accept
@@ -88,9 +88,6 @@ class PythonICATWhereFilter(WhereFilter):
                 self.value = "(NULL)"
 
             where_filter = self.create_condition(self.field, "in", self.value)
-        elif self.operation == "inq":
-            self.operation = "in"
-            where_filter = self.create_filter()
         elif self.operation == "nin":
             # Convert self.value into a string with brackets equivalent to tuple format.
             # Cannot convert straight to tuple as single element tuples contain a
