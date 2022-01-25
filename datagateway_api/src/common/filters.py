@@ -27,20 +27,13 @@ class WhereFilter(QueryFilter):
         self.value = value
         self.operation = operation
 
-        if self.operation in ["in", "nin", "inq"]:
+        if self.operation in ["in", "nin", "inq", "between"]:
             if not isinstance(self.value, list):
                 raise BadRequestError(
                     f"When using the {self.operation} operation for a WHERE filter, the"
-                    f" values must be in a list format e.g. [1, 2, 3]",
+                    f" values must be in a list format e.g. [1, 2]",
                 )
-
-        if self.operation == "between":
-            if not isinstance(self.value, list):
-                raise BadRequestError(
-                    "When using the 'between' operation for a WHERE filter, the values"
-                    " must be in a list format e.g. [1, 2]",
-                )
-            if isinstance(self.value, list) and len(self.value) != 2:
+            if self.operation == "between" and len(self.value) != 2:
                 raise BadRequestError(
                     "When using the 'between' operation for a WHERE filter, the list"
                     "must contain two values e.g. [1, 2]",
