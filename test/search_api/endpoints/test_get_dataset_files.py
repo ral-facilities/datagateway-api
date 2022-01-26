@@ -12,14 +12,14 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                 '{"limit": 2}',
                 [
                     {
-                        "id": 1,
+                        "id": "1",
                         "name": "Datafile 1",
                         "path": "/hit/consumer/red.jpg",
                         "size": 199643799,
                         "dataset": None,
                     },
                     {
-                        "id": 10060,
+                        "id": "10060",
                         "name": "Datafile 10060",
                         "path": "/the/current/next.jpg",
                         "size": 124327237,
