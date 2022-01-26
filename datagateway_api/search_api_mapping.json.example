@@ -71,7 +71,6 @@
         "dataset": {"Dataset": ["investigation.investigationInstruments.instrument.datasetInstruments.dataset", "dataset"]},
         "document": {"Document": "investigation"}
     },
-    },
     "Person": {
         "base_icat_entity": "User",
         "id": "id",
