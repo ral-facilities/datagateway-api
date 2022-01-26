@@ -1,3 +1,4 @@
+from copy import copy
 from datetime import datetime
 import logging
 
@@ -82,27 +83,25 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         """
 
         if isinstance(self.search_api_query, SearchAPIQuery):
-            log.info("__str__ for SearchAPIWhereFilter, SearchAPIQuery found")
+            # Making a copy of the filter because `apply_filter()` can only be executed
+            # once per filter successfully
+            filter_copy = copy(self)
 
+            # Applying filter to the query so we get the correct JOINs, something not
+            # managed by the search API when we build the WHERE clause ourselves
             self.apply_filter(self.search_api_query)
-            # Replicating the condition in Python ICAT format so it can be searched on
-            # the query and return as string representation
-            conds_dict = self.create_filter()
-            a, jpql_func = self.search_api_query.icat_query.query._split_db_functs(
-                self.field,
-            )
-            conds_dict[self.field] = self.search_api_query.icat_query.query._cond_value(
-                conds_dict[self.field], jpql_func,
-            )
 
-            str_conds = self.search_api_query.icat_query.query.search_conditions(
-                self.field, conds_dict,
-            )
+            # Using a blank query to ensure the correct condition is retrieved from the
+            # where clause
+            blank_query = SearchAPIQuery(self.search_api_query.panosc_entity_name)
+            filter_copy.apply_filter(blank_query)
+            where_clause = blank_query.icat_query.query.where_clause
+            # The WHERE keyword is added by `ConditionSettingQuery`, where the
+            # `where_clause` property is overridden to support the search API building
+            # its own WHERE clauses to support `NestedWhereFilters`
+            str_cond = where_clause.replace("WHERE ", "")
 
-            try:
-                return str_conds[0]
-            except IndexError:
-                raise FilterError("Condition could not be found in Python ICAT query")
+            return str_cond
         else:
             log.info(
                 "__str__ for SearchAPIWhereFilter, no query found so repr() will be"
