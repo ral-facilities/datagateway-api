@@ -67,7 +67,9 @@ def get_search(entity_name, filters):
     panosc_data = []
     for icat_data in icat_query_data:
         panosc_model = getattr(models, entity_name)
-        panosc_record = panosc_model.from_icat(icat_data).json(by_alias=True)
+        panosc_record = panosc_model.from_icat(icat_data, icat_relations).json(
+            by_alias=True,
+        )
         panosc_data.append(json.loads(panosc_record))
 
     return panosc_data
