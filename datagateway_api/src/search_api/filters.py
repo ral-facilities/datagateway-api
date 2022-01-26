@@ -3,6 +3,7 @@ from datetime import datetime
 import logging
 
 from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.exceptions import FilterError
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -13,7 +14,6 @@ from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
 log = logging.getLogger()
-
 
 # TODO - Implement each of these filters for Search API, inheriting from the Python ICAT
 # versions
