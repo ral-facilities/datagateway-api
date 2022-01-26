@@ -245,15 +245,13 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             scope_query_filter, included_entity,
                         )
                     if isinstance(scope_query_filter, SearchAPIIncludeFilter):
-                        for included_entity_pointer in range(
-                            len(scope_query_filter.included_filters),
+                        for i, included_filter in enumerate(
+                            scope_query_filter.included_filters,
                         ):
                             nested_include = True
-                            included_filter = scope_query_filter.included_filters[
-                                included_entity_pointer
-                            ]
+                            scope_query_filter.panosc_entity_name = entity_name
                             scope_query_filter.included_filters[
-                                included_entity_pointer
+                                i
                             ] = f"{included_entity}.{included_filter}"
 
                 query_filters.extend(scope_query_filters)
