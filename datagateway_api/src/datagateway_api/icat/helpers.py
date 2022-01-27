@@ -21,7 +21,7 @@ from datagateway_api.src.common.exceptions import (
     MissingRecordError,
     PythonICATError,
 )
-from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,

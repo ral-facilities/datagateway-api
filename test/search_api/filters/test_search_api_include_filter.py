@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
