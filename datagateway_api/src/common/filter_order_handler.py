@@ -1,10 +1,13 @@
 import logging
 
 from datagateway_api.src.datagateway_api.icat.filters import (
+    PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
+from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
+from datagateway_api.src.search_api.panosc_mappings import mappings
 
 log = logging.getLogger()
 
@@ -43,6 +46,54 @@ class FilterOrderHandler(object):
 
         for query_filter in self.filters:
             query_filter.apply_filter(query)
+
+    def add_icat_relations_for_non_related_fields_of_panosc_related_entities(
+        self, panosc_entity_name,
+    ):
+        """
+        When there are Search API included filters, get the ICAT relations (if any) for
+        the non-related fields of all the entities in the relations. Once retrieved,
+        add them to the `included_filters` list of a `PythonICATIncludeFilter` object
+        that may already exist in `self.filters`. If such filter does not exist in
+        `self.filters` then create a new `PythonICATIncludeFilter` object, passing the
+        ICAT relations to it. Doing this will ensure that ICAT related entities that
+        map to non-related PaNOSC fields are included in the call made to ICAT.
+
+        A `PythonICATIncludeFilter` object can exist in `self.filters` when one is
+        created and added in the `get_search` method. This is done when the the PaNOSC
+        entity for which search is been retrieved has non-related fields that have
+        ICAT relations. For example, the Document entity has non-related fields that
+        map to the `keywords` and `type` ICAT entities that are related to the
+        `investigation` entity.
+
+        :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
+        :type panosc_entity_name: :class:`str`
+        """
+
+        python_icat_include_filter = None
+        icat_relations = []
+        for filter_ in self.filters:
+            if type(filter_) == PythonICATIncludeFilter:
+                # Using `type` as `isinstance` would return `True` for any class that
+                # inherits `PythonICATIncludeFilter` e.g. `SearchAPIIncludeFilter`.`
+                python_icat_include_filter = filter_
+            elif isinstance(filter_, SearchAPIIncludeFilter):
+                included_filters = filter_.included_filters
+                for included_filter in included_filters:
+                    icat_relations.extend(
+                        mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+                            panosc_entity_name, included_filter,
+                        ),
+                    )
+
+        if icat_relations:
+            # Remove any duplicate ICAT relations
+            icat_relations = list(dict.fromkeys(icat_relations))
+            if python_icat_include_filter:
+                python_icat_include_filter.included_filters.extend(icat_relations)
+            else:
+                python_icat_include_filter = PythonICATIncludeFilter(icat_relations)
+                self.filters.append(python_icat_include_filter)
 
     def merge_python_icat_limit_skip_filters(self):
         """
