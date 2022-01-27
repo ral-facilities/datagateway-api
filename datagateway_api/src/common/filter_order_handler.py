@@ -87,6 +87,10 @@ class FilterOrderHandler(object):
                     )
 
         if icat_relations:
+            log.info(
+                "Including ICAT relations of non-related fields of related PaNOSC "
+                "entities",
+            )
             # Remove any duplicate ICAT relations
             icat_relations = list(dict.fromkeys(icat_relations))
             if python_icat_include_filter:
