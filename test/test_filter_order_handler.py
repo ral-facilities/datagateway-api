@@ -2,9 +2,11 @@ import pytest
 
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.datagateway_api.icat.filters import (
+    PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
 
 
 class TestFilterOrderHandler:
@@ -70,3 +72,107 @@ class TestFilterOrderHandler:
             0,
             10,
         )
+
+    @pytest.mark.parametrize(
+        "test_panosc_entity_name, test_filters, expected_filters_length,"
+        "expected_num_of_python_include_filters, expected_icat_relations",
+        [
+            pytest.param(
+                "Dataset", [], 0, 0, [], id="Dataset without related entities",
+            ),
+            pytest.param(
+                "Dataset",
+                [SearchAPIIncludeFilter(["documents"], "Dataset")],
+                2,
+                1,
+                ["investigation.type", "investigation.keywords"],
+                id="Dataset with related entity",
+            ),
+            pytest.param(
+                "Dataset",
+                [SearchAPIIncludeFilter(["documents", "instrument"], "Dataset")],
+                2,
+                1,
+                [
+                    "investigation.type",
+                    "investigation.keywords",
+                    "datasetInstruments.instrument.facility",
+                ],
+                id="Dataset with related entities",
+            ),
+            pytest.param(
+                "Dataset",
+                [SearchAPIIncludeFilter(["documents.parameters.document"], "Dataset")],
+                2,
+                1,
+                [
+                    "investigation.type",
+                    "investigation.keywords",
+                    "investigation.parameters.type",
+                    "investigation.parameters.investigation.type",
+                    "investigation.parameters.investigation.keywords",
+                ],
+                id="Dataset with nested related entity",
+            ),
+            pytest.param(
+                "Dataset",
+                [
+                    SearchAPIIncludeFilter(
+                        [
+                            "documents.parameters.document",
+                            "parameters.dataset.instrument",
+                        ],
+                        "Dataset",
+                    ),
+                ],
+                2,
+                1,
+                [
+                    "investigation.type",
+                    "investigation.keywords",
+                    "investigation.parameters.type",
+                    "investigation.parameters.investigation.type",
+                    "investigation.parameters.investigation.keywords",
+                    "parameters.type",
+                    "parameters.dataset.datasetInstruments.instrument.facility",
+                ],
+                id="Dataset with nested related entities",
+            ),
+            pytest.param(
+                "Document",
+                [
+                    SearchAPIIncludeFilter(["parameters"], "Document"),
+                    PythonICATIncludeFilter(["type", "keywords"]),
+                ],
+                2,
+                1,
+                ["type", "keywords", "parameters.type"],
+                id="Document with related entity",
+            ),
+        ],
+    )
+    def test_add_icat_relations_for_non_related_fields_of_panosc_related_entities(
+        self,
+        test_panosc_entity_name,
+        test_filters,
+        expected_filters_length,
+        expected_num_of_python_include_filters,
+        expected_icat_relations,
+    ):
+        handler = FilterOrderHandler()
+        handler.add_filters(test_filters)
+        handler.add_icat_relations_for_non_related_fields_of_panosc_related_entities(
+            test_panosc_entity_name,
+        )
+
+        actual_num_of_python_include_filters = 0
+        for filter_ in handler.filters:
+            if type(filter_) == PythonICATIncludeFilter:
+                actual_num_of_python_include_filters += 1
+                assert filter_.included_filters == expected_icat_relations
+
+        assert (
+            actual_num_of_python_include_filters
+            == expected_num_of_python_include_filters
+        )
+        assert len(handler.filters) == expected_filters_length
