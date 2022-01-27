@@ -3,9 +3,7 @@ import uuid
 
 from dateutil.tz import tzlocal
 from flask import Flask
-from icat.client import Client
 from icat.exception import ICATNoObjectError
-from icat.query import Query
 import pytest
 
 from datagateway_api.src.api_start_utils import (
@@ -17,26 +15,9 @@ from test.datagateway_api.icat.endpoints.test_create_icat import TestICATCreateD
 from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
 
 
-@pytest.fixture(scope="package")
-def icat_client():
-    client = Client(
-        Config.config.datagateway_api.icat_url,
-        checkCert=Config.config.datagateway_api.icat_check_cert,
-    )
-    client.login(
-        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
-    )
-    return client
-
-
 @pytest.fixture()
 def valid_icat_credentials_header(icat_client):
     return {"Authorization": f"Bearer {icat_client.sessionId}"}
-
-
-@pytest.fixture()
-def icat_query(icat_client):
-    return Query(icat_client, "Investigation")
 
 
 def create_investigation_test_data(client, num_entities=1):
