@@ -18,14 +18,10 @@ def _get_icat_field_value(icat_field_name, icat_data):
             values = []
             for data in icat_data:
                 value = _get_icat_field_value(field_name, data)
-                if isinstance(value, list):
-                    values.extend(value)
-                else:
-                    values.append(value)
-
+                value = [value] if not isinstance(value, list) else value
+                values.extend(value)
             icat_data = values
-
-        if isinstance(icat_data, dict):
+        elif isinstance(icat_data, dict):
             icat_data = icat_data[field_name]
 
     return icat_data
