@@ -1,5 +1,4 @@
-import abc
-from abc import ABC
+from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 import sys
 from typing import ClassVar, List, Optional, Union
@@ -34,7 +33,7 @@ def _get_icat_field_value(icat_field_name, icat_data):
 
 class PaNOSCAttribute(ABC, BaseModel):
     @classmethod
-    @abc.abstractmethod
+    @abstractmethod
     def from_icat(cls, icat_data, required_related_fields):  # noqa: B902, N805
         model_fields = cls.__fields__
 
@@ -55,9 +54,8 @@ class PaNOSCAttribute(ABC, BaseModel):
             field_value = None
             for field_name in icat_field_name:
                 try:
-                    value = _get_icat_field_value(field_name, icat_data)
-                    if value:
-                        field_value = value
+                    field_value = _get_icat_field_value(field_name, icat_data)
+                    if field_value:
                         break
                 except KeyError:
                     continue
