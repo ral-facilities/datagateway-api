@@ -202,7 +202,7 @@ DATASET_PANOSC_DATA = {
     "title": DATASET_ICAT_DATA["name"],
     "creationDate": DateHandler.str_to_datetime_object(
         DATASET_ICAT_DATA["createTime"],
-    ).replace(tzinfo=timezone.utc),
+    ),
     "isPublic": True,
     "size": None,
     "documents": [],
@@ -222,13 +222,11 @@ DOCUMENT_PANOSC_DATA = {
     "doi": INVESTIGATION_ICAT_DATA["doi"],
     "startDate": DateHandler.str_to_datetime_object(
         INVESTIGATION_ICAT_DATA["startDate"],
-    ).replace(tzinfo=timezone.utc),
-    "endDate": DateHandler.str_to_datetime_object(
-        INVESTIGATION_ICAT_DATA["endDate"],
-    ).replace(tzinfo=timezone.utc),
+    ),
+    "endDate": DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
     "releaseDate": DateHandler.str_to_datetime_object(
         INVESTIGATION_ICAT_DATA["releaseDate"],
-    ).replace(tzinfo=timezone.utc),
+    ),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
     "datasets": [],
