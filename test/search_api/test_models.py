@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pydantic import ValidationError
 import pytest
 
+from datagateway_api.src.common.date_handler import DateHandler
 import datagateway_api.src.search_api.models as models
 
 
@@ -199,7 +200,9 @@ AFFILIATION_PANOSC_DATA = {
 DATASET_PANOSC_DATA = {
     "pid": DATASET_ICAT_DATA["doi"],
     "title": DATASET_ICAT_DATA["name"],
-    "creationDate": datetime.fromisoformat(DATASET_ICAT_DATA["createTime"]),
+    "creationDate": DateHandler.str_to_datetime_object(
+        DATASET_ICAT_DATA["createTime"],
+    ).replace(tzinfo=timezone.utc),
     "isPublic": True,
     "size": None,
     "documents": [],
@@ -217,9 +220,15 @@ DOCUMENT_PANOSC_DATA = {
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],
     "doi": INVESTIGATION_ICAT_DATA["doi"],
-    "startDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["startDate"]),
-    "endDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["endDate"]),
-    "releaseDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["releaseDate"]),
+    "startDate": DateHandler.str_to_datetime_object(
+        INVESTIGATION_ICAT_DATA["startDate"],
+    ).replace(tzinfo=timezone.utc),
+    "endDate": DateHandler.str_to_datetime_object(
+        INVESTIGATION_ICAT_DATA["endDate"],
+    ).replace(tzinfo=timezone.utc),
+    "releaseDate": DateHandler.str_to_datetime_object(
+        INVESTIGATION_ICAT_DATA["releaseDate"],
+    ).replace(tzinfo=timezone.utc),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
     "datasets": [],
