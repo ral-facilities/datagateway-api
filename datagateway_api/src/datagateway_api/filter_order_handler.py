@@ -1,10 +1,12 @@
 import logging
 
 from datagateway_api.src.datagateway_api.icat.filters import (
+    PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
+from datagateway_api.src.search_api.query import SearchAPIQuery
 
 log = logging.getLogger()
 
@@ -42,6 +44,13 @@ class FilterOrderHandler(object):
         self.sort_filters()
 
         for query_filter in self.filters:
+            # Using `type()` because we only want the Python ICAT version, don't want
+            # the code to catch objects that inherit from the class e.g.
+            # `SearchAPIIncludeFilter`
+            if type(query_filter) is PythonICATIncludeFilter and isinstance(
+                query, SearchAPIQuery,
+            ):
+                query = query.icat_query.query
             query_filter.apply_filter(query)
 
     def merge_python_icat_limit_skip_filters(self):
