@@ -3,10 +3,12 @@ import logging
 
 from datagateway_api.src.common.exceptions import MissingRecordError
 from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
-from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
-import datagateway_api.src.search_api.models as models
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATIncludeFilter
-from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
+from datagateway_api.src.search_api.filters import (
+    SearchAPIIncludeFilter,
+    SearchAPIWhereFilter,
+)
+import datagateway_api.src.search_api.models as models
 from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.session_handler import (

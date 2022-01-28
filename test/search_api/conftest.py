@@ -1,5 +1,5 @@
 import json
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 from flask import Flask
 import pytest
@@ -8,7 +8,6 @@ from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
-from datagateway_api.src.common.config import Config
 from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
