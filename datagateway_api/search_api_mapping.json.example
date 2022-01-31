@@ -65,10 +65,10 @@
     "Parameter": {
         "base_icat_entity": ["InvestigationParameter", "DatasetParameter"],
         "id": "id",
-        "name": "type.name",
+        "name": "name",
         "value": ["numericValue", "stringValue", "dateTimeValue"],
         "unit": "type.units",
-        "dataset": {"Dataset": ["investigation.investigationInstruments.instrument.datasetInstruments.dataset", "dataset"]},
+        "dataset": {"Dataset": "investigation.investigationInstruments.instrument.datasetInstruments.dataset"},
         "document": {"Document": "investigation"}
     },
     "Person": {
