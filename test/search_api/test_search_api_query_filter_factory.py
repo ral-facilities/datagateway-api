@@ -8,6 +8,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPIWhereFilter,
 )
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
@@ -19,19 +20,19 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"title": "My Title"}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("title", "My Title", "eq"),
                 id="Property value with no operator",
             ),
             pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="Property value with operator",
             ),
             pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
-                "documents",
+                "Document",
                 SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="WHERE filter in syntax for count endpoints",
             ),
@@ -53,7 +54,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"text": "Dataset 1"}}},
-                "datasets",
+                "Dataset",
                 [],
                 [SearchAPIWhereFilter("title", "Dataset 1", "like")],
                 "or",
@@ -61,7 +62,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"text": "Instrument 1"}}},
-                "instrument",
+                "Instrument",
                 [SearchAPIWhereFilter("name", "Instrument 1", "like")],
                 [SearchAPIWhereFilter("facility", "Instrument 1", "like")],
                 "or",
@@ -86,6 +87,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -93,7 +97,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
-                "documents",
+                "Document",
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "and",
@@ -110,7 +114,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "and",
@@ -128,7 +132,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -138,10 +142,10 @@ class TestSearchAPIQueryFilterFactory:
                 id="Multiple conditions (three), property values with no operator",
             ),
             pytest.param(
-                {"filter": {"where": {"and": [{"value": {"lt": 50}}]}}},
-                "parameters",
+                {"filter": {"where": {"and": [{"size": {"lt": 50}}]}}},
+                "File",
                 [],
-                [SearchAPIWhereFilter("value", 50, "lt")],
+                [SearchAPIWhereFilter("size", 50, "lt")],
                 "and",
                 id="Single condition, property value with operator",
             ),
@@ -150,15 +154,15 @@ class TestSearchAPIQueryFilterFactory:
                     "filter": {
                         "where": {
                             "and": [
-                                {"name": {"like": "Test name"}},
-                                {"value": {"gte": 275}},
+                                {"role": {"like": "Test role"}},
+                                {"size": {"gte": 275}},
                             ],
                         },
                     },
                 },
-                "parameters",
-                [SearchAPIWhereFilter("name", "Test name", "like")],
-                [SearchAPIWhereFilter("value", 275, "gte")],
+                "Member",
+                [SearchAPIWhereFilter("role", "Test role", "like")],
+                [SearchAPIWhereFilter("size", 275, "gte")],
                 "and",
                 id="Multiple conditions (two), property values with operator",
             ),
@@ -168,24 +172,24 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {
                             "and": [
                                 {"name": {"like": "Test name"}},
-                                {"value": {"gte": 275}},
-                                {"unit": {"nlike": "Test unit"}},
+                                {"size": {"gte": 275}},
+                                {"path": {"nlike": "Test path"}},
                             ],
                         },
                     },
                 },
-                "parameters",
+                "File",
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
-                    SearchAPIWhereFilter("value", 275, "gte"),
+                    SearchAPIWhereFilter("size", 275, "gte"),
                 ],
-                [SearchAPIWhereFilter("unit", "Test unit", "nlike")],
+                [SearchAPIWhereFilter("path", "Test path", "nlike")],
                 "and",
                 id="Multiple conditions (three), property values with operator",
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Dataset 1"}]}}},
-                "datasets",
+                "Dataset",
                 [],
                 [
                     NestedWhereFilters(
@@ -197,7 +201,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"and": [{"text": "Instrument 1"}]}}},
-                "instrument",
+                "Instrument",
                 [],
                 [
                     NestedWhereFilters(
@@ -215,7 +219,7 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {"and": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -234,7 +238,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -258,7 +262,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -280,7 +284,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -312,6 +316,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -319,7 +326,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
-                "documents",
+                "Document",
                 [],
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 "or",
@@ -336,7 +343,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
                 [SearchAPIWhereFilter("title", "Test title", "eq")],
                 "or",
@@ -354,7 +361,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     SearchAPIWhereFilter("summary", "My Test Summary", "eq"),
                     SearchAPIWhereFilter("title", "Test title", "eq"),
@@ -364,10 +371,10 @@ class TestSearchAPIQueryFilterFactory:
                 id="Multiple conditions (three), property values with no operator",
             ),
             pytest.param(
-                {"filter": {"where": {"or": [{"value": {"lt": 50}}]}}},
-                "parameters",
+                {"filter": {"where": {"or": [{"size": {"lt": 50}}]}}},
+                "File",
                 [],
-                [SearchAPIWhereFilter("value", 50, "lt")],
+                [SearchAPIWhereFilter("size", 50, "lt")],
                 "or",
                 id="Single condition, property value with operator",
             ),
@@ -377,14 +384,14 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {
                             "or": [
                                 {"name": {"like": "Test name"}},
-                                {"value": {"gte": 275}},
+                                {"size": {"gte": 275}},
                             ],
                         },
                     },
                 },
-                "parameters",
+                "File",
                 [SearchAPIWhereFilter("name", "Test name", "like")],
-                [SearchAPIWhereFilter("value", 275, "gte")],
+                [SearchAPIWhereFilter("size", 275, "gte")],
                 "or",
                 id="Multiple conditions (two), property values with operator",
             ),
@@ -394,24 +401,24 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {
                             "or": [
                                 {"name": {"like": "Test name"}},
-                                {"value": {"gte": 275}},
-                                {"unit": {"nlike": "Test unit"}},
+                                {"size": {"gte": 275}},
+                                {"path": {"nlike": "Test path"}},
                             ],
                         },
                     },
                 },
-                "parameters",
+                "File",
                 [
                     SearchAPIWhereFilter("name", "Test name", "like"),
-                    SearchAPIWhereFilter("value", 275, "gte"),
+                    SearchAPIWhereFilter("size", 275, "gte"),
                 ],
-                [SearchAPIWhereFilter("unit", "Test unit", "nlike")],
+                [SearchAPIWhereFilter("path", "Test path", "nlike")],
                 "or",
                 id="Multiple conditions (three), property values with operator",
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Dataset 1"}]}}},
-                "datasets",
+                "Dataset",
                 [],
                 [
                     NestedWhereFilters(
@@ -423,7 +430,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
             pytest.param(
                 {"filter": {"where": {"or": [{"text": "Instrument 1"}]}}},
-                "instrument",
+                "Instrument",
                 [],
                 [
                     NestedWhereFilters(
@@ -441,7 +448,7 @@ class TestSearchAPIQueryFilterFactory:
                         "where": {"or": [{"text": "Dataset 1"}, {"pid": "Test pid"}]},
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -460,7 +467,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -481,7 +488,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "datasets",
+                "Dataset",
                 [
                     NestedWhereFilters(
                         [], [SearchAPIWhereFilter("title", "Dataset 1", "like")], "or",
@@ -503,7 +510,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "instrument",
+                "Instrument",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("name", "Instrument 1", "like")],
@@ -535,6 +542,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -561,7 +571,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -600,7 +610,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -639,7 +649,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -684,7 +694,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -734,7 +744,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -784,7 +794,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -834,7 +844,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -876,6 +886,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -902,7 +915,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -941,7 +954,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -980,7 +993,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1025,7 +1038,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1075,7 +1088,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1125,7 +1138,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1175,7 +1188,7 @@ class TestSearchAPIQueryFilterFactory:
                         },
                     },
                 },
-                "documents",
+                "Document",
                 [
                     NestedWhereFilters(
                         [SearchAPIWhereFilter("summary", "My Test Summary", "eq")],
@@ -1217,6 +1230,9 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].lhs) == repr(expected_lhs)
         assert repr(filters[0].rhs) == repr(expected_rhs)
         assert filters[0].joining_operator == expected_joining_operator
+        assert repr(filters[0].search_api_query) == repr(
+            SearchAPIQuery(test_entity_name),
+        )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
@@ -1224,7 +1240,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
-                "datasets",
+                "Dataset",
                 1,
                 [["files"]],
                 id="Single related model",
@@ -1235,7 +1251,7 @@ class TestSearchAPIQueryFilterFactory:
                         "include": [{"relation": "files"}, {"relation": "instrument"}],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["files"], ["instrument"]],
                 id="Multiple related models",
@@ -1275,7 +1291,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["parameters"]],
                 [SearchAPIWhereFilter("parameters.name", "My parameter", "eq")],
@@ -1293,7 +1309,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["parameters"]],
                 [SearchAPIWhereFilter("parameters.name", "My parameter", "ne")],
@@ -1311,7 +1327,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["files"]],
                 [],
@@ -1333,7 +1349,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 1,
                 [["parameters"]],
                 [],
@@ -1351,7 +1367,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1386,7 +1402,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1421,7 +1437,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1476,7 +1492,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1568,7 +1584,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 2,
                 [["documents"]],
                 [],
@@ -1637,7 +1653,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "datasets",
+                "Dataset",
                 4,
                 [["parameters"], ["documents"]],
                 [
@@ -1668,7 +1684,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 3,
                 [["datasets.instrument"]],
                 [
@@ -1725,7 +1741,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 1,
                 [["datasets.parameters"]],
                 id="Single related model",
@@ -1746,7 +1762,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "documents",
+                "Document",
                 2,
                 [["datasets.parameters"], ["datasets.instrument"]],
                 id="Multiple related models",
@@ -1771,7 +1787,7 @@ class TestSearchAPIQueryFilterFactory:
                         ],
                     },
                 },
-                "instruments",
+                "Instrument",
                 1,
                 [["datasets.documents.parameters"]],
                 id="Nested related models",
@@ -1840,7 +1856,7 @@ class TestSearchAPIQueryFilterFactory:
                         "skip": 20,
                     },
                 },
-                "datasets",
+                "Dataset",
                 4,
                 [["instrument"]],
                 [SearchAPIWhereFilter("title", "My Title", "eq")],
@@ -1884,7 +1900,7 @@ class TestSearchAPIQueryFilterFactory:
                         "skip": 20,
                     },
                 },
-                "datasets",
+                "Dataset",
                 5,
                 [["instrument"]],
                 [SearchAPIWhereFilter("instrument.name", "Instrument 1", "eq")],

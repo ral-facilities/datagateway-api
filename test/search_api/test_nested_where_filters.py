@@ -2,6 +2,7 @@ import pytest
 
 from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 class TestNestedWhereFilters:
@@ -73,19 +74,21 @@ class TestNestedWhereFilters:
         assert where_clause == expected_where_clause
 
     @pytest.mark.parametrize(
-        "lhs, rhs, joining_operator, expected_where_clause",
+        "lhs, rhs, joining_operator, query, expected_where_clause",
         [
             pytest.param(
                 SearchAPIWhereFilter("name", "test name", "eq"),
                 SearchAPIWhereFilter("id", 3, "eq"),
                 "OR",
+                SearchAPIQuery("File"),
                 "(o.name = 'test name' OR o.id = '3')",
-                id="(o.name = 'test name' OR o.id = '3')",
+                id="(o.title = 'test name' OR o.id = '3')",
             ),
             pytest.param(
                 [SearchAPIWhereFilter("name", "test name", "eq")],
                 SearchAPIWhereFilter("id", 3, "eq"),
                 "OR",
+                SearchAPIQuery("File"),
                 "(o.name = 'test name' OR o.id = '3')",
                 id="Single filter list in LHS",
             ),
@@ -93,6 +96,7 @@ class TestNestedWhereFilters:
                 [SearchAPIWhereFilter("name", "test name", "eq")],
                 [SearchAPIWhereFilter("id", 3, "eq")],
                 "OR",
+                SearchAPIQuery("File"),
                 "(o.name = 'test name' OR o.id = '3')",
                 id="Single filter list in LHS and RHS",
             ),
@@ -103,31 +107,31 @@ class TestNestedWhereFilters:
                 ],
                 [SearchAPIWhereFilter("id", 3, "gt")],
                 "AND",
+                SearchAPIQuery("File"),
                 "(o.name = 'test name' AND o.id < '10' AND o.id > '3')",
                 id="Multiple filters on LHS",
             ),
             pytest.param(
                 [
-                    SearchAPIWhereFilter("name", "test name", "eq"),
-                    SearchAPIWhereFilter("id", 10, "lt"),
+                    SearchAPIWhereFilter("title", "test name", "eq"),
+                    SearchAPIWhereFilter("pid", 10, "lt"),
                 ],
                 [
-                    SearchAPIWhereFilter("id", 3, "gt"),
-                    SearchAPIWhereFilter("doi", "Test DOI", "like"),
+                    SearchAPIWhereFilter("pid", 3, "gt"),
+                    SearchAPIWhereFilter("summary", "Test Summary", "like"),
                 ],
                 "AND",
-                "(o.name = 'test name' AND o.id < '10' AND o.id > '3' AND o.doi like"
-                " '%Test DOI%')",
+                SearchAPIQuery("Document"),
+                "(o.name = 'test name' AND o.doi < '10' AND o.doi > '3' AND o.summary"
+                " like '%Test Summary%')",
                 id="Multiple filters on LHS and RHS",
             ),
         ],
     )
     def test_search_api_filters(
-        self, lhs, rhs, joining_operator, expected_where_clause,
+        self, lhs, rhs, joining_operator, query, expected_where_clause,
     ):
-        # TODO - Is creating clients causing this to be slow? Test once session handler
-        # work merged
-        test_nest = NestedWhereFilters(lhs, rhs, joining_operator)
+        test_nest = NestedWhereFilters(lhs, rhs, joining_operator, query)
         where_clause = str(test_nest)
         assert where_clause == expected_where_clause
 

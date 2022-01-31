@@ -12,7 +12,7 @@ from datagateway_api.src.common.config import Config
 # Only attempt to create a DataGateway API backend if the datagateway_api object
 # is present in the config. This ensures that the API does not error on startup
 # due to an AttributeError exception being thrown if the object is missing.
-if Config.config.datagateway_api is not None:
+if Config.config.datagateway_api:
     from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.database.helpers import db  # noqa: I202
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
@@ -27,14 +27,16 @@ from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoi
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
-from datagateway_api.src.resources.search_api_endpoints import (
-    get_files_endpoint,
-    get_number_count_endpoint,
-    get_number_count_files_endpoint,
-    get_search_endpoint,
-    get_single_endpoint,
-)
-from datagateway_api.src.resources.table_endpoints.table_endpoints import (
+
+if Config.config.search_api:
+    from datagateway_api.src.resources.search_api_endpoints import (
+        get_files_endpoint,
+        get_number_count_endpoint,
+        get_number_count_files_endpoint,
+        get_search_endpoint,
+        get_single_endpoint,
+    )
+from datagateway_api.src.resources.table_endpoints.table_endpoints import (  # noqa: I202, B950
     count_instrument_facility_cycles_endpoint,
     count_instrument_investigation_endpoint,
     instrument_facility_cycles_endpoint,
@@ -224,34 +226,46 @@ def create_api_endpoints(flask_app, api, spec):
     # Search API endpoints
     if Config.config.search_api is not None:
         search_api_extension = Config.config.search_api.extension
-        search_api_entity_endpoints = ["datasets", "documents", "instruments"]
+        search_api_entity_endpoints = {
+            "datasets": "Dataset",
+            "documents": "Document",
+            "instruments": "Instrument",
+        }
 
-        for entity_name in search_api_entity_endpoints:
-            get_search_endpoint_resource = get_search_endpoint(entity_name)
+        for endpoint_name, entity_name in search_api_entity_endpoints.items():
+            get_search_endpoint_resource = get_search_endpoint(
+                endpoint_name, entity_name,
+            )
             api.add_resource(
                 get_search_endpoint_resource,
-                f"{search_api_extension}/{entity_name}",
-                endpoint=f"search_api_get_{entity_name}",
+                f"{search_api_extension}/{endpoint_name}",
+                endpoint=f"search_api_get_{endpoint_name}",
             )
             spec.path(resource=get_search_endpoint_resource, api=api)
 
-            get_single_endpoint_resource = get_single_endpoint(entity_name)
+            get_single_endpoint_resource = get_single_endpoint(
+                endpoint_name, entity_name,
+            )
             api.add_resource(
                 get_single_endpoint_resource,
-                f"{search_api_extension}/{entity_name}/<int:pid>",
-                endpoint=f"search_api_get_single_{entity_name}",
+                f"{search_api_extension}/{endpoint_name}/<int:pid>",
+                endpoint=f"search_api_get_single_{endpoint_name}",
             )
             spec.path(resource=get_single_endpoint_resource, api=api)
 
-            get_number_count_endpoint_resource = get_number_count_endpoint(entity_name)
+            get_number_count_endpoint_resource = get_number_count_endpoint(
+                endpoint_name, entity_name,
+            )
             api.add_resource(
                 get_number_count_endpoint_resource,
-                f"{search_api_extension}/{entity_name}/count",
-                endpoint=f"search_api_count_{entity_name}",
+                f"{search_api_extension}/{endpoint_name}/count",
+                endpoint=f"search_api_count_{endpoint_name}",
             )
             spec.path(resource=get_number_count_endpoint_resource, api=api)
 
-        get_files_endpoint_resource = get_files_endpoint("datasets")
+        get_files_endpoint_resource = get_files_endpoint(
+            search_api_entity_endpoints["datasets"], "datasets",
+        )
         api.add_resource(
             get_files_endpoint_resource,
             f"{search_api_extension}/datasets/<int:pid>/files",
@@ -260,7 +274,7 @@ def create_api_endpoints(flask_app, api, spec):
         spec.path(resource=get_files_endpoint_resource, api=api)
 
         get_number_count_files_endpoint_resource = get_number_count_files_endpoint(
-            "datasets",
+            search_api_entity_endpoints["datasets"], "datasets",
         )
         api.add_resource(
             get_number_count_files_endpoint_resource,

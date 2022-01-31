@@ -25,9 +25,10 @@ class PythonICATWhereFilter(WhereFilter):
         try:
             log.info("Adding ICAT where filter (for %s) to query", self.value)
             query.addConditions(self.create_filter())
-        except ValueError:
+        except ValueError as e:
             raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query",
+                "Something went wrong when adding WHERE filter to ICAT query:"
+                f" {e.args}",
             )
 
     def create_filter(self):
@@ -42,6 +43,9 @@ class PythonICATWhereFilter(WhereFilter):
         :raises FilterError: If the operation provided to the instance isn't valid
         """
 
+        # TODO - need to add support for the rest of search API operators
+        # For things like inq, think we just call this function again with the DG API
+        # version. This will prevent a breaking change from occurring
         log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
             where_filter = self.create_condition(self.field, "=", self.value)

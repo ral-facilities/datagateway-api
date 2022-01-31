@@ -1,6 +1,6 @@
 from abc import ABC, abstractclassmethod
 from datetime import datetime
-from typing import List, Optional, Union
+from typing import ClassVar, List, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -22,6 +22,8 @@ class PaNOSCAttribute(ABC, BaseModel):
 class Affiliation(PaNOSCAttribute):
     """Information about which facility a member is located at"""
 
+    _text_operator_fields: ClassVar[List[str]] = []
+
     name: Optional[StrictStr]
     id_: Optional[StrictStr] = Field(alias="id")
     address: Optional[StrictStr]
@@ -40,6 +42,8 @@ class Dataset(PaNOSCAttribute):
     Information about an experimental run, including optional File, Sample, Instrument
     and Technique
     """
+
+    _text_operator_fields: ClassVar[List[str]] = ["title"]
 
     pid: StrictStr
     title: StrictStr
@@ -63,6 +67,8 @@ class Document(PaNOSCAttribute):
     """
     Proposal which includes the dataset or published paper which references the dataset
     """
+
+    _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
     pid: StrictStr
     is_public: StrictBool = Field(alias="isPublic")
@@ -88,6 +94,8 @@ class Document(PaNOSCAttribute):
 class File(PaNOSCAttribute):
     """Name of file and optionally location"""
 
+    _text_operator_fields: ClassVar[List[str]] = ["name"]
+
     id_: StrictStr = Field(alias="id")
     name: StrictStr
     path: Optional[StrictStr]
@@ -103,6 +111,8 @@ class File(PaNOSCAttribute):
 class Instrument(PaNOSCAttribute):
     """Beam line where experiment took place"""
 
+    _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
+
     pid: StrictStr
     name: StrictStr
     facility: StrictStr
@@ -116,6 +126,8 @@ class Instrument(PaNOSCAttribute):
 
 class Member(PaNOSCAttribute):
     """Proposal team member or paper co-author"""
+
+    _text_operator_fields: ClassVar[List[str]] = []
 
     id_: StrictStr = Field(alias="id")
     role: Optional[StrictStr] = Field(alias="role")
@@ -134,6 +146,8 @@ class Parameter(PaNOSCAttribute):
     Scalar measurement with value and units.
     Note: a parameter is either related to a dataset or a document, but not both.
     """
+
+    _text_operator_fields: ClassVar[List[str]] = []
 
     id_: StrictStr = Field(alias="id")
     name: StrictStr
@@ -162,6 +176,8 @@ class Parameter(PaNOSCAttribute):
 class Person(PaNOSCAttribute):
     """Human who carried out experiment"""
 
+    _text_operator_fields: ClassVar[List[str]] = []
+
     id_: StrictStr = Field(alias="id")
     full_name: StrictStr = Field(alias="fullName")
     orcid: Optional[StrictStr]
@@ -179,6 +195,8 @@ class Person(PaNOSCAttribute):
 class Sample(PaNOSCAttribute):
     """Extract of material used in the experiment"""
 
+    _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
+
     name: StrictStr
     pid: StrictStr
     description: Optional[StrictStr]
@@ -192,6 +210,8 @@ class Sample(PaNOSCAttribute):
 
 class Technique(PaNOSCAttribute):
     """Common name of scientific method used"""
+
+    _text_operator_fields: ClassVar[List[str]] = ["name"]
 
     pid: StrictStr
     name: StrictStr

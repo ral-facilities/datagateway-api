@@ -1,14 +1,17 @@
 import logging
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
-from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
+import datagateway_api.src.search_api.models as search_api_models
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.src.search_api.panosc_mappings import mappings
+from datagateway_api.src.search_api.query import SearchAPIQuery
 
 log = logging.getLogger()
 
@@ -36,25 +39,33 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             log.debug("Filter: %s", request_filter["filter"])
             for filter_name, filter_input in request_filter["filter"].items():
                 if filter_name == "where":
+                    log.info("where JSON object found")
                     query_filters.extend(
                         SearchAPIQueryFilterFactory.get_where_filter(
                             filter_input, entity_name,
                         ),
                     )
                 elif filter_name == "include":
+                    log.info("include JSON object found")
                     query_filters.extend(
-                        SearchAPIQueryFilterFactory.get_include_filter(filter_input),
+                        SearchAPIQueryFilterFactory.get_include_filter(
+                            filter_input, entity_name,
+                        ),
                     )
                 elif filter_name == "limit":
+                    log.info("limit JSON object found")
                     query_filters.append(SearchAPILimitFilter(filter_input))
                 elif filter_name == "skip":
+                    log.info("skip JSON object found")
                     query_filters.append(SearchAPISkipFilter(filter_input))
                 else:
                     raise FilterError(
-                        "No valid filter name given within filter query param",
+                        "No valid filter name given within filter query param:"
+                        f" {filter_name}",
                     )
         elif query_param_name == "where":
             # For the count endpoints
+            log.info("where query param found, likely for count endpoint")
             query_filters.extend(
                 SearchAPIQueryFilterFactory.get_query_filter(
                     {"filter": request_filter}, entity_name,
@@ -90,11 +101,13 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         :return: The list of `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
             created
         """
+
         where_filters = []
         if (
             list(where_filter_input.keys())[0] == "and"
             or list(where_filter_input.keys())[0] == "or"
         ):
+            log.debug("and/or operators found: %s", list(where_filter_input.keys())[0])
             boolean_operator = list(where_filter_input.keys())[0]
             conditions = list(where_filter_input.values())[0]
             conditional_where_filters = []
@@ -114,23 +127,35 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 conditional_where_filters[:-1],
                 conditional_where_filters[-1],
                 boolean_operator,
+                SearchAPIQuery(entity_name),
             )
             where_filters.append(nested)
         elif list(where_filter_input.keys())[0] == "text":
-            # TODO - we might want to move this to the data
-            # definitions at a later point
-            text_operator_fields = {
-                "datasets": ["title"],
-                "documents": ["title", "summary"],
-                "files": ["name"],
-                "instrument": ["name", "facility"],
-                "samples": ["name", "description"],
-                "techniques": ["name"],
-            }
-
+            log.debug("Text operator found within JSON where object")
             try:
-                or_conditional_filters = []
-                field_names = text_operator_fields[entity_name]
+                entity_class = getattr(search_api_models, entity_name)
+            except AttributeError as e:
+                raise SearchAPIError(
+                    f"No text operator fields have been defined for {entity_name}"
+                    f", {e.args}",
+                )
+
+            or_conditional_filters = []
+            field_names = entity_class._text_operator_fields
+            log.debug(
+                "Text operators found for PaNOSC %s: %s", entity_name, field_names,
+            )
+            if not field_names:
+                # No text operator fields present, simply log and move on, we should
+                # ignore text operator queries on entities where `_text_operator_fields`
+                # is empty (meaning they are not present in the origina PaNOSC data
+                # model)
+                log.info(
+                    "No text operator fields found for PaNOSC entity %s, will"
+                    " ignore",
+                    entity_name,
+                )
+            else:
                 for field_name in field_names:
                     or_conditional_filters.append(
                         {field_name: {"like": where_filter_input["text"]}},
@@ -144,12 +169,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         where_filter, entity_name,
                     ),
                 )
-            except KeyError:
-                # Do not raise FilterError nor attempt to create filters. Simply
-                # ignore text operator queries on fields that are not part of the
-                # text_operator_fields dict.
-                pass
         else:
+            log.info("Basic where filter found, extracting field, value and operation")
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(
                 where_filter_input,
             )
@@ -164,7 +185,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         return where_filters
 
     @staticmethod
-    def get_include_filter(include_filter_input):
+    def get_include_filter(include_filter_input, entity_name):
         """
         Given an include filter input, return a list of `SearchAPIIncludeFilter` and any
         `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects if there is a scope
@@ -187,6 +208,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
             nested_include = False
             if "scope" in related_model:
+                log.info("Scope found in include JSON object")
                 if "limit" in related_model["scope"]:
                     raise FilterError(
                         "Bad Include filter: Scope filter cannot have a limit filter",
@@ -196,9 +218,16 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         "Bad Include filter: Scope filter cannot have a skip filter",
                     )
 
-                # Scope filter can have WHERE and/ or INCLUDE filters
+                try:
+                    # Get related field name in entity name format for recursive call
+                    related_entity_name = mappings.get_panosc_related_entity_name(
+                        entity_name, included_entity,
+                    )
+                except SearchAPIError as e:
+                    # If the function call errors, it's a client issue at this point
+                    raise FilterError(e)
                 scope_query_filters = SearchAPIQueryFilterFactory.get_query_filter(
-                    {"filter": related_model["scope"]}, included_entity,
+                    {"filter": related_model["scope"]}, related_entity_name,
                 )
 
                 for scope_query_filter in scope_query_filters:
@@ -239,10 +268,15 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
         if isinstance(filter_data, str):
             # Format: {"where": {"property": "value"}}
+            log.debug("Format of WHERE filter: {'where': {'property': 'value'}}")
             value = conditions_dict[field]
             operation = "eq"
         elif isinstance(filter_data, dict):
             # Format: {"where": {"property": {"operator": "value"}}}
+            log.debug(
+                "Format of WHERE filter:"
+                " {'where': {'property': {'operator': 'value'}}}",
+            )
             value = list(conditions_dict[field].values())[0]
             operation = list(conditions_dict[field].keys())[0]
 
