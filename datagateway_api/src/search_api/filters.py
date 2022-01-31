@@ -3,7 +3,6 @@ from datetime import datetime
 import logging
 
 from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.common.exceptions import FilterError
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
