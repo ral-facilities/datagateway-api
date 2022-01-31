@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.0 (2022-01-31)
+### Feature
+* Implement `regexp` operator #297 ([`bf3fe0e`](https://github.com/ral-facilities/datagateway-api/commit/bf3fe0ef2ac582d55dbd881edf6a81a93625ce91))
+* Implement `neq` operator #297 ([`9094bbb`](https://github.com/ral-facilities/datagateway-api/commit/9094bbb894ead20a53fadfd0e24b264af29548b9))
+* Implement `nin` operator #297 ([`00dbba5`](https://github.com/ral-facilities/datagateway-api/commit/00dbba525d5cd86cb5577f3b1621a7042cdd2fa0))
+* Implement `inq` operator #297 ([`fc1cf19`](https://github.com/ral-facilities/datagateway-api/commit/fc1cf194454a4da60652b1f68df278c4624ddc11))
+* Implement `between` operator #297 ([`4736888`](https://github.com/ral-facilities/datagateway-api/commit/4736888bf76cda0dbc00f997443ed565f0f5e760))
+
 ## v3.3.0 (2022-01-31)
 ### Feature
 * Add function to get PaNOSC to ICAT mapping for where filter #260 ([`34b1d81`](https://github.com/ral-facilities/datagateway-api/commit/34b1d819482aa3efdb4f8da321125d3e40d76617))
