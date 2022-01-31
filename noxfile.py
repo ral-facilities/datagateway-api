@@ -85,5 +85,16 @@ def safety(session):
 @nox.session(python=["3.6", "3.7", "3.8", "3.9"], reuse_venv=True)
 def tests(session):
     args = session.posargs
+    # Installing setuptools that will work with `2to3` which is used when building
+    # `python-icat` < 1.0. 58.0.0 removes support of this tool during builds:
+    # https://setuptools.pypa.io/en/latest/history.html#v58-0-0
+    # Ideally this would be done within `pyproject.toml` but specifying `setuptools` as
+    # a dependency requires Poetry 1.2:
+    # https://github.com/python-poetry/poetry/issues/4511#issuecomment-922420457
+    # Currently, only a pre-release exists for Poetry 1.2. Testing on the pre-release
+    # version didn't fix the `2to3` issue when building Python ICAT, perhaps because
+    # Python ICAT isn't built on the downgraded version for some reason?
+    session.run("poetry", "run", "pip", "uninstall", "-y", "setuptools")
+    session.run("poetry", "run", "pip", "install", "setuptools<58.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
