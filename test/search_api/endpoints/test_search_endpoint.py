@@ -363,6 +363,14 @@ class TestSearchAPISearchEndpoint:
                 # Skipped due to ICAT 5 mapping
                 marks=pytest.mark.skip,
             ),
+            pytest.param(
+                "datasets",
+                '{"limit": 1, "where": {"isPublic": true}}',
+                [{}],
+                id="Search datasets with isPublic condition",
+                # Skipped because the where for isPublic doesn't work
+                marks=pytest.mark.skip,
+            ),
         ],
     )
     def test_valid_search_endpoint(
