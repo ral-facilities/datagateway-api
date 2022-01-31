@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.0 (2022-01-31)
+### Feature
+* Implement basic version of `SearchAPIIncludeFilter` #261 ([`f2f53c9`](https://github.com/ral-facilities/datagateway-api/commit/f2f53c92229d052ae697787eb80a35dcd2ea3b45))
+
+### Fix
+* Fix list type field checking in Python 3.6 #265 ([`691a59e`](https://github.com/ral-facilities/datagateway-api/commit/691a59ea3f850475572c3a877fb739e5216c6fe7))
+
+### Documentation
+* Add new comments and fix existing #265 ([`3f1b1cf`](https://github.com/ral-facilities/datagateway-api/commit/3f1b1cffdd1e57ab4eb1227b13e0906424adefd0))
+
 ## v3.4.0 (2022-01-31)
 ### Feature
 * Implement `regexp` operator #297 ([`bf3fe0e`](https://github.com/ral-facilities/datagateway-api/commit/bf3fe0ef2ac582d55dbd881edf6a81a93625ce91))
