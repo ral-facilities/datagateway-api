@@ -68,7 +68,7 @@
         "name": "type.name",
         "value": ["numericValue", "stringValue", "dateTimeValue"],
         "unit": "type.units",
-        "dataset": {"Dataset": ["investigation.investigationInstruments.instrument.datasetInstruments.dataset", "dataset"]},
+        "dataset": {"Dataset": "dataset"},
         "document": {"Document": "investigation"}
     },
     "Person": {

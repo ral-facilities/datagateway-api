@@ -2,6 +2,41 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.0 (2022-01-31)
+### Feature
+* Implement basic version of `SearchAPIIncludeFilter` #261 ([`f2f53c9`](https://github.com/ral-facilities/datagateway-api/commit/f2f53c92229d052ae697787eb80a35dcd2ea3b45))
+
+### Fix
+* Fix list type field checking in Python 3.6 #265 ([`691a59e`](https://github.com/ral-facilities/datagateway-api/commit/691a59ea3f850475572c3a877fb739e5216c6fe7))
+
+### Documentation
+* Add new comments and fix existing #265 ([`3f1b1cf`](https://github.com/ral-facilities/datagateway-api/commit/3f1b1cffdd1e57ab4eb1227b13e0906424adefd0))
+
+## v3.4.0 (2022-01-31)
+### Feature
+* Implement `regexp` operator #297 ([`bf3fe0e`](https://github.com/ral-facilities/datagateway-api/commit/bf3fe0ef2ac582d55dbd881edf6a81a93625ce91))
+* Implement `neq` operator #297 ([`9094bbb`](https://github.com/ral-facilities/datagateway-api/commit/9094bbb894ead20a53fadfd0e24b264af29548b9))
+* Implement `nin` operator #297 ([`00dbba5`](https://github.com/ral-facilities/datagateway-api/commit/00dbba525d5cd86cb5577f3b1621a7042cdd2fa0))
+* Implement `inq` operator #297 ([`fc1cf19`](https://github.com/ral-facilities/datagateway-api/commit/fc1cf194454a4da60652b1f68df278c4624ddc11))
+* Implement `between` operator #297 ([`4736888`](https://github.com/ral-facilities/datagateway-api/commit/4736888bf76cda0dbc00f997443ed565f0f5e760))
+
+## v3.3.0 (2022-01-31)
+### Feature
+* Add function to get PaNOSC to ICAT mapping for where filter #260 ([`34b1d81`](https://github.com/ral-facilities/datagateway-api/commit/34b1d819482aa3efdb4f8da321125d3e40d76617))
+* Convert PaNOSC to ICAT for where filter fields #260 ([`ff9595d`](https://github.com/ral-facilities/datagateway-api/commit/ff9595d2f571211db79dea02f702d4148b8879f3))
+
+### Fix
+* Fix example mapping file ([`3802cc9`](https://github.com/ral-facilities/datagateway-api/commit/3802cc9ee71a355d0ad87529f65112e8c3f8b881))
+* Update `__str__()` for WHERE filter to cope with applying filter #260 ([`8d259d7`](https://github.com/ral-facilities/datagateway-api/commit/8d259d75a28414f26cc569293720ef4e306e6844))
+
+### Documentation
+* Add docstring to static function #260 ([`618f6b9`](https://github.com/ral-facilities/datagateway-api/commit/618f6b9fead88f61a346b90cb2b85a90877b0410))
+
+## v3.2.0 (2022-01-31)
+### Feature
+* Add class to represent nested conditions #259 ([`583cbf2`](https://github.com/ral-facilities/datagateway-api/commit/583cbf29744b72c020429b61ae7442b19acef231))
+* Add first pass of query param implementation #259 ([`ee668e3`](https://github.com/ral-facilities/datagateway-api/commit/ee668e38cd43354851163616a93924ad84e14b90))
+
 ## v3.1.1 (2021-12-15)
 ### Fix
 * Correct reference to class name #264 ([`fc4c180`](https://github.com/ral-facilities/datagateway-api/commit/fc4c18085ab496d838e8d1e9e3f8c77f07826e9d))

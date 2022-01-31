@@ -1,5 +1,4 @@
-import abc
-from abc import ABC
+from abc import ABC, abstractmethod
 from datetime import datetime, timezone
 import sys
 from typing import ClassVar, List, Optional, Union
@@ -8,7 +7,27 @@ from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, Field, ValidationError, validator
 from pydantic.error_wrappers import ErrorWrapper
 
+from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.search_api.panosc_mappings import mappings
+
+
+def _is_panosc_entity_field_of_type_list(entity_field):
+    entity_field_outer_type = entity_field.outer_type_
+    if (
+        hasattr(entity_field_outer_type, "_name")
+        and entity_field_outer_type._name == "List"
+    ):
+        is_list = True
+    # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
+    # whether the field is of type list in Python 3.6, we are checking the type of its
+    # default value. We must ensure that any new list fields that get added in future
+    # are assigned a list by default.
+    elif isinstance(entity_field.default, list):
+        is_list = True
+    else:
+        is_list = False
+
+    return is_list
 
 
 def _get_icat_field_value(icat_field_name, icat_data):
@@ -18,14 +37,10 @@ def _get_icat_field_value(icat_field_name, icat_data):
             values = []
             for data in icat_data:
                 value = _get_icat_field_value(field_name, data)
-                if isinstance(value, list):
-                    values.extend(value)
-                else:
-                    values.append(value)
-
+                value = [value] if not isinstance(value, list) else value
+                values.extend(value)
             icat_data = values
-
-        if isinstance(icat_data, dict):
+        elif isinstance(icat_data, dict):
             icat_data = icat_data[field_name]
 
     return icat_data
@@ -33,19 +48,19 @@ def _get_icat_field_value(icat_field_name, icat_data):
 
 class PaNOSCAttribute(ABC, BaseModel):
     @classmethod
-    @abc.abstractmethod
+    @abstractmethod
     def from_icat(cls, icat_data, required_related_fields):  # noqa: B902, N805
-        model_fields = cls.__fields__
+        entity_fields = cls.__fields__
 
-        model_data = {}
-        for field in model_fields:
-            # Some fields have aliases so we must use them when creating a model instance.
-            # If a field does not have an alias then the `alias` property holds the name
-            # of the field
-            field_alias = cls.__fields__[field].alias
+        entity_data = {}
+        for entity_field in entity_fields:
+            # Some fields have aliases so we must use them when creating a model
+            # instance. If a field does not have an alias then the `alias` property
+            # holds the name of the field
+            entity_field_alias = cls.__fields__[entity_field].alias
 
-            panosc_entity_name, icat_field_name = mappings.get_icat_mapping(
-                cls.__name__, field_alias,
+            entity_name, icat_field_name = mappings.get_icat_mapping(
+                cls.__name__, entity_field_alias,
             )
 
             if not isinstance(icat_field_name, list):
@@ -54,75 +69,81 @@ class PaNOSCAttribute(ABC, BaseModel):
             field_value = None
             for field_name in icat_field_name:
                 try:
-                    value = _get_icat_field_value(field_name, icat_data)
-                    if value:
-                        field_value = value
+                    field_value = _get_icat_field_value(field_name, icat_data)
+                    if field_value:
                         break
                 except KeyError:
+                    # If an icat value cannot be found for the ICAT field name in the
+                    # provided ICAT data then ignore the error. The field name could
+                    # simply be a mapping of an optional PaNOSC entity field so ICAT
+                    # may not return data for it which is fine. It could also be a list
+                    # of mappings which is the case with the `value` field of the
+                    # PaNOSC entity. When this is the case, ICAT only returns data for
+                    # one of the mappings from the list so we can ignore the error.
+                    # This also ignores errors for mandatory fields but this is not a
+                    # problem because pydantic is responsible for validating whether
+                    # data for mandatory fields is missing.
                     continue
 
             if not field_value:
                 continue
 
-            if panosc_entity_name != cls.__name__:
-                # If we are here, it means that the field references another model so we
-                # have to get hold of its class definition and call its `from_icat` method
-                # to create an instance of itself with the ICAT data provided. Doing this
-                # allows for recursion.
-                data = field_value
-                if not isinstance(data, list):
-                    data = [data]
+            if entity_name != cls.__name__:
+                # If we are here, it means that the field references another model so
+                # we have to get hold of its class definition and call its `from_icat`
+                # method to create an instance of itself with the ICAT data provided.
+                # Doing this allows for recursion.
+                data = (
+                    [field_value] if not isinstance(field_value, list) else field_value
+                )
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:
                     required_related_field = required_related_field.split(".")
                     if (
                         len(required_related_field) > 1
-                        and field_alias in required_related_field
+                        and entity_field_alias in required_related_field
                     ):
                         required_related_fields_for_next_entity.extend(
                             required_related_field[1:],
                         )
 
-                # Get the class of the referenced model
-                panosc_model_attr = getattr(sys.modules[__name__], panosc_entity_name)
+                # Get the class of the referenced entity
+                entity_attr = getattr(sys.modules[__name__], entity_name)
                 field_value = [
-                    panosc_model_attr.from_icat(
-                        d, required_related_fields_for_next_entity,
-                    )
+                    entity_attr.from_icat(d, required_related_fields_for_next_entity)
                     for d in data
                 ]
 
-            field_outer_type = cls.__fields__[field].outer_type_
-            if (
-                not hasattr(field_outer_type, "_name")
-                or field_outer_type._name != "List"
+            if not _is_panosc_entity_field_of_type_list(
+                cls.__fields__[entity_field],
             ) and isinstance(field_value, list):
                 # If the field does not hold list of values but `field_value`
                 # is a list, then just get its first element
                 field_value = field_value[0]
 
-            model_data[field_alias] = field_value
+            entity_data[entity_field_alias] = field_value
 
         for required_related_field in required_related_fields:
             required_related_field = required_related_field.split(".")[0]
 
             if (
-                required_related_field in model_fields
+                required_related_field in entity_fields
                 and required_related_field
                 in cls._related_fields_with_min_cardinality_one
-                and required_related_field not in model_data
+                and required_related_field not in entity_data
             ):
                 # If we are here, it means that a related entity, which has a minimum
-                # cardinality of one, has been specified to be included as part of the entity
-                # but the relevant ICAT data needed for its creation cannot be found in the
-                # provided ICAT response. Because of this, a ValidationError is raised.
+                # cardinality of one, has been specified to be included as part of the
+                # entity but the relevant ICAT data needed for its creation cannot be
+                # found in the provided ICAT response. Because of this, a
+                # `ValidationError` is raised.
                 error_wrapper = ErrorWrapper(
                     TypeError("field required"), loc=required_related_field,
                 )
                 raise ValidationError(errors=[error_wrapper], model=cls)
 
-        return cls(**model_data)
+        return cls(**entity_data)
 
 
 class Affiliation(PaNOSCAttribute):
@@ -174,7 +195,7 @@ class Dataset(PaNOSCAttribute):
         if not value:
             return value
 
-        creation_date = datetime.fromisoformat(value)
+        creation_date = DateHandler.str_to_datetime_object(value)
         current_datetime = datetime.now(timezone.utc)
         three_years_ago = current_datetime - relativedelta(years=3)
         return creation_date < three_years_ago
@@ -213,7 +234,7 @@ class Document(PaNOSCAttribute):
         if not value:
             return value
 
-        creation_date = datetime.fromisoformat(value)
+        creation_date = DateHandler.str_to_datetime_object(value)
         current_datetime = datetime.now(timezone.utc)
         three_years_ago = current_datetime - relativedelta(years=3)
         return creation_date < three_years_ago
@@ -293,16 +314,27 @@ class Parameter(PaNOSCAttribute):
     dataset: Optional[Dataset] = None
     document: Optional[Document] = None
 
-    # @root_validator(skip_on_failure=True)
-    # def validate_dataset_and_document(cls, values):  # noqa: B902, N805
-    #     if values["dataset"] is None and values["document"] is None:
-    #         raise TypeError("must have a dataset or document")
+    """
+    Validator commented as it was decided to be disabled for the time being. The Data
+    Model states that a Parameter must be related to a Dataset or Document, however
+    considering that there is not a Parameter endpoint, it means that a Parameter can
+    only be included via Dataset or Document. It's unclear why anyone would query for
+    a Dataset or Document that includes Parameters which in turn includes a Dataset or
+    Document that are the same as the top level ones. To avoid errors being raised
+    as a result of Parameters not containing ICAT data for a Dataset or Document, the
+    validator has been disabled.
 
-    #     if values["dataset"] is not None and values["document"] is not None:
-    #         # TODO - Should an exception be raised here instead?
-    #         values["Document"] = None
+    @root_validator(skip_on_failure=True)
+    def validate_dataset_and_document(cls, values):  # noqa: B902, N805
+        if values["dataset"] is None and values["document"] is None:
+            raise TypeError("must have a dataset or document")
 
-    #     return values
+        if values["dataset"] is not None and values["document"] is not None:
+            # TODO - Should an exception be raised here instead?
+            values["Document"] = None
+
+        return values
+    """
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):

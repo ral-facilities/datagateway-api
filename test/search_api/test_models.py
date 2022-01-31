@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from pydantic import ValidationError
 import pytest
 
+from datagateway_api.src.common.date_handler import DateHandler
 import datagateway_api.src.search_api.models as models
 
 
@@ -199,7 +200,9 @@ AFFILIATION_PANOSC_DATA = {
 DATASET_PANOSC_DATA = {
     "pid": DATASET_ICAT_DATA["doi"],
     "title": DATASET_ICAT_DATA["name"],
-    "creationDate": datetime.fromisoformat(DATASET_ICAT_DATA["createTime"]),
+    "creationDate": DateHandler.str_to_datetime_object(
+        DATASET_ICAT_DATA["createTime"],
+    ),
     "isPublic": True,
     "size": None,
     "documents": [],
@@ -217,9 +220,13 @@ DOCUMENT_PANOSC_DATA = {
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],
     "doi": INVESTIGATION_ICAT_DATA["doi"],
-    "startDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["startDate"]),
-    "endDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["endDate"]),
-    "releaseDate": datetime.fromisoformat(INVESTIGATION_ICAT_DATA["releaseDate"]),
+    "startDate": DateHandler.str_to_datetime_object(
+        INVESTIGATION_ICAT_DATA["startDate"],
+    ),
+    "endDate": DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
+    "releaseDate": DateHandler.str_to_datetime_object(
+        INVESTIGATION_ICAT_DATA["releaseDate"],
+    ),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
     "datasets": [],
@@ -498,7 +505,6 @@ class TestModels:
 
     def test_from_icat_parameter_entity_with_investigation_parameter_data(self):
         expected_entity_data = PARAMETER_PANOSC_DATA.copy()
-        expected_entity_data["dataset"] = DATASET_PANOSC_DATA
         expected_entity_data["document"] = DOCUMENT_PANOSC_DATA
 
         icat_data = INVESTIGATION_PARAMETER_ICAT_DATA.copy()
@@ -506,18 +512,8 @@ class TestModels:
         icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
         icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
         icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
-        icat_data["investigation"]["investigationInstruments"] = [
-            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
-            {"instrument": INSTRUMENT_ICAT_DATA.copy()},
-        ]
-        icat_data["investigation"]["investigationInstruments"][0]["instrument"][
-            "datasetInstruments"
-        ] = [{"dataset": DATASET_ICAT_DATA}, {"dataset": DATASET_ICAT_DATA}]
-        icat_data["investigation"]["investigationInstruments"][1]["instrument"][
-            "datasetInstruments"
-        ] = []
 
-        parameter_entity = models.Parameter.from_icat(icat_data, ["dataset"])
+        parameter_entity = models.Parameter.from_icat(icat_data, ["document"])
 
         assert parameter_entity.dict(by_alias=True) == expected_entity_data
 
@@ -613,13 +609,7 @@ class TestModels:
         expected_entity_data["members"][0]["affiliation"] = AFFILIATION_PANOSC_DATA
         expected_entity_data["members"][0]["person"] = PERSON_PANOSC_DATA
         expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA.copy()]
-        expected_entity_data["parameters"][0]["value"]
-        expected_entity_data["parameters"][0]["dataset"] = DATASET_PANOSC_DATA.copy()
-        expected_entity_data["parameters"][0]["document"] = DOCUMENT_PANOSC_DATA.copy()
-        expected_entity_data["parameters"][0]["document"]["keywords"] = []
-        expected_entity_data["parameters"][0]["dataset"]["techniques"] = [
-            TECHNIQUE_PANOSC_DATA,
-        ]
+        expected_entity_data["parameters"][0]["document"] = DOCUMENT_PANOSC_DATA
 
         icat_data = INVESTIGATION_ICAT_DATA.copy()
         icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
@@ -645,17 +635,7 @@ class TestModels:
         icat_data["parameters"][0]["investigation"][
             "type"
         ] = INVESTIGATION_TYPE_ICAT_DATA
-        dataset_with_techniques_icat = DATASET_ICAT_DATA.copy()
-        dataset_with_techniques_icat.update(
-            {"datasetTechniques": [{"technique": TECHNIQUE_ICAT_DATA}]},
-        )
-        icat_data["parameters"][0]["investigation"]["investigationInstruments"] = [
-            {
-                "instrument": {
-                    "datasetInstruments": [{"dataset": dataset_with_techniques_icat}],
-                },
-            },
-        ]
+        icat_data["parameters"][0]["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
 
         relations = [
             "datasets.instrument",
@@ -664,7 +644,7 @@ class TestModels:
             "datasets.samples",
             "members.affiliation",
             "members.person",
-            "parameters.dataset.techniques",
+            "parameters.document",
         ]
 
         document_entity = models.Document.from_icat(icat_data, relations)
