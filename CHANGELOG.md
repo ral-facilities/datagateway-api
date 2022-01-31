@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v3.2.0 (2022-01-31)
+### Feature
+* Add class to represent nested conditions #259 ([`583cbf2`](https://github.com/ral-facilities/datagateway-api/commit/583cbf29744b72c020429b61ae7442b19acef231))
+* Add first pass of query param implementation #259 ([`ee668e3`](https://github.com/ral-facilities/datagateway-api/commit/ee668e38cd43354851163616a93924ad84e14b90))
+
 ## v3.1.1 (2021-12-15)
 ### Fix
 * Correct reference to class name #264 ([`fc4c180`](https://github.com/ral-facilities/datagateway-api/commit/fc4c18085ab496d838e8d1e9e3f8c77f07826e9d))
