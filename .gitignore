@@ -2,7 +2,7 @@ venv/
 .idea/
 *.pyc
 logs.log*
-config.json
+config.json*
 .vscode/
 .nox/
 .python-version

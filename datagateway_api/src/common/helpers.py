@@ -18,7 +18,6 @@ from datagateway_api.src.common.exceptions import (
     MissingCredentialsError,
 )
 from datagateway_api.src.datagateway_api.database import models
-from datagateway_api.src.datagateway_api.query_filter_factory import QueryFilterFactory
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
@@ -88,20 +87,42 @@ def is_valid_json(string):
     return True
 
 
-def get_filters_from_query_string():
+def get_filters_from_query_string(api_type, entity_name=None):
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
 
+    :param api_type: Type of API this function is being used for i.e. DataGateway API or
+        Search API
+    :type api_type: :class:`str`
+    :param entity_name: Entity name of the endpoint, optional (only used for search
+            API, not DataGateway API)
+    :type entity_name: :class:`str`
+    :raises ApiError: If `api_type` isn't a valid value
     :return: The list of filters
     """
+    if api_type == "search_api":
+        from datagateway_api.src.search_api.query_filter_factory import (
+            SearchAPIQueryFilterFactory as QueryFilterFactory,
+        )
+    elif api_type == "datagateway_api":
+        from datagateway_api.src.datagateway_api.query_filter_factory import (
+            DataGatewayAPIQueryFilterFactory as QueryFilterFactory,
+        )
+    else:
+        raise ApiError(
+            "Incorrect api_type passed into `get_filter_from_query_string(): "
+            f"{api_type}",
+        )
     log.info(" Getting filters from query string")
     try:
         filters = []
         for arg in request.args:
             for value in request.args.getlist(arg):
-                filters.append(
-                    QueryFilterFactory.get_query_filter({arg: json.loads(value)}),
+                filters.extend(
+                    QueryFilterFactory.get_query_filter(
+                        {arg: json.loads(value)}, entity_name,
+                    ),
                 )
         return filters
     except Exception as e:

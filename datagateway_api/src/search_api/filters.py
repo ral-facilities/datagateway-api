@@ -1,9 +1,12 @@
+from icat.query import Query
+
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.src.search_api.session_handler import SessionHandler
 
 # TODO - Implement each of these filters for Search API, inheriting from the Python ICAT
 # versions
@@ -15,6 +18,22 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
     def apply_filter(self, query):
         return super().apply_filter(query)
+
+    def __str__(self):
+        # TODO - can't just hardcode investigation entity. Might need `icat_entity_name`
+        # to be passed into init
+        query = Query(SessionHandler.client, "Investigation")
+        query.addConditions(self.create_filter())
+        str_conds = query.where_clause
+        str_conds = str_conds.replace("WHERE ", "")
+
+        return str_conds
+
+    def __repr__(self):
+        return (
+            f"Field: '{self.field}', Value: '{self.value}', Operation:"
+            f" '{self.operation}'"
+        )
 
 
 class SearchAPISkipFilter(PythonICATSkipFilter):

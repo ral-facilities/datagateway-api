@@ -30,7 +30,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
                 backend.get_with_filters(
                     get_session_id_from_auth_header(),
                     entity_type,
-                    get_filters_from_query_string(),
+                    get_filters_from_query_string("datagateway_api"),
                     **kwargs,
                 ),
                 200,
@@ -321,7 +321,7 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
 
     class CountEndpoint(Resource):
         def get(self):
-            filters = get_filters_from_query_string()
+            filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.count_with_filters(
                     get_session_id_from_auth_header(), entity_type, filters, **kwargs,
@@ -380,7 +380,7 @@ def get_find_one_endpoint(name, entity_type, backend, **kwargs):
 
     class FindOneEndpoint(Resource):
         def get(self):
-            filters = get_filters_from_query_string()
+            filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.get_one_with_filters(
                     get_session_id_from_auth_header(), entity_type, filters, **kwargs,
