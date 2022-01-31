@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.1 (2022-01-31)
+### Fix
+* Fix nested relations bug #261 ([`67fcbfe`](https://github.com/ral-facilities/datagateway-api/commit/67fcbfe2a35ca2b7e007a1a6d78105b2e46b0b5f))
+* Reference self instead of fixed instance #301 ([`40f5662`](https://github.com/ral-facilities/datagateway-api/commit/40f566279543871c5b7b1eab2c8b74050d8b3525))
+
 ## v3.5.0 (2022-01-31)
 ### Feature
 * Implement basic version of `SearchAPIIncludeFilter` #261 ([`f2f53c9`](https://github.com/ral-facilities/datagateway-api/commit/f2f53c92229d052ae697787eb80a35dcd2ea3b45))
