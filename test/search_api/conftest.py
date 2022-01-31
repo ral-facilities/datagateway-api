@@ -91,13 +91,10 @@ def test_search_api_mappings_data():
         "Parameter": {
             "base_icat_entity": ["InvestigationParameter", "DatasetParameter"],
             "id": "id",
-            "name": "name",
+            "name": "type.name",
             "value": ["numericValue", "stringValue", "dateTimeValue"],
             "unit": "type.units",
-            "dataset": {
-                "Dataset": "investigation.investigationInstruments.instrument."
-                "datasetInstruments.dataset",
-            },
+            "dataset": {"Dataset": "dataset"},
             "document": {"Document": "investigation"},
         },
         "Person": {

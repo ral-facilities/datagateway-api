@@ -195,18 +195,25 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         are part of include filters.
 
         :param include_filter_input: The filter from which to create a list of
-            `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/ or
+            `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/or
             `SearchAPIWhereFilter` objects
-        :type include_filter_input: :class:`dict`
+        :type include_filter_input: :class:`list`
         :return: The list of `SearchAPIIncludeFilter` and any `NestedWhereFilters` and/
             or `SearchAPIWhereFilter` objects created
         :raises FilterError: If scope filter has a limit or skip filter
         """
-        query_filters = []
-        for related_model in include_filter_input:
-            included_entity = related_model["relation"]
 
+        query_filters = []
+        included_entities = []
+
+        for related_model in include_filter_input:
+            log.debug("Related model: %s", related_model)
             nested_include = False
+            included_entity = related_model["relation"]
+            # List of included entities made so they can put into a single include
+            # filter instead of having a new filter object for each related entity
+            included_entities.append(related_model["relation"])
+
             if "scope" in related_model:
                 log.info("Scope found in include JSON object")
                 if "limit" in related_model["scope"]:
@@ -238,17 +245,23 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                             scope_query_filter, included_entity,
                         )
                     if isinstance(scope_query_filter, SearchAPIIncludeFilter):
-                        nested_include = True
-                        included_filter = scope_query_filter.included_filters[0]
-
-                        scope_query_filter.included_filters[
-                            0
-                        ] = f"{included_entity}.{included_filter}"
+                        for included_entity_pointer in range(
+                            len(scope_query_filter.included_filters),
+                        ):
+                            nested_include = True
+                            included_filter = scope_query_filter.included_filters[
+                                included_entity_pointer
+                            ]
+                            scope_query_filter.included_filters[
+                                included_entity_pointer
+                            ] = f"{included_entity}.{included_filter}"
 
                 query_filters.extend(scope_query_filters)
 
-            if not nested_include:
-                query_filters.append(SearchAPIIncludeFilter(included_entity))
+        if not nested_include:
+            query_filters.append(
+                SearchAPIIncludeFilter(included_entities, entity_name),
+            )
 
         return query_filters
 
