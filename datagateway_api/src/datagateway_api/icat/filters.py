@@ -49,7 +49,7 @@ class PythonICATWhereFilter(WhereFilter):
         log.info("Creating condition for ICAT where filter")
         if self.operation == "eq":
             where_filter = self.create_condition(self.field, "=", self.value)
-        elif self.operation == "ne":
+        elif self.operation in ["ne", "neq"]:
             where_filter = self.create_condition(self.field, "!=", self.value)
         elif self.operation == "like":
             where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
@@ -75,7 +75,7 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, ">", self.value)
         elif self.operation == "gte":
             where_filter = self.create_condition(self.field, ">=", self.value)
-        elif self.operation == "in":
+        elif self.operation in ["in", "inq"]:
             # Convert self.value into a string with brackets equivalent to tuple format.
             # Cannot convert straight to tuple as single element tuples contain a
             # trailing comma which Python ICAT/JPQL doesn't accept
@@ -88,6 +88,25 @@ class PythonICATWhereFilter(WhereFilter):
                 self.value = "(NULL)"
 
             where_filter = self.create_condition(self.field, "in", self.value)
+        elif self.operation == "nin":
+            # Convert self.value into a string with brackets equivalent to tuple format.
+            # Cannot convert straight to tuple as single element tuples contain a
+            # trailing comma which Python ICAT/JPQL doesn't accept
+            self.value = str(self.value).replace("[", "(").replace("]", ")")
+
+            # DataGateway Search can send requests with blank lists. Adding NULL to the
+            # filter prevents the API from returning a 500. An empty list will be
+            # returned instead, equivalent to the DB backend
+            if self.value == "()":
+                self.value = "(NULL)"
+
+            where_filter = self.create_condition(self.field, "not in", self.value)
+        elif self.operation == "between":
+            where_filter = self.create_condition(
+                self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
+            )
+        elif self.operation == "regexp":
+            where_filter = self.create_condition(self.field, "regexp", self.value)
         else:
             raise FilterError(f"Bad operation given to where filter: {self.operation}")
 
@@ -116,8 +135,7 @@ class PythonICATWhereFilter(WhereFilter):
         # distinct filter is used in a request
         jpql_value = (
             f"{value}"
-            if operator == "in"
-            or operator == "!="
+            if operator in ("in", "not in", "!=", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
             else f"'{value}'"
