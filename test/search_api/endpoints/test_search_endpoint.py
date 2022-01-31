@@ -388,7 +388,7 @@ class TestSearchAPISearchEndpoint:
         [
             pytest.param('{"where": []}', 400, id="Bad where filter"),
             pytest.param('{"limit": -1}', 400, id="Bad limit filter"),
-            pytest.param('{"limit": -100}', 400, id="Bad skip filter"),
+            pytest.param('{"skip": -100}', 400, id="Bad skip filter"),
             pytest.param('{"include": ""}', 400, id="Bad include filter"),
         ],
     )

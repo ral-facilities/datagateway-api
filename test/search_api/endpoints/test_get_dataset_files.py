@@ -137,9 +137,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         [
             pytest.param("0-8401-1070-7", '{"where": []}', 400, id="Bad where filter"),
             pytest.param("0-8401-1070-7", '{"limit": -1}', 400, id="Bad limit filter"),
-            pytest.param(
-                "0-8401-1070-7", '{"limit": -100}', 400, id="Bad skip filter",
-            ),
+            pytest.param("0-8401-1070-7", '{"skip": -100}', 400, id="Bad skip filter"),
             pytest.param(
                 "0-8401-1070-7", '{"include": ""}', 400, id="Bad include filter",
             ),
