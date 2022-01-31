@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.3.0 (2022-01-31)
+### Feature
+* Add function to get PaNOSC to ICAT mapping for where filter #260 ([`34b1d81`](https://github.com/ral-facilities/datagateway-api/commit/34b1d819482aa3efdb4f8da321125d3e40d76617))
+* Convert PaNOSC to ICAT for where filter fields #260 ([`ff9595d`](https://github.com/ral-facilities/datagateway-api/commit/ff9595d2f571211db79dea02f702d4148b8879f3))
+
+### Fix
+* Fix example mapping file ([`3802cc9`](https://github.com/ral-facilities/datagateway-api/commit/3802cc9ee71a355d0ad87529f65112e8c3f8b881))
+* Update `__str__()` for WHERE filter to cope with applying filter #260 ([`8d259d7`](https://github.com/ral-facilities/datagateway-api/commit/8d259d75a28414f26cc569293720ef4e306e6844))
+
+### Documentation
+* Add docstring to static function #260 ([`618f6b9`](https://github.com/ral-facilities/datagateway-api/commit/618f6b9fead88f61a346b90cb2b85a90877b0410))
+
 ## v3.2.0 (2022-01-31)
 ### Feature
 * Add class to represent nested conditions #259 ([`583cbf2`](https://github.com/ral-facilities/datagateway-api/commit/583cbf29744b72c020429b61ae7442b19acef231))
