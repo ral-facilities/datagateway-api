@@ -20,7 +20,7 @@ def _is_panosc_entity_field_of_type_list(entity_field):
         is_list = True
     # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
     # whether the field is of type list in Python 3.6, we are checking the type of its
-    # defualt value. We must ensure that any new list fields that get added in future
+    # default value. We must ensure that any new list fields that get added in future
     # are assigned a list by default.
     elif isinstance(entity_field.default, list):
         is_list = True
