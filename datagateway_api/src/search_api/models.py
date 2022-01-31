@@ -11,6 +11,25 @@ from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
 
+def _is_panosc_entity_field_of_type_list(entity_field):
+    entity_field_outer_type = entity_field.outer_type_
+    if (
+        hasattr(entity_field_outer_type, "_name")
+        and entity_field_outer_type._name == "List"
+    ):
+        is_list = True
+    # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
+    # whether the field is of type list in Python 3.6, we are checking the type of its
+    # defualt value. We must ensure that any new list fields that get added in future
+    # are assigned a list by default.
+    elif isinstance(entity_field.default, list):
+        is_list = True
+    else:
+        is_list = False
+
+    return is_list
+
+
 def _get_icat_field_value(icat_field_name, icat_data):
     icat_field_name = icat_field_name.split(".")
     for field_name in icat_field_name:
@@ -96,10 +115,8 @@ class PaNOSCAttribute(ABC, BaseModel):
                     for d in data
                 ]
 
-            entity_field_outer_type = cls.__fields__[entity_field].outer_type_
-            if (
-                not hasattr(entity_field_outer_type, "_name")
-                or entity_field_outer_type._name != "List"
+            if not _is_panosc_entity_field_of_type_list(
+                cls.__fields__[entity_field],
             ) and isinstance(field_value, list):
                 # If the field does not hold list of values but `field_value`
                 # is a list, then just get its first element
