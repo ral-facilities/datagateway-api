@@ -49,7 +49,7 @@ class PaNOSCMappings:
         )
 
         try:
-            icat_mapping = mappings.mappings[panosc_entity_name][field_name]
+            icat_mapping = self.mappings[panosc_entity_name][field_name]
             log.debug("ICAT mapping/translation found: %s", icat_mapping)
         except KeyError as e:
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")

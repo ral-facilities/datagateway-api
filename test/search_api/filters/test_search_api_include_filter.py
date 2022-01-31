@@ -53,16 +53,6 @@ class TestSearchAPIIncludeFilter:
                 " iu.user",
                 id="Document.members.person",
             ),
-            # TODO - Below test fails because dataset/investigation parameters issue on
-            # mapping
-            pytest.param(
-                SearchAPIIncludeFilter(["dataset.parameters.document"], "File"),
-                "File",
-                "SELECT o FROM Datafile o INCLUDE o.dataset AS d, d.parameters AS p,"
-                " p.investigation",
-                id="File.dataset.parameters.document",
-                marks=pytest.mark.skip,
-            ),
             pytest.param(
                 SearchAPIIncludeFilter(["dataset.samples.datasets"], "File"),
                 "File",
