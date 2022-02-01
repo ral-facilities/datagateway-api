@@ -135,7 +135,7 @@ class PythonICATWhereFilter(WhereFilter):
         # distinct filter is used in a request
         jpql_value = (
             f"{value}"
-            if operator in ("in", "not in", "!=", "between")
+            if operator in ("in", "not in", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
             else f"'{value}'"
