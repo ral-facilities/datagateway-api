@@ -11,146 +11,153 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
     name: Python ${{ matrix.python-version }} Build & Tests
     steps:
-    - name: Add apt repo
-      run: sudo add-apt-repository universe
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
 
-    # Setup Java & Python
-    - name: Setup Java
-      uses: actions/setup-java@v1
-      with:
-        java-version: 8
-        java-package: jdk
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-        architecture: x64
+      # Setup Java & Python
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          java-package: jdk
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
 
-    # ICAT Ansible clone and install dependencies
-    - name: Checkout icat-ansible
-      uses: actions/checkout@v2
-      with:
-        repository: icatproject-contrib/icat-ansible
-        ref: master
-        path: icat-ansible
-    - name: Install Ansible
-      run: pip install -r icat-ansible/requirements.txt
+      # ICAT Ansible clone and install dependencies
+      - name: Checkout icat-ansible
+        uses: actions/checkout@v2
+        with:
+          repository: icatproject-contrib/icat-ansible
+          ref: master
+          path: icat-ansible
+      - name: Install Ansible
+        run: pip install -r icat-ansible/requirements.txt
 
-    # Prep for running the playbook
-    - name: Create hosts file
-      run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-    - name: Prepare vault pass
-      run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-    - name: Move vault to directory it'll get detected by Ansible
-      run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-    - name: Replace default payara user with Actions user
-      run: |
-        sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      # Prep for running the playbook
+      - name: Create hosts file
+        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+      - name: Prepare vault pass
+        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
+      - name: Move vault to directory it'll get detected by Ansible
+        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
+      - name: Replace default payara user with Actions user
+        run: |
+          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
-    # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-    - name: Change hostname to localhost
-      run: sudo hostname -b localhost
+      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
+      - name: Change hostname to localhost
+        run: sudo hostname -b localhost
 
-    # Create local instance of ICAT
-    - name: Run ICAT Ansible Playbook
-      run: |
-        ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+      # Create local instance of ICAT
+      - name: Run ICAT Ansible Playbook
+        run: |
+          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
-    - name: Checkout DataGateway API
-      uses: actions/checkout@v2
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
 
-    # Prep for using the API for tests
-    - name: Create log file
-      run: touch logs.log
-    - name: Configure log file location
-      run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-        '.log_location=$REPO_DIR' datagateway_api/config.json.example`" > datagateway_api/config.json.example
-    - name: Create config.json
-      run: cp datagateway_api/config.json.example datagateway_api/config.json
-    - name: Create search_api_mapping.json
-      run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      # Prep for using the API for tests
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
+          '.log_location=$REPO_DIR' datagateway_api/config.json.example`" > datagateway_api/config.json.example
+      - name: Create config.json
+        run: cp datagateway_api/config.json.example datagateway_api/config.json
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
-    # Install Nox, Poetry and API's dependencies
-    - name: Install Nox
-      run: pip install nox==2020.8.22
-    - name: Install Poetry
-      run: pip install poetry==1.1.9
-    - name: Install dependencies
-      run: poetry install
+      # Install Nox, Poetry and API's dependencies
+      - name: Install Nox
+        run: pip install nox==2020.8.22
+      - name: Install Poetry
+        run: pip install poetry==1.1.9
 
-    - name: Add dummy data to icatdb
-      run: |
-        poetry run python -m util.icat_db_generator
+      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
 
-    # Run Nox tests session, saves and uploads a coverage report to codecov
-    - name: Run Nox tests session
-      run: nox -p ${{ matrix.python-version }} -s tests -- --cov=datagateway_api --cov-report=xml
-    - name: Upload code coverage report
-      if: matrix.python-version == '3.6'
-      uses: codecov/codecov-action@v1
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Add dummy data to icatdb
+        run: |
+          poetry run python -m util.icat_db_generator
+
+      # Run Nox tests session, saves and uploads a coverage report to codecov
+      - name: Run Nox tests session
+        run: nox -p ${{ matrix.python-version }} -s tests -- --cov=datagateway_api --cov-report=xml
+      - name: Upload code coverage report
+        if: matrix.python-version == '3.6'
+        uses: codecov/codecov-action@v1
 
   linting:
     runs-on: ubuntu-20.04
     name: Linting
     steps:
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9.7'
-        architecture: x64
-    - name: Checkout DataGateway API
-      uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.7"
+          architecture: x64
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
 
-    - name: Install Nox
-      run: pip install nox==2020.8.22
-    - name: Install Poetry
-      run: pip install poetry==1.1.9
+      - name: Install Nox
+        run: pip install nox==2020.8.22
+      - name: Install Poetry
+        run: pip install poetry==1.1.9
 
-    - name: Run Nox lint session
-      run: nox -s lint
+      - name: Run Nox lint session
+        run: nox -s lint
 
   formatting:
     runs-on: ubuntu-20.04
     name: Code Formatting
     steps:
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9.7'
-        architecture: x64
-    - name: Checkout DataGateway API
-      uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.7"
+          architecture: x64
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
 
-    - name: Install Nox
-      run: pip install nox==2020.8.22
-    - name: Install Poetry
-      run: pip install poetry==1.1.9
+      - name: Install Nox
+        run: pip install nox==2020.8.22
+      - name: Install Poetry
+        run: pip install poetry==1.1.9
 
-    - name: Run Nox black session
-      run: nox -s black
+      - name: Run Nox black session
+        run: nox -s black
 
   safety:
     runs-on: ubuntu-20.04
     name: Dependency Safety
     steps:
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9.7'
-        architecture: x64
-    - name: Checkout DataGateway API
-      uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9.7"
+          architecture: x64
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
 
-    - name: Install Nox
-      run: pip install nox==2020.8.22
-    - name: Install Poetry
-      run: pip install poetry==1.1.9
+      - name: Install Nox
+        run: pip install nox==2020.8.22
+      - name: Install Poetry
+        run: pip install poetry==1.1.9
 
-    - name: Run Nox safety session
-      run: nox -s safety
+      - name: Run Nox safety session
+        run: nox -s safety
 
   generator-script-testing:
     runs-on: ubuntu-20.04
@@ -169,7 +176,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9.7'
+          python-version: "3.9.7"
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -211,6 +218,13 @@ jobs:
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
       - name: Install Poetry
         run: pip install poetry==1.1.9
+
+      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
+
       - name: Install dependencies
         run: poetry install
 
@@ -238,7 +252,6 @@ jobs:
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
 
-
       # Drop and re-create icatdb to remove generated data
       - name: Drop icatdb
         run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
@@ -257,6 +270,13 @@ jobs:
         run: cp datagateway_api/config.json.example datagateway_api/config.json
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+
+      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
+
       - name: Install dependencies
         run: poetry install
 
