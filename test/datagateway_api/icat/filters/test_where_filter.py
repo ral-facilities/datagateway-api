@@ -1,7 +1,7 @@
 import pytest
 
 from datagateway_api.src.common.exceptions import BadRequestError, FilterError
-from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
 
 
@@ -10,8 +10,8 @@ class TestICATWhereFilter:
         "operation, value, expected_condition_value",
         [
             pytest.param("eq", 5, ["%s = '5'"], id="equal"),
-            pytest.param("ne", 5, ["%s != 5"], id="not equal (ne)"),
-            pytest.param("neq", 5, ["%s != 5"], id="not equal (neq)"),
+            pytest.param("ne", 5, ["%s != '5'"], id="not equal (ne)"),
+            pytest.param("neq", 5, ["%s != '5'"], id="not equal (neq)"),
             pytest.param("like", 5, ["%s like '%%5%%'"], id="like"),
             pytest.param("ilike", 5, ["UPPER(%s) like UPPER('%%5%%')"], id="ilike"),
             pytest.param("nlike", 5, ["%s not like '%%5%%'"], id="not like"),

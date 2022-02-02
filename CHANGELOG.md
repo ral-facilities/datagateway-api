@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.3 (2022-02-02)
+### Fix
+* Retrieve non-related fields that have a list of ICAT relations #265 ([`2c5edc5`](https://github.com/ral-facilities/datagateway-api/commit/2c5edc50f9f713b0d15e137ad4a307a90a86b5aa))
+
+## v3.5.2 (2022-02-02)
+### Fix
+* Make `ne` and `neq` operators work with non-numeric values #315 ([`f5e3b4b`](https://github.com/ral-facilities/datagateway-api/commit/f5e3b4b1bfebd25c6d6fb288eb3f5a79daf87dac))
+
+## v3.5.1 (2022-01-31)
+### Fix
+* Fix nested relations bug #261 ([`67fcbfe`](https://github.com/ral-facilities/datagateway-api/commit/67fcbfe2a35ca2b7e007a1a6d78105b2e46b0b5f))
+* Reference self instead of fixed instance #301 ([`40f5662`](https://github.com/ral-facilities/datagateway-api/commit/40f566279543871c5b7b1eab2c8b74050d8b3525))
+
 ## v3.5.0 (2022-01-31)
 ### Feature
 * Implement basic version of `SearchAPIIncludeFilter` #261 ([`f2f53c9`](https://github.com/ral-facilities/datagateway-api/commit/f2f53c92229d052ae697787eb80a35dcd2ea3b45))

@@ -49,7 +49,7 @@ class PaNOSCMappings:
         )
 
         try:
-            icat_mapping = mappings.mappings[panosc_entity_name][field_name]
+            icat_mapping = self.mappings[panosc_entity_name][field_name]
             log.debug("ICAT mapping/translation found: %s", icat_mapping)
         except KeyError as e:
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
@@ -118,9 +118,11 @@ class PaNOSCMappings:
 
         non_related_field_names = []
         for mapping_key, mapping_value in entity_mappings.items():
-            # The mappings for the non-related fields are of type `str` whereas for
-            # the related fields, they are of type `dict`. We only need the former.
-            if mapping_key != "base_icat_entity" and isinstance(mapping_value, str):
+            # The mappings for the non-related fields are of type `str` and sometimes
+            # `list' whereas for the related fields, they are of type `dict`.
+            if mapping_key != "base_icat_entity" and (
+                isinstance(mapping_value, str) or isinstance(mapping_value, list)
+            ):
                 non_related_field_names.append(mapping_key)
 
         return non_related_field_names
@@ -141,13 +143,17 @@ class PaNOSCMappings:
         for field_name in field_names:
             _, icat_mapping = self.get_icat_mapping(panosc_entity_name, field_name)
 
-            split_icat_mapping = icat_mapping.split(".")
-            if len(split_icat_mapping) > 1:
-                # Remove the last split element because it is an ICAT
-                # field name and is not therefore part of the relation
-                split_icat_mapping = split_icat_mapping[:-1]
-                icat_mapping = ".".join(split_icat_mapping)
-                icat_relations.append(icat_mapping)
+            if not isinstance(icat_mapping, list):
+                icat_mapping = [icat_mapping]
+
+            for mapping in icat_mapping:
+                split_mapping = mapping.split(".")
+                if len(split_mapping) > 1:
+                    # Remove the last split element because it is an ICAT
+                    # field name and is not therefore part of the relation
+                    split_mapping = split_mapping[:-1]
+                    split_mapping = ".".join(split_mapping)
+                    icat_relations.append(split_mapping)
 
         return icat_relations
 

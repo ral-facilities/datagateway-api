@@ -3,18 +3,37 @@ import json
 from unittest.mock import mock_open, patch
 
 from flask import Flask
+from icat.client import Client
+from icat.query import Query
 import pytest
 
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
-from datagateway_api.src.common.config import APIConfig
+from datagateway_api.src.common.config import APIConfig, Config
 from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
 )
 from datagateway_api.src.datagateway_api.database.models import SESSION
+
+
+@pytest.fixture(scope="package")
+def icat_client():
+    client = Client(
+        Config.config.datagateway_api.icat_url,
+        checkCert=Config.config.datagateway_api.icat_check_cert,
+    )
+    client.login(
+        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+    )
+    return client
+
+
+@pytest.fixture()
+def icat_query(icat_client):
+    return Query(icat_client, "Investigation")
 
 
 @pytest.fixture()

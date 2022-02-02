@@ -165,19 +165,6 @@ class TestPaNOSCMappings:
                 ],
                 id="Dataset parameters.dataset.documents relations",
             ),
-            pytest.param(
-                "Document",
-                "parameters.dataset.documents",
-                [
-                    "parameters.type",
-                    "parameters.type",
-                    "parameters.investigation.investigationInstruments.instrument"
-                    ".datasetInstruments.dataset.investigation.type",
-                    "parameters.investigation.investigationInstruments.instrument"
-                    ".datasetInstruments.dataset.investigation.keywords",
-                ],
-                id="Document parameters.dataset.documents relations",
-            ),
         ],
     )
     def test_get_icat_relations_for_non_related_fields_of_panosc_relation(

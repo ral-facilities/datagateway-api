@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
@@ -52,16 +52,6 @@ class TestSearchAPIIncludeFilter:
                 "SELECT o FROM Investigation o INCLUDE o.investigationUsers AS iu,"
                 " iu.user",
                 id="Document.members.person",
-            ),
-            # TODO - Below test fails because dataset/investigation parameters issue on
-            # mapping
-            pytest.param(
-                SearchAPIIncludeFilter(["dataset.parameters.document"], "File"),
-                "File",
-                "SELECT o FROM Datafile o INCLUDE o.dataset AS d, d.parameters AS p,"
-                " p.investigation",
-                id="File.dataset.parameters.document",
-                marks=pytest.mark.skip,
             ),
             pytest.param(
                 SearchAPIIncludeFilter(["dataset.samples.datasets"], "File"),

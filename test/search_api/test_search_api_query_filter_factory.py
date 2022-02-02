@@ -1714,6 +1714,7 @@ class TestSearchAPIQueryFilterFactory:
         assert len(filters) == expected_length
         for test_filter in filters:
             if isinstance(test_filter, SearchAPIIncludeFilter):
+                assert test_filter.panosc_entity_name == test_entity_name
                 for expected_include in expected_included_entities:
                     assert test_filter.included_filters == expected_include
                     expected_included_entities.remove(expected_include)
