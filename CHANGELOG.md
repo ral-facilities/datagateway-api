@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.2 (2022-02-02)
+### Fix
+* Make `ne` and `neq` operators work with non-numeric values #315 ([`f5e3b4b`](https://github.com/ral-facilities/datagateway-api/commit/f5e3b4b1bfebd25c6d6fb288eb3f5a79daf87dac))
+
 ## v3.5.1 (2022-01-31)
 ### Fix
 * Fix nested relations bug #261 ([`67fcbfe`](https://github.com/ral-facilities/datagateway-api/commit/67fcbfe2a35ca2b7e007a1a6d78105b2e46b0b5f))
