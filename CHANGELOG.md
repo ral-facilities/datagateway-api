@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.3 (2022-02-02)
+### Fix
+* Retrieve non-related fields that have a list of ICAT relations #265 ([`2c5edc5`](https://github.com/ral-facilities/datagateway-api/commit/2c5edc50f9f713b0d15e137ad4a307a90a86b5aa))
+
 ## v3.5.2 (2022-02-02)
 ### Fix
 * Make `ne` and `neq` operators work with non-numeric values #315 ([`f5e3b4b`](https://github.com/ral-facilities/datagateway-api/commit/f5e3b4b1bfebd25c6d6fb288eb3f5a79daf87dac))
