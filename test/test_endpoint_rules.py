@@ -85,17 +85,17 @@ class TestEndpointRules:
                 id="Search API search instruments",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<int:pid>",
+                f"{Config.config.search_api.extension}/datasets/<string:pid>",
                 ["GET"],
                 id="Search API get single dataset",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/documents/<int:pid>",
+                f"{Config.config.search_api.extension}/documents/<string:pid>",
                 ["GET"],
                 id="Search API get single document",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/instruments/<int:pid>",
+                f"{Config.config.search_api.extension}/instruments/<string:pid>",
                 ["GET"],
                 id="Search API get single instrument",
             ),
@@ -115,12 +115,13 @@ class TestEndpointRules:
                 id="Search API instrument count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<int:pid>/files",
+                f"{Config.config.search_api.extension}/datasets/<string:pid>/files",
                 ["GET"],
                 id="Search API get dataset files",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<int:pid>/files/count",
+                f"{Config.config.search_api.extension}/datasets/<string:pid>/files"
+                "/count",
                 ["GET"],
                 id="Search API dataset files count",
             ),
