@@ -2,7 +2,7 @@ import json
 import logging
 
 from datagateway_api.src.common.exceptions import MissingRecordError
-from datagateway_api.src.common.filter_order_handle import FilterOrderHandler
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATIncludeFilter
 from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
 import datagateway_api.src.search_api.models as models
@@ -87,6 +87,15 @@ def get_with_pid(entity_name, pid, filters):
 
     filters.append(SearchAPIWhereFilter("pid", pid, "eq"))
 
+    icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
+        entity_name,
+    )
+
+    # Remove any duplicate ICAT relations
+    icat_relations = list(dict.fromkeys(icat_relations))
+    if icat_relations:
+        filters.append(PythonICATIncludeFilter(icat_relations))
+
     query = SearchAPIQuery(entity_name)
 
     filter_handler = FilterOrderHandler()
@@ -100,7 +109,11 @@ def get_with_pid(entity_name, pid, filters):
     if not icat_query_data:
         raise MissingRecordError("No result found")
     else:
-        return icat_query_data[0]
+        panosc_model = getattr(models, entity_name)
+        panosc_record = panosc_model.from_icat(icat_query_data[0], icat_relations).json(
+            by_alias=True,
+        )
+        return json.loads(panosc_record)
 
 
 @client_manager
