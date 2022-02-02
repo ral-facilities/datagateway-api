@@ -19,7 +19,7 @@ class TestSearchAPIWhereFilter:
             pytest.param(
                 SearchAPIWhereFilter("title", "My Dataset 1", "ne"),
                 "Dataset",
-                "SELECT o FROM Dataset o WHERE o.name != My Dataset 1",
+                "SELECT o FROM Dataset o WHERE o.name != 'My Dataset 1'",
                 id="WHERE filter with non-default operator",
             ),
             pytest.param(
