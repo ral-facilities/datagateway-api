@@ -11,6 +11,7 @@ from datagateway_api.src.common.exceptions import (
     BadRequestError,
     MissingRecordError,
 )
+from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.common.helpers import map_distinct_attributes_to_results
 from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseDistinctFieldFilter,
@@ -25,7 +26,6 @@ from datagateway_api.src.datagateway_api.database.models import (
     INVESTIGATIONINSTRUMENT,
     SESSION,
 )
-from datagateway_api.src.datagateway_api.filter_order_handler import FilterOrderHandler
 
 
 log = logging.getLogger()
