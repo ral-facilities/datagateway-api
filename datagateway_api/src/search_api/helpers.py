@@ -87,33 +87,11 @@ def get_with_pid(entity_name, pid, filters):
 
     filters.append(SearchAPIWhereFilter("pid", pid, "eq"))
 
-    icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
-        entity_name,
-    )
-
-    # Remove any duplicate ICAT relations
-    icat_relations = list(dict.fromkeys(icat_relations))
-    if icat_relations:
-        filters.append(PythonICATIncludeFilter(icat_relations))
-
-    query = SearchAPIQuery(entity_name)
-
-    filter_handler = FilterOrderHandler()
-    filter_handler.add_filters(filters)
-    filter_handler.merge_python_icat_limit_skip_filters()
-    filter_handler.apply_filters(query)
-
-    log.debug("JPQL Query to be sent/executed in ICAT: %s", query.icat_query.query)
-    icat_query_data = query.icat_query.execute_query(SessionHandler.client, True)
-
-    if not icat_query_data:
+    panosc_data = get_search(entity_name, filters)
+    if not panosc_data:
         raise MissingRecordError("No result found")
     else:
-        panosc_model = getattr(models, entity_name)
-        panosc_record = panosc_model.from_icat(icat_query_data[0], icat_relations).json(
-            by_alias=True,
-        )
-        return json.loads(panosc_record)
+        return panosc_data[0]
 
 
 @client_manager
