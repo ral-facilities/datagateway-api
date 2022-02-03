@@ -108,6 +108,29 @@ class FilterOrderHandler(object):
                 python_icat_include_filter = PythonICATIncludeFilter(icat_relations)
                 self.filters.append(python_icat_include_filter)
 
+    def add_icat_relations_for_panosc_non_related_fields(
+        self, panosc_entity_name,
+    ):
+        """
+        Retrieve ICAT relations and create a `PythonICATIncludeFilter` for these ICAT
+        relations
+
+        :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
+        :type panosc_entity_name: :class:`str`
+        :return: ICAT relations for the non related fields of the given PaNOSC entity
+        """
+
+        icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
+            panosc_entity_name,
+        )
+
+        # Remove any duplicate ICAT relations
+        icat_relations = list(dict.fromkeys(icat_relations))
+        if icat_relations:
+            self.filters.append(PythonICATIncludeFilter(icat_relations))
+
+        return icat_relations
+
     def merge_python_icat_limit_skip_filters(self):
         """
         When there are both limit and skip filters in a request, merge them into the
