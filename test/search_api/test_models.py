@@ -157,7 +157,7 @@ PARAMETER_TYPE_ICAT_DATA = {
 }
 
 SAMPLE_ICAT_DATA = {
-    "pid": "None",
+    "pid": "Test pid",
     "modId": "Test modId",
     "createId": "Test createId",
     "name": "Test name",
@@ -347,7 +347,8 @@ class TestModels:
         expected_entity_data["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA[
             "stringValue"
         ]
-        expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA]
+        expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA.copy()]
+        expected_entity_data["samples"][0]["pid"] = f"pid:{SAMPLE_ICAT_DATA['id']}"
 
         icat_data = DATASET_ICAT_DATA.copy()
         icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
@@ -368,6 +369,7 @@ class TestModels:
         icat_data["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
         icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
         icat_data["sample"] = SAMPLE_ICAT_DATA.copy()
+        icat_data["sample"]["pid"] = None
         icat_data["sample"]["parameters"] = [
             {"type": PARAMETER_TYPE_ICAT_DATA},
             {"type": PARAMETER_TYPE_ICAT_DATA},
