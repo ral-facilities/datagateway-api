@@ -115,7 +115,7 @@ def test_search_api_mappings_data():
         "Sample": {
             "base_icat_entity": "Sample",
             "name": "name",
-            "pid": "pid",
+            "pid": ["pid", "id"],
             "description": "parameters.type.description",
             "datasets": {"Dataset": "datasets"},
         },
