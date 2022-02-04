@@ -291,6 +291,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             value = list(conditions_dict[field].values())[0]
             operation = list(conditions_dict[field].keys())[0]
 
+            if isinstance(value, bool) and operation not in ["eq", "neq"]:
+                raise FilterError(
+                    "Bad Where filter: Invalid operator used with boolean value",
+                )
+
         return field, value, operation
 
     @staticmethod
