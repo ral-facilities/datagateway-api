@@ -1,4 +1,7 @@
+from datetime import datetime, timezone
 import logging
+
+from dateutil.relativedelta import relativedelta
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
@@ -296,6 +299,14 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     "Bad Where filter: Invalid operator used with boolean value",
                 )
 
+        if field == "isPublic":
+            (
+                value,
+                operation,
+            ) = SearchAPIQueryFilterFactory.convert_is_public_field_value_and_operation(
+                value, operation,
+            )
+
         return field, value, operation
 
     @staticmethod
@@ -332,3 +343,34 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     )
             if isinstance(where_filter, SearchAPIWhereFilter):
                 where_filter.field = f"{entity_name}.{where_filter.field}"
+
+    @staticmethod
+    def convert_is_public_field_value_and_operation(value, operation):
+        """
+        The ICAT mappings for the isPublic PaNOSC fields are not direct and as a result
+        of this, we calculate whether data is public or not at the Search API level.
+        For example, in the case of ISIS, Dataset's isPublic field maps to Dataset's
+        createTime field in ICAT. We take this datetime value and determine whether it
+        is public or not by checking whether the datetime is more than 3 years ago or
+        not. The isPublic fields are of type boolean so any WHERE filter applied to
+        them will have a value that is boolean too. As a result of this, the value and
+        operation need to be converted to a format appropriate for the mapped ICAT
+        field. In the example above, if the filter asks for all Datasets whose isPublic
+        fields are set to True to be returned, then this method changes the WHERE
+        filter value to a three years ago datetime value and the operator to less than
+        so that all Datasets older than 3 years (which ISIS considers public) are
+        returned.
+        """
+        current_datetime = datetime.now(timezone.utc)
+        three_years_ago = current_datetime - relativedelta(years=3)
+        value = not value if operation == "neq" else value
+        if value is True:
+            operation = "lt"
+        else:
+            operation = "gt"
+
+        # The timezone part has a plus sign so replacing
+        # with a blank space to avoid issues
+        value = str(three_years_ago).replace("+", " ")
+
+        return value, operation
