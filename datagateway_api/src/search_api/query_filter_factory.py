@@ -277,7 +277,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         field = list(conditions_dict.keys())[0]
         filter_data = list(conditions_dict.values())[0]
 
-        if isinstance(filter_data, str):
+        if isinstance(filter_data, (bool, int, str)):
             # Format: {"where": {"property": "value"}}
             log.debug("Format of WHERE filter: {'where': {'property': 'value'}}")
             value = conditions_dict[field]
