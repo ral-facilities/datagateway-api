@@ -122,7 +122,7 @@ class TestSearchAPIWhereFilter:
 
         filter_handler.apply_filters(test_query)
 
-        assert expected_query == str(test_query.icat_query.query)
+        assert str(test_query.icat_query.query) == expected_query
 
     @pytest.mark.parametrize(
         "filter_input, entity_name, expected_query",
