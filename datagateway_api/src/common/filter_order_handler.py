@@ -117,7 +117,6 @@ class FilterOrderHandler(object):
 
         :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
         :type panosc_entity_name: :class:`str`
-        :return: ICAT relations for the non related fields of the given PaNOSC entity
         """
 
         icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
@@ -128,8 +127,6 @@ class FilterOrderHandler(object):
         icat_relations = list(dict.fromkeys(icat_relations))
         if icat_relations:
             self.filters.append(PythonICATIncludeFilter(icat_relations))
-
-        return icat_relations
 
     def merge_python_icat_limit_skip_filters(self):
         """

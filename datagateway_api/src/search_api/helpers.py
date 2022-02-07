@@ -3,7 +3,10 @@ import logging
 
 from datagateway_api.src.common.exceptions import MissingRecordError
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
+from datagateway_api.src.search_api.filters import (
+    SearchAPIIncludeFilter,
+    SearchAPIWhereFilter,
+)
 import datagateway_api.src.search_api.models as models
 from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.session_handler import (
@@ -32,13 +35,16 @@ def get_search(entity_name, filters):
     log.info("Searching for %s using request's filters", entity_name)
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
+    entity_relations = []
+    for filter_ in filters:
+        if isinstance(filter_, SearchAPIIncludeFilter):
+            entity_relations.extend(filter_.included_filters)
+
     query = SearchAPIQuery(entity_name)
 
     filter_handler = FilterOrderHandler()
     filter_handler.add_filters(filters)
-    icat_relations = filter_handler.add_icat_relations_for_panosc_non_related_fields(
-        entity_name,
-    )
+    filter_handler.add_icat_relations_for_panosc_non_related_fields(entity_name)
     filter_handler.add_icat_relations_for_non_related_fields_of_panosc_related_entities(
         entity_name,
     )
@@ -51,7 +57,7 @@ def get_search(entity_name, filters):
     panosc_data = []
     for icat_data in icat_query_data:
         panosc_model = getattr(models, entity_name)
-        panosc_record = panosc_model.from_icat(icat_data, icat_relations).json(
+        panosc_record = panosc_model.from_icat(icat_data, entity_relations).json(
             by_alias=True,
         )
         panosc_data.append(json.loads(panosc_record))
