@@ -233,9 +233,7 @@ def create_api_endpoints(flask_app, api, spec):
         }
 
         for endpoint_name, entity_name in search_api_entity_endpoints.items():
-            get_search_endpoint_resource = get_search_endpoint(
-                endpoint_name, entity_name,
-            )
+            get_search_endpoint_resource = get_search_endpoint(entity_name)
             api.add_resource(
                 get_search_endpoint_resource,
                 f"{search_api_extension}/{endpoint_name}",
@@ -243,19 +241,15 @@ def create_api_endpoints(flask_app, api, spec):
             )
             spec.path(resource=get_search_endpoint_resource, api=api)
 
-            get_single_endpoint_resource = get_single_endpoint(
-                endpoint_name, entity_name,
-            )
+            get_single_endpoint_resource = get_single_endpoint(entity_name)
             api.add_resource(
                 get_single_endpoint_resource,
-                f"{search_api_extension}/{endpoint_name}/<int:pid>",
+                f"{search_api_extension}/{endpoint_name}/<string:pid>",
                 endpoint=f"search_api_get_single_{endpoint_name}",
             )
             spec.path(resource=get_single_endpoint_resource, api=api)
 
-            get_number_count_endpoint_resource = get_number_count_endpoint(
-                endpoint_name, entity_name,
-            )
+            get_number_count_endpoint_resource = get_number_count_endpoint(entity_name)
             api.add_resource(
                 get_number_count_endpoint_resource,
                 f"{search_api_extension}/{endpoint_name}/count",
@@ -263,22 +257,20 @@ def create_api_endpoints(flask_app, api, spec):
             )
             spec.path(resource=get_number_count_endpoint_resource, api=api)
 
-        get_files_endpoint_resource = get_files_endpoint(
-            search_api_entity_endpoints["datasets"], "datasets",
-        )
+        get_files_endpoint_resource = get_files_endpoint("File")
         api.add_resource(
             get_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<int:pid>/files",
+            f"{search_api_extension}/datasets/<string:pid>/files",
             endpoint="search_api_get_dataset_files",
         )
         spec.path(resource=get_files_endpoint_resource, api=api)
 
         get_number_count_files_endpoint_resource = get_number_count_files_endpoint(
-            search_api_entity_endpoints["datasets"], "datasets",
+            "File",
         )
         api.add_resource(
             get_number_count_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<int:pid>/files/count",
+            f"{search_api_extension}/datasets/<string:pid>/files/count",
             endpoint="search_api_count_dataset_files",
         )
         spec.path(resource=get_number_count_files_endpoint_resource, api=api)

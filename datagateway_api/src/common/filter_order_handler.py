@@ -8,6 +8,8 @@ from datagateway_api.src.datagateway_api.icat.filters import (
 )
 from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
 from datagateway_api.src.search_api.panosc_mappings import mappings
+from datagateway_api.src.search_api.query import SearchAPIQuery
+
 
 log = logging.getLogger()
 
@@ -45,6 +47,13 @@ class FilterOrderHandler(object):
         self.sort_filters()
 
         for query_filter in self.filters:
+            # Using `type()` because we only want the Python ICAT version, don't want
+            # the code to catch objects that inherit from the class e.g.
+            # `SearchAPIIncludeFilter`
+            if type(query_filter) is PythonICATIncludeFilter and isinstance(
+                query, SearchAPIQuery,
+            ):
+                query = query.icat_query.query
             query_filter.apply_filter(query)
 
     def add_icat_relations_for_non_related_fields_of_panosc_related_entities(
@@ -98,6 +107,26 @@ class FilterOrderHandler(object):
             else:
                 python_icat_include_filter = PythonICATIncludeFilter(icat_relations)
                 self.filters.append(python_icat_include_filter)
+
+    def add_icat_relations_for_panosc_non_related_fields(
+        self, panosc_entity_name,
+    ):
+        """
+        Retrieve ICAT relations and create a `PythonICATIncludeFilter` for these ICAT
+        relations
+
+        :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
+        :type panosc_entity_name: :class:`str`
+        """
+
+        icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
+            panosc_entity_name,
+        )
+
+        # Remove any duplicate ICAT relations
+        icat_relations = list(dict.fromkeys(icat_relations))
+        if icat_relations:
+            self.filters.append(PythonICATIncludeFilter(icat_relations))
 
     def merge_python_icat_limit_skip_filters(self):
         """
