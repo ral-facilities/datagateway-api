@@ -70,18 +70,14 @@ class TestSearchAPICountEndpoint:
             pytest.param(
                 "datasets",
                 '{"isPublic": true}',
-                {"count": 479},
+                {"count": 462},
                 id="Dataset count with isPublic condition",
-                # Skipped because the where for isPublic doesn't work
-                marks=pytest.mark.skip,
             ),
             pytest.param(
                 "documents",
                 '{"isPublic": true}',
-                {"count": 239},
+                {"count": 76},
                 id="Document count with isPublic condition",
-                # Skipped because the where for isPublic doesn't work
-                marks=pytest.mark.skip,
             ),
             pytest.param(
                 "instruments",
