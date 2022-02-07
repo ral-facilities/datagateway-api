@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.1 (2022-02-07)
+### Fix
+* Convert `isPublic` PaNOSC filter to appropriate ICAT filter #308 ([`6a40307`](https://github.com/ral-facilities/datagateway-api/commit/6a40307ba19d5818bdb6bf1acc79d98abd6a3f83))
+* Make WHERE filter without operator work with int and bool #322 ([`6988a5a`](https://github.com/ral-facilities/datagateway-api/commit/6988a5aa5d6dfa71fd4b90a73b050864e8530955))
+
 ## v3.6.0 (2022-02-07)
 ### Feature
 * Implement search API endpoints #266, #267, #268 ([`dcc332e`](https://github.com/ral-facilities/datagateway-api/commit/dcc332e352ded8af25dce7dae635bd62417d2c13))
