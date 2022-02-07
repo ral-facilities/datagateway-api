@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.0 (2022-02-07)
+### Feature
+* Implement search API endpoints #266, #267, #268 ([`dcc332e`](https://github.com/ral-facilities/datagateway-api/commit/dcc332e352ded8af25dce7dae635bd62417d2c13))
+
+### Fix
+* Make get by pid endpoints return data in PaNOSC format #266 ([`0de2b5b`](https://github.com/ral-facilities/datagateway-api/commit/0de2b5b2b713699b66164ca5732888f997230aa5))
+* Add logic to deal with `PythonICATIncludeFilter` that could be related for ICAT relations for non-related PaNOSC fields #268 ([`29232c6`](https://github.com/ral-facilities/datagateway-api/commit/29232c6b2c032c61999118b2f69177f3b9bd5d57))
+* Correct order of arguments for where filter #266 ([`1e38eae`](https://github.com/ral-facilities/datagateway-api/commit/1e38eaee9f201a45742cf868ad2fa28f4adee065))
+
+### Documentation
+* Add docstrings for Flask resource classes #268 ([`a5aee61`](https://github.com/ral-facilities/datagateway-api/commit/a5aee61cc55e70931163371f3c1abecb31b1fb3a))
+
 ## v3.5.3 (2022-02-02)
 ### Fix
 * Retrieve non-related fields that have a list of ICAT relations #265 ([`2c5edc5`](https://github.com/ral-facilities/datagateway-api/commit/2c5edc50f9f713b0d15e137ad4a307a90a86b5aa))
