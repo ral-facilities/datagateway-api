@@ -104,6 +104,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         :return: The list of `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
             created
         """
+        if not isinstance(where_filter_input, dict):
+            raise FilterError(
+                "Bad where filter input, please ensure that it is provided as an "
+                "object",
+            )
 
         where_filters = []
         if where_filter_input:
