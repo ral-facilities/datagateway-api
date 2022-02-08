@@ -103,6 +103,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         :type entity_name: :class:`str`
         :return: The list of `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects
             created
+        :raises FilterError: If the where filter input is not provided as an object
         """
         if not isinstance(where_filter_input, dict):
             raise FilterError(
