@@ -12,8 +12,6 @@ class TestSearchAPICountDatasetFilesEndpoint:
                 "{}",
                 {"count": 56},
                 id="Basic /datasets/{pid}/files/count request",
-                # Skipped because empty dict for filter doesn't work on where
-                marks=pytest.mark.skip,
             ),
             pytest.param(
                 "0-8401-1070-7",
@@ -40,12 +38,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
                 id="Count dataset files with filter to return zero count",
             ),
             pytest.param(
-                "unknown pid",
-                "{}",
-                {"count": 0},
-                id="Non-existent dataset pid",
-                # Skipped because empty dict for filter doesn't work on where
-                marks=pytest.mark.skip,
+                "unknown pid", "{}", {"count": 0}, id="Non-existent dataset pid",
             ),
         ],
     )
