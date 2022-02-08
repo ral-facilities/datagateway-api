@@ -49,7 +49,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
                 # matters):
                 # {"Parameter": {"value": ["numericValue", "stringValue", "dateTimeValue"]}} # noqa: B950
                 if field_name == "value":
-                    if isinstance(self.value, int) or isinstance(self.value, float):
+                    if isinstance(self.value, (int, float)):
                         icat_field_name = icat_field_name[0]
                     elif isinstance(self.value, datetime):
                         icat_field_name = icat_field_name[2]
