@@ -4,6 +4,7 @@ import logging
 from dateutil.relativedelta import relativedelta
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
@@ -361,16 +362,18 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         so that all Datasets older than 3 years (which ISIS considers public) are
         returned.
         """
-        current_datetime = datetime.now(timezone.utc)
-        three_years_ago = current_datetime - relativedelta(years=3)
         value = not value if operation == "neq" else value
         if value is True:
             operation = "lt"
         else:
             operation = "gt"
 
+        current_datetime = datetime.now(timezone.utc)
+        rd = relativedelta(
+            years=Config.config.search_api.num_of_years_determining_public_data,
+        )
         # The timezone part has a plus sign so replacing
         # with a blank space to avoid issues
-        value = str(three_years_ago).replace("+", " ")
+        value = str(current_datetime - rd).replace("+", " ")
 
         return value, operation
