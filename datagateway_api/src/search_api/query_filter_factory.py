@@ -106,84 +106,89 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         """
 
         where_filters = []
-        if (
-            list(where_filter_input.keys())[0] == "and"
-            or list(where_filter_input.keys())[0] == "or"
-        ):
-            log.debug("and/or operators found: %s", list(where_filter_input.keys())[0])
-            boolean_operator = list(where_filter_input.keys())[0]
-            conditions = list(where_filter_input.values())[0]
-            conditional_where_filters = []
-
-            for condition in conditions:
-                # Could be nested AND/OR
-                where_filter = {
-                    "filter": {"where": condition},
-                }
-                conditional_where_filters.extend(
-                    SearchAPIQueryFilterFactory.get_query_filter(
-                        where_filter, entity_name,
-                    ),
+        if where_filter_input:
+            if (
+                list(where_filter_input.keys())[0] == "and"
+                or list(where_filter_input.keys())[0] == "or"
+            ):
+                log.debug(
+                    "and/or operators found: %s", list(where_filter_input.keys())[0],
                 )
+                boolean_operator = list(where_filter_input.keys())[0]
+                conditions = list(where_filter_input.values())[0]
+                conditional_where_filters = []
 
-            nested = NestedWhereFilters(
-                conditional_where_filters[:-1],
-                conditional_where_filters[-1],
-                boolean_operator,
-                SearchAPIQuery(entity_name),
-            )
-            where_filters.append(nested)
-        elif list(where_filter_input.keys())[0] == "text":
-            log.debug("Text operator found within JSON where object")
-            try:
-                entity_class = getattr(search_api_models, entity_name)
-            except AttributeError as e:
-                raise SearchAPIError(
-                    f"No text operator fields have been defined for {entity_name}"
-                    f", {e.args}",
-                )
-
-            or_conditional_filters = []
-            field_names = entity_class._text_operator_fields
-            log.debug(
-                "Text operators found for PaNOSC %s: %s", entity_name, field_names,
-            )
-            if not field_names:
-                # No text operator fields present, simply log and move on, we should
-                # ignore text operator queries on entities where `_text_operator_fields`
-                # is empty (meaning they are not present in the origina PaNOSC data
-                # model)
-                log.info(
-                    "No text operator fields found for PaNOSC entity %s, will"
-                    " ignore",
-                    entity_name,
-                )
-            else:
-                for field_name in field_names:
-                    or_conditional_filters.append(
-                        {field_name: {"like": where_filter_input["text"]}},
+                for condition in conditions:
+                    # Could be nested AND/OR
+                    where_filter = {
+                        "filter": {"where": condition},
+                    }
+                    conditional_where_filters.extend(
+                        SearchAPIQueryFilterFactory.get_query_filter(
+                            where_filter, entity_name,
+                        ),
                     )
 
-                where_filter = {
-                    "filter": {"where": {"or": or_conditional_filters}},
-                }
-                where_filters.extend(
-                    SearchAPIQueryFilterFactory.get_query_filter(
-                        where_filter, entity_name,
+                nested = NestedWhereFilters(
+                    conditional_where_filters[:-1],
+                    conditional_where_filters[-1],
+                    boolean_operator,
+                    SearchAPIQuery(entity_name),
+                )
+                where_filters.append(nested)
+            elif list(where_filter_input.keys())[0] == "text":
+                log.debug("Text operator found within JSON where object")
+                try:
+                    entity_class = getattr(search_api_models, entity_name)
+                except AttributeError as e:
+                    raise SearchAPIError(
+                        f"No text operator fields have been defined for {entity_name}"
+                        f", {e.args}",
+                    )
+
+                or_conditional_filters = []
+                field_names = entity_class._text_operator_fields
+                log.debug(
+                    "Text operators found for PaNOSC %s: %s", entity_name, field_names,
+                )
+                if not field_names:
+                    # No text operator fields present, simply log and move on, we should
+                    # ignore text operator queries on entities where
+                    # `_text_operator_fields` is empty (meaning they are not present in
+                    # the origina PaNOSC data model)
+                    log.info(
+                        "No text operator fields found for PaNOSC entity %s, will"
+                        " ignore",
+                        entity_name,
+                    )
+                else:
+                    for field_name in field_names:
+                        or_conditional_filters.append(
+                            {field_name: {"like": where_filter_input["text"]}},
+                        )
+
+                    where_filter = {
+                        "filter": {"where": {"or": or_conditional_filters}},
+                    }
+                    where_filters.extend(
+                        SearchAPIQueryFilterFactory.get_query_filter(
+                            where_filter, entity_name,
+                        ),
+                    )
+            else:
+                log.info(
+                    "Basic where filter found, extracting field, value and operation",
+                )
+                filter_data = SearchAPIQueryFilterFactory.get_condition_values(
+                    where_filter_input,
+                )
+                where_filters.append(
+                    SearchAPIWhereFilter(
+                        field=filter_data[0],
+                        value=filter_data[1],
+                        operation=filter_data[2],
                     ),
                 )
-        else:
-            log.info("Basic where filter found, extracting field, value and operation")
-            filter_data = SearchAPIQueryFilterFactory.get_condition_values(
-                where_filter_input,
-            )
-            where_filters.append(
-                SearchAPIWhereFilter(
-                    field=filter_data[0],
-                    value=filter_data[1],
-                    operation=filter_data[2],
-                ),
-            )
 
         return where_filters
 
