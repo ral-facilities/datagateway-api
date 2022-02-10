@@ -41,7 +41,7 @@ def test_search_api_mappings_data():
         },
         "Dataset": {
             "base_icat_entity": "Dataset",
-            "pid": "doi",
+            "pid": ["doi", "id"],
             "title": "name",
             "isPublic": "createTime",
             "creationDate": "createTime",
