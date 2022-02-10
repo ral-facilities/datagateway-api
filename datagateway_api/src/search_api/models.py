@@ -287,6 +287,10 @@ class Instrument(PaNOSCAttribute):
 
     datasets: Optional[List[Dataset]] = []
 
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
+
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Instrument, cls).from_icat(icat_data, required_related_fields)
