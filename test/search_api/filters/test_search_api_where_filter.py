@@ -32,7 +32,7 @@ class TestSearchAPIWhereFilter:
                 SearchAPIWhereFilter("pid", "pid:1", "eq"),
                 "Dataset",
                 "SELECT o FROM Dataset o WHERE o.id = '1'",
-                id="Pid dataset value (mapping that maps to multiple ICAT fields)",
+                id="Id dataset value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
                 # DataGateway API date format: "2018-05-05 15:00:00"
@@ -41,6 +41,18 @@ class TestSearchAPIWhereFilter:
                 "SELECT o FROM Investigation o WHERE o.startDate >"
                 " '2018-05-05T15:00:00.000Z'",
                 id="WHERE filter with date value",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("pid", "1", "eq"),
+                "Document",
+                "SELECT o FROM Investigation o WHERE o.doi = '1'",
+                id="Doi document value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("pid", "pid:1", "eq"),
+                "Document",
+                "SELECT o FROM Investigation o WHERE o.id = '1'",
+                id="Id document value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
                 SearchAPIWhereFilter("facility", "ISIS", "like"),
@@ -83,13 +95,13 @@ class TestSearchAPIWhereFilter:
                 SearchAPIWhereFilter("samples.pid", "1", "eq"),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 WHERE s1.pid = '1'",
-                id="Id sample value (mapping that maps to multiple ICAT fields)",
+                id="Pid sample value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
                 SearchAPIWhereFilter("samples.pid", "pid:1", "eq"),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 WHERE s1.id = '1'",
-                id="Pid sample value (mapping that maps to multiple ICAT fields)",
+                id="Id sample value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
                 SearchAPIWhereFilter("parameters.value", "My Parameter", "eq"),
