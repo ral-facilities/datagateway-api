@@ -147,10 +147,10 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 log.debug("Text operator found within JSON where object")
                 try:
                     entity_class = getattr(search_api_models, entity_name)
-                except AttributeError as e:
+                except AttributeError:
                     raise SearchAPIError(
-                        f"No text operator fields have been defined for {entity_name}"
-                        f", {e.args}",
+                        f"No model for {entity_name} could be found, a different entity"
+                        f"name should be used",
                     )
 
                 or_conditional_filters = []
