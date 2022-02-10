@@ -90,7 +90,7 @@
     },
     "Technique": {
         "base_icat_entity": "Technique",
-        "pid": "pid",
+        "pid": ["pid", "id"],
         "name": "name",
         "datasets": {"Dataset": "datasetTechniques.dataset"}
     }
