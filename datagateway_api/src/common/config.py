@@ -130,6 +130,7 @@ class SearchAPI(BaseModel):
     extension: StrictStr
     icat_check_cert: StrictBool
     icat_url: StrictStr
+    num_of_years_determining_public_data: StrictInt
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

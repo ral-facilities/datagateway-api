@@ -12,7 +12,8 @@
     "search_api": {
         "extension": "/search-api",
         "icat_url": "https://localhost:8181",
-        "icat_check_cert": false
+        "icat_check_cert": false,
+        "num_of_years_determining_public_data": 3
     },
     "flask_reloader": false,
     "log_level": "WARN",
