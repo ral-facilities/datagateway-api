@@ -191,6 +191,10 @@ class Dataset(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
 
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
+
     @validator("is_public", pre=True, always=True)
     def set_is_public(cls, value):  # noqa: B902, N805
         if not value:
