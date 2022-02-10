@@ -170,6 +170,7 @@ TECHNIQUE_ICAT_DATA = {
     "name": "Test name",
     "pid": "Test pid",
     "description": "Test description",
+    "id": 1,
 }
 
 USER_ICAT_DATA = {
@@ -588,9 +589,11 @@ class TestModels:
 
     def test_from_icat_technique_entity_with_data_for_all_related_entities(self):
         expected_entity_data = TECHNIQUE_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{TECHNIQUE_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
 
         icat_data = TECHNIQUE_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["datasetTechniques"] = [{"dataset": DATASET_ICAT_DATA}]
 
         technique_entity = models.Technique.from_icat(icat_data, ["datasets"])

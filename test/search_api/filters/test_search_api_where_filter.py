@@ -104,6 +104,22 @@ class TestSearchAPIWhereFilter:
                 id="WHERE filter on ICAT related entity with three PaNOSC hops",
             ),
             pytest.param(
+                SearchAPIWhereFilter("techniques.pid", "1", "eq"),
+                "Dataset",
+                "",
+                id="Pid technique value (mapping that maps to multiple ICAT fields)",
+                # Skipped because ICAT 5 mapping on techniques
+                marks=pytest.mark.skip,
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("techniques.pid", "pid:1", "eq"),
+                "Dataset",
+                "",
+                id="Id technique value (mapping that maps to multiple ICAT fields)",
+                # Skipped because ICAT 5 mapping on techniques
+                marks=pytest.mark.skip,
+            ),
+            pytest.param(
                 SearchAPIWhereFilter("samples.pid", "1", "eq"),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.sample AS s1 WHERE s1.pid = '1'",
