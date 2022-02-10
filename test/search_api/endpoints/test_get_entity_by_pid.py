@@ -130,10 +130,10 @@ class TestSearchAPIGetByPIDEndpoint:
             ),
             pytest.param(
                 "instruments",
-                "2",
+                "pid:2",
                 "{}",
                 {
-                    "pid": "2",
+                    "pid": "pid:2",
                     "name": "INSTRUMENT 2",
                     "facility": "LILS",
                     "datasets": [],
