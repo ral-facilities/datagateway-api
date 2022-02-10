@@ -80,7 +80,7 @@ def test_search_api_mappings_data():
         },
         "Instrument": {
             "base_icat_entity": "Instrument",
-            "pid": "id",
+            "pid": ["pid", "id"],
             "name": "name",
             "facility": "facility.name",
             "datasets": {"Dataset": "datasetInstruments.dataset"},
