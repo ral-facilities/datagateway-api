@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v4.0.0 (2022-02-10)
+### Feature
+* **config:** Add configuration option for determining public data #312 ([`58e777b`](https://github.com/ral-facilities/datagateway-api/commit/58e777b5c4a562f6945adcd1b55ce1d470f5d816))
+
+### Breaking
+* add configuration option for determining public data #312 ([`58e777b`](https://github.com/ral-facilities/datagateway-api/commit/58e777b5c4a562f6945adcd1b55ce1d470f5d816))
+
 ## v3.6.1 (2022-02-07)
 ### Fix
 * Convert `isPublic` PaNOSC filter to appropriate ICAT filter #308 ([`6a40307`](https://github.com/ral-facilities/datagateway-api/commit/6a40307ba19d5818bdb6bf1acc79d98abd6a3f83))

@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, Field, ValidationError, validator
 from pydantic.error_wrappers import ErrorWrapper
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
@@ -197,8 +198,10 @@ class Dataset(PaNOSCAttribute):
 
         creation_date = DateHandler.str_to_datetime_object(value)
         current_datetime = datetime.now(timezone.utc)
-        three_years_ago = current_datetime - relativedelta(years=3)
-        return creation_date < three_years_ago
+        rd = relativedelta(
+            years=Config.config.search_api.num_of_years_determining_public_data,
+        )
+        return creation_date < (current_datetime - rd)
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -236,8 +239,10 @@ class Document(PaNOSCAttribute):
 
         creation_date = DateHandler.str_to_datetime_object(value)
         current_datetime = datetime.now(timezone.utc)
-        three_years_ago = current_datetime - relativedelta(years=3)
-        return creation_date < three_years_ago
+        rd = relativedelta(
+            years=Config.config.search_api.num_of_years_determining_public_data,
+        )
+        return creation_date < (current_datetime - rd)
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
