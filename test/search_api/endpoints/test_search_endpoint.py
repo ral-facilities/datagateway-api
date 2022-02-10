@@ -401,10 +401,22 @@ class TestSearchAPISearchEndpoint:
             pytest.param(
                 "datasets",
                 '{"limit": 1, "where": {"isPublic": true}}',
-                [{}],
+                [
+                    {
+                        "pid": "0-449-78690-0",
+                        "title": "DATASET 1",
+                        "creationDate": "2002-11-27T06:20:36+00:00",
+                        "isPublic": True,
+                        "size": None,
+                        "documents": [],
+                        "techniques": [],
+                        "instrument": None,
+                        "files": [],
+                        "parameters": [],
+                        "samples": [],
+                    },
+                ],
                 id="Search datasets with isPublic condition",
-                # Skipped because the where for isPublic doesn't work
-                marks=pytest.mark.skip,
             ),
         ],
     )
