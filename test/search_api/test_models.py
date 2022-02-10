@@ -73,7 +73,7 @@ FACILITY_ICAT_DATA = {
 
 INSTRUMENT_ICAT_DATA = {
     "type": "Test type",
-    "pid": None,
+    "pid": "Test pid",
     "name": "Test name",
     "id": 1,
     "modTime": "2000-12-31 00:00:00+00:00",
@@ -243,7 +243,7 @@ FILE_PANOSC_DATA = {
 }
 
 INSTRUMENT_PANOSC_DATA = {
-    "pid": str(INSTRUMENT_ICAT_DATA["id"]),
+    "pid": INSTRUMENT_ICAT_DATA["pid"],
     "name": INSTRUMENT_ICAT_DATA["name"],
     "facility": FACILITY_ICAT_DATA["name"],
     "datasets": [],
@@ -451,9 +451,11 @@ class TestModels:
 
     def test_from_icat_instrument_entity_with_data_for_all_related_entities(self):
         expected_entity_data = INSTRUMENT_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{INSTRUMENT_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
 
         icat_data = INSTRUMENT_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["facility"] = FACILITY_ICAT_DATA
         icat_data["datasetInstruments"] = [{"dataset": DATASET_ICAT_DATA.copy()}]
 

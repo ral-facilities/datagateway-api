@@ -17,6 +17,18 @@ class TestSearchAPIWhereFilter:
                 id="Regular WHERE filter",
             ),
             pytest.param(
+                SearchAPIWhereFilter("pid", "1", "eq"),
+                "Instrument",
+                "SELECT o FROM Instrument o WHERE o.pid = '1'",
+                id="Pid instrument value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("pid", "pid:1", "eq"),
+                "Instrument",
+                "SELECT o FROM Instrument o WHERE o.id = '1'",
+                id="Id instrument value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
                 SearchAPIWhereFilter("title", "My Dataset 1", "ne"),
                 "Dataset",
                 "SELECT o FROM Dataset o WHERE o.name != 'My Dataset 1'",
