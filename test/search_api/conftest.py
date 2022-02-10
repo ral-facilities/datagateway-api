@@ -55,7 +55,7 @@ def test_search_api_mappings_data():
         },
         "Document": {
             "base_icat_entity": "Investigation",
-            "pid": "doi",
+            "pid": ["doi", "id"],
             "isPublic": "releaseDate",
             "type": "type.name",
             "title": "name",
