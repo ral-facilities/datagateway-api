@@ -12,6 +12,7 @@ import datagateway_api.src.search_api.models as search_api_models
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
+from datagateway_api.src.search_api.units_conversion import UnitsConversion
 
 log = logging.getLogger()
 
@@ -171,9 +172,23 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 )
         else:
             log.info("Basic where filter found, extracting field, value and operation")
+            # TODO - could I refactor return to be namedtuple?
             filter_data = SearchAPIQueryFilterFactory.get_condition_values(
                 where_filter_input,
             )
+            unit_conversion = UnitsConversion()
+            if entity_name == "Parameter" and filter_data[0] == "unit":
+                # Unit conversion code
+                other_units = unit_conversion.get_alternative_units(filter_data[1])
+                for unit in other_units:
+                    where_filters.append(
+                        SearchAPIWhereFilter(
+                            field=filter_data[0], value=unit, operation=filter_data[2],
+                        ),
+                    )
+            elif entity_name == "Parameter" and filter_data[0] == "value":
+                pass
+
             where_filters.append(
                 SearchAPIWhereFilter(
                     field=filter_data[0],
