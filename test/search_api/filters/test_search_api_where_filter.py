@@ -23,6 +23,18 @@ class TestSearchAPIWhereFilter:
                 id="WHERE filter with non-default operator",
             ),
             pytest.param(
+                SearchAPIWhereFilter("pid", "1", "eq"),
+                "Dataset",
+                "SELECT o FROM Dataset o WHERE o.doi = '1'",
+                id="Doi dataset value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("pid", "pid:1", "eq"),
+                "Dataset",
+                "SELECT o FROM Dataset o WHERE o.id = '1'",
+                id="Pid dataset value (mapping that maps to multiple ICAT fields)",
+            ),
+            pytest.param(
                 # DataGateway API date format: "2018-05-05 15:00:00"
                 SearchAPIWhereFilter("startDate", "2018-05-05T15:00:00.000Z", "gt"),
                 "Document",

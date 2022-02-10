@@ -339,6 +339,7 @@ class TestModels:
 
     def test_from_icat_dataset_entity_with_data_for_all_related_entities(self):
         expected_entity_data = DATASET_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{DATASET_ICAT_DATA['id']}"
         expected_entity_data["documents"] = [DOCUMENT_PANOSC_DATA]
         expected_entity_data["techniques"] = [TECHNIQUE_PANOSC_DATA]
         expected_entity_data["instrument"] = INSTRUMENT_PANOSC_DATA
@@ -347,10 +348,10 @@ class TestModels:
         expected_entity_data["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA[
             "stringValue"
         ]
-        expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA.copy()]
-        expected_entity_data["samples"][0]["pid"] = f"pid:{SAMPLE_ICAT_DATA['id']}"
+        expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA]
 
         icat_data = DATASET_ICAT_DATA.copy()
+        icat_data["doi"] = None
         icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
         icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
         icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
@@ -369,7 +370,6 @@ class TestModels:
         icat_data["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
         icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
         icat_data["sample"] = SAMPLE_ICAT_DATA.copy()
-        icat_data["sample"]["pid"] = None
         icat_data["sample"]["parameters"] = [
             {"type": PARAMETER_TYPE_ICAT_DATA},
             {"type": PARAMETER_TYPE_ICAT_DATA},
@@ -562,9 +562,11 @@ class TestModels:
 
     def test_from_icat_sample_entity_with_data_for_all_related_entities(self):
         expected_entity_data = SAMPLE_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{SAMPLE_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
 
         icat_data = SAMPLE_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["parameters"] = [
             {"type": PARAMETER_TYPE_ICAT_DATA},
         ]
