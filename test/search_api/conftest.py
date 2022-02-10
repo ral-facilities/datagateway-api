@@ -121,7 +121,7 @@ def test_search_api_mappings_data():
         },
         "Technique": {
             "base_icat_entity": "Technique",
-            "pid": "pid",
+            "pid": ["pid", "id"],
             "name": "name",
             "datasets": {"Dataset": "datasetTechniques.dataset"},
         },
