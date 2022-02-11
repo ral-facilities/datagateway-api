@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v4.0.1 (2022-02-11)
+### Fix
+* Use alternative ICAT mapping for Technique pid when pid is None #314 ([`bf1c830`](https://github.com/ral-facilities/datagateway-api/commit/bf1c8305fc73630fbf1e6c4771664d974c72fd93))
+* Use alternative ICAT mapping for Instrument pid when pid is None #314 ([`ae7e57a`](https://github.com/ral-facilities/datagateway-api/commit/ae7e57a0c6ece928cbb053ae41ba1214fb3199f8))
+* Use alternative ICAT mapping for Document pid when doi is None #314 ([`736c6bd`](https://github.com/ral-facilities/datagateway-api/commit/736c6bdacc06e9ed2f9fff93a157920b66d2b887))
+* Use alternative ICAT mapping for Dataset pid when doi is None #314 ([`b813f3d`](https://github.com/ral-facilities/datagateway-api/commit/b813f3d71d312b72c5a602b7520978208bd05754))
+* Use alternative ICAT mapping for Sample pid when pid is None #314 ([`7e211f7`](https://github.com/ral-facilities/datagateway-api/commit/7e211f74aa4fa81ab26c339b27806a64510f261c))
+
 ## v4.0.0 (2022-02-10)
 ### Feature
 * **config:** Add configuration option for determining public data #312 ([`58e777b`](https://github.com/ral-facilities/datagateway-api/commit/58e777b5c4a562f6945adcd1b55ce1d470f5d816))
