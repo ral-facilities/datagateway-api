@@ -73,7 +73,7 @@ FACILITY_ICAT_DATA = {
 
 INSTRUMENT_ICAT_DATA = {
     "type": "Test type",
-    "pid": None,
+    "pid": "Test pid",
     "name": "Test name",
     "id": 1,
     "modTime": "2000-12-31 00:00:00+00:00",
@@ -157,7 +157,7 @@ PARAMETER_TYPE_ICAT_DATA = {
 }
 
 SAMPLE_ICAT_DATA = {
-    "pid": "None",
+    "pid": "Test pid",
     "modId": "Test modId",
     "createId": "Test createId",
     "name": "Test name",
@@ -170,6 +170,7 @@ TECHNIQUE_ICAT_DATA = {
     "name": "Test name",
     "pid": "Test pid",
     "description": "Test description",
+    "id": 1,
 }
 
 USER_ICAT_DATA = {
@@ -243,7 +244,7 @@ FILE_PANOSC_DATA = {
 }
 
 INSTRUMENT_PANOSC_DATA = {
-    "pid": str(INSTRUMENT_ICAT_DATA["id"]),
+    "pid": INSTRUMENT_ICAT_DATA["pid"],
     "name": INSTRUMENT_ICAT_DATA["name"],
     "facility": FACILITY_ICAT_DATA["name"],
     "datasets": [],
@@ -339,6 +340,7 @@ class TestModels:
 
     def test_from_icat_dataset_entity_with_data_for_all_related_entities(self):
         expected_entity_data = DATASET_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{DATASET_ICAT_DATA['id']}"
         expected_entity_data["documents"] = [DOCUMENT_PANOSC_DATA]
         expected_entity_data["techniques"] = [TECHNIQUE_PANOSC_DATA]
         expected_entity_data["instrument"] = INSTRUMENT_PANOSC_DATA
@@ -350,6 +352,7 @@ class TestModels:
         expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA]
 
         icat_data = DATASET_ICAT_DATA.copy()
+        icat_data["doi"] = None
         icat_data["investigation"] = INVESTIGATION_ICAT_DATA.copy()
         icat_data["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
         icat_data["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
@@ -404,11 +407,14 @@ class TestModels:
 
     def test_from_icat_document_entity_with_data_for_all_related_entities(self):
         expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{INVESTIGATION_ICAT_DATA['id']}"
+        expected_entity_data["doi"] = None
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
         expected_entity_data["members"] = [MEMBER_PANOSC_DATA]
         expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA]
 
         icat_data = INVESTIGATION_ICAT_DATA.copy()
+        icat_data["doi"] = None
         icat_data["type"] = INVESTIGATION_TYPE_ICAT_DATA
         icat_data["keywords"] = [KEYWORD_ICAT_DATA]
         icat_data["datasets"] = [DATASET_ICAT_DATA, DATASET_ICAT_DATA]
@@ -446,9 +452,11 @@ class TestModels:
 
     def test_from_icat_instrument_entity_with_data_for_all_related_entities(self):
         expected_entity_data = INSTRUMENT_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{INSTRUMENT_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
 
         icat_data = INSTRUMENT_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["facility"] = FACILITY_ICAT_DATA
         icat_data["datasetInstruments"] = [{"dataset": DATASET_ICAT_DATA.copy()}]
 
@@ -560,9 +568,11 @@ class TestModels:
 
     def test_from_icat_sample_entity_with_data_for_all_related_entities(self):
         expected_entity_data = SAMPLE_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{SAMPLE_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
 
         icat_data = SAMPLE_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["parameters"] = [
             {"type": PARAMETER_TYPE_ICAT_DATA},
         ]
@@ -579,9 +589,11 @@ class TestModels:
 
     def test_from_icat_technique_entity_with_data_for_all_related_entities(self):
         expected_entity_data = TECHNIQUE_PANOSC_DATA.copy()
+        expected_entity_data["pid"] = f"pid:{TECHNIQUE_ICAT_DATA['id']}"
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA]
 
         icat_data = TECHNIQUE_ICAT_DATA.copy()
+        icat_data["pid"] = None
         icat_data["datasetTechniques"] = [{"dataset": DATASET_ICAT_DATA}]
 
         technique_entity = models.Technique.from_icat(icat_data, ["datasets"])

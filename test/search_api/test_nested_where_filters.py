@@ -114,16 +114,16 @@ class TestNestedWhereFilters:
             pytest.param(
                 [
                     SearchAPIWhereFilter("title", "test name", "eq"),
-                    SearchAPIWhereFilter("pid", 10, "lt"),
+                    SearchAPIWhereFilter("pid", "test doi", "like"),
                 ],
                 [
-                    SearchAPIWhereFilter("pid", 3, "gt"),
+                    SearchAPIWhereFilter("doi", "doi test", "neq"),
                     SearchAPIWhereFilter("summary", "Test Summary", "like"),
                 ],
                 "AND",
                 SearchAPIQuery("Document"),
-                "(o.name = 'test name' AND o.doi < '10' AND o.doi > '3' AND o.summary"
-                " like '%Test Summary%')",
+                "(o.name = 'test name' AND o.doi like '%test doi%' AND o.doi != "
+                "'doi test' AND o.summary like '%Test Summary%')",
                 id="Multiple filters on LHS and RHS",
             ),
         ],

@@ -42,23 +42,33 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
                 panosc_mapping_name, field_name,
             )
 
-            # An edge case for ICAT has been somewhat hardcoded here, to deal with
-            # ICAT's different parameter value field names. The following mapping is
-            # assumed (where order matters):
-            # {"Parameter": {"value": ["numericValue", "stringValue", "dateTimeValue"]}}
+            # Edge cases for ICAT have been somewhat hardcoded here, to deal with
+            # ICAT's different parameter value and sample pid field names.
             if isinstance(icat_field_name, list):
-                if isinstance(self.value, int) or isinstance(self.value, float):
-                    icat_field_name = icat_field_name[0]
-                elif isinstance(self.value, datetime):
-                    icat_field_name = icat_field_name[2]
-                elif isinstance(self.value, str):
-                    if DateHandler.is_str_a_date(self.value):
+                # The following mapping is assumed for parameter value (where order
+                # matters):
+                # {"Parameter": {"value": ["numericValue", "stringValue", "dateTimeValue"]}} # noqa: B950
+                if field_name == "value":
+                    if isinstance(self.value, (int, float)):
+                        icat_field_name = icat_field_name[0]
+                    elif isinstance(self.value, datetime):
                         icat_field_name = icat_field_name[2]
+                    elif isinstance(self.value, str):
+                        if DateHandler.is_str_a_date(self.value):
+                            icat_field_name = icat_field_name[2]
+                        else:
+                            icat_field_name = icat_field_name[1]
                     else:
+                        self.value = str(self.value)
                         icat_field_name = icat_field_name[1]
-                else:
-                    self.value = str(self.value)
-                    icat_field_name = icat_field_name[1]
+                # The following mapping is assumed for sample pid (where order matters):
+                # {"Sample": {"pid": ["pid", "id"]}}
+                elif field_name == "pid":
+                    if "pid:" in self.value:
+                        icat_field_name = icat_field_name[1]
+                        self.value = self.value.replace("pid:", "")
+                    else:
+                        icat_field_name = icat_field_name[0]
 
             icat_field_names.append(icat_field_name)
 

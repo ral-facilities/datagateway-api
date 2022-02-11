@@ -191,6 +191,10 @@ class Dataset(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
 
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
+
     @validator("is_public", pre=True, always=True)
     def set_is_public(cls, value):  # noqa: B902, N805
         if not value:
@@ -231,6 +235,10 @@ class Document(PaNOSCAttribute):
     datasets: List[Dataset] = []
     members: Optional[List["Member"]] = []
     parameters: Optional[List["Parameter"]] = []
+
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @validator("is_public", pre=True, always=True)
     def set_is_public(cls, value):  # noqa: B902, N805
@@ -278,6 +286,10 @@ class Instrument(PaNOSCAttribute):
     facility: str
 
     datasets: Optional[List[Dataset]] = []
+
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -378,6 +390,10 @@ class Sample(PaNOSCAttribute):
 
     datasets: Optional[List[Dataset]] = []
 
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
+
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Sample, cls).from_icat(icat_data, required_related_fields)
@@ -393,6 +409,10 @@ class Technique(PaNOSCAttribute):
     name: str
 
     datasets: Optional[List[Dataset]] = []
+
+    @validator("pid", pre=True, always=True)
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):

@@ -41,7 +41,7 @@ def test_search_api_mappings_data():
         },
         "Dataset": {
             "base_icat_entity": "Dataset",
-            "pid": "doi",
+            "pid": ["doi", "id"],
             "title": "name",
             "isPublic": "createTime",
             "creationDate": "createTime",
@@ -55,7 +55,7 @@ def test_search_api_mappings_data():
         },
         "Document": {
             "base_icat_entity": "Investigation",
-            "pid": "doi",
+            "pid": ["doi", "id"],
             "isPublic": "releaseDate",
             "type": "type.name",
             "title": "name",
@@ -80,7 +80,7 @@ def test_search_api_mappings_data():
         },
         "Instrument": {
             "base_icat_entity": "Instrument",
-            "pid": "id",
+            "pid": ["pid", "id"],
             "name": "name",
             "facility": "facility.name",
             "datasets": {"Dataset": "datasetInstruments.dataset"},
@@ -115,13 +115,13 @@ def test_search_api_mappings_data():
         "Sample": {
             "base_icat_entity": "Sample",
             "name": "name",
-            "pid": "pid",
+            "pid": ["pid", "id"],
             "description": "parameters.type.description",
             "datasets": {"Dataset": "datasets"},
         },
         "Technique": {
             "base_icat_entity": "Technique",
-            "pid": "pid",
+            "pid": ["pid", "id"],
             "name": "name",
             "datasets": {"Dataset": "datasetTechniques.dataset"},
         },
