@@ -43,7 +43,7 @@ def test_search_api_mappings_data():
             "base_icat_entity": "Dataset",
             "pid": ["doi", "id"],
             "title": "name",
-            "isPublic": "createTime",
+            "isPublic": "",
             "creationDate": "createTime",
             "size": "",
             "documents": {"Document": "investigation"},
@@ -56,7 +56,7 @@ def test_search_api_mappings_data():
         "Document": {
             "base_icat_entity": "Investigation",
             "pid": ["doi", "id"],
-            "isPublic": "releaseDate",
+            "isPublic": "",
             "type": "type.name",
             "title": "name",
             "summary": "summary",
