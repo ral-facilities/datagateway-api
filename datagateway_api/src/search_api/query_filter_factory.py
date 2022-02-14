@@ -172,16 +172,14 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 )
         else:
             log.info("Basic where filter found, extracting field, value and operation")
-            filter_data = SearchAPIQueryFilterFactory.get_condition_values(
+            field, value, operation = SearchAPIQueryFilterFactory.get_condition_values(
                 where_filter_input,
             )
-            where_filters.append(
-                SearchAPIWhereFilter(
-                    field=filter_data[0],
-                    value=filter_data[1],
-                    operation=filter_data[2],
-                ),
-            )
+
+            # Ignore filters on `isPublic`` fields as data is always public. This is
+            # hardcoded in the `models.py` module.
+            if field != "isPublic":
+                where_filters.append(SearchAPIWhereFilter(field, value, operation))
 
         return where_filters
 
