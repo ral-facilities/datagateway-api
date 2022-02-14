@@ -95,13 +95,13 @@ class TestSearchAPICountEndpoint:
             pytest.param(
                 "datasets",
                 '{"isPublic": true}',
-                {"count": 462},
+                {"count": 479},
                 id="Dataset count with isPublic condition",
             ),
             pytest.param(
                 "documents",
                 '{"isPublic": true}',
-                {"count": 76},
+                {"count": 239},
                 id="Document count with isPublic condition",
             ),
         ],
