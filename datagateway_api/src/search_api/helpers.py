@@ -174,5 +174,8 @@ def get_files_count(entity_name, filters, pid):
         "Entity Name: %s, Filters: %s", entity_name, filters,
     )
 
+    # Check if dataset with such pid exists before proceeding
+    get_with_pid("Dataset", pid, [])
+
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
     return get_count(entity_name, filters)
