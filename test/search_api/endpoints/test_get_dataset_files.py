@@ -141,14 +141,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
             pytest.param(
                 "0-8401-1070-7", '{"include": ""}', 400, id="Bad include filter",
             ),
-            pytest.param(
-                "my 404 test pid",
-                "{}",
-                404,
-                id="Non-existent dataset pid",
-                # Skipped because this actually returns 200
-                marks=pytest.mark.skip,
-            ),
+            pytest.param("my 404 test pid", "{}", 404, id="Non-existent dataset pid"),
         ],
     )
     def test_invalid_get_dataset_files_endpoint(
