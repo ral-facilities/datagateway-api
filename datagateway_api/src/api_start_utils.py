@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 
 from apispec import APISpec
+from flask import Response
 from flask_cors import CORS
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -55,7 +56,12 @@ class CustomErrorHandledApi(Api):
     """
 
     def handle_error(self, e):
-        return str(e), e.status_code
+        if isinstance(e.args[0], (str, dict, tuple, Response)):
+            error_msg = e.args[0]
+        else:
+            error_msg = str(e)
+
+        return error_msg, e.status_code
 
 
 def create_app_infrastructure(flask_app):

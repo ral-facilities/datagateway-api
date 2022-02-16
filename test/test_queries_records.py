@@ -30,7 +30,10 @@ class TestQueriesRecords:
         def raise_exception():
             raise raised_exception()
 
-        with pytest.raises(expected_exception) as ctx:
+        try:
             raise_exception()
+        except Exception as e:
+            assert e.status_code == status_code
 
-            assert ctx.exception.status_code == status_code
+        with pytest.raises(expected_exception):
+            raise_exception()

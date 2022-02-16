@@ -9,6 +9,7 @@ from datagateway_api.src.search_api.helpers import (
     get_files_count,
     get_search,
     get_with_pid,
+    search_api_error_handling,
 )
 
 log = logging.getLogger()
@@ -26,6 +27,7 @@ def get_search_endpoint(entity_name):
     """
 
     class Endpoint(Resource):
+        @search_api_error_handling
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
@@ -49,6 +51,7 @@ def get_single_endpoint(entity_name):
     """
 
     class EndpointWithID(Resource):
+        @search_api_error_handling
         def get(self, pid):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
@@ -72,6 +75,7 @@ def get_number_count_endpoint(entity_name):
     """
 
     class CountEndpoint(Resource):
+        @search_api_error_handling
         def get(self):
             # Only WHERE included on count endpoints
             filters = get_filters_from_query_string("search_api", entity_name)
@@ -96,6 +100,7 @@ def get_files_endpoint(entity_name):
     """
 
     class FilesEndpoint(Resource):
+        @search_api_error_handling
         def get(self, pid):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
@@ -120,6 +125,7 @@ def get_number_count_files_endpoint(entity_name):
     """
 
     class CountFilesEndpoint(Resource):
+        @search_api_error_handling
         def get(self, pid):
             # Only WHERE included on count endpoints
             filters = get_filters_from_query_string("search_api", entity_name)

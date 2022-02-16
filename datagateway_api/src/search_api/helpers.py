@@ -1,7 +1,11 @@
+from functools import wraps
 import json
 import logging
 
-from datagateway_api.src.common.exceptions import MissingRecordError
+from datagateway_api.src.common.exceptions import (
+    BadRequestError,
+    MissingRecordError,
+)
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
@@ -16,6 +20,46 @@ from datagateway_api.src.search_api.session_handler import (
 
 
 log = logging.getLogger()
+
+
+def search_api_error_handling(method):
+    """
+    Decorator (similar to `queries_records`) to handle exceptions and present in a way
+    required for the search API. The decorator should be applied to search API endpoint
+    resources
+
+    :param method: The method for the endpoint
+    :raises: Any exception caught by the execution of `method`
+    """
+
+    @wraps(method)
+    def wrapper_error_handling(*args, **kwargs):
+        try:
+            return method(*args, **kwargs)
+        except (ValueError, TypeError, AttributeError) as e:
+            log.exception(msg=e.args)
+            raise BadRequestError(create_error_message(BadRequestError()))
+        except Exception as e:
+            log.exception(msg=e.args)
+            try:
+                e.status_code
+            except AttributeError:
+                # If no status code exists (for non-API defined exceptions), defensively
+                # assign a 500
+                e.status_code = 500
+
+            raise type(e)(create_error_message(e))
+
+    def create_error_message(e):
+        return {
+            "error": {
+                "statusCode": e.status_code,
+                "name": e.__class__.__name__,
+                "message": str(e),
+            },
+        }
+
+    return wrapper_error_handling
 
 
 @client_manager
