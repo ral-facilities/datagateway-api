@@ -176,9 +176,14 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 where_filter_input,
             )
 
-            # Ignore filters on `isPublic`` fields as data is always public. This is
-            # hardcoded in the `models.py` module.
-            if field != "isPublic":
+            # Ignore filters on `isPublic`` fields as data is always public. Ensure that
+            # empty list is returned when filtering for non-public data.
+            if field == "isPublic":
+                value = not value if operation == "neq" else value
+                if not value:
+                    where_filters.append(SearchAPISkipFilter(1))
+                    where_filters.append(SearchAPILimitFilter(0))
+            else:
                 where_filters.append(SearchAPIWhereFilter(field, value, operation))
 
         return where_filters
