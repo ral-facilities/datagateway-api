@@ -1,7 +1,3 @@
-from datetime import datetime, timezone
-from unittest.mock import patch
-
-from dateutil.relativedelta import relativedelta
 import pytest
 
 from datagateway_api.src.common.exceptions import FilterError
@@ -17,13 +13,6 @@ from datagateway_api.src.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
 
-DATETIME_NOW = datetime.now(timezone.utc)
-
-
-def get_three_years_ago_datetime_as_string():
-    three_years_ago = DATETIME_NOW - relativedelta(years=3)
-    return str(three_years_ago).replace("+", " ")
-
 
 class TestSearchAPIQueryFilterFactory:
     @pytest.mark.parametrize(
@@ -36,44 +25,10 @@ class TestSearchAPIQueryFilterFactory:
                 id="Property value with no operator",
             ),
             pytest.param(
-                {"filter": {"where": {"isPublic": False}}},
-                "Document",
-                SearchAPIWhereFilter(
-                    "isPublic", get_three_years_ago_datetime_as_string(), "gt",
-                ),
-                id="Property value with no operator (isPublic field - False value)",
-            ),
-            pytest.param(
-                {"filter": {"where": {"isPublic": True}}},
-                "Document",
-                SearchAPIWhereFilter(
-                    "isPublic", get_three_years_ago_datetime_as_string(), "lt",
-                ),
-                id="Property value with no operator (isPublic field - True value)",
-            ),
-            pytest.param(
                 {"filter": {"where": {"summary": {"like": "My Test Summary"}}}},
                 "Document",
                 SearchAPIWhereFilter("summary", "My Test Summary", "like"),
                 id="Property value with operator",
-            ),
-            pytest.param(
-                {"filter": {"where": {"isPublic": {"neq": False}}}},
-                "Document",
-                SearchAPIWhereFilter(
-                    "isPublic", get_three_years_ago_datetime_as_string(), "lt",
-                ),
-                id="Property value with operator (isPublic field - False value - neq "
-                "operator)",
-            ),
-            pytest.param(
-                {"filter": {"where": {"isPublic": {"neq": True}}}},
-                "Document",
-                SearchAPIWhereFilter(
-                    "isPublic", get_three_years_ago_datetime_as_string(), "gt",
-                ),
-                id="Property value with operator (isPublic field - True value - neq "
-                "operator)",
             ),
             pytest.param(
                 {"where": {"summary": {"like": "My Test Summary"}}},
@@ -83,17 +38,58 @@ class TestSearchAPIQueryFilterFactory:
             ),
         ],
     )
-    @patch("datagateway_api.src.search_api.query_filter_factory.datetime")
     def test_valid_where_filter(
-        self, datetime_mock, test_request_filter, test_entity_name, expected_where,
+        self, test_request_filter, test_entity_name, expected_where,
     ):
-        datetime_mock.now.return_value = DATETIME_NOW
         filters = SearchAPIQueryFilterFactory.get_query_filter(
             test_request_filter, test_entity_name,
         )
 
         assert len(filters) == 1
         assert repr(filters[0]) == repr(expected_where)
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_filters",
+        [
+            pytest.param(
+                {"filter": {"where": {"isPublic": True}}},
+                "Dataset",
+                [],
+                id="Public data",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"neq": False}}}},
+                "Dataset",
+                [],
+                id="Public data - neq operator",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"eq": False}}}},
+                "Dataset",
+                [SearchAPISkipFilter(1), SearchAPILimitFilter(0)],
+                id="Non-public data",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"neq": True}}}},
+                "Dataset",
+                [SearchAPISkipFilter(1), SearchAPILimitFilter(0)],
+                id="Non-public data - neq operator",
+            ),
+        ],
+    )
+    def test_valid_where_filter_on_is_public_field(
+        self, test_request_filter, test_entity_name, expected_filters,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == len(expected_filters)
+        for test_filter in filters:
+            if isinstance(test_filter, SearchAPISkipFilter):
+                assert test_filter.skip_value == 1
+            if isinstance(test_filter, SearchAPILimitFilter):
+                assert test_filter.limit_value == 0
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"

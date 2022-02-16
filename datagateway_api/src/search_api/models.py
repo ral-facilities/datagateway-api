@@ -1,14 +1,11 @@
 from abc import ABC, abstractmethod
-from datetime import datetime, timezone
+from datetime import datetime
 import sys
 from typing import ClassVar, List, Optional, Union
 
-from dateutil.relativedelta import relativedelta
-from pydantic import BaseModel, Field, ValidationError, validator
+from pydantic import BaseModel, Field, root_validator, ValidationError, validator
 from pydantic.error_wrappers import ErrorWrapper
 
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
 
@@ -195,17 +192,12 @@ class Dataset(PaNOSCAttribute):
     def set_pid(cls, value):  # noqa: B902, N805
         return f"pid:{value}" if isinstance(value, int) else value
 
-    @validator("is_public", pre=True, always=True)
-    def set_is_public(cls, value):  # noqa: B902, N805
-        if not value:
-            return value
-
-        creation_date = DateHandler.str_to_datetime_object(value)
-        current_datetime = datetime.now(timezone.utc)
-        rd = relativedelta(
-            years=Config.config.search_api.num_of_years_determining_public_data,
-        )
-        return creation_date < (current_datetime - rd)
+    @root_validator(pre=True)
+    def set_is_public(cls, values):  # noqa: B902, N805
+        # Hardcoding this to True because anon user is used for querying so all data
+        # returned by it is public
+        values["isPublic"] = True
+        return values
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -240,17 +232,12 @@ class Document(PaNOSCAttribute):
     def set_pid(cls, value):  # noqa: B902, N805
         return f"pid:{value}" if isinstance(value, int) else value
 
-    @validator("is_public", pre=True, always=True)
-    def set_is_public(cls, value):  # noqa: B902, N805
-        if not value:
-            return value
-
-        creation_date = DateHandler.str_to_datetime_object(value)
-        current_datetime = datetime.now(timezone.utc)
-        rd = relativedelta(
-            years=Config.config.search_api.num_of_years_determining_public_data,
-        )
-        return creation_date < (current_datetime - rd)
+    @root_validator(pre=True)
+    def set_is_public(cls, values):  # noqa: B902, N805
+        # Hardcoding this to True because anon user is used for querying so all data
+        # returned by it is public
+        values["isPublic"] = True
+        return values
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
