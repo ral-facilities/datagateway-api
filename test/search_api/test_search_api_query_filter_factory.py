@@ -49,6 +49,49 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0]) == repr(expected_where)
 
     @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name, expected_filters",
+        [
+            pytest.param(
+                {"filter": {"where": {"isPublic": True}}},
+                "Dataset",
+                [],
+                id="Public data",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"neq": False}}}},
+                "Dataset",
+                [],
+                id="Public data - neq operator",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"eq": False}}}},
+                "Dataset",
+                [SearchAPISkipFilter(1), SearchAPILimitFilter(0)],
+                id="Non-public data",
+            ),
+            pytest.param(
+                {"filter": {"where": {"isPublic": {"neq": True}}}},
+                "Dataset",
+                [SearchAPISkipFilter(1), SearchAPILimitFilter(0)],
+                id="Non-public data - neq operator",
+            ),
+        ],
+    )
+    def test_valid_where_filter_on_is_public_field(
+        self, test_request_filter, test_entity_name, expected_filters,
+    ):
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, test_entity_name,
+        )
+
+        assert len(filters) == len(expected_filters)
+        for test_filter in filters:
+            if isinstance(test_filter, SearchAPISkipFilter):
+                assert test_filter.skip_value == 1
+            if isinstance(test_filter, SearchAPILimitFilter):
+                assert test_filter.limit_value == 0
+
+    @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
         ", expected_joining_operator",
         [

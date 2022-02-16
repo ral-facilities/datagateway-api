@@ -93,13 +93,29 @@ class TestSearchAPICountEndpoint:
                 "datasets",
                 '{"isPublic": true}',
                 {"count": 479},
-                id="Dataset count with isPublic condition",
+                id="Dataset count with isPublic condition (True)",
             ),
             pytest.param(
                 "documents",
                 '{"isPublic": true}',
                 {"count": 239},
-                id="Document count with isPublic condition",
+                id="Document count with isPublic condition (True)",
+            ),
+            pytest.param(
+                "datasets",
+                '{"isPublic": false}',
+                {"count": 0},
+                id="Dataset count with isPublic condition (False)",
+                # Skipped due to skip filter causing issue on count endpoints
+                marks=pytest.mark.skip,
+            ),
+            pytest.param(
+                "documents",
+                '{"isPublic": false}',
+                {"count": 0},
+                id="Document count with isPublic condition (False)",
+                # Skipped due to skip filter causing issue on count endpoints
+                marks=pytest.mark.skip,
             ),
         ],
     )
