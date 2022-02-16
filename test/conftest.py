@@ -104,7 +104,6 @@ def test_config_data():
             "extension": "/search-api",
             "icat_url": "https://localhost.testdomain:8181",
             "icat_check_cert": True,
-            "num_of_years_determining_public_data": 3,
         },
         "flask_reloader": False,
         "log_level": "WARN",
