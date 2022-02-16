@@ -1,6 +1,7 @@
 import pytest
 
 from datagateway_api.src.common.exceptions import (
+    ApiError,
     BadRequestError,
     FilterError,
     MissingRecordError,
@@ -22,6 +23,7 @@ class TestErrorHandling:
             pytest.param(TypeError, BadRequestError, 400, id="Type error"),
             pytest.param(ValueError, BadRequestError, 400, id="Value error"),
             pytest.param(AttributeError, BadRequestError, 400, id="Attribute error"),
+            pytest.param(ImportError, ImportError, 500, id="Import error"),
         ],
     )
     def test_valid_error_raised(
@@ -35,7 +37,9 @@ class TestErrorHandling:
             raise_exception()
         except Exception as e:
             assert isinstance(e.args[0], dict)
-            assert e.status_code == status_code
+            # Non-API defined exception won't have a `status_code` attribute
+            if isinstance(e, ApiError):
+                assert e.status_code == status_code
             assert list(e.args[0]["error"].keys()) == ["statusCode", "name", "message"]
 
         with pytest.raises(expected_exception):

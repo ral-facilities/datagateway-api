@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
@@ -24,8 +25,8 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 SearchAPIWhereFilter("pid", "pid:1", "eq"),
-                "Instrument",
-                "SELECT o FROM Instrument o WHERE o.id = '1'",
+                "Sample",
+                "SELECT o FROM Sample o WHERE o.id = '1'",
                 id="Id instrument value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
@@ -145,8 +146,20 @@ class TestSearchAPIWhereFilter:
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
                 " p.dateTimeValue = '2018-05-05T15:00:00.000Z'",
-                id="Datetime parameter value (mapping that maps to multiple ICAT"
-                " fields)",
+                id="Datetime (of type string) parameter value (mapping that maps to"
+                " multiple ICAT fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter(
+                    "parameters.value",
+                    DateHandler.str_to_datetime_object("2018-05-05T15:00:00.000Z"),
+                    "eq",
+                ),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.dateTimeValue = '2018-05-05 15:00:00+00:00'",
+                id="Datetime (of type date) parameter value (mapping that maps to"
+                " multiple ICAT fields)",
             ),
             pytest.param(
                 SearchAPIWhereFilter("parameters.value", 20, "eq"),
@@ -162,6 +175,14 @@ class TestSearchAPIWhereFilter:
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
                 " p.numericValue = '20.0'",
                 id="Numeric (float) parameter value (mapping that maps to multiple ICAT"
+                "fields)",
+            ),
+            pytest.param(
+                SearchAPIWhereFilter("parameters.value", ["test"], "eq"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.stringValue = '['test']'",
+                id="Other type parameter value (mapping that maps to multiple ICAT"
                 "fields)",
             ),
         ],
@@ -281,3 +302,7 @@ class TestSearchAPIWhereFilter:
         filter_handler.apply_filters(test_query)
 
         assert str(test_query.icat_query.query) == expected_query
+
+    def test_str_where_filter(self):
+        test_filter = SearchAPIWhereFilter("name", "WISH", "eq")
+        assert str(test_filter) == repr(test_filter)

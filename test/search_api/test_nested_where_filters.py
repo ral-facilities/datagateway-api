@@ -153,3 +153,44 @@ class TestNestedWhereFilters:
         test_nest = NestedWhereFilters(lhs, rhs, joining_operator)
         where_clause = str(test_nest)
         assert where_clause == expected_where_clause
+
+    @pytest.mark.parametrize(
+        "test_filters, query",
+        [
+            pytest.param(
+                SearchAPIWhereFilter("name", "test name", "eq"),
+                SearchAPIQuery("File"),
+                id="Single WHERE filter",
+            ),
+            pytest.param(
+                NestedWhereFilters(
+                    [SearchAPIWhereFilter("name", "test name", "eq")],
+                    [SearchAPIWhereFilter("id", 3, "eq")],
+                    "OR",
+                    SearchAPIQuery("File"),
+                ),
+                SearchAPIQuery("File"),
+                id="NestedWhereFilters object",
+            ),
+            pytest.param(
+                [
+                    SearchAPIWhereFilter("name", "test name", "eq"),
+                    SearchAPIWhereFilter("id", 3, "eq"),
+                ],
+                SearchAPIQuery("File"),
+                id="List of WHERE filters",
+            ),
+        ],
+    )
+    def test_apply_filter(self, test_filters, query):
+        NestedWhereFilters.set_search_api_query(test_filters, query)
+
+        if not isinstance(test_filters, list):
+            test_filters = [test_filters]
+
+        for filter_ in test_filters:
+            if isinstance(filter_, NestedWhereFilters):
+                assert filter_.lhs[0].search_api_query == query
+                assert filter_.rhs[0].search_api_query == query
+            else:
+                assert filter_.search_api_query == query

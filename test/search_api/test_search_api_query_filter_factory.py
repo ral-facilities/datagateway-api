@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
@@ -133,6 +133,24 @@ class TestSearchAPIQueryFilterFactory:
         assert repr(filters[0].search_api_query) == repr(
             SearchAPIQuery(test_entity_name),
         )
+
+    @pytest.mark.parametrize(
+        "test_request_filter, test_entity_name",
+        [
+            pytest.param(
+                {"filter": {"where": {"text": "Instrument 1"}}},
+                "UnknownEntity",
+                id="Unknown entity",
+            ),
+        ],
+    )
+    def test_invalid_where_filter_text_operator(
+        self, test_request_filter, test_entity_name,
+    ):
+        with pytest.raises(SearchAPIError):
+            SearchAPIQueryFilterFactory.get_query_filter(
+                test_request_filter, test_entity_name,
+            )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_lhs, expected_rhs"
@@ -2028,6 +2046,7 @@ class TestSearchAPIQueryFilterFactory:
         "test_request_filter",
         [
             pytest.param("invalid query filter input", id="Generally invalid input"),
+            pytest.param({"filter": {"test": "value"}}, id="Invalid filter name"),
             pytest.param(
                 {
                     "filter": {
@@ -2075,18 +2094,114 @@ class TestSearchAPIQueryFilterFactory:
             pytest.param(
                 {"property": "value"},
                 ("property", "value", "eq"),
-                id="No operator specified",
+                id="No operator specified (string)",
             ),
             pytest.param(
-                {"property": {"ne": "value"}},
-                ("property", "value", "ne"),
-                id="Specific operator given in input",
+                {"property": False},
+                ("property", False, "eq"),
+                id="No operator specified (bool)",
+            ),
+            pytest.param(
+                {"property": 5},
+                ("property", 5, "eq"),
+                id="No operator specified (int)",
+            ),
+            pytest.param(
+                {"property": {"eq": "value"}},
+                ("property", "value", "eq"),
+                id="Specific operator given in input (eq)",
+            ),
+            pytest.param(
+                {"property": {"neq": "value"}},
+                ("property", "value", "neq"),
+                id="Specific operator given in input (neq)",
+            ),
+            pytest.param(
+                {"property": {"gt": "value"}},
+                ("property", "value", "gt"),
+                id="Specific operator given in input (gt)",
+            ),
+            pytest.param(
+                {"isPublic": True},
+                ("isPublic", True, "eq"),
+                id="No operator specified using isPublic",
+            ),
+            pytest.param(
+                {"isPublic": {"eq": False}},
+                ("isPublic", False, "eq"),
+                id="Specific operator using isPublic (eq)",
+            ),
+            pytest.param(
+                {"isPublic": {"neq": True}},
+                ("isPublic", True, "neq"),
+                id="Specific operator using isPublic (neq)",
             ),
         ],
     )
-    def test_get_condition_values(self, filter_input, expected_return):
+    def test_valid_get_condition_values(self, filter_input, expected_return):
         test_condition_values = SearchAPIQueryFilterFactory.get_condition_values(
             filter_input,
         )
 
         assert test_condition_values == expected_return
+
+    @pytest.mark.parametrize(
+        "filter_input",
+        [
+            pytest.param({"isPublic": {"lt": True}}, id="isPublic invalid operator"),
+            pytest.param(
+                {"name": {"gt": False}}, id="Invalid operator on boolean value",
+            ),
+        ],
+    )
+    def test_invalid_get_condition_values(self, filter_input):
+        with pytest.raises(FilterError):
+            SearchAPIQueryFilterFactory.get_condition_values(filter_input)
+
+    @pytest.mark.parametrize(
+        "test_filter, entity_name, expected_field_name",
+        [
+            pytest.param(
+                SearchAPIWhereFilter("name", "test name", "eq"),
+                "File",
+                ["File.name"],
+                id="Single where filter",
+            ),
+            pytest.param(
+                [
+                    SearchAPIWhereFilter("name", "test name", "eq"),
+                    SearchAPIWhereFilter("id", 3, "eq"),
+                ],
+                "File",
+                ["File.name", "File.id"],
+                id="List of where filters",
+            ),
+            pytest.param(
+                NestedWhereFilters(
+                    [SearchAPIWhereFilter("name", "test name", "eq")],
+                    [SearchAPIWhereFilter("id", 3, "eq")],
+                    "OR",
+                    SearchAPIQuery("File"),
+                ),
+                "File",
+                ["File.name", "File.id"],
+                id="NestedWhereFilters object",
+            ),
+        ],
+    )
+    def test_prefix_entity_name(self, test_filter, entity_name, expected_field_name):
+        SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(
+            test_filter, entity_name,
+        )
+
+        if not isinstance(test_filter, list):
+            test_filter = [test_filter]
+
+        for filter_, field_name in zip(test_filter, expected_field_name):
+            if isinstance(filter_, NestedWhereFilters):
+                assert filter_.lhs[0].field == expected_field_name[0]
+                assert filter_.rhs[0].field == expected_field_name[1]
+            else:
+                assert filter_.field == field_name
+
+        # assert test_filter.field == expected_output
