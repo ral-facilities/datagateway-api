@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.0 (2022-02-16)
+### Feature
+* Add search API error formatting as per specification #296 ([`3a5a3e8`](https://github.com/ral-facilities/datagateway-api/commit/3a5a3e83a1a2ce677a50a39b38d71133fea5121a))
+
 ## v4.0.1 (2022-02-11)
 ### Fix
 * Use alternative ICAT mapping for Technique pid when pid is None #314 ([`bf1c830`](https://github.com/ral-facilities/datagateway-api/commit/bf1c8305fc73630fbf1e6c4771664d974c72fd93))
