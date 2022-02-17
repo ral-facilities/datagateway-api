@@ -2063,6 +2063,7 @@ class TestSearchAPIQueryFilterFactory:
                 },
                 id="Unsupported skip filter in scope of include filter",
             ),
+            pytest.param({"filter": {"where": []}}, id="Bad where filter input"),
             pytest.param(
                 {"filter": {"where": {"isPublic": {"lt": True}}}},
                 id="Unsupported operator in where filter with boolean value",

@@ -11,28 +11,16 @@ class TestSearchAPICountEndpoint:
         "endpoint_name, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
-                "{}",
-                {"count": 479},
-                id="Basic /datasets/count request",
-                # Skipped because empty dict for filter doesn't work on where
-                marks=pytest.mark.skip,
+                "datasets", "{}", {"count": 479}, id="Basic /datasets/count request",
             ),
             pytest.param(
-                "documents",
-                "{}",
-                {"count": 239},
-                id="Basic /documents/count request",
-                # Skipped because empty dict for filter doesn't work on where
-                marks=pytest.mark.skip,
+                "documents", "{}", {"count": 239}, id="Basic /documents/count request",
             ),
             pytest.param(
                 "instruments",
                 "{}",
                 {"count": 14},
                 id="Basic /instruments/count request",
-                # Skipped because empty dict for filter doesn't work on where
-                marks=pytest.mark.skip,
             ),
             pytest.param(
                 "datasets",
