@@ -266,7 +266,7 @@ e.g. `http://localhost:5000/datagateway-api/sessions`.
 
 ## DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`, more details
-about backends [here](#backends)) the connection URL for the backend needs to be set.
+about backends [here](#datagateway-api-backends)) the connection URL for the backend needs to be set.
 These are set in `config.json` (an example file is provided in the base directory of
 this repository). While both `db_url` and `icat_url` should have values assigned to them
 (for best practice), `db_url` will only be used for the database backend, and `icat_url`
@@ -842,6 +842,14 @@ New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING C
 (major) commit type is found between the previous release and the most recent commit on
 master. When the version is bumped, a GitHub tag and release is made which contains
 the source code and the built versions of the API (sdist and wheel).
+
+To check how the version number will be impacted before merging a pull request, use the
+following command to show the version which will be made when the GitHub Actions release
+build job runs (upon merging a branch/PR):
+
+```bash
+poetry run semantic-release print-version
+```
 
 
 
