@@ -7,15 +7,16 @@
 This is a Flask-based API that fetches data from an ICAT instance, and has two sets of
 endpoints, for two different use cases. The first is for
 [DataGateway](https://github.com/ral-facilities/datagateway) which has two methods of
-interfacing with an ICAT stack, using a Python-based ICAT wrapper library or using
-`sqlalchemy` to communicate directly with an ICAT database.
+interfacing with an ICAT stack, using a
+Python-based ICAT wrapper library](https://github.com/icatproject/python-icat) or using
+[sqlalchemy](https://www.sqlalchemy.org/) to communicate directly with an ICAT database.
 
 The other use case is for the
 [PaNOSC Search API](https://github.com/panosc-eu/search-api/), required to be
 implemented and deployed for ICAT facilities part of the PaNOSC and ExPaNDS projects. A
 good summary for the search API is that's it is a limited functionality version of
 DataGateway API (in terms of number of endpoints and query filters available to a user),
-but adheres more strictly to Loopback than DataGateway API (due to the specifcation of
+but adheres more strictly to Loopback than DataGateway API (due to the specification of
 the search API). Like DataGateway API, the search API uses Python ICAT to fetch data
 from ICAT, and code is reused from DataGateway API where possible.
 
@@ -261,7 +262,7 @@ pre-commit install
 
 # Running DataGateway API
 By default, the API will run on `http://localhost:5000` and all requests are made here
-e.g. `http://localhost:5000/sessions`.
+e.g. `http://localhost:5000/datagateway-api/sessions`.
 
 ## DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`, more details
@@ -278,7 +279,7 @@ repository.
 
 ## Search API
 Since adding the search API, the endpoints for each type of API can be configured using
-`extension` in the respsective JSON object. For example, if `extension` is set to
+`extension` in the respective JSON object. For example, if `extension` is set to
 `/search-api`, then requests for the search API can be set to
 `http://localhost:5000/search-api` (assuming default host and port configuration). This
 option is made configurable for both DataGateway API and the search API.
@@ -286,7 +287,7 @@ option is made configurable for both DataGateway API and the search API.
 In addition to the configuration options in `config.json`, the mappings between the
 PaNOSC and ICAT data models need configuring. An example file exists in
 `datagateway_api/` which can be copied from as a starting point. Further explanation of
-this file is given further down in the README.
+this file is given [here](#mapping-between-panosc-and-icat-data-models).
 
 Within the search API, there are various entities that would need ICAT 5 to work.
 Despite this, ICAT 5 is not required to use the search API, however, not every single
@@ -663,7 +664,8 @@ and the ICAT schema.
 To map between each data model, there is a JSON file (`search_api_mapping.json`) which
 defines the mappings for each PaNOSC entity (and all the attributes within them). This
 is configurable so these mappings can be changed as needed - each facility uses ICAT in
-slightly different ways; the example file shows the mappings used for ISIS which should give a good place to start.
+slightly different ways; the example file shows the mappings used for ISIS which should
+give a good place to start.
 
 Within the mapping file, each of the JSON objects represents a PaNOSC entity. Inside
 each object, there is a `base_icat_entity` which defines which ICAT entity the PaNOSC
