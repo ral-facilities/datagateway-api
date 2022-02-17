@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.1 (2022-02-17)
+### Fix
+* Ignore filters on `isPublic` fields #329 ([`d6c10d5`](https://github.com/ral-facilities/datagateway-api/commit/d6c10d56b788ff3c491feaf1fae3a6fadd634a9d))
+* Hardcode `isPublic` value to `True` #329 ([`64f62c2`](https://github.com/ral-facilities/datagateway-api/commit/64f62c217de760d22afae3e15d4774173eddbb48))
+
 ## v4.1.0 (2022-02-16)
 ### Feature
 * Add search API error formatting as per specification #296 ([`3a5a3e8`](https://github.com/ral-facilities/datagateway-api/commit/3a5a3e83a1a2ce677a50a39b38d71133fea5121a))
