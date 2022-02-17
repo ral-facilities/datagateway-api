@@ -1,6 +1,6 @@
 import logging
 
-from cachetools.lru import LRUCache
+from cachetools import LRUCache
 
 from datagateway_api.src.common.config import Config
 
