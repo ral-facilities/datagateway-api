@@ -146,6 +146,9 @@ def get_files(entity_name, pid, filters):
         "Entity Name: %s, Filters: %s", entity_name, filters,
     )
 
+    # Check if dataset with such pid exists before proceeding
+    get_with_pid("Dataset", pid, [])
+
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
     return get_search(entity_name, filters)
 
@@ -170,6 +173,9 @@ def get_files_count(entity_name, filters, pid):
     log.debug(
         "Entity Name: %s, Filters: %s", entity_name, filters,
     )
+
+    # Check if dataset with such pid exists before proceeding
+    get_with_pid("Dataset", pid, [])
 
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
     return get_count(entity_name, filters)
