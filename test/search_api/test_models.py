@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 from pydantic import ValidationError
 import pytest
 
@@ -88,7 +86,7 @@ INSTRUMENT_ICAT_DATA = {
 INVESTIGATION_ICAT_DATA = {
     "endDate": "2000-12-31 00:00:00+00:00",
     "name": "Test name",
-    "releaseDate": str(datetime.now(timezone.utc)),
+    "releaseDate": "2000-12-31 00:00:00+00:00",
     "id": 1,
     "modTime": "2000-12-31 00:00:00+00:00",
     "modId": "Test modId",
@@ -216,7 +214,7 @@ DATASET_PANOSC_DATA = {
 
 DOCUMENT_PANOSC_DATA = {
     "pid": INVESTIGATION_ICAT_DATA["doi"],
-    "isPublic": False,
+    "isPublic": True,
     "type": INVESTIGATION_TYPE_ICAT_DATA["name"],
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],

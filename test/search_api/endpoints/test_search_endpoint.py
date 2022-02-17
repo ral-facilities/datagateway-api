@@ -416,7 +416,13 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Search datasets with isPublic condition",
+                id="Search datasets with isPublic condition (True)",
+            ),
+            pytest.param(
+                "datasets",
+                '{"where": {"isPublic": false}}',
+                [],
+                id="Search datasets with isPublic condition (False)",
             ),
         ],
     )
