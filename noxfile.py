@@ -95,6 +95,8 @@ def tests(session):
     # version didn't fix the `2to3` issue when building Python ICAT, perhaps because
     # Python ICAT isn't built on the downgraded version for some reason?
     session.run("poetry", "run", "pip", "uninstall", "-y", "setuptools")
-    session.run("poetry", "run", "pip", "install", "setuptools<58.0.0")
+    # Not using `poetry run` as it errors on Windows OS when a version with the '<'
+    # sign is specified for a package
+    session.run("pip", "install", "setuptools<58.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", *args)
