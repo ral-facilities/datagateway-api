@@ -25,8 +25,8 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 SearchAPIWhereFilter("pid", "pid:1", "eq"),
-                "Sample",
-                "SELECT o FROM Sample o WHERE o.id = '1'",
+                "Instrument",
+                "SELECT o FROM Instrument o WHERE o.id = '1'",
                 id="Id instrument value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
