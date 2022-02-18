@@ -8,7 +8,7 @@ This is a Flask-based API that fetches data from an ICAT instance, and has two s
 endpoints, for two different use cases. The first is for
 [DataGateway](https://github.com/ral-facilities/datagateway) which has two methods of
 interfacing with an ICAT stack, using a
-Python-based ICAT wrapper library](https://github.com/icatproject/python-icat) or using
+[Python-based ICAT wrapper library](https://github.com/icatproject/python-icat) or using
 [sqlalchemy](https://www.sqlalchemy.org/) to communicate directly with an ICAT database.
 
 The other use case is for the
