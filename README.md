@@ -4,47 +4,25 @@
 
 
 # DataGateway API
-This is a Flask-based API that fetches data from an ICAT instance, to interface with
-[DataGateway](https://github.com/ral-facilities/datagateway). This API uses two ways
-for data collection/manipulation, using a Python-based ICAT API wrapper or using
-sqlalchemy to communicate directly with ICAT's database.
+This is a Flask-based API that fetches data from an ICAT instance, and has two sets of
+endpoints, for two different use cases. The first is for
+[DataGateway](https://github.com/ral-facilities/datagateway) which has two methods of
+interfacing with an ICAT stack, using a
+[Python-based ICAT wrapper library](https://github.com/icatproject/python-icat) or using
+[sqlalchemy](https://www.sqlalchemy.org/) to communicate directly with an ICAT database.
 
+The other use case is for the
+[PaNOSC Search API](https://github.com/panosc-eu/search-api/), required to be
+implemented and deployed for ICAT facilities part of the PaNOSC and ExPaNDS projects. A
+good summary for the search API is that's it is a limited functionality version of
+DataGateway API (in terms of number of endpoints and query filters available to a user),
+but adheres more strictly to Loopback than DataGateway API (due to the specification of
+the search API). Like DataGateway API, the search API uses Python ICAT to fetch data
+from ICAT, and code is reused from DataGateway API where possible.
 
-
-
-# Contents
-- [Creating Dev Environment and API Setup](#creating-dev-environment-and-api-setup)
-  - [Python Version Management (pyenv)](#python-version-management-(pyenv))
-  - [API Dependency Management (Poetry)](#api-dependency-management-(poetry))
-  - [Automated Testing & Other Development Helpers (Nox)](#automated-testing-&-other-development-helpers-(nox))
-  - [Automated Checks during Git Commit (Pre Commit)](#automated-checks-during-git-commit-(pre-commit))
-  - [Summary](#summary)
-- [API Versioning](#api-versioning)
-- [Running DataGateway API](#running-datagateway-api)
-  - [API Startup](#api-startup)
-  - [Authentication](#authentication)
-  - [Swagger Interface](#swagger-interface)
-- [Running Tests](#running-tests)
-- [Project Structure](#project-structure)
-  - [Main](#main)
-  - [Endpoints](#endpoints)
-  - [Logging](#logging)
-  - [Date Handler](#date-handler)
-  - [Exceptions & Flask Error Handling](#exceptions-&-flask-error-handling)
-  - [Filtering](#filtering)
-  - [Backends](#backends)
-    - [Abstract Backend Class](#abstract-backend-class)
-    - [Creating a Backend](#creating-a-backend)
-  - [Database Backend](#database-backend)
-    - [Mapped Classes](#mapped-classes)
-  - [Python ICAT Backend](#python-icat-backend)
-    - [Client Handling](#client-handling)
-    - [ICATQuery](#icatquery)
-  - [Generating the OpenAPI Specification](#generating-the-openapi-specification)
-- [Utilities](#utilities)
-  - [Database Generator](#database-generator)
-  - [Postman Collection](#postman-collection)
-- [Updating README](#updating-readme)
+Both use cases can be run under the same API instance and is fully configurable.
+Alternatively, a user can choose to only run one of the use cases (referred to as modes)
+if they only require one of the products.
 
 
 
@@ -282,59 +260,13 @@ pre-commit install
 
 
 
-# API Versioning
-This repository uses semantic versioning as the standard for version number
-incrementing, with the version stored in `pyproject.toml`. There is a GitHub Actions
-workflow (`release-build.yml`) which runs when master is updated (i.e. when a pull
-request is merged). This uses
-[python-semantic-release](https://github.com/relekang/python-semantic-release) to
-determine whether a release needs to be made, and if so, whether a major, minor or patch
-version bump should be made. This decision is made based on commit message content.
-
-In a PR, at least one commit must follow the
-[Angular commit message format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format)
-and use one of the
-[conventional commit types](https://github.com/commitizen/conventional-commit-types/blob/master/index.json).
-Note, there are no scopes (part of the Angular message format) configured for this repo
-so there's no need to make use of this feature. Compliance to this format and use of
-standard types will be checked by
-[semantic-pull-requests](https://github.com/zeke/semantic-pull-requests) which is a
-GitHub app installed into this repo and runs alongside existing CI jobs for pull
-requests. For example, the following commit messages follow the conventional commit
-standard:
-
-```
-# Commit to edit a CI job
-ci: edit linting job #issue-number
-
-# Commit for a bug fix
-fix: fix bug found with count endpoints #issue-number
-
-# Commit for a new feature
-feat: add endpoints for search API #issue-number
-
-# Commit which introduces a breaking change for users
-<commit-type>: change format of `config.json`, the previous version is no longer supported #issue-number
-
-BREAKING CHANGE: this feature means X functionality has been removed
-```
-
-For each pull request, only one commit message in this format is required to satisfy the
-semantic pull request checker. Requiring only one commit message in this format should
-hopefully not impose this commit style on developer. However, it is encouraged to use it
-where possible, as the types are also used to form `CHANGELOG.md`.
-
-New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING CHANGE:`
-(major) commit type is found between the previous release and the most recent commit on
-master. When the version is bumped, a GitHub tag and release is made which contains
-the source code and the built versions of the API (sdist and wheel).
-
-
-
-
 # Running DataGateway API
+By default, the API will run on `http://localhost:5000` and all requests are made here
+e.g. `http://localhost:5000/datagateway-api/sessions`.
+
+## DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`, more details
-about backends [here](#backends)) the connection URL for the backend needs to be set.
+about backends [here](#datagateway-api-backends)) the connection URL for the backend needs to be set.
 These are set in `config.json` (an example file is provided in the base directory of
 this repository). While both `db_url` and `icat_url` should have values assigned to them
 (for best practice), `db_url` will only be used for the database backend, and `icat_url`
@@ -344,8 +276,26 @@ there are a number of markdown-formatted tutorials that can be found on the
 [icat.manual](https://github.com/icatproject/icat.manual/tree/master/tutorials)
 repository.
 
-By default, the API will run on `http://localhost:5000` and all requests are made here
-e.g. `http://localhost:5000/sessions`.
+
+## Search API
+Since adding the search API, the endpoints for each type of API can be configured using
+`extension` in the respective JSON object. For example, if `extension` is set to
+`/search-api`, then requests for the search API can be set to
+`http://localhost:5000/search-api` (assuming default host and port configuration). This
+option is made configurable for both DataGateway API and the search API.
+
+In addition to the configuration options in `config.json`, the mappings between the
+PaNOSC and ICAT data models need configuring. An example file exists in
+`datagateway_api/` which can be copied from as a starting point. Further explanation of
+this file is given [here](#mapping-between-panosc-and-icat-data-models).
+
+Within the search API, there are various entities that would need ICAT 5 to work.
+Despite this, ICAT 5 is not required to use the search API, however, not every single
+piece of functionality (e.g. getting technique data) will work because that
+functionality/data simply doesn't exist in ICAT 4. The only strict ICAT related
+requirement for the search API is that the ICAT instance which is used must have the
+anon authenticator installed. This is because the search API only deals with public data
+so the anon/anon user will have the relevant permissions to not show embargoed data.
 
 
 ## API Startup
@@ -394,7 +344,7 @@ twice. In the case of the ICAT backend, this could dramatically increase startup
 the API is configured with a large initial client pool size.
 
 
-## Authentication
+## DataGateway API Authentication
 Each request requires a valid session ID to be provided in the Authorization header.
 This header should take the form of `{"Authorization":"Bearer <session_id>"}` A session
 ID can be obtained by sending a POST request to `/sessions`. All endpoint methods that
@@ -413,6 +363,9 @@ This specification is built with the Database Backend in mind (attribute names o
 example outputs are capitalised for example), however the Swagger interface can also be
 used with the Python ICAT Backend. More details on how the API's OpenAPI specification
 is built can be found [here](#generating-the-openapi-specification).
+
+For reference, there is currently no OpenAPI specification for the search API, but an
+issue has been [created](https://github.com/ral-facilities/datagateway-api/issues/281).
 
 
 
@@ -472,111 +425,12 @@ nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery::test_valid_query_
 
 
 # Project Structure
-The project consists of 3 main packages: `datagateway_api.common`,
-`datagateway_api.src`, and `test`. `datagateway_api.common` contains modules for the
-Database and Python ICAT Backends as well as code to deal with query filters.
-`datagateway_api.src` contains the API resources and their HTTP method definitions (e.g.
-GET, POST). `test` contains automated tests written using Pytest. A directory tree is
-illustrated below:
-
-`````
-.
-├── .flake8
-├── .gitignore
-├── .pre-commit-config.yaml
-├── LICENSE
-├── README.md
-├── datagateway_api
-│   ├── config.json.example
-│   ├── wsgi.py
-│   ├── common
-│   │   ├── backend.py
-│   │   ├── backends.py
-│   │   ├── config.py
-│   │   ├── constants.py
-│   │   ├── database
-│   │   │   ├── backend.py
-│   │   │   ├── filters.py
-│   │   │   ├── helpers.py
-│   │   │   ├── models.py
-│   │   │   └── session_manager.py
-│   │   ├── date_handler.py
-│   │   ├── exceptions.py
-│   │   ├── filter_order_handler.py
-│   │   ├── filters.py
-│   │   ├── helpers.py
-│   │   ├── icat
-│   │   │   ├── backend.py
-│   │   │   ├── filters.py
-│   │   │   ├── helpers.py
-│   │   │   └── query.py
-│   │   ├── logger_setup.py
-│   │   └── query_filter_factory.py
-│   └── src
-│       ├── main.py
-│       ├── resources
-│       │   ├── entities
-│       │   │   ├── entity_endpoint.py
-│       │   │   └── entity_map.py
-│       │   ├── non_entities
-│       │   │   └── sessions_endpoints.py
-│       │   └── table_endpoints
-│       │       └── table_endpoints.py
-│       └── swagger
-│           ├── apispec_flask_restful.py
-│           ├── initialise_spec.py
-│           └── openapi.yaml
-├── noxfile.py
-├── poetry.lock
-├── postman_collection_icat.json
-├── pyproject.toml
-├── test
-│   ├── conftest.py
-│   ├── db
-│   │   ├── conftest.py
-│   │   ├── endpoints
-│   │   │   ├── test_count_with_filters_db.py
-│   │   │   ├── test_findone_db.py
-│   │   │   ├── test_get_by_id_db.py
-│   │   │   ├── test_get_with_filters.py
-│   │   │   └── test_table_endpoints_db.py
-│   │   ├── test_entity_helper.py
-│   │   ├── test_query_filter_factory.py
-│   │   └── test_requires_session_id.py
-│   ├── icat
-│   │   ├── conftest.py
-│   │   ├── endpoints
-│   │   │   ├── test_count_with_filters_icat.py
-│   │   │   ├── test_create_icat.py
-│   │   │   ├── test_delete_by_id_icat.py
-│   │   │   ├── test_findone_icat.py
-│   │   │   ├── test_get_by_id_icat.py
-│   │   │   ├── test_get_with_filters_icat.py
-│   │   │   ├── test_table_endpoints_icat.py
-│   │   │   ├── test_update_by_id_icat.py
-│   │   │   └── test_update_multiple_icat.py
-│   │   ├── filters
-│   │   │   ├── test_distinct_filter.py
-│   │   │   ├── test_include_filter.py
-│   │   │   ├── test_limit_filter.py
-│   │   │   ├── test_order_filter.py
-│   │   │   ├── test_skip_filter.py
-│   │   │   └── test_where_filter.py
-│   │   ├── test_filter_order_handler.py
-│   │   ├── test_query.py
-│   │   └── test_session_handling.py
-│   ├── test_backends.py
-│   ├── test_base.py
-│   ├── test_config.py
-│   ├── test_date_handler.py
-│   ├── test_endpoint_rules.py
-│   ├── test_get_filters_from_query.py
-│   ├── test_get_session_id_from_auth_header.py
-│   ├── test_is_valid_json.py
-│   └── test_queries_records.py
-└── util
-    └── icat_db_generator.py
-`````
+The project consists of 5 main packages:
+- `datagateway_api.src.datagateway_api` - code for DataGateway API, for both database and Python ICAT backends
+- `datagateway_api.src.search_api` - Search API specific code e.g. `NestedWhereFilters` for the OR functionality for WHERE clauses
+- `datagateway_api.src.common` - code that is shared between DataGateway API and the search API
+- `datagateway_api.src.resources` - contains the API resources and their HTTP method definitions (e.g. GET, POST)
+- `test` - mixture of automated unit and integration tests written using Pytest
 
 
 ## Main
@@ -606,7 +460,7 @@ session endpoint for session handling.
 
 
 ## Logging
-Logging configuration can be found in `datagateway_api.common.logger_setup.py`. This
+Logging configuration can be found in `datagateway_api.src.common.logger_setup`. This
 contains a typical dictionary-based config for the standard Python `logging` library
 that rotates files after they become 5MB in size.
 
@@ -619,7 +473,7 @@ file.
 ## Date Handler
 This is a class containing static methods to deal with dates within the API. The date
 handler can be used to convert dates between string and datetime objects (using a format
-agreed in `datagateway_api.common.constants`) and uses a parser from `dateutil` to
+agreed in `datagateway_api.src.common.constants`) and uses a parser from `dateutil` to
 detect if an input contains a date. This is useful for determining if a JSON value given
 in a request body is a date, at which point it can be converted to a datetime object,
 ready for storing in ICAT. The handler is currently only used in the Python ICAT
@@ -627,10 +481,11 @@ Backend, however this is non-backend specific class.
 
 
 ## Exceptions & Flask Error Handling
-Exceptions custom to DataGateway API are defined in `datagateway_api.common.exceptions`.
-Each exception has a status code and a default message (which can be changed when
-raising the exception in code). None of them are backend specific, however some are only
-used in a single backend because their meaning becomes irrelevant anywhere else.
+Exceptions custom to DataGateway API are defined in
+`datagateway_api.src.common.exceptions`. Each exception has a status code and a default
+message (which can be changed when raising the exception in code). None of them are
+backend specific, however some are only used in a single backend because their meaning
+becomes irrelevant anywhere else.
 
 When the API is setup in `main.py`, a custom API object is created (inheriting
 flask_restful's `Api` object) so `handle_error()` can be overridden. A previous
@@ -644,44 +499,45 @@ status code in `exceptions.py`) in production mode. This is explained in a
 
 
 ## Filtering
-Filters available for use in the API are defined in `datagateway_api.common.filters`.
+Filters available for use in the API are defined in `datagateway_api.src.common.filters`.
 These filters are all based from `QueryFilter`, an asbtract class to define any filter
 for the API. Precedence is used to prioritise in which order filters should be applied,
 but is only needed for the Database Backend.
 
-Filtering logic is located in `datagateway_api.common.helpers`.
+Filtering logic is located in `datagateway_api.src.common.helpers`.
 `get_filters_from_query_string()` uses the request query parameters to form filters to
 be used within the API. A `QueryFilterFactory` is used to build filters for the correct
 backend and the static method within this class is called in
 `get_filters_from_query_string()`.
 
 
-## Backends
-As described at the top of this file, there are currently two ways that the API
+## DataGateway API Backends
+As described at the top of this file, there are currently two ways that DataGateway API
 creates/fetches/updates/deletes data from ICAT. The intention is each backend allows a
 different method to communicate with ICAT, but results in a very similarly behaving
 DataGateway API.
 
 
 ### Abstract Backend Class
-The abstract class can be found in `datagateway_api.common.backend` and contains all the
-abstract methods that should be found in a class which implements `Backend`. The typical
-architecture across both backends is that the implemented functions call a helper
-function to process the request and the result of that is returned to the user.
+The abstract class can be found in `datagateway_api.src.datagateway_api.backend` and
+contains all the abstract methods that should be found in a class which implements
+`Backend`. The typical architecture across both backends is that the implemented
+functions call a helper function to process the request and the result of that is
+returned to the user.
 
 Each backend module contains the following files which offer similar functionality,
 implemented in their own ways:
-- `backend.py` - Implemented version of `datagateway_api.common.backend`
+- `backend.py` - Implemented version of `datagateway_api.src.datagateway_api.backend`
 - `filters.py` - Inherited versions of each filter defined in
-  `datagateway_api.common.filters`
+  `datagateway_api.src.common.filters`
 - `helpers.py` - Helper functions that are called in `backend.py`
 
 
 ### Creating a Backend
-A function inside `datagateway_api.common.backends` creates an instance of a backend
-using input to that function to decide which backend to create. This function is called
-in `main.py` which uses the backend type set in `config.json`, or a config value in the
-Flask app if it's set (this config option is only used in the tests however). The
+A function inside `datagateway_api.src.datagateway_api.backends` creates an instance of a
+backend using input to that function to decide which backend to create. This function is
+called in `main.py` which uses the backend type set in `config.json`, or a config value
+in the Flask app if it's set (this config option is only used in the tests however). The
 backend object is then parsed into the endpoint classes so the correct backend can be
 used.
 
@@ -774,14 +630,93 @@ but allow for multiple session IDs to be used if required.
 
 
 ### ICATQuery
-The ICATQuery classed is in `datagateway_api.common.icat.query`. This class stores a
-query created with Python ICAT
+The ICATQuery classed is in `datagateway_api.src.datagateway_api.icat.query`. This class
+stores a query created with Python ICAT
 ([documentation](https://python-icat.readthedocs.io/en/stable/query.html)). The
 `execute_query()` function executes the query and returns either results in either a
 JSON format, or a list of
 [Python ICAT entity's](https://python-icat.readthedocs.io/en/stable/entity.html) (this
 is defined using the `return_json_formattable` flag). Other functions within that class
 are used within `execute_query()`.
+
+## Search API
+While the search API shares some code from DataGateway API, there are also various
+differences in the functionality it offers and the way it goes about offering it.
+
+### Session/Client Handling
+Unlike DataGateway API, the search API does not contain any authentication or endpoints
+for session handling. This is because the search API only interacts with public data, so
+it can be assumed the anon user will be used. To deal with this, only a single client
+object is used for the APIs lifecycle, a contrasting solution to DataGateway API. This
+object is logged in upon the first request of the APIs lifecycle. For each new request,
+session expiry is checked; if the session has expired, the client will be logged in
+again so the same object can be used. Using the same client object between users and
+requests works because only one user (i.e. the anon user) is being used to query ICAT.
+
+### PaNOSC Data Model
+The search API deals with user inputs (via query parameters) and outputs data in the
+format defined by the
+[PaNOSC data model](https://github.com/panosc-eu/search-api/blob/master/doc/data-model.md).
+To interface with ICAT, there needs to be a way of translating between this data model
+and the ICAT schema.
+
+#### Mapping between PaNOSC and ICAT Data Models
+To map between each data model, there is a JSON file (`search_api_mapping.json`) which
+defines the mappings for each PaNOSC entity (and all the attributes within them). This
+is configurable so these mappings can be changed as needed - each facility uses ICAT in
+slightly different ways; the example file shows the mappings used for ISIS which should
+give a good place to start.
+
+Within the mapping file, each of the JSON objects represents a PaNOSC entity. Inside
+each object, there is a `base_icat_entity` which defines which ICAT entity the PaNOSC
+entity links to. There are also key-value pairs of all of the fields which exist for the
+PaNOSC entity, where the value is the ICAT field name. For fields which are related
+entities, the value contains a JSON object instead of a string. The contents of this
+object are the PaNOSC entity name that the field name relates to and also the ICAT field
+name translation. Looking at the example file alongside the ICAT schema is a good way to
+understand how the mappings work.
+
+The only exceptions that exist in the mapping file is for unique mapping cases; when
+mapping PaNOSC `pid` fields to ICAT, a list of ICAT field names are needed. This is so
+if a persistent identifier does not exist, it can use an alternative field name as an
+identifier. Some facilities don't use persistent identifiers for all of their metadata,
+so this solution is needed to prevent things from breaking. A similar case exists for on
+the `base_icat_entity` for the `Parameter` entity, where a list of ICAT entity names are
+also needed. This is because a `Parameter` can either link to a document or a dataset.
+In ICAT, there are specific entities that are used to store parameters for
+investigations and datasets (e.g. `InvestigationParameter` and `DatasetParameter`).
+Since ICAT parameter types have three different places where values can be stored
+(`numericValue`, `stringValue`, `dateTimeValue`), these need to be specified in a list
+too. Order is important in this case, so it is recommended to keep them in the same
+order as shown in the example file.
+
+
+### Query Parameter/Filter Factory
+Most of the query filters that exist in DataGateway API are also present in the search API.
+However, inside the query parameters of an incoming request, they are formatted differently
+(see [query filter syntax](https://github.com/panosc-eu/search-api/blob/master/doc/query.md))
+so a search API specific factory class to deal with the query parameters was needed.
+
+
+### NestedWhereFilters/OR Conditions
+The search API requires conditions to be
+[joined together using `OR`](https://github.com/panosc-eu/search-api/blob/master/doc/query.md#joining-queries),
+something which isn't seen in DataGateway API. This is mainly because this isn't
+directly supported by Python ICAT; its query builder class only supports the joining of
+conditions by the `AND` keyword. To solve this, when the query filter factory detects an
+explicit joining of conditions (via the use of `AND` or `OR`), a `NestedWhereFilters`
+object is created to store the conditions from the request. This class has the concept
+of a left hand side and right hand side and will join them together when the object is
+converted to a string - an action performed when the JPQL query is being built.
+
+
+### Search API Query
+The class `SearchAPIQuery` contains everything needed to build and handle a JPQL query
+to be sent to an ICAT instance. `ConditionSettingQuery` is a version of the Python ICAT
+query class that allows the search API to set the conditions using a string, rather than
+adding conditions via dictionaries. This is needed where queries are joined with `AND`
+or `OR`. This collates all the work from `NestedWhereFilters` so all requires types of
+conditions can be supported.
 
 
 ## Generating the OpenAPI Specification
@@ -826,8 +761,9 @@ years of data.
 This uses code from the API's Database Backend, so a suitable `db_url` should be
 configured in `config.json`.
 
-When used on a machine that doesn't use UTC timezone, you may find there are a mix of timezones when querying the API. This issue was found on SciGateway Preprod when using BST
-and there would be a mix of +00:00 and +01:00 timezones
+When used on a machine that doesn't use UTC timezone, you may find there are a mix of
+timezones when querying the API. This issue was found on SciGateway Preprod when using
+BST and there would be a mix of +00:00 and +01:00 timezones
 ([more details with screenshots](https://github.com/ral-facilities/datagateway/issues/782)).
 The current suggested workaround is to change your machine to use UTC. In the case of
 SciGateway preprod, the JVM timezone was changed to UTC (in
@@ -854,6 +790,67 @@ The repo's collection can be easily imported into your Postman installation by o
 Postman and selecting File > Import... and choosing the Postman collection from your
 cloned DataGateway API repository.
 
+This collection has not been updated for the search API endpoints, so can only be used
+to query DataGateway API.
+
+
+
+
+# API Versioning
+This repository uses semantic versioning as the standard for version number
+incrementing, with the version stored in `pyproject.toml`. There is a GitHub Actions
+workflow (`release-build.yml`) which runs when master is updated (i.e. when a pull
+request is merged). This uses
+[python-semantic-release](https://github.com/relekang/python-semantic-release) to
+determine whether a release needs to be made, and if so, whether a major, minor or patch
+version bump should be made. This decision is made based on commit message content.
+
+In a PR, at least one commit must follow the
+[Angular commit message format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format)
+and use one of the
+[conventional commit types](https://github.com/commitizen/conventional-commit-types/blob/master/index.json).
+Note, there are no scopes (part of the Angular message format) configured for this repo
+so there's no need to make use of this feature. Compliance to this format and use of
+standard types will be checked by
+[semantic-pull-requests](https://github.com/zeke/semantic-pull-requests) which is a
+GitHub app installed into this repo and runs alongside existing CI jobs for pull
+requests. For example, the following commit messages follow the conventional commit
+standard:
+
+```
+# Commit to edit a CI job
+ci: edit linting job #issue-number
+
+# Commit for a bug fix
+fix: fix bug found with count endpoints #issue-number
+
+# Commit for a new feature
+feat: add endpoints for search API #issue-number
+
+# Commit which introduces a breaking change for users
+<commit-type>: change format of `config.json`, the previous version is no longer supported #issue-number
+
+BREAKING CHANGE: this feature means X functionality has been removed
+```
+
+For each pull request, only one commit message in this format is required to satisfy the
+semantic pull request checker. Requiring only one commit message in this format should
+hopefully not impose this commit style on developer. However, it is encouraged to use it
+where possible, as the types are also used to form `CHANGELOG.md`.
+
+New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING CHANGE:`
+(major) commit type is found between the previous release and the most recent commit on
+master. When the version is bumped, a GitHub tag and release is made which contains
+the source code and the built versions of the API (sdist and wheel).
+
+To check how the version number will be impacted before merging a pull request, use the
+following command to show the version which will be made when the GitHub Actions release
+build job runs (upon merging a branch/PR):
+
+```bash
+poetry run semantic-release print-version
+```
+
 
 
 
@@ -876,10 +873,3 @@ more hashes), a two line gap should be given. This helps to denote a new heading
 than just a new paragraph. While sections can be easily distinguished in a colourful
 IDE, the multi-line spacing can be much easier to identify on an editor that doesn't use
 colours.
-
-The directory tree found in the [project structure](#project-structure) can be generated
-using the following command:
-
- ```bash
- git ls-tree -r --name-only HEAD | grep -v __init__.py | tree --fromfile
- ```
