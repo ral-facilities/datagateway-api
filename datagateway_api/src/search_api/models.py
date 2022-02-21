@@ -15,7 +15,7 @@ def _is_panosc_entity_field_of_type_list(entity_field):
         hasattr(entity_field_outer_type, "_name")
         and entity_field_outer_type._name == "List"
     ):
-        is_list = True
+        is_list = True  # pragma: py-37-code
     # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
     # whether the field is of type list in Python 3.6, we are checking the type of its
     # default value. We must ensure that any new list fields that get added in future
