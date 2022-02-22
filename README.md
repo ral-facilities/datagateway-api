@@ -114,6 +114,26 @@ completed smoothly:
 source ~/.poetry/env
 ```
 
+Before installing the API's dependencies, check the version of `setuptools`:
+
+```bash
+poetry run pip list | grep setuptools
+```
+
+If a version < 58.0.0 is not being used, changes need to be made so that a suitable
+version is being used. This is because Python ICAT uses `2to3` when building itself to
+ensure Python 3 import statements are used when using Python 3. 58.0.0 of setuptools
+[removes support of this tool during builds](https://setuptools.pypa.io/en/latest/history.html#v58-0-0).
+If a newer version of setuptools is used, you will likely face an error similar to
+what's described in
+[issue #99 of Python ICAT](https://github.com/icatproject/python-icat/issues/99). To use
+a supported version, execute the following commands:
+
+```bash
+poetry run pip uninstall -y setuptools
+poetry run pip install 'setuptools<58.0.0'
+```
+
 The dependencies for this repo are stored in `pyproject.toml`, with a more detailed
 version of this data in `poetry.lock`. The lock file is used to maintain the exact
 versions of dependencies from system to system. To install the dependencies, execute the
@@ -342,6 +362,29 @@ reload itself when a change is detected. This setting can be toggled using
 noted that when this setting is enabled, the API will go through the startup process
 twice. In the case of the ICAT backend, this could dramatically increase startup time if
 the API is configured with a large initial client pool size.
+
+If you get the following error when starting the API, changes need to be made to your
+Poetry environment:
+
+```python
+ModuleNotFoundError: No module named 'urlparse'
+```
+
+Explanation of the cause for this issue can be found in a
+[Python ICAT issue](https://github.com/icatproject/python-icat/issues/99). Essentially,
+the version of `setuptools` used must be < 58.0.0
+([see above](#api-dependency-management-poetry) for further details). If you have
+already installed the API's dependencies (via `poetry install`), you will need to re-install `setuptools` (using a suitable version) and re-install Python ICAT so it can be rebuilt correctly. The following commands can be used for this process:
+
+```bash
+# Uninstall and re-install setuptools using a version < 58.0.0
+poetry run pip uninstall -y setuptools
+poetry run pip install 'setuptools<58.0.0'
+
+# Re-install Python ICAT so it can be built properly
+poetry remove python-icat
+poetry add python-icat=0.21.0
+```
 
 
 ## DataGateway API Authentication
