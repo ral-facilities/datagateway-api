@@ -4,6 +4,7 @@ import sys
 from typing import ClassVar, List, Optional, Union
 
 from pydantic import BaseModel, Field, root_validator, ValidationError, validator
+from pydantic.datetime_parse import parse_datetime
 from pydantic.error_wrappers import ErrorWrapper
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
@@ -44,7 +45,26 @@ def _get_icat_field_value(icat_field_name, icat_data):
     return icat_data
 
 
+class SearchAPIDatetime(datetime):
+    """
+    An alternative datetime class so datetimes can be outputted in a different format to
+    DataGateway API
+    """
+
+    @classmethod
+    def __get_validators__(cls):
+        # Use default pydantic behaviour as well as behaviour defined in this class
+        yield parse_datetime
+        yield cls.use_search_api_format
+
+    @classmethod
+    def use_search_api_format(cls, v):
+        return v.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+
 class PaNOSCAttribute(ABC, BaseModel):
+    _datetime_field_names = ["creationDate", "startDate", "endDate", "releaseDate"]
+
     @classmethod
     @abstractmethod
     def from_icat(cls, icat_data, required_related_fields):  # noqa: B902, N805
@@ -178,7 +198,7 @@ class Dataset(PaNOSCAttribute):
     pid: str
     title: str
     is_public: bool = Field(alias="isPublic")
-    creation_date: datetime = Field(alias="creationDate")
+    creation_date: SearchAPIDatetime = Field(alias="creationDate")
     size: Optional[int] = None
 
     documents: List["Document"] = []
@@ -218,9 +238,9 @@ class Document(PaNOSCAttribute):
     title: str
     summary: Optional[str] = None
     doi: Optional[str] = None
-    start_date: Optional[datetime] = Field(None, alias="startDate")
-    end_date: Optional[datetime] = Field(None, alias="endDate")
-    release_date: Optional[datetime] = Field(None, alias="releaseDate")
+    start_date: Optional[SearchAPIDatetime] = Field(None, alias="startDate")
+    end_date: Optional[SearchAPIDatetime] = Field(None, alias="endDate")
+    release_date: Optional[SearchAPIDatetime] = Field(None, alias="releaseDate")
     license_: Optional[str] = Field(None, alias="license")
     keywords: Optional[List[str]] = []
 
