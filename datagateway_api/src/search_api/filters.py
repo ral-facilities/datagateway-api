@@ -49,12 +49,19 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
                 # matters):
                 # {"Parameter": {"value": ["numericValue", "stringValue", "dateTimeValue"]}} # noqa: B950
                 if field_name == "value":
-                    if isinstance(self.value, (int, float)):
+                    # If the value is a list, extract the first value to determine which
+                    # parameter value type should be used
+                    if self.operation == "between" and isinstance(self.value, list):
+                        filter_value = self.value[0]
+                    else:
+                        filter_value = self.value
+
+                    if isinstance(filter_value, (int, float)):
                         icat_field_name = icat_field_name[0]
-                    elif isinstance(self.value, datetime):
+                    elif isinstance(filter_value, datetime):
                         icat_field_name = icat_field_name[2]
-                    elif isinstance(self.value, str):
-                        if DateHandler.is_str_a_date(self.value):
+                    elif isinstance(filter_value, str):
+                        if DateHandler.is_str_a_date(filter_value):
                             icat_field_name = icat_field_name[2]
                         else:
                             icat_field_name = icat_field_name[1]
