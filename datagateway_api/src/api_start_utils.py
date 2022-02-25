@@ -336,7 +336,7 @@ def create_api_endpoints(flask_app, api, specs):
         search_api_spec.path(resource=get_number_count_files_endpoint_resource, api=api)
 
 
-def openapi_config(spec):
+def openapi_config(spec, openapi_spec_path):
     # Reorder paths (e.g. get, patch, post) so openapi.yaml only changes when there's a
     # change to the Swagger docs, rather than changing on each startup
     if Config.config.generate_swagger:
@@ -345,14 +345,33 @@ def openapi_config(spec):
             for endpoint_name in sorted(entity_data.keys()):
                 entity_data.move_to_end(endpoint_name)
 
-        openapi_spec_path = Path(__file__).parent / "swagger/openapi.yaml"
+        openapi_spec_path = Path(__file__).parent / openapi_spec_path
         with open(openapi_spec_path, "w") as f:
             f.write(spec.to_yaml())
 
 
-def create_openapi_endpoint(app, api_spec):
-    @app.route("/openapi.json")
-    def specs():
+def create_openapi_endpoints(app, api_specs):
+    for api_spec in api_specs:
+        if api_spec.title == "DataGateway API":
+            openapi_config(api_spec, "swagger/datagateway_api/openapi.yaml")
+            _create_datagateway_openapi_endpoint(app, api_spec)
+
+        if api_spec.title == "Search API":
+            openapi_config(api_spec, "swagger/search_api/openapi.yaml")
+            _create_search_openapi_endpoint(app, api_spec)
+
+
+def _create_datagateway_openapi_endpoint(app, api_spec):
+    @app.route("/datagateway-api/openapi.json")
+    def datagateway_api_specs():
+        resp = app.make_response(json.dumps(api_spec.to_dict(), indent=2))
+        resp.mimetype = "application/json"
+        return resp
+
+
+def _create_search_openapi_endpoint(app, api_spec):
+    @app.route("/search-api/openapi.json")
+    def search_api_specs():
         resp = app.make_response(json.dumps(api_spec.to_dict(), indent=2))
         resp.mimetype = "application/json"
         return resp
