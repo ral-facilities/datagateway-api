@@ -1659,6 +1659,8 @@ components:
           type: string
         name:
           type: string
+        pid:
+          type: string
         startDate:
           format: datetime
           type: string
@@ -11013,19 +11015,5 @@ paths:
       summary: Ping API connection method
       tags:
       - Ping
-  /search-api/datasets:
-    get: {}
-  /search-api/datasets/{pid}: {}
-  /search-api/datasets/count: {}
-  /search-api/documents:
-    get: {}
-  /search-api/documents/{pid}: {}
-  /search-api/documents/count: {}
-  /search-api/instruments:
-    get: {}
-  /search-api/instruments/{pid}: {}
-  /search-api/instruments/count: {}
-  /search-api/datasets/{pid}/files: {}
-  /search-api/datasets/{pid}/files/count: {}
 security:
 - session_id: []
