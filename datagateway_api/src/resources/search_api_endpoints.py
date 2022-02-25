@@ -232,7 +232,35 @@ def get_number_count_files_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_files_count(entity_name, filters, pid)
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Count {entity_name}s for the given Dataset
+            description: Return the count of {entity_name} objects for the given Dataset
+                object that would be retrieved given the filters provided
+            tags:
+                - Dataset
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - WHERE_FILTER
+            responses:
+                200:
+                    description: Success - The count of {entity_name} objects for the
+                        given Dataset object
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     CountFilesEndpoint.__name__ = entity_name
     return CountFilesEndpoint
