@@ -44,7 +44,10 @@ from datagateway_api.src.resources.table_endpoints.table_endpoints import (  # n
     instrument_investigation_endpoint,
 )
 from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
-from datagateway_api.src.swagger.initialise_spec import initialise_spec
+from datagateway_api.src.swagger.initialise_spec import (
+    initialise_datagateway_api_spec,
+    initialise_search_api_spec,
+)
 
 log = logging.getLogger()
 
@@ -92,20 +95,26 @@ def configure_search_api_swaggerui_blueprint(flask_app):
     )
 
 
+def create_datagateway_api_spec():
+    return APISpec(
+        title="DataGateway API",
+        version="1.0",
+        openapi_version="3.0.3",
+        plugins=[RestfulPlugin()],
+        security=[{"session_id": []}],
+    )
+
+
+def create_search_api_spec():
+    return APISpec(
+        title="Search API",
+        version="1.0",
+        openapi_version="3.0.3",
+        plugins=[RestfulPlugin()],
+    )
+
+
 def create_app_infrastructure(flask_app):
-    if Config.config.datagateway_api is not None:
-        configure_datagateway_api_swaggerui_blueprint(flask_app)
-    if Config.config.search_api is not None:
-        configure_search_api_swaggerui_blueprint(flask_app)
-
-        spec = APISpec(
-            title="DataGateway API",
-            version="1.0",
-            openapi_version="3.0.3",
-            plugins=[RestfulPlugin()],
-            security=[{"session_id": []}],
-        )
-
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
@@ -124,12 +133,27 @@ def create_app_infrastructure(flask_app):
             flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
             db.init_app(flask_app)
 
-    return api, spec
+    specs = []
+    if Config.config.datagateway_api is not None:
+        configure_datagateway_api_swaggerui_blueprint(flask_app)
+        datagateway_api_spec = create_datagateway_api_spec()
+        initialise_datagateway_api_spec(datagateway_api_spec)
+        specs.append(datagateway_api_spec)
+    if Config.config.search_api is not None:
+        configure_search_api_swaggerui_blueprint(flask_app)
+        search_api_spec = create_search_api_spec()
+        initialise_search_api_spec(search_api_spec)
+        specs.append(search_api_spec)
+
+    return api, specs
 
 
-def create_api_endpoints(flask_app, api, spec):
+def create_api_endpoints(flask_app, api, specs):
     # DataGateway API endpoints
     if Config.config.datagateway_api is not None:
+        datagateway_api_spec = next(
+            (spec for spec in specs if spec.title == "DataGateway API"), None,
+        )
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
             Config.config.datagateway_api.set_backend_type(backend_type)
@@ -156,7 +180,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{datagateway_api_extension}/{entity_name.lower()}",
                 endpoint=f"datagateway_get_{entity_name}",
             )
-            spec.path(resource=get_endpoint_resource, api=api)
+            datagateway_api_spec.path(resource=get_endpoint_resource, api=api)
 
             get_id_endpoint_resource = get_id_endpoint(
                 entity_name,
@@ -169,7 +193,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{datagateway_api_extension}/{entity_name.lower()}/<int:id_>",
                 endpoint=f"datagateway_get_id_{entity_name}",
             )
-            spec.path(resource=get_id_endpoint_resource, api=api)
+            datagateway_api_spec.path(resource=get_id_endpoint_resource, api=api)
 
             get_count_endpoint_resource = get_count_endpoint(
                 entity_name,
@@ -182,7 +206,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{datagateway_api_extension}/{entity_name.lower()}/count",
                 endpoint=f"datagateway_count_{entity_name}",
             )
-            spec.path(resource=get_count_endpoint_resource, api=api)
+            datagateway_api_spec.path(resource=get_count_endpoint_resource, api=api)
 
             get_find_one_endpoint_resource = get_find_one_endpoint(
                 entity_name,
@@ -195,7 +219,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{datagateway_api_extension}/{entity_name.lower()}/findone",
                 endpoint=f"datagateway_findone_{entity_name}",
             )
-            spec.path(resource=get_find_one_endpoint_resource, api=api)
+            datagateway_api_spec.path(resource=get_find_one_endpoint_resource, api=api)
 
         # Session endpoint
         session_endpoint_resource = session_endpoints(
@@ -206,7 +230,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"{datagateway_api_extension}/sessions",
             endpoint="datagateway_sessions",
         )
-        spec.path(resource=session_endpoint_resource, api=api)
+        datagateway_api_spec.path(resource=session_endpoint_resource, api=api)
 
         # Table specific endpoints
         instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
@@ -217,7 +241,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"{datagateway_api_extension}/instruments/<int:id_>/facilitycycles",
             endpoint="datagateway_isis_instrument_facility_cycle",
         )
-        spec.path(resource=instrument_facility_cycle_resource, api=api)
+        datagateway_api_spec.path(resource=instrument_facility_cycle_resource, api=api)
 
         count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
             backend, client_pool=icat_client_pool,
@@ -227,7 +251,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"{datagateway_api_extension}/instruments/<int:id_>/facilitycycles/count",
             endpoint="datagateway_isis_count_instrument_facility_cycle",
         )
-        spec.path(resource=count_instrument_facility_cycle_res, api=api)
+        datagateway_api_spec.path(resource=count_instrument_facility_cycle_res, api=api)
 
         instrument_investigation_resource = instrument_investigation_endpoint(
             backend, client_pool=icat_client_pool,
@@ -238,7 +262,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"/facilitycycles/<int:cycle_id>/investigations",
             endpoint="datagateway_isis_instrument_investigation",
         )
-        spec.path(resource=instrument_investigation_resource, api=api)
+        datagateway_api_spec.path(resource=instrument_investigation_resource, api=api)
 
         count_instrument_investigation_res = count_instrument_investigation_endpoint(
             backend, client_pool=icat_client_pool,
@@ -249,15 +273,18 @@ def create_api_endpoints(flask_app, api, spec):
             f"/facilitycycles/<int:cycle_id>/investigations/count",
             endpoint="datagateway_isis_count_instrument_investigation",
         )
-        spec.path(resource=count_instrument_investigation_res, api=api)
+        datagateway_api_spec.path(resource=count_instrument_investigation_res, api=api)
 
         # Ping endpoint
         ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
         api.add_resource(ping_resource, f"{datagateway_api_extension}/ping")
-        spec.path(resource=ping_resource, api=api)
+        datagateway_api_spec.path(resource=ping_resource, api=api)
 
     # Search API endpoints
     if Config.config.search_api is not None:
+        search_api_spec = next(
+            (spec for spec in specs if spec.title == "Search API"), None,
+        )
         search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = {
             "datasets": "Dataset",
@@ -272,7 +299,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{search_api_extension}/{endpoint_name}",
                 endpoint=f"search_api_get_{endpoint_name}",
             )
-            spec.path(resource=get_search_endpoint_resource, api=api)
+            search_api_spec.path(resource=get_search_endpoint_resource, api=api)
 
             get_single_endpoint_resource = get_single_endpoint(entity_name)
             api.add_resource(
@@ -280,7 +307,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{search_api_extension}/{endpoint_name}/<string:pid>",
                 endpoint=f"search_api_get_single_{endpoint_name}",
             )
-            spec.path(resource=get_single_endpoint_resource, api=api)
+            search_api_spec.path(resource=get_single_endpoint_resource, api=api)
 
             get_number_count_endpoint_resource = get_number_count_endpoint(entity_name)
             api.add_resource(
@@ -288,7 +315,7 @@ def create_api_endpoints(flask_app, api, spec):
                 f"{search_api_extension}/{endpoint_name}/count",
                 endpoint=f"search_api_count_{endpoint_name}",
             )
-            spec.path(resource=get_number_count_endpoint_resource, api=api)
+            search_api_spec.path(resource=get_number_count_endpoint_resource, api=api)
 
         get_files_endpoint_resource = get_files_endpoint("File")
         api.add_resource(
@@ -296,7 +323,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"{search_api_extension}/datasets/<string:pid>/files",
             endpoint="search_api_get_dataset_files",
         )
-        spec.path(resource=get_files_endpoint_resource, api=api)
+        search_api_spec.path(resource=get_files_endpoint_resource, api=api)
 
         get_number_count_files_endpoint_resource = get_number_count_files_endpoint(
             "File",
@@ -306,7 +333,7 @@ def create_api_endpoints(flask_app, api, spec):
             f"{search_api_extension}/datasets/<string:pid>/files/count",
             endpoint="search_api_count_dataset_files",
         )
-        spec.path(resource=get_number_count_files_endpoint_resource, api=api)
+        search_api_spec.path(resource=get_number_count_files_endpoint_resource, api=api)
 
 
 def openapi_config(spec):
