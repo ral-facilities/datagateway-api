@@ -64,18 +64,47 @@ class CustomErrorHandledApi(Api):
         return error_msg, e.status_code
 
 
-def create_app_infrastructure(flask_app):
+def configure_datagateway_api_swaggerui_blueprint(flask_app):
     swaggerui_blueprint = get_swaggerui_blueprint(
-        "", "/openapi.json", config={"app_name": "DataGateway API OpenAPI Spec"},
+        base_url=Config.config.datagateway_api.extension,
+        api_url="/datagateway-api/openapi.json",
+        config={"app_name": "DataGateway API OpenAPI Spec"},
+        blueprint_name="DataGateway API Swagger UI",
     )
-    flask_app.register_blueprint(swaggerui_blueprint, url_prefix="/")
-    spec = APISpec(
-        title="DataGateway API",
-        version="1.0",
-        openapi_version="3.0.3",
-        plugins=[RestfulPlugin()],
-        security=[{"session_id": []}],
+    flask_app.register_blueprint(
+        swaggerui_blueprint,
+        url_prefix=Config.config.datagateway_api.extension,
+        name_prefix="DataGateway API",
     )
+
+
+def configure_search_api_swaggerui_blueprint(flask_app):
+    swaggerui_blueprint = get_swaggerui_blueprint(
+        base_url=Config.config.search_api.extension,
+        api_url="/search-api/openapi.json",
+        config={"app_name": "Search API OpenAPI Spec"},
+        blueprint_name="Search API Swagger UI",
+    )
+    flask_app.register_blueprint(
+        swaggerui_blueprint,
+        url_prefix=Config.config.search_api.extension,
+        name_prefix="Search API",
+    )
+
+
+def create_app_infrastructure(flask_app):
+    if Config.config.datagateway_api is not None:
+        configure_datagateway_api_swaggerui_blueprint(flask_app)
+    if Config.config.search_api is not None:
+        configure_search_api_swaggerui_blueprint(flask_app)
+
+        spec = APISpec(
+            title="DataGateway API",
+            version="1.0",
+            openapi_version="3.0.3",
+            plugins=[RestfulPlugin()],
+            security=[{"session_id": []}],
+        )
 
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
@@ -95,9 +124,7 @@ def create_app_infrastructure(flask_app):
             flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
             db.init_app(flask_app)
 
-    initialise_spec(spec)
-
-    return (api, spec)
+    return api, spec
 
 
 def create_api_endpoints(flask_app, api, spec):
