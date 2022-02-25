@@ -33,7 +33,30 @@ def get_search_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_search(entity_name, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Get {entity_name}s
+            description: Retrieves a list of {entity_name} objects
+            tags:
+                - {entity_name}
+            parameters:
+                - FILTER
+            responses:
+                200:
+                    description: Success - returns {entity_name}s that satisfy the
+                        filter
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref:
+                                    '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     Endpoint.__name__ = entity_name
     return Endpoint
