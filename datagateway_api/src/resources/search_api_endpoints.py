@@ -80,7 +80,33 @@ def get_single_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_with_pid(entity_name, pid, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Find the {entity_name} matching the given pid
+            description: Retrieves a {entity_name} object with the matching pid
+            tags:
+                - {entity_name}
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - FILTER
+            responses:
+                200:
+                    description: Success - the matching {entity_name}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     EndpointWithID.__name__ = entity_name
     return EndpointWithID
