@@ -175,7 +175,38 @@ def get_files_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_files(entity_name, pid, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Get {entity_name}s for the given Dataset
+            description: Retrieves a list of {entity_name} objects for a given Dataset
+                object
+            tags:
+                - Dataset
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - FILTER
+            responses:
+                200:
+                    description: Success - returns {entity_name}s for the given Dataset
+                        object that satisfy the filter
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref:
+                                    '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     FilesEndpoint.__name__ = entity_name
     return FilesEndpoint
