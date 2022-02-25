@@ -131,7 +131,27 @@ def get_number_count_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_count(entity_name, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Count {entity_name}s
+            description: Return the count of the {entity_name} objects that would be
+                retrieved given the filters provided
+            tags:
+                - {entity_name}
+            parameters:
+                - WHERE_FILTER
+            responses:
+                200:
+                    description: Success - The count of the {entity_name} objects
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     CountEndpoint.__name__ = entity_name
     return CountEndpoint
