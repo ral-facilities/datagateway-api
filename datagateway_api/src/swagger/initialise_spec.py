@@ -1,7 +1,19 @@
 from datagateway_api.src.resources.entities.entity_map import create_entity_models
+from datagateway_api.src.search_api.models import (
+    Affiliation,
+    Dataset,
+    Document,
+    File,
+    Instrument,
+    Member,
+    Parameter,
+    Person,
+    Sample,
+    Technique,
+)
 
 
-def initialise_spec(spec):
+def initialise_datagateway_api_spec(spec):
     """
     Given a apispec spec object, will initialise it with the security scheme, models and
     parameters we use
@@ -270,6 +282,121 @@ def initialise_spec(spec):
                         },
                     ],
                 },
+            },
+        },
+    )
+
+
+def initialise_search_api_spec(spec):
+    """
+    Given a apispec spec object, will initialise it with the models and parameters we
+    use
+
+    :spec: ApiSpec: spec object to initialise
+    :return: void
+    """
+    panosc_models = [
+        Affiliation,
+        Dataset,
+        Document,
+        File,
+        Instrument,
+        Member,
+        Parameter,
+        Person,
+        Sample,
+        Technique,
+    ]
+    for panosc_model in panosc_models:
+        schema = panosc_model.schema(ref_template="#/components/schemas/{model}")[
+            "definitions"
+        ][panosc_model.__name__]
+
+        schema_name = panosc_model.__name__
+        spec.components.schema(schema_name, schema)
+
+    spec.components.parameter(
+        "FILTER",
+        "query",
+        {
+            "in": "query",
+            "name": "filter",
+            "description": "Apply filters to the query. The possible filters are:"
+            " where, include, limit and skip. Please modify the examples before"
+            " executing a request if you are having issues with the example values."
+            ' must be a JSON-encoded string (`{"where":{"something":"value"}}`).'
+            " See more details"
+            ' <a href="https://loopback.io/doc/en/lb3/Querying-data.html#using'
+            '-stringified-json-in-rest-queries">here</a>.',
+            "schema": {"type": "string"},
+            "examples": {
+                "where filter": {"value": {"where": {"title": {"eq": "dog"}}}},
+                "where filter with text operator": {
+                    "value": {"where": {"text": "dog"}},
+                },
+                "where filter with AND": {
+                    "value": {"where": {"and": [{"title": "dog"}, {"size": 10000}]}},
+                },
+                "where filter with OR": {
+                    "value": {"where": {"or": [{"title": "dog"}, {"size": 10000}]}},
+                },
+                "limit filter": {"value": {"limit": 10}},
+                "skip filter": {"value": {"skip": 5}},
+                "include filter": {"value": {"include": [{"relation": "datasets"}]}},
+                "include filter with scope": {
+                    "value": {
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {"where": {"title": "dog"}},
+                            },
+                        ],
+                    },
+                },
+                "all possible filters": {
+                    "value": {
+                        "where": {"title": {"neq": "dog"}},
+                        "include": [
+                            {
+                                "relation": "datasets",
+                                "scope": {"where": {"title": "dog"}},
+                            },
+                        ],
+                        "limit": 10,
+                        "skip": 5,
+                    },
+                },
+            },
+        },
+    )
+    spec.components.parameter(
+        "WHERE_FILTER",
+        "query",
+        {
+            "in": "query",
+            "name": "where",
+            "description": "Apply where filter to the query. The possible operators"
+            " are: eq, neq, and, or, gt, gte, lt, lte, between, inq, nin, like, nlike,"
+            " ilike, nilike and regexp. Please modify the examples before executing a "
+            "request if you are having issues with the example values. See more details"
+            ' <a href="https://loopback.io/doc/en/lb3/Where-filter.html">here</a>.',
+            "schema": {"type": "string"},
+            "examples": {
+                "eq": {"value": {"title": {"eq": "dog"}}},
+                "ne": {"value": {"title": {"neq": "dog"}}},
+                "and": {"value": [{"title": "dog"}, {"size": 10000}]},
+                "or": {"value": [{"title": "dog"}, {"size": 10000}]},
+                "gt": {"value": {"size": {"gt": 10000}}},
+                "gte": {"value": {"size": {"gte": 10000}}},
+                "lt": {"value": {"size": {"lt": 10000}}},
+                "lte": {"value": {"size": {"lte": 10000}}},
+                "between": {"value": {"size": {"between": [5000, 10000]}}},
+                "inq": {"value": {"size": {"inq": [5000, 10000, 15000]}}},
+                "nin": {"value": {"size": {"inq": [5000, 10000, 15000]}}},
+                "like": {"value": {"title": {"like": "dog"}}},
+                "nlike": {"value": {"title": {"nlike": "dog"}}},
+                "ilike": {"value": {"title": {"ilike": "Dog"}}},
+                "nilike": {"value": {"title": {"nilike": "Dog"}}},
             },
         },
     )

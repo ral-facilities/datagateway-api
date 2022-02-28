@@ -1,0 +1,728 @@
+components:
+  parameters:
+    FILTER:
+      description: 'Apply filters to the query. The possible filters are: where, include,
+        limit and skip. Please modify the examples before executing a request if you
+        are having issues with the example values. must be a JSON-encoded string (`{"where":{"something":"value"}}`).
+        See more details <a href="https://loopback.io/doc/en/lb3/Querying-data.html#using-stringified-json-in-rest-queries">here</a>.'
+      examples:
+        all possible filters:
+          value:
+            include:
+            - relation: datasets
+              scope:
+                where:
+                  title: dog
+            limit: 10
+            skip: 5
+            where:
+              title:
+                neq: dog
+        include filter:
+          value:
+            include:
+            - relation: datasets
+        include filter with scope:
+          value:
+            include:
+            - relation: datasets
+              scope:
+                where:
+                  title: dog
+        limit filter:
+          value:
+            limit: 10
+        skip filter:
+          value:
+            skip: 5
+        where filter:
+          value:
+            where:
+              title:
+                eq: dog
+        where filter with AND:
+          value:
+            where:
+              and:
+              - title: dog
+              - size: 10000
+        where filter with OR:
+          value:
+            where:
+              or:
+              - title: dog
+              - size: 10000
+        where filter with text operator:
+          value:
+            where:
+              text: dog
+      in: query
+      name: filter
+      schema:
+        type: string
+    WHERE_FILTER:
+      description: 'Apply where filter to the query. The possible operators are: eq,
+        neq, and, or, gt, gte, lt, lte, between, inq, nin, like, nlike, ilike, nilike
+        and regexp. Please modify the examples before executing a request if you are
+        having issues with the example values. See more details <a href="https://loopback.io/doc/en/lb3/Where-filter.html">here</a>.'
+      examples:
+        and:
+          value:
+          - title: dog
+          - size: 10000
+        between:
+          value:
+            size:
+              between:
+              - 5000
+              - 10000
+        eq:
+          value:
+            title:
+              eq: dog
+        gt:
+          value:
+            size:
+              gt: 10000
+        gte:
+          value:
+            size:
+              gte: 10000
+        ilike:
+          value:
+            title:
+              ilike: Dog
+        inq:
+          value:
+            size:
+              inq:
+              - 5000
+              - 10000
+              - 15000
+        like:
+          value:
+            title:
+              like: dog
+        lt:
+          value:
+            size:
+              lt: 10000
+        lte:
+          value:
+            size:
+              lte: 10000
+        ne:
+          value:
+            title:
+              neq: dog
+        nilike:
+          value:
+            title:
+              nilike: Dog
+        nin:
+          value:
+            size:
+              inq:
+              - 5000
+              - 10000
+              - 15000
+        nlike:
+          value:
+            title:
+              nlike: dog
+        or:
+          value:
+          - title: dog
+          - size: 10000
+      in: query
+      name: where
+      schema:
+        type: string
+  schemas:
+    Affiliation:
+      description: Information about which facility a member is located at
+      properties:
+        address:
+          title: Address
+          type: string
+        city:
+          title: City
+          type: string
+        country:
+          title: Country
+          type: string
+        id:
+          title: Id
+          type: string
+        members:
+          default: []
+          items:
+            $ref: '#/components/schemas/Member'
+          title: Members
+          type: array
+        name:
+          title: Name
+          type: string
+      title: Affiliation
+      type: object
+    Dataset:
+      description: 'Information about an experimental run, including optional File,
+        Sample, Instrument
+
+        and Technique'
+      properties:
+        creationDate:
+          format: date-time
+          title: Creationdate
+          type: string
+        documents:
+          default: []
+          items:
+            $ref: '#/components/schemas/Document'
+          title: Documents
+          type: array
+        files:
+          default: []
+          items:
+            $ref: '#/components/schemas/File'
+          title: Files
+          type: array
+        instrument:
+          $ref: '#/components/schemas/Instrument'
+        isPublic:
+          title: Ispublic
+          type: boolean
+        parameters:
+          default: []
+          items:
+            $ref: '#/components/schemas/Parameter'
+          title: Parameters
+          type: array
+        pid:
+          title: Pid
+          type: string
+        samples:
+          default: []
+          items:
+            $ref: '#/components/schemas/Sample'
+          title: Samples
+          type: array
+        size:
+          title: Size
+          type: integer
+        techniques:
+          default: []
+          items:
+            $ref: '#/components/schemas/Technique'
+          title: Techniques
+          type: array
+        title:
+          title: Title
+          type: string
+      required:
+      - pid
+      - title
+      - isPublic
+      - creationDate
+      title: Dataset
+      type: object
+    Document:
+      description: Proposal which includes the dataset or published paper which references
+        the dataset
+      properties:
+        datasets:
+          default: []
+          items:
+            $ref: '#/components/schemas/Dataset'
+          title: Datasets
+          type: array
+        doi:
+          title: Doi
+          type: string
+        endDate:
+          format: date-time
+          title: Enddate
+          type: string
+        isPublic:
+          title: Ispublic
+          type: boolean
+        keywords:
+          default: []
+          items:
+            type: string
+          title: Keywords
+          type: array
+        license:
+          title: License
+          type: string
+        members:
+          default: []
+          items:
+            $ref: '#/components/schemas/Member'
+          title: Members
+          type: array
+        parameters:
+          default: []
+          items:
+            $ref: '#/components/schemas/Parameter'
+          title: Parameters
+          type: array
+        pid:
+          title: Pid
+          type: string
+        releaseDate:
+          format: date-time
+          title: Releasedate
+          type: string
+        startDate:
+          format: date-time
+          title: Startdate
+          type: string
+        summary:
+          title: Summary
+          type: string
+        title:
+          title: Title
+          type: string
+        type:
+          title: Type
+          type: string
+      required:
+      - pid
+      - isPublic
+      - type
+      - title
+      title: Document
+      type: object
+    File:
+      description: Name of file and optionally location
+      properties:
+        dataset:
+          $ref: '#/components/schemas/Dataset'
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        path:
+          title: Path
+          type: string
+        size:
+          title: Size
+          type: integer
+      required:
+      - id
+      - name
+      title: File
+      type: object
+    Instrument:
+      description: Beam line where experiment took place
+      properties:
+        datasets:
+          default: []
+          items:
+            $ref: '#/components/schemas/Dataset'
+          title: Datasets
+          type: array
+        facility:
+          title: Facility
+          type: string
+        name:
+          title: Name
+          type: string
+        pid:
+          title: Pid
+          type: string
+      required:
+      - pid
+      - name
+      - facility
+      title: Instrument
+      type: object
+    Member:
+      description: Proposal team member or paper co-author
+      properties:
+        affiliation:
+          $ref: '#/components/schemas/Affiliation'
+        document:
+          $ref: '#/components/schemas/Document'
+        id:
+          title: Id
+          type: string
+        person:
+          $ref: '#/components/schemas/Person'
+        role:
+          title: Role
+          type: string
+      required:
+      - id
+      title: Member
+      type: object
+    Parameter:
+      description: 'Scalar measurement with value and units.
+
+        Note: a parameter is either related to a dataset or a document, but not both.'
+      properties:
+        dataset:
+          $ref: '#/components/schemas/Dataset'
+        document:
+          $ref: '#/components/schemas/Document'
+        id:
+          title: Id
+          type: string
+        name:
+          title: Name
+          type: string
+        unit:
+          title: Unit
+          type: string
+        value:
+          anyOf:
+          - type: number
+          - type: integer
+          - type: string
+          title: Value
+      required:
+      - id
+      - name
+      - value
+      title: Parameter
+      type: object
+    Person:
+      description: Human who carried out experiment
+      properties:
+        firstName:
+          title: Firstname
+          type: string
+        fullName:
+          title: Fullname
+          type: string
+        id:
+          title: Id
+          type: string
+        lastName:
+          title: Lastname
+          type: string
+        members:
+          default: []
+          items:
+            $ref: '#/components/schemas/Member'
+          title: Members
+          type: array
+        orcid:
+          title: Orcid
+          type: string
+        researcherId:
+          title: Researcherid
+          type: string
+      required:
+      - id
+      - fullName
+      title: Person
+      type: object
+    Sample:
+      description: Extract of material used in the experiment
+      properties:
+        datasets:
+          default: []
+          items:
+            $ref: '#/components/schemas/Dataset'
+          title: Datasets
+          type: array
+        description:
+          title: Description
+          type: string
+        name:
+          title: Name
+          type: string
+        pid:
+          title: Pid
+          type: string
+      required:
+      - name
+      - pid
+      title: Sample
+      type: object
+    Technique:
+      description: Common name of scientific method used
+      properties:
+        datasets:
+          default: []
+          items:
+            $ref: '#/components/schemas/Dataset'
+          title: Datasets
+          type: array
+        name:
+          title: Name
+          type: string
+        pid:
+          title: Pid
+          type: string
+      required:
+      - pid
+      - name
+      title: Technique
+      type: object
+info:
+  title: Search API
+  version: '1.0'
+openapi: 3.0.3
+paths:
+  /search-api/datasets:
+    get:
+      description: Retrieves a list of Dataset objects
+      parameters:
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Dataset'
+                type: array
+          description: Success - returns Datasets that satisfy the filter
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Datasets
+      tags:
+      - Dataset
+  /search-api/datasets/{pid}:
+    get:
+      description: Retrieves a Dataset object with the matching pid
+      parameters:
+      - description: The pid of the entity to retrieve
+        in: path
+        name: pid
+        required: true
+        schema:
+          oneOf:
+          - type: string
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+          description: Success - the matching Dataset
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the Dataset matching the given pid
+      tags:
+      - Dataset
+  /search-api/datasets/count:
+    get:
+      description: Return the count of the Dataset objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the Dataset objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Datasets
+      tags:
+      - Dataset
+  /search-api/documents:
+    get:
+      description: Retrieves a list of Document objects
+      parameters:
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Document'
+                type: array
+          description: Success - returns Documents that satisfy the filter
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Documents
+      tags:
+      - Document
+  /search-api/documents/{pid}:
+    get:
+      description: Retrieves a Document object with the matching pid
+      parameters:
+      - description: The pid of the entity to retrieve
+        in: path
+        name: pid
+        required: true
+        schema:
+          oneOf:
+          - type: string
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Document'
+          description: Success - the matching Document
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the Document matching the given pid
+      tags:
+      - Document
+  /search-api/documents/count:
+    get:
+      description: Return the count of the Document objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the Document objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Documents
+      tags:
+      - Document
+  /search-api/instruments:
+    get:
+      description: Retrieves a list of Instrument objects
+      parameters:
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Instrument'
+                type: array
+          description: Success - returns Instruments that satisfy the filter
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Instruments
+      tags:
+      - Instrument
+  /search-api/instruments/{pid}:
+    get:
+      description: Retrieves a Instrument object with the matching pid
+      parameters:
+      - description: The pid of the entity to retrieve
+        in: path
+        name: pid
+        required: true
+        schema:
+          oneOf:
+          - type: string
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Instrument'
+          description: Success - the matching Instrument
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the Instrument matching the given pid
+      tags:
+      - Instrument
+  /search-api/instruments/count:
+    get:
+      description: Return the count of the Instrument objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the Instrument objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Instruments
+      tags:
+      - Instrument
+  /search-api/datasets/{pid}/files:
+    get:
+      description: Retrieves a list of File objects for a given Dataset object
+      parameters:
+      - description: The pid of the entity to retrieve
+        in: path
+        name: pid
+        required: true
+        schema:
+          oneOf:
+          - type: string
+      - $ref: '#/components/parameters/FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/File'
+                type: array
+          description: Success - returns Files for the given Dataset object that satisfy
+            the filter
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Files for the given Dataset
+      tags:
+      - Dataset
+  /search-api/datasets/{pid}/files/count:
+    get:
+      description: Return the count of File objects for the given Dataset object that
+        would be retrieved given the filters provided
+      parameters:
+      - description: The pid of the entity to retrieve
+        in: path
+        name: pid
+        required: true
+        schema:
+          oneOf:
+          - type: string
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of File objects for the given Dataset object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Files for the given Dataset
+      tags:
+      - Dataset

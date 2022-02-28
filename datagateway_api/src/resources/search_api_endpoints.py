@@ -33,7 +33,30 @@ def get_search_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_search(entity_name, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Get {entity_name}s
+            description: Retrieves a list of {entity_name} objects
+            tags:
+                - {entity_name}
+            parameters:
+                - FILTER
+            responses:
+                200:
+                    description: Success - returns {entity_name}s that satisfy the
+                        filter
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref:
+                                    '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     Endpoint.__name__ = entity_name
     return Endpoint
@@ -57,7 +80,33 @@ def get_single_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_with_pid(entity_name, pid, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Find the {entity_name} matching the given pid
+            description: Retrieves a {entity_name} object with the matching pid
+            tags:
+                - {entity_name}
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - FILTER
+            responses:
+                200:
+                    description: Success - the matching {entity_name}
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     EndpointWithID.__name__ = entity_name
     return EndpointWithID
@@ -82,7 +131,27 @@ def get_number_count_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_count(entity_name, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Count {entity_name}s
+            description: Return the count of the {entity_name} objects that would be
+                retrieved given the filters provided
+            tags:
+                - {entity_name}
+            parameters:
+                - WHERE_FILTER
+            responses:
+                200:
+                    description: Success - The count of the {entity_name} objects
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     CountEndpoint.__name__ = entity_name
     return CountEndpoint
@@ -106,7 +175,38 @@ def get_files_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_files(entity_name, pid, filters), 200
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Get {entity_name}s for the given Dataset
+            description: Retrieves a list of {entity_name} objects for a given Dataset
+                object
+            tags:
+                - Dataset
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - FILTER
+            responses:
+                200:
+                    description: Success - returns {entity_name}s for the given Dataset
+                        object that satisfy the filter
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                  $ref:
+                                    '#/components/schemas/{entity_name}'
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     FilesEndpoint.__name__ = entity_name
     return FilesEndpoint
@@ -132,7 +232,35 @@ def get_number_count_files_endpoint(entity_name):
             log.debug("Filters: %s", filters)
             return get_files_count(entity_name, filters, pid)
 
-        # TODO - Add `get.__doc__`
+        get.__doc__ = f"""
+            ---
+            summary: Count {entity_name}s for the given Dataset
+            description: Return the count of {entity_name} objects for the given Dataset
+                object that would be retrieved given the filters provided
+            tags:
+                - Dataset
+            parameters:
+                - in: path
+                  required: true
+                  name: pid
+                  description: The pid of the entity to retrieve
+                  schema:
+                    oneOf:
+                      - type: string
+                - WHERE_FILTER
+            responses:
+                200:
+                    description: Success - The count of {entity_name} objects for the
+                        given Dataset object
+                    content:
+                        application/json:
+                            schema:
+                                type: integer
+                400:
+                    description: Bad request - Something was wrong with the request
+                404:
+                    description: No such record - Unable to find a record in ICAT
+            """
 
     CountFilesEndpoint.__name__ = entity_name
     return CountFilesEndpoint
