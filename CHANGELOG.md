@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.5 (2022-02-28)
+### Fix
+* Fix `AttributeError` when running DG API on its own #345 ([`7479cc3`](https://github.com/ral-facilities/datagateway-api/commit/7479cc3e17ec046082e08b7e71e8e63eb7fa6e28))
+
 ## v4.1.4 (2022-02-28)
 ### Fix
 * Improve error handling for search API exceptions #319 ([`935f22d`](https://github.com/ral-facilities/datagateway-api/commit/935f22d31d96c6810cf7938815b25c8822d892fb))
