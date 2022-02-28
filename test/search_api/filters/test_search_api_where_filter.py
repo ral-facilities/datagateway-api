@@ -178,6 +178,14 @@ class TestSearchAPIWhereFilter:
                 "fields)",
             ),
             pytest.param(
+                SearchAPIWhereFilter("parameters.value", [20, 30], "between"),
+                "Document",
+                "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
+                " p.numericValue between '20' and '30'",
+                id="Numeric (int) parameter value with between operator (mapping that"
+                " maps to multiple ICAT fields)",
+            ),
+            pytest.param(
                 SearchAPIWhereFilter("parameters.value", ["test"], "eq"),
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
