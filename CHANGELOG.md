@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.2 (2022-02-28)
+### Fix
+* Fix requests which include parameters and filter on them #319 ([`598bf9f`](https://github.com/ral-facilities/datagateway-api/commit/598bf9f5c9fbf71b87a3313680617b8addbe5cc9))
+
+### Documentation
+* Update README to include resolution to setuptools issue ([`4bab813`](https://github.com/ral-facilities/datagateway-api/commit/4bab813d0897e987e085260d270b0496fe8e85f3))
+* Correct markdown URL #320 ([`0a9c05a`](https://github.com/ral-facilities/datagateway-api/commit/0a9c05a4e151e7bf6db5833dfa760d6de576663c))
+* Add remaining suggested changes to README #320 ([`d5d358c`](https://github.com/ral-facilities/datagateway-api/commit/d5d358c1f43573be7f0f443d4a20a9bd54a7c634))
+* Make suggested changes #320 ([`d04447d`](https://github.com/ral-facilities/datagateway-api/commit/d04447d835e049127ba15ef981f69a63b85ff015))
+* Update docs for search API #320 ([`2daf395`](https://github.com/ral-facilities/datagateway-api/commit/2daf3956805dc0476e3d400d52b20a8b51f0e309))
+
 ## v4.1.1 (2022-02-17)
 ### Fix
 * Ignore filters on `isPublic` fields #329 ([`d6c10d5`](https://github.com/ral-facilities/datagateway-api/commit/d6c10d56b788ff3c491feaf1fae3a6fadd634a9d))
