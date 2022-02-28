@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.3 (2022-02-28)
+### Fix
+* Fix `parameters.value` WHERE filter with between operator #270 ([`3fe8dfe`](https://github.com/ral-facilities/datagateway-api/commit/3fe8dfe79ac7e070db369471859b1793e54a0852))
+
 ## v4.1.2 (2022-02-28)
 ### Fix
 * Fix requests which include parameters and filter on them #319 ([`598bf9f`](https://github.com/ral-facilities/datagateway-api/commit/598bf9f5c9fbf71b87a3313680617b8addbe5cc9))
