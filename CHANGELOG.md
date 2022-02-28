@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.1.4 (2022-02-28)
+### Fix
+* Improve error handling for search API exceptions #319 ([`935f22d`](https://github.com/ral-facilities/datagateway-api/commit/935f22d31d96c6810cf7938815b25c8822d892fb))
+
 ## v4.1.3 (2022-02-28)
 ### Fix
 * Fix `parameters.value` WHERE filter with between operator #270 ([`3fe8dfe`](https://github.com/ral-facilities/datagateway-api/commit/3fe8dfe79ac7e070db369471859b1793e54a0852))
