@@ -1,14 +1,17 @@
 import logging
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
-from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
-from datagateway_api.src.search_api.panosc_mappings import mappings
-from datagateway_api.src.search_api.query import SearchAPIQuery
+
+if Config.config.search_api:
+    from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
+    from datagateway_api.src.search_api.panosc_mappings import mappings
+    from datagateway_api.src.search_api.query import SearchAPIQuery
 
 
 log = logging.getLogger()
