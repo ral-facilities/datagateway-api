@@ -3,6 +3,7 @@ import pytest
 
 from datagateway_api.src.common.date_handler import DateHandler
 import datagateway_api.src.search_api.models as models
+from datagateway_api.src.search_api.models import SearchAPIDatetime
 
 
 AFFILIATION_ICAT_DATA = {
@@ -199,8 +200,8 @@ AFFILIATION_PANOSC_DATA = {
 DATASET_PANOSC_DATA = {
     "pid": DATASET_ICAT_DATA["doi"],
     "title": DATASET_ICAT_DATA["name"],
-    "creationDate": DateHandler.str_to_datetime_object(
-        DATASET_ICAT_DATA["createTime"],
+    "creationDate": SearchAPIDatetime.use_search_api_format(
+        DateHandler.str_to_datetime_object(DATASET_ICAT_DATA["createTime"]),
     ),
     "isPublic": True,
     "size": None,
@@ -219,12 +220,14 @@ DOCUMENT_PANOSC_DATA = {
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],
     "doi": INVESTIGATION_ICAT_DATA["doi"],
-    "startDate": DateHandler.str_to_datetime_object(
-        INVESTIGATION_ICAT_DATA["startDate"],
+    "startDate": SearchAPIDatetime.use_search_api_format(
+        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["startDate"]),
     ),
-    "endDate": DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
-    "releaseDate": DateHandler.str_to_datetime_object(
-        INVESTIGATION_ICAT_DATA["releaseDate"],
+    "endDate": SearchAPIDatetime.use_search_api_format(
+        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
+    ),
+    "releaseDate": SearchAPIDatetime.use_search_api_format(
+        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["releaseDate"]),
     ),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
