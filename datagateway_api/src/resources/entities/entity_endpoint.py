@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
-from datagateway_api.common.helpers import (
+from datagateway_api.src.common.helpers import (
     get_filters_from_query_string,
     get_session_id_from_auth_header,
 )
@@ -9,9 +9,9 @@ from datagateway_api.common.helpers import (
 
 def get_endpoint(name, entity_type, backend, **kwargs):
     """
-    Given an entity name generate a flask_restful Resource class.
-    In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
+    Given an entity name, generate a flask_restful `Resource` class. In
+    `create_api_endpoints()`, these generated classes are registered with the API e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")
 
     :param name: The name of the entity
     :type name: :class:`str`
@@ -30,7 +30,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
                 backend.get_with_filters(
                     get_session_id_from_auth_header(),
                     entity_type,
-                    get_filters_from_query_string(),
+                    get_filters_from_query_string("datagateway_api"),
                     **kwargs,
                 ),
                 200,
@@ -168,9 +168,9 @@ def get_endpoint(name, entity_type, backend, **kwargs):
 
 def get_id_endpoint(name, entity_type, backend, **kwargs):
     """
-    Given an entity name generate a flask_restful Resource class.
-    In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")
+    Given an entity name, generate a flask_restful `Resource` class. In
+    `create_api_endpoints()`, these generated classes are registered with the API e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/<int:id_>")`
 
     :param name: The name of the entity
     :type name: :class:`str`
@@ -306,9 +306,9 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
 
 def get_count_endpoint(name, entity_type, backend, **kwargs):
     """
-    Given an entity name generate a flask_restful Resource class.
-    In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")
+    Given an entity name, generate a flask_restful `Resource` class. In
+    `create_api_endpoints()`, these generated classes are registered with the API e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/count")`
 
     :param name: The name of the entity
     :type name: :class:`str`
@@ -321,7 +321,7 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
 
     class CountEndpoint(Resource):
         def get(self):
-            filters = get_filters_from_query_string()
+            filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.count_with_filters(
                     get_session_id_from_auth_header(), entity_type, filters, **kwargs,
@@ -363,9 +363,9 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
 
 def get_find_one_endpoint(name, entity_type, backend, **kwargs):
     """
-    Given an entity name generate a flask_restful Resource class.
-    In main.py these generated classes are registered with the api e.g
-    api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")
+    Given an entity name, generate a flask_restful `Resource` class. In
+    `create_api_endpoints()`, these generated classes are registered with the API e.g.
+    `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles/findone")`
 
     :param name: The name of the entity
     :type name: :class:`str`
@@ -380,7 +380,7 @@ def get_find_one_endpoint(name, entity_type, backend, **kwargs):
 
     class FindOneEndpoint(Resource):
         def get(self):
-            filters = get_filters_from_query_string()
+            filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.get_one_with_filters(
                     get_session_id_from_auth_header(), entity_type, filters, **kwargs,

@@ -1,12 +1,12 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
 
-from datagateway_api.common.exceptions import (
+from datagateway_api.src.common.exceptions import (
     BadRequestError,
     FilterError,
     MissingRecordError,
 )
-from datagateway_api.common.helpers import queries_records
+from datagateway_api.src.common.helpers import queries_records
 
 
 class TestQueriesRecords:
@@ -30,7 +30,10 @@ class TestQueriesRecords:
         def raise_exception():
             raise raised_exception()
 
-        with pytest.raises(expected_exception) as ctx:
+        try:
             raise_exception()
+        except Exception as e:
+            assert e.status_code == status_code
 
-            assert ctx.exception.status_code == status_code
+        with pytest.raises(expected_exception):
+            raise_exception()

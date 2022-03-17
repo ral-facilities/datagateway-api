@@ -2,7 +2,8 @@ venv/
 .idea/
 *.pyc
 logs.log*
-config.json
+config.json*
+search_api_mapping.json*
 .vscode/
 .nox/
 .python-version
