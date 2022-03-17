@@ -2,9 +2,12 @@ from functools import wraps
 import json
 import logging
 
+from pydantic import ValidationError
+
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
     MissingRecordError,
+    SearchAPIError,
 )
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.search_api.filters import (
@@ -36,19 +39,28 @@ def search_api_error_handling(method):
     def wrapper_error_handling(*args, **kwargs):
         try:
             return method(*args, **kwargs)
-        except (ValueError, TypeError, AttributeError) as e:
+        except ValidationError as e:
             log.exception(msg=e.args)
-            raise BadRequestError(create_error_message(BadRequestError()))
+            assign_status_code(e, 500)
+            raise SearchAPIError(create_error_message(e))
+        except (ValueError, TypeError, AttributeError, KeyError) as e:
+            log.exception(msg=e.args)
+            assign_status_code(e, 400)
+            raise BadRequestError(create_error_message(e))
         except Exception as e:
             log.exception(msg=e.args)
-            try:
-                e.status_code
-            except AttributeError:
-                # If no status code exists (for non-API defined exceptions), defensively
-                # assign a 500
-                e.status_code = 500
-
+            # Defensively assign a 500 if the exception doesn't already have a status
+            # code
+            assign_status_code(e, 500)
             raise type(e)(create_error_message(e))
+
+    def assign_status_code(e, status_code):
+        try:
+            # If no status code exists (for non-API defined exceptions), assign a status
+            # code
+            e.status_code
+        except AttributeError:
+            e.status_code = status_code
 
     def create_error_message(e):
         return {

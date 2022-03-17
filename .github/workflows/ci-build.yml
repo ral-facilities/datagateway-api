@@ -41,7 +41,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -57,7 +57,7 @@ jobs:
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # rootUserNames needs editing as anon/anon is used in search API and required to pass endpoint tests
       - name: Add anon user to rootUserNames
@@ -202,7 +202,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -218,7 +218,7 @@ jobs:
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       - name: Checkout DataGateway API
         uses: actions/checkout@v2

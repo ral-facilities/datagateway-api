@@ -8,6 +8,7 @@ from datagateway_api.src.common.exceptions import (
     SearchAPIError,
 )
 from datagateway_api.src.search_api.helpers import search_api_error_handling
+from datagateway_api.src.search_api.models import Document
 
 
 class TestErrorHandling:
@@ -24,6 +25,7 @@ class TestErrorHandling:
             pytest.param(ValueError, BadRequestError, 400, id="Value error"),
             pytest.param(AttributeError, BadRequestError, 400, id="Attribute error"),
             pytest.param(ImportError, ImportError, 500, id="Import error"),
+            pytest.param(Document, SearchAPIError, 500, id="Validation error"),
         ],
     )
     def test_valid_error_raised(
@@ -31,7 +33,11 @@ class TestErrorHandling:
     ):
         @search_api_error_handling
         def raise_exception():
-            raise raised_exception()
+            if isinstance(raised_exception(), Exception):
+                raise raised_exception()
+            else:
+                # To raise Pydantic ValidationError from object creation
+                raised_exception()
 
         try:
             raise_exception()
