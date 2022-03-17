@@ -12,7 +12,7 @@ authors = ["Matthew Richards <matthew.richards@stfc.ac.uk>"]
 version_toml = [
     "pyproject.toml:tool.poetry.version"
 ]
-branch = "master"
+branch = "main"
 upload_to_pypi = false
 upload_to_release = true
 build_command = "pip install poetry==1.1.9 && poetry build"

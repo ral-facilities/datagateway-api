@@ -842,7 +842,7 @@ to query DataGateway API.
 # API Versioning
 This repository uses semantic versioning as the standard for version number
 incrementing, with the version stored in `pyproject.toml`. There is a GitHub Actions
-workflow (`release-build.yml`) which runs when master is updated (i.e. when a pull
+workflow (`release-build.yml`) which runs when main is updated (i.e. when a pull
 request is merged). This uses
 [python-semantic-release](https://github.com/relekang/python-semantic-release) to
 determine whether a release needs to be made, and if so, whether a major, minor or patch
@@ -883,8 +883,8 @@ where possible, as the types are also used to form `CHANGELOG.md`.
 
 New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING CHANGE:`
 (major) commit type is found between the previous release and the most recent commit on
-master. When the version is bumped, a GitHub tag and release is made which contains
-the source code and the built versions of the API (sdist and wheel).
+main. When the version is bumped, a GitHub tag and release is made which contains the
+source code and the built versions of the API (sdist and wheel).
 
 To check how the version number will be impacted before merging a pull request, use the
 following command to show the version which will be made when the GitHub Actions release
