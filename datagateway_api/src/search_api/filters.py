@@ -9,6 +9,7 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.src.search_api.models import PaNOSCAttribute
 from datagateway_api.src.search_api.panosc_mappings import mappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
@@ -19,6 +20,19 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
     def __init__(self, field, value, operation, search_api_query=None):
         self.search_api_query = search_api_query
         super().__init__(field, value, operation)
+
+        # Detect various datetime formats and convert them into a format that ICAT can
+        # understand
+        if (
+            self.field in PaNOSCAttribute._datetime_field_names
+            and isinstance(self.value, str)
+            and DateHandler.is_str_a_date(self.value)
+        ):
+            value_datetime = DateHandler.str_to_datetime_object(value)
+            str_datetime = DateHandler.datetime_object_to_str(value_datetime)
+            # +/- need to be removed so the format works when querying ICAT
+            self.value = str_datetime.replace("+", " ").replace("-", " ")
+
         log.info("SearchAPIWhereFilter created: %s", repr(self))
 
     def apply_filter(self, query):
