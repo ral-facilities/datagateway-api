@@ -1,8 +1,9 @@
 from functools import wraps
 import logging
-from datagateway_api.src.common.config import Config
+
 from icat.exception import ICATSessionError
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
 
 log = logging.getLogger()
@@ -33,7 +34,13 @@ def client_manager(method):
             SessionHandler.client.getRemainingMinutes()
         except ICATSessionError as e:
             log.debug("Current client session expired: %s", e.args)
-            SessionHandler.client.login(Config.config.search_api.plugin, {"username": Config.config.search_api.username, "password" : Config.config.search_api.password})
+            SessionHandler.client.login(
+                Config.config.search_api.plugin,
+                {
+                    "username": Config.config.search_api.username,
+                    "password": Config.config.search_api.password,
+                },
+            )
         return method(*args, **kwargs)
 
     return wrapper_client_manager
