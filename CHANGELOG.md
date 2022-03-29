@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.0 (2022-03-29)
+### Feature
+* Add configuration option to set authenticator and its credentials in the search API #350 ([`1c30f2f`](https://github.com/ral-facilities/datagateway-api/commit/1c30f2f17c5bdc9a206ce3a41c7da81ce4be3b23))
+
+### Breaking
+* This commits adds a mandatory config option, so is a major change.  ([`1c30f2f`](https://github.com/ral-facilities/datagateway-api/commit/1c30f2f17c5bdc9a206ce3a41c7da81ce4be3b23))
+
 ## v4.3.0 (2022-03-18)
 ### Feature
 * Allow multiple datetime formats to be used when filtering in search API #338 ([`f20ad24`](https://github.com/ral-facilities/datagateway-api/commit/f20ad24886f85bb3ba70abfd29352b1a7e5c58ff))
