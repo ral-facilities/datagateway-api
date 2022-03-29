@@ -130,6 +130,9 @@ class SearchAPI(BaseModel):
     extension: StrictStr
     icat_check_cert: StrictBool
     icat_url: StrictStr
+    mechanism: StrictStr
+    username: StrictStr
+    password: StrictStr
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

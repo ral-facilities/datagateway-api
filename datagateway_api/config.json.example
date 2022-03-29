@@ -12,7 +12,10 @@
     "search_api": {
         "extension": "/search-api",
         "icat_url": "https://localhost:8181",
-        "icat_check_cert": false
+        "icat_check_cert": false,
+        "mechanism": "anon",
+        "username": "",
+        "password": ""
     },
     "flask_reloader": false,
     "log_level": "WARN",
