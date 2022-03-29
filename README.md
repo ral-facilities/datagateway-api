@@ -341,19 +341,19 @@ Examples:
 Unix:
 ```bash
 $ export FLASK_APP=datagateway_api/src/main.py
-$ flask run
+$ poetry run flask run
 ```
 
 CMD:
 ```CMD
 > set FLASK_APP=datagateway_api/src/main.py
-> flask run
+> poetry run flask run
 ```
 
 PowerShell:
 ```powershell
 > $env:FLASK_APP = "datagateway_api/src/main.py"
-> flask run
+> poetry run flask run
 ```
 
 The Flask app can be configured so that code changes are monitored and the server will
