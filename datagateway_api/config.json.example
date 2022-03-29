@@ -13,7 +13,7 @@
         "extension": "/search-api",
         "icat_url": "https://localhost:8181",
         "icat_check_cert": false,
-        "plugin": "anon",
+        "mechanism": "anon",
         "username": "",
         "password": ""
     },

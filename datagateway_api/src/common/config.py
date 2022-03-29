@@ -130,7 +130,7 @@ class SearchAPI(BaseModel):
     extension: StrictStr
     icat_check_cert: StrictBool
     icat_url: StrictStr
-    plugin: StrictStr
+    mechanism: StrictStr
     username: StrictStr
     password: StrictStr
 

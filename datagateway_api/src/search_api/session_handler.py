@@ -35,7 +35,7 @@ def client_manager(method):
         except ICATSessionError as e:
             log.debug("Current client session expired: %s", e.args)
             SessionHandler.client.login(
-                Config.config.search_api.plugin,
+                Config.config.search_api.mechanism,
                 {
                     "username": Config.config.search_api.username,
                     "password": Config.config.search_api.password,
