@@ -103,7 +103,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                             "pid": "0-8401-1070-7",
                             "title": "DATASET 2",
                             "isPublic": True,
-                            "creationDate": "2013-04-01T10:56:52+00:00",
+                            "creationDate": "2013-04-01T10:56:52.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],

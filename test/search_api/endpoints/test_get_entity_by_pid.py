@@ -15,7 +15,7 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "0-8401-1070-7",
                     "title": "DATASET 2",
                     "isPublic": True,
-                    "creationDate": "2013-04-01T10:56:52+00:00",
+                    "creationDate": "2013-04-01T10:56:52.000Z",
                     "size": None,
                     "documents": [],
                     "techniques": [],
@@ -38,9 +38,9 @@ class TestSearchAPIGetByPIDEndpoint:
                     "summary": "Season identify professor happen third. Beat"
                     " professional blue clear style have. Light final summer.",
                     "doi": "0-449-78690-0",
-                    "startDate": "2000-04-03T00:00:00+00:00",
-                    "endDate": "2000-07-09T00:00:00+00:00",
-                    "releaseDate": "2000-07-05T00:00:00+00:00",
+                    "startDate": "2000-04-03T00:00:00.000Z",
+                    "endDate": "2000-07-09T00:00:00.000Z",
+                    "releaseDate": "2000-07-05T00:00:00.000Z",
                     "license": None,
                     "keywords": [
                         "read123",
@@ -148,7 +148,7 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "0-8401-1070-7",
                     "title": "DATASET 2",
                     "isPublic": True,
-                    "creationDate": "2013-04-01T10:56:52+00:00",
+                    "creationDate": "2013-04-01T10:56:52.000Z",
                     "size": None,
                     "documents": [
                         {
@@ -161,9 +161,9 @@ class TestSearchAPIGetByPIDEndpoint:
                             "\nPurpose study usually gas think. Machine world doctor"
                             " rise be college treat.",
                             "doi": "0-9729806-3-6",
-                            "startDate": "2000-06-04T00:00:00+00:00",
-                            "endDate": "2000-09-14T00:00:00+00:00",
-                            "releaseDate": "2000-02-10T00:00:00+00:00",
+                            "startDate": "2000-06-04T00:00:00.000Z",
+                            "endDate": "2000-09-14T00:00:00.000Z",
+                            "releaseDate": "2000-02-10T00:00:00.000Z",
                             "license": None,
                             "keywords": [
                                 "later868",
@@ -262,9 +262,9 @@ class TestSearchAPIGetByPIDEndpoint:
                     "summary": "Season identify professor happen third. Beat"
                     " professional blue clear style have. Light final summer.",
                     "doi": "0-449-78690-0",
-                    "startDate": "2000-04-03T00:00:00+00:00",
-                    "endDate": "2000-07-09T00:00:00+00:00",
-                    "releaseDate": "2000-07-05T00:00:00+00:00",
+                    "startDate": "2000-04-03T00:00:00.000Z",
+                    "endDate": "2000-07-09T00:00:00.000Z",
+                    "releaseDate": "2000-07-05T00:00:00.000Z",
                     "license": None,
                     "keywords": [
                         "read123",
@@ -351,7 +351,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-449-78690-0",
                             "title": "DATASET 1",
                             "isPublic": True,
-                            "creationDate": "2002-11-27T06:20:36+00:00",
+                            "creationDate": "2002-11-27T06:20:36.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -364,7 +364,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-353-84629-5",
                             "title": "DATASET 241",
                             "isPublic": True,
-                            "creationDate": "2006-11-21T17:10:42+00:00",
+                            "creationDate": "2006-11-21T17:10:42.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -414,7 +414,7 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "0-8401-1070-7",
                     "title": "DATASET 2",
                     "isPublic": True,
-                    "creationDate": "2013-04-01T10:56:52+00:00",
+                    "creationDate": "2013-04-01T10:56:52.000Z",
                     "size": None,
                     "documents": [
                         {
@@ -427,9 +427,9 @@ class TestSearchAPIGetByPIDEndpoint:
                             "\nPurpose study usually gas think. Machine world doctor "
                             "rise be college treat.",
                             "doi": "0-9729806-3-6",
-                            "startDate": "2000-06-04T00:00:00+00:00",
-                            "endDate": "2000-09-14T00:00:00+00:00",
-                            "releaseDate": "2000-02-10T00:00:00+00:00",
+                            "startDate": "2000-06-04T00:00:00.000Z",
+                            "endDate": "2000-09-14T00:00:00.000Z",
+                            "releaseDate": "2000-02-10T00:00:00.000Z",
                             "license": None,
                             "keywords": [
                                 "later868",
@@ -943,9 +943,9 @@ class TestSearchAPIGetByPIDEndpoint:
                     "summary": "Season identify professor happen third. Beat"
                     " professional blue clear style have. Light final summer.",
                     "doi": "0-449-78690-0",
-                    "startDate": "2000-04-03T00:00:00+00:00",
-                    "endDate": "2000-07-09T00:00:00+00:00",
-                    "releaseDate": "2000-07-05T00:00:00+00:00",
+                    "startDate": "2000-04-03T00:00:00.000Z",
+                    "endDate": "2000-07-09T00:00:00.000Z",
+                    "releaseDate": "2000-07-05T00:00:00.000Z",
                     "license": None,
                     "keywords": [
                         "read123",
@@ -1032,7 +1032,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-449-78690-0",
                             "title": "DATASET 1",
                             "isPublic": True,
-                            "creationDate": "2002-11-27T06:20:36+00:00",
+                            "creationDate": "2002-11-27T06:20:36.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -1045,7 +1045,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-353-84629-5",
                             "title": "DATASET 241",
                             "isPublic": True,
-                            "creationDate": "2006-11-21T17:10:42+00:00",
+                            "creationDate": "2006-11-21T17:10:42.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],

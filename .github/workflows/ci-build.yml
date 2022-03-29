@@ -41,7 +41,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -54,10 +54,17 @@ jobs:
       - name: Change hostname to localhost
         run: sudo hostname -b localhost
 
+      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
+      - name: Remove existing mysql
+        run: |
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          sudo apt-get remove --purge "mysql*"
+          sudo rm -rf /var/lib/mysql* /etc/mysql
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       # rootUserNames needs editing as anon/anon is used in search API and required to pass endpoint tests
       - name: Add anon user to rootUserNames
@@ -202,7 +209,7 @@ jobs:
 
       # Prep for running the playbook
       - name: Create hosts file
-        run: echo -e "[icatdb-minimal-hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
+        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
         run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
       - name: Move vault to directory it'll get detected by Ansible
@@ -215,10 +222,17 @@ jobs:
       - name: Change hostname to localhost
         run: sudo hostname -b localhost
 
+      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
+      - name: Remove existing mysql
+        run: |
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          sudo apt-get remove --purge "mysql*"
+          sudo rm -rf /var/lib/mysql* /etc/mysql
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
-          ansible-playbook icat-ansible/icatdb-minimal-hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       - name: Checkout DataGateway API
         uses: actions/checkout@v2

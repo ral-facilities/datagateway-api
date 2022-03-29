@@ -52,7 +52,7 @@ class TestSearchAPIWhereFilter:
                 SearchAPIWhereFilter("startDate", "2018-05-05T15:00:00.000Z", "gt"),
                 "Document",
                 "SELECT o FROM Investigation o WHERE o.startDate >"
-                " '2018-05-05T15:00:00.000Z'",
+                " '2018 05 05 15:00:00 00:00'",
                 id="WHERE filter with date value",
             ),
             pytest.param(

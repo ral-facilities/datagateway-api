@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v4.3.0 (2022-03-18)
+### Feature
+* Allow multiple datetime formats to be used when filtering in search API #338 ([`f20ad24`](https://github.com/ral-facilities/datagateway-api/commit/f20ad24886f85bb3ba70abfd29352b1a7e5c58ff))
+
+### Fix
+* Output datetime data in the same format as SciCat #338 ([`4596db9`](https://github.com/ral-facilities/datagateway-api/commit/4596db98808f35488aca86667aa26811d777b58e))
+
 ## v4.2.0 (2022-02-28)
 ### Feature
 * Create openapi endpoint for Search API #281 ([`412458c`](https://github.com/ral-facilities/datagateway-api/commit/412458cc4cc73230db0115bdbfdfe6ac815d42c1))
