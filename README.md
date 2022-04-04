@@ -341,19 +341,19 @@ Examples:
 Unix:
 ```bash
 $ export FLASK_APP=datagateway_api/src/main.py
-$ flask run
+$ poetry run flask run
 ```
 
 CMD:
 ```CMD
 > set FLASK_APP=datagateway_api/src/main.py
-> flask run
+> poetry run flask run
 ```
 
 PowerShell:
 ```powershell
 > $env:FLASK_APP = "datagateway_api/src/main.py"
-> flask run
+> poetry run flask run
 ```
 
 The Flask app can be configured so that code changes are monitored and the server will
@@ -399,20 +399,20 @@ require a session id are decorated with `@requires_session_id`.
 
 
 ## Swagger Interface
-If you go to the API's base path in your browser (`http://localhost:5000` by default), a
-representation of the API will be shown using
-[Swagger UI](https://swagger.io/tools/swagger-ui/). This uses an OpenAPI specfication to
-visualise and allow users to easily interact with the API without building their own
-requests. It's great for gaining an understanding in what endpoints are available and
-what inputs the requests can receive, all from an interactive interface.
+At each of the API's base paths, (`http://localhost:5000/datagateway-api` and
+`http://localhost:5000/search-api` by default), a representation of each API will be
+shown using [Swagger UI](https://swagger.io/tools/swagger-ui/). This uses an OpenAPI
+specification to visualise and allow users to easily interact with the API without
+building their own requests. It's great for gaining an understanding in what endpoints
+are available and what inputs the requests can receive, all from an interactive
+interface.
 
-This specification is built with the Database Backend in mind (attribute names on
-example outputs are capitalised for example), however the Swagger interface can also be
-used with the Python ICAT Backend. More details on how the API's OpenAPI specification
-is built can be found [here](#generating-the-openapi-specification).
-
-For reference, there is currently no OpenAPI specification for the search API, but an
-issue has been [created](https://github.com/ral-facilities/datagateway-api/issues/281).
+For DataGateway API, this specification is built with the Database Backend in mind
+(e.g. attribute names on example outputs are capitalised), however the Swagger interface
+can also be used with the Python ICAT Backend. More details on how the API's  OpenAPI
+specification is built can be found [here](#generating-the-openapi-specification). An
+issue has been [created](https://github.com/ral-facilities/datagateway-api/issues/347)
+for the Swagger interface to be up to date when using the Python ICAT backend.
 
 
 
