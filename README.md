@@ -386,6 +386,10 @@ poetry remove python-icat
 poetry add python-icat=0.21.0
 ```
 
+If using Python 3.10, please use Payara 5 on the ICAT stack which the API is being
+pointed at. There is a known issue when making HTTPS connections to Payara (via Python
+ICAT).
+
 
 ## DataGateway API Authentication
 Each request requires a valid session ID to be provided in the Authorization header.
@@ -427,8 +431,8 @@ your test environment, using `config.json.example` as a reference. The tests req
 connection to an instance of ICAT, so set the rest of the config as needed.
 
 By default, this will execute the repo's tests in
-Python 3.6, 3.7 and 3.8. For most cases, running the tests in a single Python version
-will be sufficient:
+Python 3.6, 3.7, 3.8, 3.9 and 3.10. For most cases, running the tests in a single Python
+version will be sufficient:
 
 ```bash
 nox -p 3.6 -s tests
