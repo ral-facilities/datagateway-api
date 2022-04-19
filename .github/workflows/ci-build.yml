@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 jobs:
   tests:
     runs-on: ubuntu-20.04
@@ -294,10 +294,10 @@ jobs:
       - name: Reinstall ICAT Server
         run: cd /home/runner/install/icat.server; ./setup -vv install
 
-      - name: Checkout DataGateway API (master)
+      - name: Checkout DataGateway API (default branch)
         uses: actions/checkout@v2
         with:
-          ref: master
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Create config.json
         run: cp datagateway_api/config.json.example datagateway_api/config.json
@@ -315,10 +315,10 @@ jobs:
 
       - name: Add dummy data to icatdb
         run: poetry run python -m util.icat_db_generator
-      - name: Get SQL dump of dummy data from master's generator script
-        run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_master.sql
+      - name: Get SQL dump of dummy data from main's generator script
+        run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_main.sql
 
-      # Tests that the generator script produces the same data as is produced with master's version
+      # Tests that the generator script produces the same data as is produced with main's version
 
       # NOTE: If a delibrate change is made to the script that will change the data generated,
       # the diff (and therefore this job) will fail. If this is the case, don't be alarmed.
@@ -328,4 +328,4 @@ jobs:
       # problem with the changes made that will make the generator script's data
       # different to SciGateway preprod
       - name: Diff SQL dumps
-        run: diff -s ~/generator_script_dump_master.sql ~/generator_script_dump_1.sql
+        run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
