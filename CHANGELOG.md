@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.1 (2022-05-16)
+### Fix
+* Fix internal server error when running DG API on its own #359 ([`b0d3e06`](https://github.com/ral-facilities/datagateway-api/commit/b0d3e064dc842143de7f7f0a31b947122fae9f88))
+
+### Documentation
+* Update Swagger Interface section in README ([`e63adf8`](https://github.com/ral-facilities/datagateway-api/commit/e63adf8df372baffe4a3814ea5351eb961064f07))
+* Update `flask run` commands in README ([`e85887e`](https://github.com/ral-facilities/datagateway-api/commit/e85887e12bef0a701610c0e198f437a7ff4a8c7b))
+* Update README to include note for issue in Python 3.10 ([`72181f6`](https://github.com/ral-facilities/datagateway-api/commit/72181f61677a0fdfb7e5ac9a23a731f55ab4c421))
+* Find and replace new instances of master #252 ([`9d6f649`](https://github.com/ral-facilities/datagateway-api/commit/9d6f649538e0e237ff965419737b871cdfd5e1b5))
+
 ## v5.0.0 (2022-03-29)
 ### Feature
 * Add configuration option to set authenticator and its credentials in the search API #350 ([`1c30f2f`](https://github.com/ral-facilities/datagateway-api/commit/1c30f2f17c5bdc9a206ce3a41c7da81ce4be3b23))
