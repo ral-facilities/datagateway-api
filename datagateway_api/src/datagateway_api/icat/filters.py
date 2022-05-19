@@ -9,8 +9,7 @@ from datagateway_api.src.common.filters import (
     OrderFilter,
     ScoringQueryFilter,
     SkipFilter,
-    WhereFilter,
-    QueryFilter
+    WhereFilter
 )
 from datagateway_api.src.common.helpers import get_icat_properties
 
