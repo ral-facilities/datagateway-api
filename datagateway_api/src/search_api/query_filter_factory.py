@@ -8,6 +8,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPILimitFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
+    SearchAPIQueryFilter
 )
 import datagateway_api.src.search_api.models as search_api_models
 from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
@@ -59,6 +60,11 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 elif filter_name == "limit":
                     log.info("limit JSON object found")
                     query_filters.append(SearchAPILimitFilter(int(filter_input)))
+                    
+                elif filter_name == "query":
+                    log.info("query JSON object found")
+                    query_filters.append(SearchAPIQueryFilter(filter_input))
+
                 elif filter_name == "skip":
                     log.info("skip JSON object found")
                     query_filters.append(SearchAPISkipFilter(filter_input))

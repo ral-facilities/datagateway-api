@@ -7,8 +7,10 @@ from datagateway_api.src.common.filters import (
     IncludeFilter,
     LimitFilter,
     OrderFilter,
+    ScoringQueryFilter,
     SkipFilter,
     WhereFilter,
+    QueryFilter
 )
 from datagateway_api.src.common.helpers import get_icat_properties
 
@@ -279,6 +281,12 @@ def icat_set_limit(query, skip_number, limit_number):
         # Not a two element tuple as managed by Python ICAT's setLimit()
         raise FilterError(e)
 
+class PythonICATQueryFilter(ScoringQueryFilter):
+    def __init__(self, value):
+        super().__init__(value)        
+
+    def apply_filter(self, query):
+        return
 
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):
