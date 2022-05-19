@@ -1879,6 +1879,7 @@ class TestSearchAPIQueryFilterFactory:
         [
             pytest.param({"filter": {"limit": 0}}, 0, id="Limit 0 values"),
             pytest.param({"filter": {"limit": 50}}, 50, id="Limit 50 values"),
+            pytest.param({"filter": {"limit": "25"}}, 25, id="Limit 25 values"),
         ],
     )
     def test_valid_limit_filter(self, test_request_filter, expected_limit_value):
