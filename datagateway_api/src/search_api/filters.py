@@ -6,9 +6,9 @@ from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
+    PythonICATQueryFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
-    PythonICATQueryFilter
 )
 from datagateway_api.src.search_api.models import PaNOSCAttribute
 from datagateway_api.src.search_api.panosc_mappings import mappings
@@ -162,12 +162,14 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
     def apply_filter(self, query):
         return super().apply_filter(query.icat_query.query)
 
+
 class SearchAPIQueryFilter(PythonICATQueryFilter):
     def __init__(self, query_value):
         super().__init__(query_value)
 
     def apply_filter(self, query):
         return super().apply_filter(query.icat_query.query)
+
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
     def __init__(self, included_filters, panosc_entity_name):

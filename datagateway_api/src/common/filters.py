@@ -75,14 +75,16 @@ class LimitFilter(QueryFilter):
         else:
             raise FilterError("The value of the limit filter must be positive")
 
+
 class IncludeFilter(QueryFilter):
     precedence = 5
 
     def __init__(self, included_filters):
         self.included_filters = included_filters
 
+
 class ScoringQueryFilter(QueryFilter):
     precedence = 6
 
-    def __init__(self, value):        
+    def __init__(self, value):
         self.value = value
