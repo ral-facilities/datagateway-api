@@ -12,3 +12,8 @@ RUN python -m pip install --upgrade pip \
   && poetry run pip install 'setuptools<58.0.0' \
   && poetry run pip install 'gunicorn==20.1.0' \
   && poetry install --no-dev
+
+COPY datagateway_api ./datagateway_api
+
+# Serve the application using gunicorn - production ready WSGI server
+ENTRYPOINT ["poetry", "run", "gunicorn", "-c", "gunicorn.conf.py", "datagateway_api.wsgi:application"]
