@@ -350,3 +350,11 @@ jobs:
       uses: docker/metadata-action@v3
       with:
         images: harbor.stfc.ac.uk/datagateway/datagateway-api
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: false
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
