@@ -7,7 +7,7 @@ WORKDIR /datagateway-api
 COPY poetry.lock pyproject.toml ./
 
 RUN python -m pip install --upgrade pip \
-  && pip install poetry \
+  && pip install 'poetry==1.1.13' \
   && poetry run pip uninstall -y setuptools \
   && poetry run pip install 'setuptools<58.0.0' \
   && poetry run pip install 'gunicorn==20.1.0' \
