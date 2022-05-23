@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - main
+      - k8s-deployment
 jobs:
   tests:
     runs-on: ubuntu-20.04
@@ -329,3 +329,10 @@ jobs:
       # different to SciGateway preprod
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
+
+  docker:
+    name: Docker
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v2
