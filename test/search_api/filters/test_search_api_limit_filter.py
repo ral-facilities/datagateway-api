@@ -24,7 +24,11 @@ class TestSearchAPILimitFilter:
 
     @pytest.mark.parametrize(
         "limit_value",
-        [pytest.param(-50, id="extreme invalid"), pytest.param(-1, id="boundary"), pytest.param("Nan", id="Nan string")],
+        [
+            pytest.param(-50, id="extreme invalid"),
+            pytest.param(-1, id="boundary"),
+            pytest.param("Nan", id="Nan string"),
+        ],
     )
     def test_invalid_limit_value(self, limit_value):
         with pytest.raises((FilterError, Exception)):
