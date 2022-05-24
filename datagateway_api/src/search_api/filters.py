@@ -168,7 +168,7 @@ class SearchAPIQueryFilter(PythonICATQueryFilter):
         super().__init__(query_value)
 
     def apply_filter(self, query):
-        return super().apply_filter(query.icat_query.query)
+        return 
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):

@@ -2,6 +2,9 @@ import logging
 
 from flask_restful import Resource
 
+from datagateway_api.src.search_api.filters import (
+    SearchAPIQueryFilter,
+)
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
     get_count,
@@ -10,6 +13,7 @@ from datagateway_api.src.search_api.helpers import (
     get_search,
     get_with_pid,
     search_api_error_handling,
+    get_score
 )
 
 log = logging.getLogger()
@@ -31,7 +35,24 @@ def get_search_endpoint(entity_name):
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            return get_search(entity_name, filters), 200
+            log.debug(f"entity_name: {entity_name}")
+            
+            retrieved_elements = list(filter(lambda x: isinstance(x, SearchAPIQueryFilter), filters))
+            log.debug(f"Items {retrieved_elements}")
+            
+            entities = get_search(entity_name, filters)
+            #print(entities)
+            # check there is a search query filter used by scoring
+            if len(list(filter(lambda x: isinstance(x, SearchAPIQueryFilter), filters))) == 1:
+                # Do apply scoring here
+                log.debug(f"Apply dataset scoring to {len(entities)} entities")
+                
+
+                get_score(entities, "diffraction", "investigations", 1000)
+                #print(get_score(entities, "diffraction", "investigations", 1000))
+                return entities, 200
+            else:               
+                return entities, 200
 
         get.__doc__ = f"""
             ---

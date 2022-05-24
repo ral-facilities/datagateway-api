@@ -3,6 +3,7 @@ import json
 import logging
 
 from pydantic import ValidationError
+import requests
 
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
@@ -72,6 +73,27 @@ def search_api_error_handling(method):
         }
 
     return wrapper_error_handling
+
+def get_score(entities, query, group, limit):
+    """
+    Gets the score on the given entities based in the query parameter and limit
+    """
+
+    ids = list(map(lambda entity: entity["pid"], entities))
+    url = 'http://dau-dm-01:9000/score'
+    myobj = {'query': 'diffraction', 'group' : 'investigation'}
+
+    scores = requests.post(url, json = myobj).json()["scores"]
+    
+    print(scores)
+    #for entity in entities:
+        #print(scores)
+        #for score in scores:
+            #print(score)
+        #z = next(entity for score in scores if entity["pid"] == score["itemId"])
+        #print(z)
+        #entity["score"] =
+    return scores
 
 
 @client_manager
