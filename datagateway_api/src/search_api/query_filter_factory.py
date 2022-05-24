@@ -58,7 +58,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     )
                 elif filter_name == "limit":
                     log.info("limit JSON object found")
-                    query_filters.append(SearchAPILimitFilter(int(filter_input)))
+                    query_filters.append(SearchAPILimitFilter(filter_input))
                 elif filter_name == "skip":
                     log.info("skip JSON object found")
                     query_filters.append(SearchAPISkipFilter(filter_input))
