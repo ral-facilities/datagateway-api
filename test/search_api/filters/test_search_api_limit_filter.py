@@ -31,5 +31,5 @@ class TestSearchAPILimitFilter:
         ],
     )
     def test_invalid_limit_value(self, limit_value):
-        with pytest.raises((FilterError, Exception)):
+        with pytest.raises((FilterError, ValueError)):
             SearchAPILimitFilter(limit_value)

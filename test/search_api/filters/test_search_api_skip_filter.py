@@ -37,5 +37,5 @@ class TestSearchAPISkipFilter:
         ],
     )
     def test_invalid_skip_value(self, skip_value):
-        with pytest.raises((FilterError, Exception)):
+        with pytest.raises((FilterError, ValueError)):
             SearchAPISkipFilter(skip_value)
