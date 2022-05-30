@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   pull_request:
   push:
+    # TODO - Change this to main before merging k8s-deployment into main
     branches:
       - k8s-deployment
 jobs:
