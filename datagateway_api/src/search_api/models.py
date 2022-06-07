@@ -78,7 +78,8 @@ class PaNOSCAttribute(ABC, BaseModel):
             entity_field_alias = cls.__fields__[entity_field].alias
 
             entity_name, icat_field_name = mappings.get_icat_mapping(
-                cls.__name__, entity_field_alias,
+                cls.__name__,
+                entity_field_alias,
             )
 
             if not isinstance(icat_field_name, list):
@@ -157,7 +158,8 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # found in the provided ICAT response. Because of this, a
                 # `ValidationError` is raised.
                 error_wrapper = ErrorWrapper(
-                    TypeError("field required"), loc=required_related_field,
+                    TypeError("field required"),
+                    loc=required_related_field,
                 )
                 raise ValidationError(errors=[error_wrapper], model=cls)
 
@@ -250,7 +252,7 @@ class Document(PaNOSCAttribute):
 
     @validator("pid", pre=True, always=True)
     def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
+        return value
 
     @root_validator(pre=True)
     def set_is_public(cls, values):  # noqa: B902, N805
@@ -296,7 +298,7 @@ class Instrument(PaNOSCAttribute):
 
     @validator("pid", pre=True, always=True)
     def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
+        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -399,7 +401,7 @@ class Sample(PaNOSCAttribute):
 
     @validator("pid", pre=True, always=True)
     def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
+        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -419,7 +421,7 @@ class Technique(PaNOSCAttribute):
 
     @validator("pid", pre=True, always=True)
     def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
+        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):

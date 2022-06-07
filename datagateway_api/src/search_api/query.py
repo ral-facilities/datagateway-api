@@ -11,9 +11,10 @@ class SearchAPIQuery:
         self.icat_entity_name = mappings.mappings[panosc_entity_name][
             "base_icat_entity"
         ]
-
         self.icat_query = SearchAPIICATQuery(
-            SessionHandler.client, self.icat_entity_name, **kwargs,
+            SessionHandler.client,
+            self.icat_entity_name,
+            **kwargs,
         )
 
     def __repr__(self):

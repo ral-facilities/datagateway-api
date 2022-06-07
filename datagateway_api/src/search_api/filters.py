@@ -53,8 +53,10 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
         # Convert PaNOSC field names to ICAT field names
         for field_name in panosc_field_names:
-            panosc_mapping_name, icat_field_name = mappings.get_icat_mapping(
-                panosc_mapping_name, field_name,
+            panosc_mapping_name, icat_field_name = mappings.get_icat_mapping
+            (
+                panosc_mapping_name,
+                field_name,
             )
 
             # Edge cases for ICAT have been somewhat hardcoded here, to deal with
@@ -168,7 +170,7 @@ class SearchAPIQueryFilter(PythonICATQueryFilter):
         super().__init__(query_value)
 
     def apply_filter(self, query):
-        return 
+        return
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
@@ -189,8 +191,10 @@ class SearchAPIIncludeFilter(PythonICATIncludeFilter):
             split_panosc_fields = panosc_field_name.split(".")
 
             for split_field in split_panosc_fields:
-                panosc_entity_name, icat_field_name = mappings.get_icat_mapping(
-                    panosc_entity_name, split_field,
+                panosc_entity_name, icat_field_name = mappings.get_icat_mapping
+                (
+                    panosc_entity_name,
+                    split_field,
                 )
                 split_icat_field_name.append(icat_field_name)
 

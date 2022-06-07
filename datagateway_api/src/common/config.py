@@ -133,6 +133,9 @@ class SearchAPI(BaseModel):
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
+    scoring_enabled: StrictBool
+    scoring_server: StrictStr
+    scoring_group: StrictStr
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

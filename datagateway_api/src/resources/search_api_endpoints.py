@@ -2,18 +2,17 @@ import logging
 
 from flask_restful import Resource
 
-from datagateway_api.src.search_api.filters import (
-    SearchAPIQueryFilter,
-)
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
     get_count,
     get_files,
     get_files_count,
+    get_score,
     get_search,
+    get_search_api_query_filter_list,
     get_with_pid,
+    is_query_parameter_enabled,
     search_api_error_handling,
-    get_score
 )
 
 log = logging.getLogger()
@@ -35,23 +34,24 @@ def get_search_endpoint(entity_name):
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
             log.debug("Filters: %s", filters)
-            log.debug(f"entity_name: {entity_name}")
-            
-            retrieved_elements = list(filter(lambda x: isinstance(x, SearchAPIQueryFilter), filters))
-            log.debug(f"Items {retrieved_elements}")
-            
-            entities = get_search(entity_name, filters)
-            #print(entities)
-            # check there is a search query filter used by scoring
-            if len(list(filter(lambda x: isinstance(x, SearchAPIQueryFilter), filters))) == 1:
-                # Do apply scoring here
-                log.debug(f"Apply dataset scoring to {len(entities)} entities")
-                
+            log.debug("entity_name: %s", entity_name)
 
-                get_score(entities, "diffraction", "investigations", 1000)
-                #print(get_score(entities, "diffraction", "investigations", 1000))
+            if not is_query_parameter_enabled(filters):
+                entities = get_search(entity_name, filters)
                 return entities, 200
-            else:               
+            else:
+                query = get_search_api_query_filter_list(filters)[0].value
+
+                entities = get_search(
+                    entity_name, filters, "o.summary like '%" + query + "%'"
+                )
+                log.debug(
+                    "Applying score to %s entities with query %s",
+                    len(entities),
+                    query,
+                )
+                log.debug("Entities retrieved %s", len(entities))
+                entities = get_score(entities, query, "investigations", 1000)
                 return entities, 200
 
         get.__doc__ = f"""

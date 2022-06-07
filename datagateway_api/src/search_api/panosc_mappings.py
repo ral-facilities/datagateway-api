@@ -11,7 +11,8 @@ log = logging.getLogger()
 
 class PaNOSCMappings:
     def __init__(
-        self, path=Path(__file__).parent.parent.parent / "search_api_mapping.json",
+        self,
+        path=Path(__file__).parent.parent.parent / "search_api_mapping.json",
     ):
         """Load contents of `search_api_mapping.json` into this class"""
         try:
@@ -43,14 +44,14 @@ class PaNOSCMappings:
         :raises FilterError: If a valid mapping cannot be found
         """
 
-        log.info(
-            "Searching mapping file to find ICAT translation for %s",
-            f"{panosc_entity_name}.{field_name}",
-        )
+        # log.debug(
+        #    "Searching mapping file to find ICAT translation for %s",
+        #    f"{panosc_entity_name}.{field_name}",
+        # )
 
         try:
             icat_mapping = self.mappings[panosc_entity_name][field_name]
-            log.debug("ICAT mapping/translation found: %s", icat_mapping)
+            # log.debug("ICAT mapping/translation found: %s", icat_mapping)
         except KeyError as e:
             raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
 
@@ -70,7 +71,9 @@ class PaNOSCMappings:
         return panosc_entity_name, icat_field_name
 
     def get_panosc_related_entity_name(
-        self, panosc_entity_name, panosc_related_field_name,
+        self,
+        panosc_entity_name,
+        panosc_related_field_name,
     ):
         """
         For a given related field name (e.g. "files"), get the entity name version of
@@ -158,7 +161,9 @@ class PaNOSCMappings:
         return icat_relations
 
     def get_icat_relations_for_non_related_fields_of_panosc_relation(
-        self, panosc_entity_name, entity_relation,
+        self,
+        panosc_entity_name,
+        entity_relation,
     ):
         """
         THis function retrieves the ICAT relations for the non related fields of all the
@@ -182,7 +187,8 @@ class PaNOSCMappings:
 
         split_entity_relation = entity_relation.split(".")
         related_entity_name, icat_field_name = self.get_icat_mapping(
-            panosc_entity_name, split_entity_relation[0],
+            panosc_entity_name,
+            split_entity_relation[0],
         )
         relations = self.get_icat_relations_for_panosc_non_related_fields(
             related_entity_name,
@@ -192,7 +198,8 @@ class PaNOSCMappings:
         if len(split_entity_relation) > 1:
             entity_relation = ".".join(split_entity_relation[1:])
             relations = self.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
-                related_entity_name, entity_relation,
+                related_entity_name,
+                entity_relation,
             )
             icat_relations.extend(relations)
 
