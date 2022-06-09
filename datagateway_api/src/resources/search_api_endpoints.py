@@ -43,7 +43,9 @@ def get_search_endpoint(entity_name):
                 query = get_search_api_query_filter_list(filters)[0].value
 
                 entities = get_search(
-                    entity_name, filters, "o.summary like '%" + query + "%'"
+                    entity_name,
+                    filters,
+                    "LOWER(o.summary) like '%" + query.lower() + "%'",
                 )
                 log.debug(
                     "Applying score to %s entities with query %s",
