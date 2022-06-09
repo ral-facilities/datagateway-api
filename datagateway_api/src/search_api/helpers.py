@@ -102,8 +102,8 @@ def get_score(entities, query, group, limit):
 
         if response.status_code < 400:
             scores = response.json()["scores"]
-            print(len(scores))
-            print(len(entities))
+            print(len(scores) + " scores retrieved from scoring app")
+            print(len(entities) + " entities retrieved from ICAT")
             for entity in entities:
                 items = list(
                     filter(
