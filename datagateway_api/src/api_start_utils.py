@@ -152,7 +152,8 @@ def create_api_endpoints(flask_app, api, specs):
     # DataGateway API endpoints
     if Config.config.datagateway_api is not None:
         datagateway_api_spec = next(
-            (spec for spec in specs if spec.title == "DataGateway API"), None,
+            (spec for spec in specs if spec.title == "DataGateway API"),
+            None,
         )
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
@@ -223,7 +224,8 @@ def create_api_endpoints(flask_app, api, specs):
 
         # Session endpoint
         session_endpoint_resource = session_endpoints(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             session_endpoint_resource,
@@ -234,7 +236,8 @@ def create_api_endpoints(flask_app, api, specs):
 
         # Table specific endpoints
         instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             instrument_facility_cycle_resource,
@@ -244,7 +247,8 @@ def create_api_endpoints(flask_app, api, specs):
         datagateway_api_spec.path(resource=instrument_facility_cycle_resource, api=api)
 
         count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             count_instrument_facility_cycle_res,
@@ -254,7 +258,8 @@ def create_api_endpoints(flask_app, api, specs):
         datagateway_api_spec.path(resource=count_instrument_facility_cycle_res, api=api)
 
         instrument_investigation_resource = instrument_investigation_endpoint(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             instrument_investigation_resource,
@@ -265,7 +270,8 @@ def create_api_endpoints(flask_app, api, specs):
         datagateway_api_spec.path(resource=instrument_investigation_resource, api=api)
 
         count_instrument_investigation_res = count_instrument_investigation_endpoint(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             count_instrument_investigation_res,
@@ -283,13 +289,14 @@ def create_api_endpoints(flask_app, api, specs):
     # Search API endpoints
     if Config.config.search_api is not None:
         search_api_spec = next(
-            (spec for spec in specs if spec.title == "Search API"), None,
+            (spec for spec in specs if spec.title == "Search API"),
+            None,
         )
         search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = {
-            "datasets": "Dataset",
-            "documents": "Document",
-            "instruments": "Instrument",
+            "Datasets": "Dataset",
+            "Documents": "Document",
+            "Instruments": "Instrument",
         }
 
         for endpoint_name, entity_name in search_api_entity_endpoints.items():
