@@ -94,12 +94,14 @@ def get_score(entities, query, group, limit):
             "query": query,
             "group": Config.config.search_api.scoring_group,
             "limit": limit,
-            "itemIds": list(map(lambda entity: entity["pid"], entities)),
+            #"itemIds": list(map(lambda entity: entity["pid"], entities)),
         }
+
+        print(Config.config.search_api.scoring_server)
         response = requests.post(
             Config.config.search_api.scoring_server, json=myobj, timeout=5
         )
-
+        print((response.text))
         if response.status_code < 400:
             scores = response.json()["scores"]
             print(str(len(scores)) + " scores retrieved from scoring app")
