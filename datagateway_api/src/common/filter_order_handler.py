@@ -53,8 +53,10 @@ class FilterOrderHandler(object):
             # Using `type()` because we only want the Python ICAT version, don't want
             # the code to catch objects that inherit from the class e.g.
             # `SearchAPIIncludeFilter`
-            if type(query_filter) is PythonICATIncludeFilter and isinstance(
-                query, SearchAPIQuery,
+            if (
+                Config.config.search_api
+                and type(query_filter) is PythonICATIncludeFilter
+                and isinstance(query, SearchAPIQuery)
             ):
                 query = query.icat_query.query
             query_filter.apply_filter(query)
