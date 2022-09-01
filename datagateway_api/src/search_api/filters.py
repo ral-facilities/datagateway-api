@@ -6,7 +6,7 @@ from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
-    PythonICATQueryFilter,
+    ScoringQueryFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
@@ -165,7 +165,7 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
         return super().apply_filter(query.icat_query.query)
 
 
-class SearchAPIQueryFilter(PythonICATQueryFilter):
+class SearchAPIScoringFilter(ScoringQueryFilter):
     def __init__(self, query_value):
         super().__init__(query_value)
 

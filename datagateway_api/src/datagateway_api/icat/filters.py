@@ -281,13 +281,6 @@ def icat_set_limit(query, skip_number, limit_number):
         raise FilterError(e)
 
 
-class PythonICATQueryFilter(ScoringQueryFilter):
-    def __init__(self, value):
-        super().__init__(value)
-
-    def apply_filter(self, query):
-        return
-
 
 class PythonICATIncludeFilter(IncludeFilter):
     def __init__(self, included_filters):

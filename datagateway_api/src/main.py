@@ -10,7 +10,7 @@ from datagateway_api.src.api_start_utils import (
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.logger_setup import setup_logger
 
-setup_logger()
+setup_logger() 
 log = logging.getLogger()
 log.info("Logging now setup")
 

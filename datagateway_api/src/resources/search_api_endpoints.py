@@ -1,13 +1,14 @@
 import logging
 
 from flask_restful import Resource
-
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
     get_count,
     get_files,
     get_files_count,
     get_score,
+    add_scores_to_entities,
     get_search,
     get_search_api_query_filter_list,
     get_with_pid,
@@ -33,8 +34,7 @@ def get_search_endpoint(entity_name):
         @search_api_error_handling
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
-            log.debug("Filters: %s", filters)
-            log.debug("entity_name: %s", entity_name)
+            log.debug("Filters: %s, entity_name: %s", filters, entity_name)
 
             if not is_query_parameter_enabled(filters):
                 entities = get_search(entity_name, filters)
@@ -52,8 +52,9 @@ def get_search_endpoint(entity_name):
                     len(entities),
                     query,
                 )
-                log.debug("Entities retrieved %s", len(entities))
-                entities = get_score(entities, query, "investigations", 1000)
+                if Config.config.search_api.scoring_enabled:
+                    scores = get_score(entities, query)
+                    entities = add_scores_to_entities(entities, scores)
                 return entities, 200
 
         get.__doc__ = f"""

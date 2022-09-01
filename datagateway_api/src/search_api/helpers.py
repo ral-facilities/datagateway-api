@@ -19,7 +19,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPIWhereFilter,
 )
 from datagateway_api.src.search_api.filters import (
-    SearchAPIQueryFilter,
+    SearchAPIScoringFilter,
 )
 import datagateway_api.src.search_api.models as models
 from datagateway_api.src.search_api.query import SearchAPIQuery
@@ -84,75 +84,65 @@ def search_api_error_handling(method):
     return wrapper_error_handling
 
 
-def get_score(entities, query, group, limit):
+def get_score(entities, query):
     """
-    Gets the score on the given entities based in the query parameter and limit
-    """
+    Gets the score on the given entities based in the query parameter that is the term to be found
 
+    :param entities: List of entities that have been retrieved from one ICAT query.
+    :type entities: :class:`list`
+    :param query: String with the term to be searched by
+    :type query: :class:`str`
+    """
     try:
-        myobj = {
+        data = {
             "query": query,
             "group": Config.config.search_api.scoring_group,
-            "limit": limit,
-            #"itemIds": list(map(lambda entity: entity["pid"], entities)),
+            "limit": Config.config.search_api.scoring_limit,
+            # With itemIds, scoring server returns a 400 error. No idea why.
+            #"itemIds": list(map(lambda entity: (entity["pid"]), entities)), # 
         }
-
-        print(Config.config.search_api.scoring_server)
         response = requests.post(
-            Config.config.search_api.scoring_server, json=myobj, timeout=5
+            Config.config.search_api.scoring_server, json=data, timeout=5
         )
-        print((response.text))
         if response.status_code < 400:
             scores = response.json()["scores"]
-            print(str(len(scores)) + " scores retrieved from scoring app")
-            print(str(len(entities)) + " entities retrieved from ICAT")
-            for entity in entities:
-                items = list(
-                    filter(
-                        lambda score: str(score["itemId"]) == str(entity["pid"]),
-                        scores,
-                    ),
-                )
-
-                if len(items) == 1:
-
-                    print(
-                        "FOUND",
-                        entity["startDate"],
-                        entity["title"],
-                        entity["pid"],
-                        entity["doi"],
-                        entity["summary"],
-                        items[0]["score"],
-                    )
-                    entity["score"] = items[0]["score"]
-
-                else:
-                    # print("not FOUND %s", entity)
-                    print(
-                        "NOT FOUND",
-                        entity["startDate"],
-                        entity["title"],
-                        entity["pid"],
-                        entity["doi"],
-                    )
-                    entity["score"] = -1
-                # filter(
-                #    lambda x: x["itemId"] == entity["pid"], response.json()
-                # )["score"]
-            return entities
+            log.debug("%s scores out of %s entities retrieved", len(scores), len(entities))
+            return scores
         else:
             raise ScoringAPIError(
                 Exception(f"Score API returned {response.status_code}"),
             )
+    except ValueError as e:
+        log.error("Response is not a valid json")
+        raise e
     except ConnectionError as e:
-        log.error("ConnectionError to %s ", url)
+        log.error("ConnectionError to %s ", Config.config.search_api.scoring_server)
         raise e
     except Exception as e:
-        traceback.print_exc()
         log.error("Error on scoring")
         raise e
 
+def add_scores_to_entities(entities, scores):
+    """
+    For each entity this function adds the score if it is found by matching the score.item.itemsId with the pid of the entity
+    Otherwise the score is filled with -1 (arbitrarily chosen)
+
+    :param entities: List of entities that have been retrieved from one ICAT query.
+    :type entities: :class:`list`
+    :param scores: List of items retrieved from the scoring application
+    :type scores: :class:`list`
+    """
+    for entity in entities:
+        entity["score"] = -1
+        items = list(
+            filter(
+                lambda score: str(score["itemId"]) == str(entity["pid"]),
+                scores,
+            ),
+        )
+        if len(items) == 1:
+            entity["score"] = items[0]["score"]
+    return entities
 
 @client_manager
 def get_search(entity_name, filters, str_conditions=None):
@@ -323,7 +313,7 @@ def get_search_api_query_filter_list(filters):
     """
     Returns the list of SearchAPIQueryFilter that are in the filters array
     """
-    return list(filter(lambda x: isinstance(x, SearchAPIQueryFilter), filters))
+    return list(filter(lambda x: isinstance(x, SearchAPIScoringFilter), filters))
 
 
 @client_manager
@@ -332,5 +322,4 @@ def is_query_parameter_enabled(filters):
     Checks if query parameter is enabled based if the SearchAPIQueryFilter
     is in the query and the scoring is enabled
     """
-    print(Config.config.search_api.password)
     return len(get_search_api_query_filter_list(filters)) == 1
