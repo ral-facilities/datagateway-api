@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v5.1.0 (2022-05-25)
+### Feature
+* Support skip and limit string parameters on search-api ([`db94b37`](https://github.com/ral-facilities/datagateway-api/commit/db94b375438873969db2d05621d9860a304ca8bd))
+* Support skip and limit string parameters on search-api ([`eb74970`](https://github.com/ral-facilities/datagateway-api/commit/eb74970c1a74c6e0bed62460dab5ba5881ba1df7))
+* Support skip/limit string parameters on search-api and added testing ([`8c3dde1`](https://github.com/ral-facilities/datagateway-api/commit/8c3dde11deb7614dfd22e6433c24727eeff2f800))
+* Support skip/limit string parameters on search-api ([`d601ba7`](https://github.com/ral-facilities/datagateway-api/commit/d601ba7e9b48186e624db4891c503484f8895b2a))
+
 ## v5.0.1 (2022-05-16)
 ### Fix
 * Fix internal server error when running DG API on its own #359 ([`b0d3e06`](https://github.com/ral-facilities/datagateway-api/commit/b0d3e064dc842143de7f7f0a31b947122fae9f88))
