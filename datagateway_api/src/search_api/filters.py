@@ -6,9 +6,9 @@ from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
-    ScoringQueryFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
+    ScoringQueryFilter,
 )
 from datagateway_api.src.search_api.models import PaNOSCAttribute
 from datagateway_api.src.search_api.panosc_mappings import mappings

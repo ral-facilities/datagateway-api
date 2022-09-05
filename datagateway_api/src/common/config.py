@@ -136,7 +136,7 @@ class SearchAPI(BaseModel):
     scoring_enabled: StrictBool
     scoring_server: StrictStr
     scoring_group: StrictStr
-    scoring_limit : StrictInt
+    scoring_limit: StrictInt
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

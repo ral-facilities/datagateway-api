@@ -7,7 +7,6 @@ from datagateway_api.src.common.filters import (
     IncludeFilter,
     LimitFilter,
     OrderFilter,
-    ScoringQueryFilter,
     SkipFilter,
     WhereFilter,
 )
@@ -57,16 +56,22 @@ class PythonICATWhereFilter(WhereFilter):
         elif self.operation == "ilike":
             self.field = f"UPPER({self.field})"
             where_filter = self.create_condition(
-                self.field, "like", f"UPPER('%{self.value}%')",
+                self.field,
+                "like",
+                f"UPPER('%{self.value}%')",
             )
         elif self.operation == "nlike":
             where_filter = self.create_condition(
-                self.field, "not like", f"%{self.value}%",
+                self.field,
+                "not like",
+                f"%{self.value}%",
             )
         elif self.operation == "nilike":
             self.field = f"UPPER({self.field})"
             where_filter = self.create_condition(
-                self.field, "not like", f"UPPER('%{self.value}%')",
+                self.field,
+                "not like",
+                f"UPPER('%{self.value}%')",
             )
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
@@ -104,7 +109,9 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, "not in", self.value)
         elif self.operation == "between":
             where_filter = self.create_condition(
-                self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
+                self.field,
+                "between",
+                f"'{self.value[0]}' and '{self.value[1]}'",
             )
         elif self.operation == "regexp":
             where_filter = self.create_condition(self.field, "regexp", self.value)
@@ -222,7 +229,8 @@ class PythonICATOrderFilter(OrderFilter):
                     PythonICATOrderFilter.join_specs[join_field_str] = "LEFT JOIN"
 
                 log.debug(
-                    "Setting query join specs: %s", PythonICATOrderFilter.join_specs,
+                    "Setting query join specs: %s",
+                    PythonICATOrderFilter.join_specs,
                 )
                 try:
                     query.setJoinSpecs(PythonICATOrderFilter.join_specs)
@@ -279,7 +287,6 @@ def icat_set_limit(query, skip_number, limit_number):
     except TypeError as e:
         # Not a two element tuple as managed by Python ICAT's setLimit()
         raise FilterError(e)
-
 
 
 class PythonICATIncludeFilter(IncludeFilter):

@@ -1,7 +1,6 @@
 from functools import wraps
 import json
 import logging
-import traceback
 
 from pydantic import ValidationError
 import requests
@@ -86,7 +85,8 @@ def search_api_error_handling(method):
 
 def get_score(entities, query):
     """
-    Gets the score on the given entities based in the query parameter that is the term to be found
+    Gets the score on the given entities based in the query parameter
+    that is the term to be found
 
     :param entities: List of entities that have been retrieved from one ICAT query.
     :type entities: :class:`list`
@@ -99,14 +99,20 @@ def get_score(entities, query):
             "group": Config.config.search_api.scoring_group,
             "limit": Config.config.search_api.scoring_limit,
             # With itemIds, scoring server returns a 400 error. No idea why.
-            #"itemIds": list(map(lambda entity: (entity["pid"]), entities)), # 
+            # "itemIds": list(map(lambda entity: (entity["pid"]), entities)), #
         }
         response = requests.post(
-            Config.config.search_api.scoring_server, json=data, timeout=5
+            Config.config.search_api.scoring_server,
+            json=data,
+            timeout=5,
         )
         if response.status_code < 400:
             scores = response.json()["scores"]
-            log.debug("%s scores out of %s entities retrieved", len(scores), len(entities))
+            log.debug(
+                "%s scores out of %s entities retrieved",
+                len(scores),
+                len(entities),
+            )
             return scores
         else:
             raise ScoringAPIError(
@@ -122,9 +128,11 @@ def get_score(entities, query):
         log.error("Error on scoring")
         raise e
 
+
 def add_scores_to_entities(entities, scores):
     """
-    For each entity this function adds the score if it is found by matching the score.item.itemsId with the pid of the entity
+    For each entity this function adds the score if it is found by matching
+    the score.item.itemsId with the pid of the entity
     Otherwise the score is filled with -1 (arbitrarily chosen)
 
     :param entities: List of entities that have been retrieved from one ICAT query.
@@ -143,6 +151,7 @@ def add_scores_to_entities(entities, scores):
         if len(items) == 1:
             entity["score"] = items[0]["score"]
     return entities
+
 
 @client_manager
 def get_search(entity_name, filters, str_conditions=None):

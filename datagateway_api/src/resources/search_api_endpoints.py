@@ -1,14 +1,15 @@
 import logging
 
 from flask_restful import Resource
+
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
+    add_scores_to_entities,
     get_count,
     get_files,
     get_files_count,
     get_score,
-    add_scores_to_entities,
     get_search,
     get_search_api_query_filter_list,
     get_with_pid,
