@@ -13,7 +13,7 @@ from datagateway_api.src.search_api.helpers import (
     get_search,
     get_search_api_query_filter_list,
     get_with_pid,
-    is_query_parameter_enabled,
+    not_query_filter,
     search_api_error_handling,
 )
 
@@ -35,14 +35,18 @@ def get_search_endpoint(entity_name):
         @search_api_error_handling
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
-            log.debug("Filters: %s, entity_name: %s", filters, entity_name)
-
-            if not is_query_parameter_enabled(filters):
-                entities = get_search(entity_name, filters)
-                return entities, 200
+            log.debug(
+                "%s Filters: %s found, entity_name: %s",
+                len(filters),
+                filters,
+                entity_name,
+            )
+            # in case there is no query filter then we processed as usual
+            if not not_query_filter(filters):
+                return get_search(entity_name, filters), 200
             else:
                 query = get_search_api_query_filter_list(filters)[0].value
-
+                log.debug("Performing the search")
                 entities = get_search(
                     entity_name,
                     filters,

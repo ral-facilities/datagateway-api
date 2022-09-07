@@ -326,9 +326,8 @@ def get_search_api_query_filter_list(filters):
 
 
 @client_manager
-def is_query_parameter_enabled(filters):
+def not_query_filter(filters):
     """
-    Checks if query parameter is enabled based if the SearchAPIQueryFilter
-    is in the query and the scoring is enabled
+    Checks if there is a SearchAPIQueryFilter in the list of filters
     """
     return len(get_search_api_query_filter_list(filters)) == 1
