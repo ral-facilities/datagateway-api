@@ -103,15 +103,26 @@ To maintain records of the API's dependencies,
 command:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-The installation requires `~/.poetry/env` to be refreshed for changes to be applied.
-Open a new terminal or execute the following command to ensure the installation is
-completed smoothly:
-
+The installation requires the following to be added to your `~/.bashrc` file so the installation folder is on your path.
 ```bash
-source ~/.poetry/env
+export PATH= "~/.local/bin:$PATH"
+```
+Then run `source ~/.bashrc` or open a new terminal and check poetry works by running `poetry --version`
+
+if you encounter this error when installing poetry:
+```
+ERROR: No matching distribution found for poetry==1.2.0
+```
+You can try running the installer with python 3.8 with the command below:
+```bash
+curl -sSL https://install.python-poetry.org | python3.8 -
+```
+Or you can specify the version you want to install from the listed versions with command below:
+```bash
+curl -sSL https://install.python-poetry.org | python3 - --version 1.2.0
 ```
 
 Before installing the API's dependencies, check the version of `setuptools`:
