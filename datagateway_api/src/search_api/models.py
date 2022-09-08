@@ -78,8 +78,7 @@ class PaNOSCAttribute(ABC, BaseModel):
             entity_field_alias = cls.__fields__[entity_field].alias
 
             entity_name, icat_field_name = mappings.get_icat_mapping(
-                cls.__name__,
-                entity_field_alias,
+                cls.__name__, entity_field_alias,
             )
 
             if not isinstance(icat_field_name, list):
@@ -158,8 +157,7 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # found in the provided ICAT response. Because of this, a
                 # `ValidationError` is raised.
                 error_wrapper = ErrorWrapper(
-                    TypeError("field required"),
-                    loc=required_related_field,
+                    TypeError("field required"), loc=required_related_field,
                 )
                 raise ValidationError(errors=[error_wrapper], model=cls)
 

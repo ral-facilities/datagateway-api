@@ -53,9 +53,7 @@ def get_search_endpoint(entity_name):
                     "LOWER(o.summary) like '%" + query.lower() + "%'",
                 )
                 log.debug(
-                    "Applying score to %s entities with query %s",
-                    len(entities),
-                    query,
+                    "Applying score to %s entities with query %s", len(entities), query,
                 )
                 if Config.config.search_api.scoring_enabled:
                     scores = get_score(entities, query)

@@ -17,9 +17,7 @@ from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPIWhereFilter,
 )
-from datagateway_api.src.search_api.filters import (
-    SearchAPIScoringFilter,
-)
+from datagateway_api.src.search_api.filters import SearchAPIScoringFilter
 import datagateway_api.src.search_api.models as models
 from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.session_handler import (
@@ -102,16 +100,12 @@ def get_score(entities, query):
             # "itemIds": list(map(lambda entity: (entity["pid"]), entities)), #
         }
         response = requests.post(
-            Config.config.search_api.scoring_server,
-            json=data,
-            timeout=5,
+            Config.config.search_api.scoring_server, json=data, timeout=5,
         )
         if response.status_code < 400:
             scores = response.json()["scores"]
             log.debug(
-                "%s scores out of %s entities retrieved",
-                len(scores),
-                len(entities),
+                "%s scores out of %s entities retrieved", len(scores), len(entities),
             )
             return scores
         else:
@@ -143,10 +137,7 @@ def add_scores_to_entities(entities, scores):
     for entity in entities:
         entity["score"] = -1
         items = list(
-            filter(
-                lambda score: str(score["itemId"]) == str(entity["pid"]),
-                scores,
-            ),
+            filter(lambda score: str(score["itemId"]) == str(entity["pid"]), scores,),
         )
         if len(items) == 1:
             entity["score"] = items[0]["score"]
@@ -305,13 +296,10 @@ def get_files_count(entity_name, filters, pid):
     """
 
     log.info(
-        "Getting number of files for dataset (PID: %s), using request's filters",
-        pid,
+        "Getting number of files for dataset (PID: %s), using request's filters", pid,
     )
     log.debug(
-        "Entity Name: %s, Filters: %s",
-        entity_name,
-        filters,
+        "Entity Name: %s, Filters: %s", entity_name, filters,
     )
 
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
