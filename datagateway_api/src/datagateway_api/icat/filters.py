@@ -7,7 +7,6 @@ from datagateway_api.src.common.filters import (
     IncludeFilter,
     LimitFilter,
     OrderFilter,
-    ScoringQueryFilter,
     SkipFilter,
     WhereFilter,
 )

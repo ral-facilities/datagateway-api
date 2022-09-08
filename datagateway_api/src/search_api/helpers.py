@@ -137,7 +137,7 @@ def add_scores_to_entities(entities, scores):
     for entity in entities:
         entity["score"] = -1
         items = list(
-            filter(lambda score: str(score["itemId"]) == str(entity["pid"]), scores,),
+            filter(lambda score: str(score["itemId"]) == str(entity["pid"]), scores),
         )
         if len(items) == 1:
             entity["score"] = items[0]["score"]
