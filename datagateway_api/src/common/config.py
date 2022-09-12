@@ -1,4 +1,4 @@
-import json
+import json, yaml
 import logging
 from pathlib import Path
 import sys
@@ -176,7 +176,7 @@ class APIConfig(BaseModel):
     test_user_credentials: Optional[TestUserCredentials]
 
     @classmethod
-    def load(cls, path=Path(__file__).parent.parent.parent / "config.json"):
+    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml"):
         """
         Loads the config data from the JSON file and returns it as a APIConfig pydantic
         model. Exits the application if it fails to locate the JSON config file or
@@ -186,10 +186,18 @@ class APIConfig(BaseModel):
         :param path: path to the configuration file
         :return: APIConfig model object that contains the config data
         """
+        log = logging.getLogger()
         try:
-            with open(path, encoding="utf-8") as target:
-                data = json.load(target)
-                return cls(**data)
+            jpath = path.parent / "config.json" #Maybe move this to parameters? Will doing it like this break anything?
+            if path.exists():
+                with open(path, encoding="utf-8") as target:
+                    data = yaml.safe_load(target)
+
+            elif jpath.exists():
+                log.warn("DEPRECATED: Using a JSON config file is deprecated and may be removed in an upcoming version. Please use a yaml config file instead.") #Does this message need to exist?
+                with open(jpath, encoding="utf-8") as target:
+                    data = json.load(target)
+            return cls(**data)
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
