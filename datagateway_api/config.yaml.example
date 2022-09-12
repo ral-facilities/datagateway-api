@@ -16,7 +16,7 @@ search_api:
   password: ""
 flask_reloader: false
 log_level: "DEBUG"
-log_location: "/root/datagateway-api/logs.log"
+log_location: "/home/runner/work/datagateway-api/datagateway-api/logs.log"
 debug_mode: true
 generate_swagger: true
 host: "127.0.0.1"
