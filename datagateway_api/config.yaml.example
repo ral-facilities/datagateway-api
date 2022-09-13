@@ -1,4 +1,5 @@
-datagateway_api: 
+---
+datagateway_api:
   extension: "/datagateway-api"
   backend: "python_icat"
   client_cache_size: 5

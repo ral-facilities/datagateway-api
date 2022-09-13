@@ -287,11 +287,11 @@ e.g. `http://localhost:5000/datagateway-api/sessions`.
 ## DataGateway API
 Depending on the backend you want to use (either `db` or `python_icat`, more details
 about backends [here](#datagateway-api-backends)) the connection URL for the backend needs to be set.
-These are set in `config.json` (an example file is provided in the base directory of
+These are set in `config.yaml` (an example file is provided in the base directory of
 this repository). While both `db_url` and `icat_url` should have values assigned to them
 (for best practice), `db_url` will only be used for the database backend, and `icat_url`
- will only be used for the Python ICAT backend. Copy `config.json.example` to
-`config.json` and set the values as needed. If you need to create an instance of ICAT,
+ will only be used for the Python ICAT backend. Copy `config.yaml.example` to
+`config.yaml` and set the values as needed. If you need to create an instance of ICAT,
 there are a number of markdown-formatted tutorials that can be found on the
 [icat.manual](https://github.com/icatproject/icat.manual/tree/master/tutorials)
 repository.
@@ -358,7 +358,7 @@ PowerShell:
 
 The Flask app can be configured so that code changes are monitored and the server will
 reload itself when a change is detected. This setting can be toggled using
-`flask_reloader` in `config.json`. This is useful for development purposes. It should be
+`flask_reloader` in `config.yaml`. This is useful for development purposes. It should be
 noted that when this setting is enabled, the API will go through the startup process
 twice. In the case of the ICAT backend, this could dramatically increase startup time if
 the API is configured with a large initial client pool size.
@@ -425,9 +425,9 @@ tests (containing tests for backend specific components, including tests for the
 different types of endpoints) and Database Backend tests (like the ICAT backend tests,
 but covering only the most used aspects of the API).
 
-The configuration file (`config.json`) contains two options that will be used during the
+The configuration file (`config.yaml`) contains two options that will be used during the
 testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for
-your test environment, using `config.json.example` as a reference. The tests require a
+your test environment, using `config.yaml.example` as a reference. The tests require a
 connection to an instance of ICAT, so set the rest of the config as needed.
 
 By default, this will execute the repo's tests in
@@ -512,7 +512,7 @@ contains a typical dictionary-based config for the standard Python `logging` lib
 that rotates files after they become 5MB in size.
 
 The default logging location is in the root directory of this repo. This location (and
-filename) can be changed by editing the `log_location` value in `config.json`. The log
+filename) can be changed by editing the `log_location` value in `config.yaml`. The log
 level (set to `WARN` by default) can also be changed using the appropriate value in that
 file.
 
@@ -583,7 +583,7 @@ implemented in their own ways:
 ### Creating a Backend
 A function inside `datagateway_api.src.datagateway_api.backends` creates an instance of a
 backend using input to that function to decide which backend to create. This function is
-called in `main.py` which uses the backend type set in `config.json`, or a config value
+called in `main.py` which uses the backend type set in `config.yaml`, or a config value
 in the Flask app if it's set (this config option is only used in the tests however). The
 backend object is then parsed into the endpoint classes so the correct backend can be
 used.
@@ -767,7 +767,7 @@ conditions can be supported.
 
 
 ## Generating the OpenAPI Specification
-When the config option `generate_swagger` is set to true in `config.json`, a YAML
+When the config option `generate_swagger` is set to true in `config.yaml`, a YAML
 file defining the API using OpenAPI standards will be created at
 `src/swagger/openapi.yaml`. This option should be disabled in production to avoid any
 issues with read-only directories.
@@ -806,7 +806,7 @@ can be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or
 years of data.
 
 This uses code from the API's Database Backend, so a suitable `db_url` should be
-configured in `config.json`.
+configured in `config.yaml`.
 
 When used on a machine that doesn't use UTC timezone, you may find there are a mix of
 timezones when querying the API. This issue was found on SciGateway Preprod when using
@@ -875,7 +875,7 @@ fix: fix bug found with count endpoints #issue-number
 feat: add endpoints for search API #issue-number
 
 # Commit which introduces a breaking change for users
-<commit-type>: change format of `config.json`, the previous version is no longer supported #issue-number
+<commit-type>: change format of `config.yaml`, the previous version is no longer supported #issue-number
 
 BREAKING CHANGE: this feature means X functionality has been removed
 ```
