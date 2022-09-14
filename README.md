@@ -304,7 +304,7 @@ Since adding the search API, the endpoints for each type of API can be configure
 `http://localhost:5000/search-api` (assuming default host and port configuration). This
 option is made configurable for both DataGateway API and the search API.
 
-In addition to the configuration options in `config.json`, the mappings between the
+In addition to the configuration options in `config.yaml`, the mappings between the
 PaNOSC and ICAT data models need configuring. An example file exists in
 `datagateway_api/` which can be copied from as a starting point. Further explanation of
 this file is given [here](#mapping-between-panosc-and-icat-data-models).

@@ -104,7 +104,7 @@ class DataGatewayAPI(BaseModel):
         API can detect if the Flask app setup is from an automated test by checking the
         app's config for a `TEST_BACKEND`. If this value exists (a KeyError will be
         raised when the API is run normally, which will then grab the backend type from
-        `config.json`), it needs to be set using this function. This is required because
+        `config.yaml`), it needs to be set using this function. This is required because
         creating filters in the `QueryFilterFactory` is backend-specific so the backend
         type must be fetched. This must be done using this module (rather than directly
         importing and checking the Flask app's config) to avoid circular import issues.
@@ -176,7 +176,7 @@ class APIConfig(BaseModel):
     test_user_credentials: Optional[TestUserCredentials]
 
     @classmethod
-    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml"):
+    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml.example"):
         """
         Loads the config data from the JSON file and returns it as a APIConfig pydantic
         model. Exits the application if it fails to locate the JSON config file or
@@ -189,6 +189,7 @@ class APIConfig(BaseModel):
         try:
             with open(path, encoding="utf-8") as target:
                 data = yaml.safe_load(target)
+                print(target.read())
             return cls(**data)
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
