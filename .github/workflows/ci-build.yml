@@ -84,14 +84,14 @@ jobs:
       - name: Create log file
         run: touch logs.log
       - name: Configure log file location
-        run: echo "`jq -r --arg REPO_DIR "$GITHUB_WORKSPACE/logs.log" \
-          '.log_location=$REPO_DIR' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+        run: echo "`yq \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
       - name: Create config.yaml
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
-      # Install Nox, Poetry and API's dependencies
+        # Install Nox, Poetry and API's dependencies
       - name: Install Nox
         run: pip install nox==2020.8.22
       - name: Install Poetry

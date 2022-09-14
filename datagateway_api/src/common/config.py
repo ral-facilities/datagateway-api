@@ -176,7 +176,7 @@ class APIConfig(BaseModel):
     test_user_credentials: Optional[TestUserCredentials]
 
     @classmethod
-    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml.example"):
+    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml"):
         """
         Loads the config data from the JSON file and returns it as a APIConfig pydantic
         model. Exits the application if it fails to locate the JSON config file or
