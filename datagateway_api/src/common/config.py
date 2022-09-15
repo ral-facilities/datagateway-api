@@ -1,4 +1,3 @@
-import yaml
 import logging
 from pathlib import Path
 import sys
@@ -12,6 +11,7 @@ from pydantic import (
     ValidationError,
     validator,
 )
+import yaml
 
 
 log = logging.getLogger()
