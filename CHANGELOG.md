@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v5.1.1 (2022-09-22)
+### Fix
+* Update to latest dependencies ([`11a0eeb`](https://github.com/ral-facilities/datagateway-api/commit/11a0eeb3cbc4b5db2a0fa8dcd825dbeceb6ac111))
+
 ## v5.1.0 (2022-05-25)
 ### Feature
 * Support skip and limit string parameters on search-api ([`db94b37`](https://github.com/ral-facilities/datagateway-api/commit/db94b375438873969db2d05621d9860a304ca8bd))
