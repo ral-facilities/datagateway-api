@@ -45,6 +45,8 @@ def create_investigation_db_data(num_entities=1):
         investigation.visitId = str(uuid.uuid1())
         investigation.facilityID = 1
         investigation.typeID = 1
+        investigation.fileSize = 1073741824
+        investigation.fileCount = 3
 
         set_meta_attributes(investigation)
 
