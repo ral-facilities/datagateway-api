@@ -230,7 +230,7 @@ class AFFILIATION(Base, EntityHelper, metaclass=EntityMeta):
     fullReference = Column("FULL_REFERENCE", String(1023), nullable=False)
     pid = Column("PID", String(255), nullable=False)
     dataPublicationUserId = Column(
-        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False
+        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False,
     )
 
     DATAPUBLICATIONUSER = relationship(
@@ -380,7 +380,9 @@ class DATACOLLECTIONINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     __pluralfieldname__ = "dataCollectionInvestigations"
     __table_args__ = (
         Index(
-            "UNQ_DATACOLLECTIONINVESTIGATION_0", "DATACOLLECTION_ID", "INVESTIGATION_ID"
+            "UNQ_DATACOLLECTIONINVESTIGATION_0",
+            "DATACOLLECTION_ID",
+            "INVESTIGATION_ID",
         ),
     )
 
@@ -390,10 +392,10 @@ class DATACOLLECTIONINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     datacollectionId = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     investigationId = Column(
-        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
     )
 
     DATACOLLECTION = relationship(
@@ -422,7 +424,7 @@ class DATAPUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     pid = Column("PID", String(255), nullable=False)
     subject = Column("SUBJECT", String(1023), nullable=False)
     datacollectionId = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
 
@@ -454,7 +456,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     dateType = Column("DATE_TYPE", String(255), nullable=False)
     date = Column("DATE", String(255), nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     DATAPUBLICATION = relationship(
@@ -478,7 +480,7 @@ class DATAPUBLICATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     fundingId = Column("FUNDING_ID", ForeignKey("FUNDINGREFERENCE.ID"), nullable=False)
@@ -510,7 +512,7 @@ class DATAPUBLICATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     name = Column("NAME", String(255), nullable=False)
     description = Column("DESCRIPTION", String(255), nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
@@ -534,7 +536,7 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     __pluralfieldname__ = "dataPublicationUsers"
     __table_args__ = (
         Index(
-            "UNQ_DATAPUBLICATIONUSER_0", "PUBLICATION_ID", "USER_ID", "CONTRIBUTORTYPE"
+            "UNQ_DATAPUBLICATIONUSER_0", "PUBLICATION_ID", "USER_ID", "CONTRIBUTORTYPE",
         ),
     )
 
@@ -549,12 +551,12 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     familyName = Column("FAMILYNAME", String(255), nullable=False)
     contributorType = Column("CONTRIBUTORTYPE", String(255), nullable=False)
     publicationId = Column(
-        "PUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "PUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     userID = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
     affiliationId = Column(
-        "AFFILIATION_ID", ForeignKey("AFFILIATION.ID"), nullable=False
+        "AFFILIATION_ID", ForeignKey("AFFILIATION.ID"), nullable=False,
     )
 
     USER = relationship(
@@ -978,7 +980,7 @@ class INVESTIGATIONFACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     __pluralfieldname__ = "investigationFacilityCycles"
     __table_args__ = (
         Index(
-            "UNQ_INVESTIGATIONFACILITYCYCLE_0", "FACILITYCYCLE_ID", "INVESTIGATION_ID"
+            "UNQ_INVESTIGATIONFACILITYCYCLE_0", "FACILITYCYCLE_ID", "INVESTIGATION_ID",
         ),
     )
 
@@ -988,7 +990,7 @@ class INVESTIGATIONFACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     facilityCycleId = Column(
-        "FACILITYCYCLE_ID", ForeignKey("FACILITYCYCLE.ID"), nullable=False
+        "FACILITYCYCLE_ID", ForeignKey("FACILITYCYCLE.ID"), nullable=False,
     )
     investigationID = Column(
         "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
@@ -1403,12 +1405,12 @@ class RELATEDITEM(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     identifier = Column("IDENTIFIER", String(255), nullable=False)
-    relationType = Column("RELATION_TYPE", String(255), nullable=False,)
+    relationType = Column("RELATION_TYPE", String(255), nullable=False)
     fullReference = Column("FULL_REFERENCE", String(1023), nullable=False)
     relatedItemType = Column("RELATED_ITEM_TYPE", String(255), nullable=False)
     title = Column("TITLE", String(255), nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     PUBLICATION = relationship(
