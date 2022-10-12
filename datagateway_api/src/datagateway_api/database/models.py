@@ -197,6 +197,11 @@ class EntityHelper(ABC):
                     f"Bad request made, cannot modify attribute '{key}'"
                 )
 
+            except KeyError:
+                raise BadRequestError(
+                    f"Bad request made, attribute'{key}' does not exist"
+                )
+
         return self.to_dict()
 
 
