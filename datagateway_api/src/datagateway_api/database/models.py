@@ -22,7 +22,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.orm.collections import InstrumentedList
 
 from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.common.exceptions import DatabaseError, FilterError
+from datagateway_api.src.common.exceptions import (
+    BadRequestError,
+    DatabaseError,
+    FilterError,
+)
 
 Base = declarative_base()
 
@@ -178,7 +182,21 @@ class EntityHelper(ABC):
         :returns: The updated dict
         """
         for key in dictionary:
-            setattr(self, key, dictionary[key])
+            try:
+                if hasattr(self.__table__.columns[key.upper()].type, "length"):
+                    if (
+                        len(dictionary[key])
+                        > self.__table__.columns[key.upper()].type.length
+                    ):
+                        raise AttributeError
+
+                setattr(self, key, dictionary[key])
+
+            except AttributeError:
+                raise BadRequestError(
+                    f"Bad request made, cannot modify attribute '{key}'"
+                )
+
         return self.to_dict()
 
 
