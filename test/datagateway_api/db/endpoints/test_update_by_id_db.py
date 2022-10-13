@@ -11,7 +11,7 @@ class TestUpdateByID:
         update_data_json = {
             "doi": "DB Test Data Identifier",
             "summary": "DB Test Summary",
-            "startDate": "2019-01-04 01:01:01+00:00",
+            "startDate": "2019-01-04 01:01:01",
         }
 
         single_investigation_test_data = single_investigation_test_data_db.to_dict()
@@ -23,8 +23,15 @@ class TestUpdateByID:
             headers=valid_db_credentials_header,
             json=update_data_json,
         )
-        print(test_response.status_code)
-        assert test_response.json == single_investigation_test_data
+
+        response_json = test_response.json
+
+        print(response_json["endDate"])
+        # The DB returns times with timezone indicators, but does not accept them being created.
+        # This strips the timezone indicators out so that the results can be compared.
+        response_json["startDate"] = response_json["startDate"][:-6]
+
+        assert response_json == single_investigation_test_data
 
     def test_invalid_update_with_id(
         self,
@@ -47,4 +54,4 @@ class TestUpdateByID:
             json=invalid_update_json,
         )
 
-        assert test_response.json["doi"] == "_" * 255
+        assert test_response.status_code == 400
