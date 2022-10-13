@@ -182,25 +182,7 @@ class EntityHelper(ABC):
         :returns: The updated dict
         """
         for key in dictionary:
-            try:
-                if hasattr(self.__table__.columns[key.upper()].type, "length"):
-                    if (
-                        len(dictionary[key])
-                        > self.__table__.columns[key.upper()].type.length
-                    ):
-                        raise AttributeError
-
-                setattr(self, key, dictionary[key])
-
-            except AttributeError:
-                raise BadRequestError(
-                    f"Bad request made, cannot modify attribute '{key}'"
-                )
-
-            except KeyError:
-                raise BadRequestError(
-                    f"Bad request made, attribute'{key}' does not exist"
-                )
+            setattr(self, key, dictionary[key])
 
         return self.to_dict()
 

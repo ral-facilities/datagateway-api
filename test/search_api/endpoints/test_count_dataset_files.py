@@ -52,6 +52,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
     def test_valid_count_dataset_files_endpoint(
         self, flask_test_app_search_api, pid, request_filter, expected_json,
     ):
+
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/datasets/{pid}/files/count"
             f"?where={request_filter}",

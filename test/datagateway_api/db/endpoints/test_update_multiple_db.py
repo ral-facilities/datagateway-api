@@ -1,4 +1,3 @@
-import pytest
 from datagateway_api.src.common.config import Config
 
 
@@ -81,36 +80,6 @@ class TestUpdateMultipleEntities:
             f"{Config.config.datagateway_api.extension}/investigations",
             headers=valid_db_credentials_header,
             json=update_data_json,
-        )
-
-        assert test_response.status_code == 400
-
-    @pytest.mark.parametrize(
-        "update_key, update_value",
-        [
-            pytest.param("invalidAttr", "Some Value", id="invalid attribute"),
-            pytest.param("modId", "simple/root", id="meta attribute update"),
-        ],
-    )
-    def test_invalid_attribute_update(
-        self,
-        flask_test_app_db,
-        valid_db_credentials_header,
-        single_investigation_test_data_db,
-        update_key,
-        update_value,
-    ):
-
-        single_investigation_test_data = single_investigation_test_data_db.to_dict()
-        invalid_update_data_json = {
-            "id": single_investigation_test_data["id"],
-            update_key: update_value,
-        }
-
-        test_response = flask_test_app_db.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
-            headers=valid_db_credentials_header,
-            json=invalid_update_data_json,
         )
 
         assert test_response.status_code == 400
