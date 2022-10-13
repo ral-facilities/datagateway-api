@@ -23,7 +23,6 @@ from sqlalchemy.orm.collections import InstrumentedList
 
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
-    BadRequestError,
     DatabaseError,
     FilterError,
 )

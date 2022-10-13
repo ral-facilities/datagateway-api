@@ -27,7 +27,8 @@ class TestUpdateByID:
         response_json = test_response.json
 
         print(response_json["endDate"])
-        # The DB returns times with timezone indicators, but does not accept them being created.
+        # The DB returns times with timezone indicators,
+        # but does not accept them being created.
         # This strips the timezone indicators out so that the results can be compared.
         response_json["startDate"] = response_json["startDate"][:-6]
 
