@@ -13,9 +13,9 @@ class TestDBCreateData:
                 "name": f"{self.investigation_name_prefix} {i}",
                 "title": "Test data for the Python DB Backend on DataGateway API",
                 "summary": "DB Test data for DataGateway API testing",
-                "releaseDate": "2020-03-03 08:00:08+00:00",
-                "startDate": "2020-02-02 09:00:09+00:00",
-                "endDate": "2020-02-03 10:00:10+00:00",
+                "releaseDate": "2020-03-03 08:00:08",
+                "startDate": "2020-02-02 09:00:09",
+                "endDate": "2020-02-03 10:00:10",
                 "visitId": "Data Creation Visit DB",
                 "doi": "DataGateway API DB Test DOI",
                 "facilityID": 1,
@@ -38,6 +38,11 @@ class TestDBCreateData:
             investigation_request.pop("id")
             investigation_request.pop("modId")
             investigation_request.pop("modTime")
+            investigation_request["endDate"] = investigation_request["endDate"][:-6]
+            investigation_request["releaseDate"] = investigation_request["releaseDate"][
+                :-6
+            ]
+            investigation_request["startDate"] = investigation_request["startDate"][:-6]
 
         assert create_investigations_json == response_json
 
@@ -51,9 +56,9 @@ class TestDBCreateData:
             "name": f"{self.investigation_name_prefix} 0",
             "title": "Test data for the Python ICAT Backend on the API",
             "summary": "Test data for DataGateway API testing",
-            "releaseDate": "2020-03-03 08:00:08+00:00",
-            "startDate": "2020-02-02 09:00:09+00:00",
-            "endDate": "2020-02-03 10:00:10+00:00",
+            "releaseDate": "2020-03-03 08:00:08",
+            "startDate": "2020-02-02 09:00:09",
+            "endDate": "2020-02-03 10:00:10",
             "visitId": "Data Creation Visit",
             "doi": "DataGateway API Test DOI",
             "facilityID": 1,
@@ -73,6 +78,9 @@ class TestDBCreateData:
         response_json.pop("id")
         response_json.pop("modId")
         response_json.pop("modTime")
+        response_json["endDate"] = response_json["endDate"][:-6]
+        response_json["releaseDate"] = response_json["releaseDate"][:-6]
+        response_json["startDate"] = response_json["startDate"][:-6]
 
         assert create_investigation_json == response_json
 
