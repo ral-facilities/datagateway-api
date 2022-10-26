@@ -476,7 +476,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     DATAPUBLICATION = relationship(
         "DATAPUBLICATION",
         primaryjoin="DATAPUBLICATIONDATE.datapublicationId == DATAPUBLICATION.id",
-        backref="dates",
+        backref="dataPublicationDates",
     )
 
 
@@ -550,7 +550,10 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     __pluralfieldname__ = "dataPublicationUsers"
     __table_args__ = (
         Index(
-            "UNQ_DATAPUBLICATIONUSER_0", "PUBLICATION_ID", "USER_ID", "CONTRIBUTORTYPE",
+            "UNQ_DATAPUBLICATIONUSER_0",
+            "DATAPUBLICATION_ID",
+            "USER_ID",
+            "CONTRIBUTORTYPE",
         ),
     )
 
