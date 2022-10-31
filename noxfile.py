@@ -72,6 +72,7 @@ def safety(session):
             f"--output={requirements.name}",
             external=True,
         )
+        # Ignore 50916 as the latest versio of pydantic does not support pythonn 3.6 which is still used in production
         session.run(
             "safety",
             "check",
