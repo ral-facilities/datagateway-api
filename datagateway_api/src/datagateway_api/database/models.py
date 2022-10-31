@@ -227,10 +227,10 @@ class AFFILIATION(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
-    fullReference = Column("FULL_REFERENCE", String(1023))
+    fullReference = Column("FULLREFERENCE", String(1023))
     pid = Column("PID", String(255))
     dataPublicationUserId = Column(
-        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"),
+        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False
     )
 
     DATAPUBLICATIONUSER = relationship(
@@ -424,7 +424,7 @@ class DATAPUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
-    publicationDate = Column("PUBLICATION_DATE", DateTime)
+    publicationDate = Column("PUBLICATIONDATE", DateTime)
     title = Column("TITLE", String(255), nullable=False)
     description = Column("DESCRIPTION", String(4000))
     pid = Column("PID", String(255), nullable=False)
@@ -467,7 +467,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
-    dateType = Column("DATE_TYPE", String(255), nullable=False)
+    dateType = Column("DATETYPE", String(255), nullable=False)
     date = Column("DATE", String(255), nullable=False)
     datapublicationId = Column(
         "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
@@ -525,17 +525,8 @@ class DATAPUBLICATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     name = Column("NAME", String(255), nullable=False)
     description = Column("DESCRIPTION", String(255))
-    datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
-    )
 
     facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
-
-    DATAPUBLICATION = relationship(
-        "DATAPUBLICATION",
-        primaryjoin="DATAPUBLICATIONTYPE.datapublicationId == DATAPUBLICATION.id",
-        backref="type",
-    )
 
     FACILITY = relationship(
         "FACILITY",
@@ -565,14 +556,14 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
     orderKey = Column("ORDERKEY", String(255))
     givenName = Column("GIVENNAME", String(255))
     fullName = Column("FULLNAME", String(255))
+    familyName = Column("FAMILYNAME", String(255))
     email = Column("EMAIL", String(255))
     contributorType = Column("CONTRIBUTORTYPE", String(255), nullable=False)
     publicationId = Column(
         "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
-    userID = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
-    affiliationId = Column("AFFILIATION_ID", ForeignKey("AFFILIATION.ID"))
+    userId = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
 
     USER = relationship(
         "USER",
@@ -584,12 +575,6 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
         "DATAPUBLICATION",
         primaryjoin="DATAPUBLICATIONUSER.publicationId == DATAPUBLICATION.id",
         backref="users",
-    )
-
-    AFFILIATION = relationship(
-        "AFFILIATION",
-        primaryjoin="DATAPUBLICATIONUSER.affiliationId == AFFILIATION.id",
-        backref="user",
     )
 
 
@@ -877,10 +862,10 @@ class FUNDINGREFERENCE(Base, EntityHelper, metaclass=EntityMeta):
     description = Column("DESCRIPTION", String(255))
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
-    funderIdentifier = Column("FUNDER_IDENTIFIER", String(255))
-    funderName = Column("FUNDER_NAME", String(255), nullable=False)
-    awardNumber = Column("AWARD_NUMBER", String(255), nullable=False)
-    awardTitle = Column("AWARD_TITLE", String(255))
+    funderIdentifier = Column("FUNDERIDENTIFIER", String(255))
+    funderName = Column("FUNDERNAME", String(255), nullable=False)
+    awardNumber = Column("AWARDNUMBER", String(255), nullable=False)
+    awardTitle = Column("AWARDTITLE", String(255))
 
 
 class GROUPING(Base, EntityHelper, metaclass=EntityMeta):
@@ -1418,9 +1403,9 @@ class RELATEDITEM(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     identifier = Column("IDENTIFIER", String(255), nullable=False)
-    relationType = Column("RELATION_TYPE", String(255), nullable=False)
-    fullReference = Column("FULL_REFERENCE", String(1023))
-    relatedItemType = Column("RELATED_ITEM_TYPE", String(255))
+    relationType = Column("RELATIONTYPE", String(255), nullable=False)
+    fullReference = Column("FULLREFERENCE", String(1023))
+    relatedItemType = Column("RELATEDITEMTYPE", String(255))
     title = Column("TITLE", String(255))
     datapublicationId = Column(
         "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
