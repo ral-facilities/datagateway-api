@@ -459,7 +459,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     __singularfieldname__ = "dataPublicationDate"
     __pluralfieldname__ = "dataPublicationDates"
     __table_args__ = (
-        Index("UNQ_DATAPUBLICATIONDATE_0", "DATAPUBLICATION_ID", "DATE_TYPE"),
+        Index("UNQ_DATAPUBLICATIONDATE_0", "DATAPUBLICATION_ID", "DATETYPE"),
     )
 
     id = Column("ID", BigInteger, primary_key=True)
@@ -468,7 +468,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     dateType = Column("DATETYPE", String(255), nullable=False)
-    date = Column("DATE", String(255), nullable=False)
+    date = Column("DATE_", String(255), nullable=False)
     datapublicationId = Column(
         "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
     )
@@ -567,7 +567,7 @@ class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
 
     USER = relationship(
         "USER",
-        primaryjoin="DATAPUBLICATIONUSER.userID == USER.id",
+        primaryjoin="DATAPUBLICATIONUSER.userId == USER.id",
         backref="dataPublicationUsers",
     )
 
@@ -807,7 +807,6 @@ class DATASETTECHNIQUE(Base, EntityHelper, metaclass=EntityMeta):
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
-    description = Column("DESCRIPTION", String(255))
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     datasetId = Column("DATASET_ID", ForeignKey("DATASET.ID"), nullable=False)
@@ -854,12 +853,11 @@ class FUNDINGREFERENCE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FUNDINGREFERENCE"
     __singularfieldname__ = "fundingReference"
     __pluralfieldname__ = "fundingReferences"
-    __table_args__ = (Index("UNQ_FUNDINGREFERENCE_0", "FUNDER_NAME", "AWARD_NUMBER"),)
+    __table_args__ = (Index("UNQ_FUNDINGREFERENCE_0", "FUNDERNAME", "AWARDNUMBER"),)
 
     id = Column("ID", BigInteger, primary_key=True)
     createId = Column("CREATE_ID", String(255), nullable=False)
     createTime = Column("CREATE_TIME", DateTime, nullable=False)
-    description = Column("DESCRIPTION", String(255))
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     funderIdentifier = Column("FUNDERIDENTIFIER", String(255))
@@ -990,7 +988,7 @@ class INVESTIGATIONFACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     facilityCycleId = Column(
         "FACILITYCYCLE_ID", ForeignKey("FACILITYCYCLE.ID"), nullable=False,
     )
-    investigationID = Column(
+    investigationId = Column(
         "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
 
@@ -1001,7 +999,7 @@ class INVESTIGATIONFACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     )
     INVESTIGATION = relationship(
         "INVESTIGATION",
-        primaryjoin="INVESTIGATIONFACILITYCYCLE.investigationID == INVESTIGATION.id",
+        primaryjoin="INVESTIGATIONFACILITYCYCLE.investigationId == INVESTIGATION.id",
         backref="investigationFacilityCycles",
     )
 
@@ -1020,7 +1018,7 @@ class INVESTIGATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     fundingId = Column("FUNDING_ID", ForeignKey("FUNDINGREFERENCE.ID"), nullable=False)
-    investigationID = Column(
+    investigationId = Column(
         "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
     )
 
@@ -1031,7 +1029,7 @@ class INVESTIGATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
     )
     INVESTIGATION = relationship(
         "INVESTIGATION",
-        primaryjoin="INVESTIGATIONFUNDING.investigationID == INVESTIGATION.id",
+        primaryjoin="INVESTIGATIONFUNDING.investigationId == INVESTIGATION.id",
         backref="fundingReferences",
     )
 
