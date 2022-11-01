@@ -34,7 +34,6 @@ Flask-SQLAlchemy = "^2.4.4"
 requests = "^2.25.1"
 python-dateutil = "^2.8.1"
 pydantic = "^1.8.2"
-dparse = "0.5.2"
 
 [tool.poetry.dev-dependencies]
 pip-tools = "5.3.1"
@@ -45,7 +44,6 @@ flake8-bandit = "^2.1.2"
 flake8-black = "^0.2.1"
 flake8-bugbear = "^20.1.4"
 flake8-import-order = "^0.18.1"
-safety = "^1.9.0"
 flake8-builtins = "^1.5.3"
 flake8-broken-line = "^0.3.0"
 flake8-commas = "^2.0.0"
@@ -58,6 +56,7 @@ pytest-cov = "^2.10.1"
 pytest-icdiff = "^0.5"
 python-semantic-release = "^7.19.2"
 coverage-conditional-plugin = "^0.5.0"
+safety = "^2.2.0"
 
 [tool.poetry.scripts]
 
