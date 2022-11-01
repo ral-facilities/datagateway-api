@@ -298,7 +298,7 @@ pycodestyle = "*"
 
 [[package]]
 name = "flake8-black"
-version = "0.2.5"
+version = "0.2.4"
 description = "flake8 plugin to call black as a code style validator"
 category = "dev"
 optional = false
@@ -1279,7 +1279,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1,<4.0"
-content-hash = "1ba1fe196530c25c86eef7cc4d224ae9d2da0b9f4a5adec689e74569e5e28be4"
+content-hash = "61ac95d09ddde72cadab31194a33d1fd79b68e3a771725db0f9ea627cc9f842c"
 
 [metadata.files]
 aniso8601 = []
