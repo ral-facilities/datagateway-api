@@ -779,6 +779,8 @@ components:
           type: string
         email:
           type: string
+        familyName:
+          type: string
         fullName:
           type: string
         givenName:
@@ -795,7 +797,7 @@ components:
           type: string
         publicationId:
           type: integer
-        userID:
+        userId:
           type: integer
       required:
       - id
@@ -805,7 +807,7 @@ components:
       - modTime
       - contributorType
       - publicationId
-      - userID
+      - userId
     DATASET:
       properties:
         DATASETTYPE:
@@ -967,8 +969,6 @@ components:
           type: string
         datasetId:
           type: integer
-        description:
-          type: string
         id:
           readOnly: true
           type: integer
@@ -1149,8 +1149,6 @@ components:
           type: string
         createTime:
           format: datetime
-          type: string
-        description:
           type: string
         funderIdentifier:
           type: string
@@ -1421,7 +1419,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigationID:
+        investigationId:
           type: integer
         modId:
           type: string
@@ -1435,7 +1433,7 @@ components:
       - modId
       - modTime
       - facilityCycleId
-      - investigationID
+      - investigationId
     INVESTIGATIONFUNDING:
       properties:
         FUNDINGREFERENCE:
@@ -1452,7 +1450,7 @@ components:
         id:
           readOnly: true
           type: integer
-        investigationID:
+        investigationId:
           type: integer
         modId:
           type: string
@@ -1466,7 +1464,7 @@ components:
       - modId
       - modTime
       - fundingId
-      - investigationID
+      - investigationId
     INVESTIGATIONGROUP:
       properties:
         GROUPING:
