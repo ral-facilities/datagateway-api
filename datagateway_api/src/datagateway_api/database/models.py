@@ -230,7 +230,7 @@ class AFFILIATION(Base, EntityHelper, metaclass=EntityMeta):
     fullReference = Column("FULLREFERENCE", String(1023))
     pid = Column("PID", String(255))
     dataPublicationUserId = Column(
-        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False
+        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False,
     )
 
     DATAPUBLICATIONUSER = relationship(
@@ -430,11 +430,11 @@ class DATAPUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
     pid = Column("PID", String(255), nullable=False)
     subject = Column("SUBJECT", String(1023))
     datacollectionId = Column(
-        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
     )
     facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
     datapublicationtypeId = Column(
-        "DATAPUBLICATIONTYPE_ID", ForeignKey("DATAPUBLICATIONTYPE.ID"), nullable=False
+        "DATAPUBLICATIONTYPE_ID", ForeignKey("DATAPUBLICATIONTYPE.ID"), nullable=False,
     )
 
     DATACOLLECTION = relationship(
@@ -470,7 +470,7 @@ class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
     dateType = Column("DATETYPE", String(255), nullable=False)
     date = Column("DATE_", String(255), nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     DATAPUBLICATION = relationship(
@@ -494,7 +494,7 @@ class DATAPUBLICATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
     modId = Column("MOD_ID", String(255), nullable=False)
     modTime = Column("MOD_TIME", DateTime, nullable=False)
     datapublicationId = Column(
-        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
     )
 
     fundingId = Column("FUNDING_ID", ForeignKey("FUNDINGREFERENCE.ID"), nullable=False)
