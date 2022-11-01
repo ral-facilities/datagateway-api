@@ -2,8 +2,12 @@ import pytest
 
 from datagateway_api.src.common.exceptions import FilterError
 from datagateway_api.src.common.helpers import get_entity_object_from_name
-from datagateway_api.src.datagateway_api.database.filters import DatabaseFilterUtilities
+from datagateway_api.src.datagateway_api.database.filters import (
+    DatabaseFilterUtilities,
+    DatabaseWhereFilter,
+)
 from datagateway_api.src.datagateway_api.database.helpers import ReadQuery
+from datagateway_api.src.datagateway_api.database.backend import get_rows_by_filter
 
 
 class TestDatabaseFilterUtilities:
@@ -128,3 +132,44 @@ class TestDatabaseFilterUtilities:
         test_utility = DatabaseFilterUtilities()
         with pytest.raises(FilterError):
             test_utility._get_field(table, "unknown")
+
+    @pytest.mark.parametrize(
+        "operation, value",
+        [
+            pytest.param("eq", "Title for DataGateway API Testing (DB) 0", id="equal"),
+            pytest.param(
+                "ne", "Title for DataGateway API Testing (DB) 0", id="not equal (ne)"
+            ),
+            pytest.param("like", "Title for DataGateway API Testing (DB) 0", id="like"),
+            pytest.param(
+                "nlike", "Title for DataGateway API Testing (DB) 0", id="not like"
+            ),
+            pytest.param(
+                "lt", "Title for DataGateway API Testing (DB) 0", id="less than"
+            ),
+            pytest.param(
+                "lte",
+                "Title for DataGateway API Testing (DB) 0",
+                id="less than or equal",
+            ),
+            pytest.param(
+                "gt", "Title for DataGateway API Testing (DB) 0", id="greater than"
+            ),
+            pytest.param(
+                "gte",
+                "Title for DataGateway API Testing (DB) 0",
+                id="greater than or equal",
+            ),
+        ],
+    )
+    def test_valid_where_operation(
+        self, flask_test_app_db, operation, value, single_investigation_test_data_db
+    ):
+        test_utility = DatabaseWhereFilter("title", value, operation)
+        table = get_entity_object_from_name("Investigation")
+
+        test_query = ReadQuery(table)
+
+        test_utility.apply_filter(test_query)
+        print(test_query.base_query.first())
+        assert test_query.base_query.first() != None
