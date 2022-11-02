@@ -55,4 +55,4 @@ class TestUpdateByID:
             json=invalid_update_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.json["doi"] == "_" * 255

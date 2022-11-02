@@ -20,6 +20,8 @@ class TestDBCreateData:
                 "doi": "DataGateway API DB Test DOI",
                 "facilityID": 1,
                 "typeID": 1,
+                "fileCount": 1,
+                "fileSize": 6,
             }
             for i in range(2)
         ]
@@ -63,6 +65,8 @@ class TestDBCreateData:
             "doi": "DataGateway API Test DOI",
             "facilityID": 1,
             "typeID": 1,
+            "fileCount": 3,
+            "fileSize": 2,
         }
 
         test_response = flask_test_app_db.post(
