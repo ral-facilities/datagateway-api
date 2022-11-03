@@ -145,6 +145,8 @@ class TestEntityHelper:
                             "id": None,
                             "createId": None,
                             "createTime": None,
+                            "fileCount": None,
+                            "fileSize": None,
                             "doi": None,
                             "endDate": None,
                             "modId": None,

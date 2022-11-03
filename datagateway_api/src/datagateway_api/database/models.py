@@ -656,6 +656,8 @@ class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
     typeID = Column(
         "TYPE_ID", ForeignKey("INVESTIGATIONTYPE.ID"), nullable=False, index=True,
     )
+    fileSize = Column("FILESIZE", BigInteger)
+    fileCount = Column("FILECOUNT", BigInteger)
 
     FACILITY = relationship(
         "FACILITY",

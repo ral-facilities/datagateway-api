@@ -428,7 +428,7 @@ but covering only the most used aspects of the API).
 The configuration file (`config.json`) contains two options that will be used during the
 testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for
 your test environment, using `config.json.example` as a reference. The tests require a
-connection to an instance of ICAT, so set the rest of the config as needed.
+connection to an instance of ICAT 5, so set the rest of the config as needed. These tests have been written to assume ICAT 5 has been installed so please update to that or test with an older version of the API.
 
 By default, this will execute the repo's tests in
 Python 3.6, 3.7, 3.8, 3.9 and 3.10. For most cases, running the tests in a single Python

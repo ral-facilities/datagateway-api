@@ -23,6 +23,8 @@ class TestICATCreateData:
                 "doi": "DataGateway API Test DOI",
                 "facility": 1,
                 "type": 1,
+                "fileCount": 1,
+                "fileSize": 6,
             }
             for i in range(2)
         ]
@@ -60,6 +62,8 @@ class TestICATCreateData:
             "doi": "DataGateway API Test DOI",
             "facility": 1,
             "type": 1,
+            "fileCount": 3,
+            "fileSize": 2,
         }
 
         test_response = flask_test_app_icat.post(

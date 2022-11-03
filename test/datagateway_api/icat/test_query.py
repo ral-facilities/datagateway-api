@@ -134,6 +134,8 @@ class TestICATQuery:
                     {
                         "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
+                        "fileCount": 3,
+                        "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
                         "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
@@ -164,6 +166,8 @@ class TestICATQuery:
                         "summary": None,
                         "title": "Test data for the Python ICAT Backend on DataGateway"
                         " API 0",
+                        "fileCount": 3,
+                        "fileSize": 1073741824,
                         "facility": {
                             "createId": "user",
                             "createTime": "2002-11-27 06:20:36+00:00",
@@ -207,6 +211,8 @@ class TestICATQuery:
                     {
                         "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
+                        "fileCount": 3,
+                        "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
                         "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",

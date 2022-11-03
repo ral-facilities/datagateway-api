@@ -35,6 +35,8 @@ def create_investigation_test_data(client, num_entities=1):
         investigation.endDate = datetime(
             year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=tzlocal(),
         )
+        investigation.fileSize = 1073741824
+        investigation.fileCount = 3
         # UUID visit ID means uniquesness constraint should always be met
         investigation.visitId = str(uuid.uuid1())
         investigation.facility = client.get("Facility", 1)
