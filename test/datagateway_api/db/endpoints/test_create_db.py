@@ -3,6 +3,24 @@ import pytest
 from datagateway_api.src.common.config import Config
 
 
+def prepare_db_data_for_assertion(response_json):
+    response_json.pop("createId")
+    response_json.pop("createTime")
+    response_json.pop("id")
+    response_json.pop("modId")
+    response_json.pop("modTime")
+    response_json.pop("visitId")
+
+    if response_json["releaseDate"] is None:
+        return response_json
+
+    response_json["endDate"] = response_json["endDate"][:-6]
+    response_json["releaseDate"] = response_json["releaseDate"][:-6]
+    response_json["startDate"] = response_json["startDate"][:-6]
+
+    return response_json
+
+
 class TestDBCreateData:
     investigation_name_prefix = "DB Test Data for API Testing, Data Creation"
 
@@ -75,16 +93,9 @@ class TestDBCreateData:
             json=create_investigation_json,
         )
 
-        response_json = test_response.json
+        response_json = prepare_db_data_for_assertion(test_response.json)
 
-        response_json.pop("createId")
-        response_json.pop("createTime")
-        response_json.pop("id")
-        response_json.pop("modId")
-        response_json.pop("modTime")
-        response_json["endDate"] = response_json["endDate"][:-6]
-        response_json["releaseDate"] = response_json["releaseDate"][:-6]
-        response_json["startDate"] = response_json["startDate"][:-6]
+        create_investigation_json.pop("visitId")
 
         assert create_investigation_json == response_json
 

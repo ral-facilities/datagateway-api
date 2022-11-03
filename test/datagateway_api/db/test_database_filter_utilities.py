@@ -7,7 +7,9 @@ from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseWhereFilter,
 )
 from datagateway_api.src.datagateway_api.database.helpers import ReadQuery
-from datagateway_api.src.datagateway_api.database.backend import get_rows_by_filter
+from test.datagateway_api.db.endpoints.test_create_db import (
+    prepare_db_data_for_assertion,
+)
 
 
 class TestDatabaseFilterUtilities:
@@ -134,36 +136,193 @@ class TestDatabaseFilterUtilities:
             test_utility._get_field(table, "unknown")
 
     @pytest.mark.parametrize(
-        "operation, value",
+        "operation, value, expected_output",
         [
-            pytest.param("eq", "Title for DataGateway API Testing (DB) 0", id="equal"),
             pytest.param(
-                "ne", "Title for DataGateway API Testing (DB) 0", id="not equal (ne)"
+                "eq",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": None,
+                    "endDate": "2020-01-08 01:01:01+00:00",
+                    "name": "Test Data for DataGateway API Testing (DB) 0",
+                    "releaseDate": None,
+                    "startDate": "2020-01-04 01:01:01+00:00",
+                    "summary": None,
+                    "title": "Title for DataGateway API Testing (DB) 0",
+                    "facilityID": 1,
+                    "typeID": 1,
+                    "fileSize": 1073741824,
+                    "fileCount": 3,
+                },
+                id="equal",
             ),
-            pytest.param("like", "Title for DataGateway API Testing (DB) 0", id="like"),
             pytest.param(
-                "nlike", "Title for DataGateway API Testing (DB) 0", id="not like"
+                "ne",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-449-78690-0",
+                    "endDate": "2000-07-09 00:00:00",
+                    "name": "INVESTIGATION 1",
+                    "releaseDate": "2000-07-05 00:00:00",
+                    "startDate": "2000-04-03 00:00:00",
+                    "summary": "Season identify professor happen third."
+                    " Beat professional blue clear style have. "
+                    "Light final summer.",
+                    "title": "Including spend increase ability music"
+                    " skill former. Agreement director concern once "
+                    "technology sometimes someone staff."
+                    "\nSuccess pull bar. Laugh senior example.",
+                    "facilityID": 1,
+                    "typeID": 2,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
+                id="not equal (ne)",
             ),
             pytest.param(
-                "lt", "Title for DataGateway API Testing (DB) 0", id="less than"
+                "like",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": None,
+                    "endDate": "2020-01-08 01:01:01+00:00",
+                    "name": "Test Data for DataGateway API Testing (DB) 0",
+                    "releaseDate": None,
+                    "startDate": "2020-01-04 01:01:01+00:00",
+                    "summary": None,
+                    "title": "Title for DataGateway API Testing (DB) 0",
+                    "facilityID": 1,
+                    "typeID": 1,
+                    "fileSize": 1073741824,
+                    "fileCount": 3,
+                },
+                id="like",
+            ),
+            pytest.param(
+                "nlike",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-449-78690-0",
+                    "endDate": "2000-07-09 00:00:00",
+                    "name": "INVESTIGATION 1",
+                    "releaseDate": "2000-07-05 00:00:00",
+                    "startDate": "2000-04-03 00:00:00",
+                    "summary": "Season identify professor happen third."
+                    " Beat professional blue clear style have. "
+                    "Light final summer.",
+                    "title": "Including spend increase ability music"
+                    " skill former. Agreement director concern once "
+                    "technology sometimes someone staff."
+                    "\nSuccess pull bar. Laugh senior example.",
+                    "facilityID": 1,
+                    "typeID": 2,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
+                id="not like",
+            ),
+            pytest.param(
+                "lt",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-449-78690-0",
+                    "endDate": "2000-07-09 00:00:00",
+                    "name": "INVESTIGATION 1",
+                    "releaseDate": "2000-07-05 00:00:00",
+                    "startDate": "2000-04-03 00:00:00",
+                    "summary": "Season identify professor happen third."
+                    " Beat professional blue clear style have. "
+                    "Light final summer.",
+                    "title": "Including spend increase ability music"
+                    " skill former. Agreement director concern once "
+                    "technology sometimes someone staff."
+                    "\nSuccess pull bar. Laugh senior example.",
+                    "facilityID": 1,
+                    "typeID": 2,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
+                id="less than",
             ),
             pytest.param(
                 "lte",
                 "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-449-78690-0",
+                    "endDate": "2000-07-09 00:00:00",
+                    "name": "INVESTIGATION 1",
+                    "releaseDate": "2000-07-05 00:00:00",
+                    "startDate": "2000-04-03 00:00:00",
+                    "summary": "Season identify professor happen third."
+                    " Beat professional blue clear style have. "
+                    "Light final summer.",
+                    "title": "Including spend increase ability music"
+                    " skill former. Agreement director concern once "
+                    "technology sometimes someone staff."
+                    "\nSuccess pull bar. Laugh senior example.",
+                    "facilityID": 1,
+                    "typeID": 2,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
                 id="less than or equal",
             ),
             pytest.param(
-                "gt", "Title for DataGateway API Testing (DB) 0", id="greater than"
+                "gt",
+                "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-9634101-9-9",
+                    "endDate": "2001-05-04 00:00:00",
+                    "name": "INVESTIGATION 4",
+                    "releaseDate": "2001-09-26 00:00:00",
+                    "startDate": "2001-02-02 00:00:00",
+                    "summary": "Fast purpose right power away health south."
+                    "\nQuality serve food buy responsibility go much."
+                    " Situation raise manage positive help daughter."
+                    " Yes player reveal.",
+                    "title": "Would easy whom fact again return choose."
+                    " Site suffer should spring painting glass."
+                    "\nThem name charge strategy machine level."
+                    " Establish better opportunity.",
+                    "facilityID": 1,
+                    "typeID": 3,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
+                id="greater than",
             ),
             pytest.param(
                 "gte",
                 "Title for DataGateway API Testing (DB) 0",
+                {
+                    "doi": "0-9634101-9-9",
+                    "endDate": "2001-05-04 00:00:00",
+                    "name": "INVESTIGATION 4",
+                    "releaseDate": "2001-09-26 00:00:00",
+                    "startDate": "2001-02-02 00:00:00",
+                    "summary": "Fast purpose right power away health south."
+                    "\nQuality serve food buy responsibility go much."
+                    " Situation raise manage positive help daughter."
+                    " Yes player reveal.",
+                    "title": "Would easy whom fact again return choose."
+                    " Site suffer should spring painting glass."
+                    "\nThem name charge strategy machine level."
+                    " Establish better opportunity.",
+                    "facilityID": 1,
+                    "typeID": 3,
+                    "fileSize": None,
+                    "fileCount": None,
+                },
                 id="greater than or equal",
             ),
         ],
     )
     def test_valid_where_operation(
-        self, flask_test_app_db, operation, value, single_investigation_test_data_db
+        self,
+        flask_test_app_db,
+        operation,
+        value,
+        expected_output,
+        single_investigation_test_data_db,
     ):
         test_utility = DatabaseWhereFilter("title", value, operation)
         table = get_entity_object_from_name("Investigation")
@@ -171,5 +330,9 @@ class TestDatabaseFilterUtilities:
         test_query = ReadQuery(table)
 
         test_utility.apply_filter(test_query)
-        print(test_query.base_query.first())
-        assert test_query.base_query.first() != None
+
+        response_json = prepare_db_data_for_assertion(
+            test_query.base_query.first().to_dict(),
+        )
+
+        assert response_json == expected_output

@@ -55,4 +55,9 @@ class TestUpdateByID:
             json=invalid_update_json,
         )
 
+        print(test_response.json)
+
+        # If this test is failing
+        # you may need to set sql_mode to
+        # STRICT_ALL_TABLES
         assert test_response.status_code == 400
