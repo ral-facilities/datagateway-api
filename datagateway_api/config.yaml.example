@@ -1,6 +1,6 @@
 ---
 datagateway_api:
-  extension: "/"
+  extension: "/datagateway_api"
   backend: "python_icat"
   client_cache_size: 5
   client_pool_init_size: 2
@@ -22,7 +22,5 @@ debug_mode: false
 generate_swagger: false
 host: "127.0.0.1"
 port: "5000"
-test_user_credentials:
-  username: "root"
-  password: "pw"
+test_user_credentials: { username: "root", password: "pw" }
 test_mechanism: "simple"
