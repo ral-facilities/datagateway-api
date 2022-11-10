@@ -192,7 +192,8 @@ class APIConfig(BaseModel):
 
                 if "datagateway_api" not in data and "search_api" not in data:
                     log.warning(
-                        "   WARNING: There is no API specified in the configuration file"
+                        "   WARNING: There is no API specified in the "
+                        "configuration file",
                     )
 
                 return cls(**data)
