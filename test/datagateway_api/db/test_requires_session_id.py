@@ -7,6 +7,14 @@ class TestRequiresSessionID:
     decorator for the Python ICAT backend is tested in `test_session_handling.py`
     """
 
+    def test_login(self, flask_test_app_db):
+        test_response = flask_test_app_db.post(
+            f"{Config.config.datagateway_api.extension}/sessions",
+            json={"username": "user", "password": "password", "mechanism": "simple"},
+        )
+        print(dir(test_response.response))
+        assert test_response.status_code == 201
+
     def test_invalid_missing_credentials(self, flask_test_app_db):
         test_response = flask_test_app_db.get(
             f"{Config.config.datagateway_api.extension}/datafiles",
