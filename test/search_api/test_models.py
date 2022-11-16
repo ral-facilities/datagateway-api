@@ -411,8 +411,6 @@ class TestModels:
         expected_entity_data["pid"] = f"pid:{INVESTIGATION_ICAT_DATA['id']}"
         expected_entity_data["doi"] = None
         expected_entity_data["datasets"] = [DATASET_PANOSC_DATA, DATASET_PANOSC_DATA]
-        expected_entity_data["members"] = [MEMBER_PANOSC_DATA]
-        expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA]
 
         icat_data = INVESTIGATION_ICAT_DATA.copy()
         icat_data["doi"] = None
@@ -434,7 +432,6 @@ class TestModels:
 
     def test_from_icat_file_entity_with_data_for_all_related_entities(self):
         expected_entity_data = FILE_PANOSC_DATA.copy()
-        expected_entity_data["dataset"] = DATASET_PANOSC_DATA
 
         icat_data = DATAFILE_ICAT_DATA.copy()
         icat_data["dataset"] = DATASET_ICAT_DATA
