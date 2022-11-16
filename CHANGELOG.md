@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v5.3.0 (2022-11-16)
+### Feature
+* Add warning for no api ([`3c91635`](https://github.com/ral-facilities/datagateway-api/commit/3c91635bc0c3465d456a4a85c8d6c8793df408c2))
+
 ## v5.2.0 (2022-11-03)
 ### Feature
 * Add warning that tests only work with ICAT 5 ([`d8825fd`](https://github.com/ral-facilities/datagateway-api/commit/d8825fd71740e2b2d9b387dca175110cee1f9915))
