@@ -1,5 +1,7 @@
 from datagateway_api.src.common.config import Config
-from test.datagateway_api.icat.test_query import prepare_icat_data_for_assertion
+from test.integration.datagateway_api.icat.test_query import (
+    prepare_icat_data_for_assertion,
+)
 
 
 class TestUpdateByID:

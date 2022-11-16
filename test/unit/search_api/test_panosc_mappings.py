@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pytest
 
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
@@ -10,31 +8,6 @@ class TestPaNOSCMappings:
     def test_valid_load_mappings(self, test_panosc_mappings):
         test_mappings = PaNOSCMappings()
         assert test_mappings.mappings == test_panosc_mappings.mappings
-
-    @pytest.mark.parametrize(
-        "search_api_config_flag",
-        [
-            pytest.param(True, id="Search API config present"),
-            pytest.param(False, id="No search API config"),
-        ],
-    )
-    def test_invalid_load_mappings(
-        self, test_config, test_config_without_search_api, search_api_config_flag,
-    ):
-        if search_api_config_flag:
-            current_test_config = test_config
-        else:
-            current_test_config = test_config_without_search_api
-
-        with patch(
-            "datagateway_api.src.common.config.Config.config", current_test_config,
-        ):
-            if search_api_config_flag:
-                with pytest.raises(SystemExit):
-                    PaNOSCMappings("bad/path")
-            else:
-                # Shouldn't SysExit if a user isn't using the search API
-                PaNOSCMappings("bad/path")
 
     @pytest.mark.parametrize(
         "panosc_entity_name, field_name, expected_panosc_entity_name"
