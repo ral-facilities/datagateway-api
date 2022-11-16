@@ -57,7 +57,7 @@ class TestUpdateByID:
         print(
             "If this test is failing "
             "you may need to set sql_mode to "
-            "STRICT_ALL_TABLES"
+            "STRICT_ALL_TABLES",
         )
 
         # If this test is failing
