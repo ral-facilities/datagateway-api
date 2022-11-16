@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v5.3.0 (2022-11-16)
+### Feature
+* Add warning for no api ([`3c91635`](https://github.com/ral-facilities/datagateway-api/commit/3c91635bc0c3465d456a4a85c8d6c8793df408c2))
+
+## v5.2.0 (2022-11-03)
+### Feature
+* Add warning that tests only work with ICAT 5 ([`d8825fd`](https://github.com/ral-facilities/datagateway-api/commit/d8825fd71740e2b2d9b387dca175110cee1f9915))
+* Changes to tests so they pass with icat 5 ([`73f3c77`](https://github.com/ral-facilities/datagateway-api/commit/73f3c777f8d3841cf09537140922a9bbdd8dad7c))
+
+### Documentation
+* Update the poetry installation documentation ([`68d4267`](https://github.com/ral-facilities/datagateway-api/commit/68d426722862613358b0b136188d2b61accdc56f))
+
 ## v5.1.1 (2022-09-22)
 ### Fix
 * Update to latest dependencies ([`11a0eeb`](https://github.com/ral-facilities/datagateway-api/commit/11a0eeb3cbc4b5db2a0fa8dcd825dbeceb6ac111))
