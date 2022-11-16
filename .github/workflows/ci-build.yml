@@ -303,9 +303,9 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
 
       - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+        run: cp datagateway-api/datagateway_api/config.yaml.example datagteway-api/datagateway_api/config.yaml
       - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+        run: cp datagatway-api/datagateway_api/search_api_mapping.json.example datagateway-api/datagateway_api/search_api_mapping.json
 
       # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
       - name: Uninstall setuptools
