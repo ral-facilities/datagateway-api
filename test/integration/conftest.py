@@ -4,7 +4,6 @@ from unittest.mock import mock_open, patch
 
 from flask import Flask
 from icat.client import Client
-from icat.query import Query
 import pytest
 
 from datagateway_api.src.api_start_utils import (

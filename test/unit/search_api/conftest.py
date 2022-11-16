@@ -1,8 +1,8 @@
 import json
 from unittest.mock import mock_open, patch
 
-
 import pytest
+
 from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
 
 
