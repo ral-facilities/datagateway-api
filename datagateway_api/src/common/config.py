@@ -189,6 +189,13 @@ class APIConfig(BaseModel):
         try:
             with open(path, encoding="utf-8") as target:
                 data = json.load(target)
+
+                if "datagateway_api" not in data and "search_api" not in data:
+                    log.warning(
+                        "   WARNING: There is no API specified in the "
+                        "configuration file",
+                    )
+
                 return cls(**data)
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
