@@ -73,7 +73,7 @@ def safety(session):
             external=True,
         )
         # Ignore 50916 as the latest version of pydantic and
-        # Ignore 5146 as the latest version of pytest does not support
+        # Ignore 51457 as the latest version of pytest does not support
         # python 3.6 which is still used in production
         session.run(
             "safety",
