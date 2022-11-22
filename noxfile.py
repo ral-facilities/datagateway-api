@@ -72,7 +72,8 @@ def safety(session):
             f"--output={requirements.name}",
             external=True,
         )
-        # Ignore 50916 as the latest version of pydantic does not support
+        # Ignore 50916 as the latest version of pydantic and
+        # Ignore 51457 as the latest version of pytest does not support
         # python 3.6 which is still used in production
         session.run(
             "safety",
@@ -81,6 +82,8 @@ def safety(session):
             "--full-report",
             "--ignore",
             "50916",
+            "--ignore",
+            "51457",
         )
 
         try:
