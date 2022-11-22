@@ -16,7 +16,9 @@ from datagateway_api.src.datagateway_api.database.models import (
     INVESTIGATION,
     INVESTIGATIONINSTRUMENT,
 )
-from test.datagateway_api.db.endpoints.test_create_db import TestDBCreateData
+from test.integration.datagateway_api.db.endpoints.test_create_db import (
+    TestDBCreateData,
+)
 
 
 def set_meta_attributes(entity):
