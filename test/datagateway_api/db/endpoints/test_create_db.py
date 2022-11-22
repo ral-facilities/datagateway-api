@@ -15,8 +15,12 @@ def prepare_db_data_for_assertion(response_json):
         return response_json
 
     response_json["endDate"] = response_json["endDate"][:-6]
-    response_json["releaseDate"] = response_json["releaseDate"][:-6]
     response_json["startDate"] = response_json["startDate"][:-6]
+
+    if response_json["releaseDate"] is None:
+        return response_json
+    else:
+        response_json["releaseDate"] = response_json["releaseDate"][:-6]
 
     return response_json
 
@@ -29,7 +33,7 @@ class TestDBCreateData:
         create_investigations_json = [
             {
                 "name": f"{self.investigation_name_prefix} {i}",
-                "title": "Test data for the Python DB Backend on DataGateway API",
+                "title": "Test data for the DB Backend on DataGateway API",
                 "summary": "DB Test data for DataGateway API testing",
                 "releaseDate": "2020-03-03 08:00:08",
                 "startDate": "2020-02-02 09:00:09",
@@ -53,17 +57,10 @@ class TestDBCreateData:
         response_json = test_response.json
 
         for investigation_request in response_json:
-            investigation_request.pop("createId")
-            investigation_request.pop("createTime")
-            investigation_request.pop("id")
-            investigation_request.pop("modId")
-            investigation_request.pop("modTime")
-            investigation_request["endDate"] = investigation_request["endDate"][:-6]
-            investigation_request["releaseDate"] = investigation_request["releaseDate"][
-                :-6
-            ]
-            investigation_request["startDate"] = investigation_request["startDate"][:-6]
+            prepare_db_data_for_assertion(investigation_request)
 
+        for investigation in create_investigations_json:
+            investigation.pop("visitId")
         assert create_investigations_json == response_json
 
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
@@ -74,7 +71,7 @@ class TestDBCreateData:
 
         create_investigation_json = {
             "name": f"{self.investigation_name_prefix} 0",
-            "title": "Test data for the Python ICAT Backend on the API",
+            "title": "Test data for the DB Backend on the API",
             "summary": "Test data for DataGateway API testing",
             "releaseDate": "2020-03-03 08:00:08",
             "startDate": "2020-02-02 09:00:09",

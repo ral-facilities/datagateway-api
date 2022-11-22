@@ -12,7 +12,7 @@ class TestRequiresSessionID:
             f"{Config.config.datagateway_api.extension}/sessions",
             json={"username": "user", "password": "password", "mechanism": "simple"},
         )
-        print(dir(test_response.response))
+
         assert test_response.status_code == 201
 
     def test_invalid_missing_credentials(self, flask_test_app_db):

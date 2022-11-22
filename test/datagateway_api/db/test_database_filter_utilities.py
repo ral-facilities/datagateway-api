@@ -314,6 +314,24 @@ class TestDatabaseFilterUtilities:
                 },
                 id="greater than or equal",
             ),
+            pytest.param(
+                "in",
+                ["Title for DataGateway API Testing (DB) 0"],
+                {
+                    "doi": None,
+                    "endDate": "2020-01-08 01:01:01+00:00",
+                    "name": "Test Data for DataGateway API Testing (DB) 0",
+                    "releaseDate": None,
+                    "startDate": "2020-01-04 01:01:01+00:00",
+                    "summary": None,
+                    "title": "Title for DataGateway API Testing (DB) 0",
+                    "facilityID": 1,
+                    "typeID": 1,
+                    "fileSize": 1073741824,
+                    "fileCount": 3,
+                },
+                id="in",
+            ),
         ],
     )
     def test_valid_where_operation(
