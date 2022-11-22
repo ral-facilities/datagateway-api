@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v6.0.0 (2022-11-22)
+### Feature
+* Enable support for yaml configuration files for DatagatewayAPI ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+* Add support for yaml configuration ([`02c3e41`](https://github.com/ral-facilities/datagateway-api/commit/02c3e41c92c721d793b27b44c7b27cfb3af6ffbb))
+
+### Breaking
+* Remove support for json configuration files  ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+
 ## v5.3.0 (2022-11-16)
 ### Feature
 * Add warning for no api ([`3c91635`](https://github.com/ral-facilities/datagateway-api/commit/3c91635bc0c3465d456a4a85c8d6c8793df408c2))
