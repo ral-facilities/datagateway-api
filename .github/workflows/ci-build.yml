@@ -303,7 +303,7 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
 
       - name: Create config.yaml
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.json.example datagateway_api/config.json
+        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
