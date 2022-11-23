@@ -111,6 +111,19 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # we have to get hold of its class definition and call its `from_icat`
                 # method to create an instance of itself with the ICAT data provided.
                 # Doing this allows for recursion.
+
+                if entity_field_alias not in [
+                    required_related_field.split(".")[0]
+                    for required_related_field in required_related_fields
+                ]:
+                    # Before proceeding, check if the related entity really needs to be created.
+                    # Do not attempt to create the related entity if ICAT data for it is available
+                    # but the entity has not been specified to be included. In such cases, the ICAT
+                    # data is likely available because the data for another entity field is
+                    # retrieved via that ICAT entity. We do not want to return data for related
+                    # entities unless explicitly specified to be included by the user.
+                    continue
+
                 data = (
                     [field_value] if not isinstance(field_value, list) else field_value
                 )

@@ -2,6 +2,29 @@
 
 <!--next-version-placeholder-->
 
+## v6.1.1 (2022-11-23)
+### Fix
+* Do not attempt to create related entities if not included #387 ([`819e7a1`](https://github.com/ral-facilities/datagateway-api/commit/819e7a1582d8d108fe5f18b210c08d67cd0a3845))
+
+## v6.1.0 (2022-11-23)
+### Feature
+* Add new entity endpoints for icat5 ([`dc14f9f`](https://github.com/ral-facilities/datagateway-api/commit/dc14f9f8aeb5a9849bc69cf647bf068b04a63d81))
+
+### Documentation
+* Updated postman collection with new entities ([`c4b850f`](https://github.com/ral-facilities/datagateway-api/commit/c4b850f913dbded35e6b1a88c8f8d8e1b36cbdec))
+
+## v6.0.0 (2022-11-22)
+### Feature
+* Enable support for yaml configuration files for DatagatewayAPI ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+* Add support for yaml configuration ([`02c3e41`](https://github.com/ral-facilities/datagateway-api/commit/02c3e41c92c721d793b27b44c7b27cfb3af6ffbb))
+
+### Breaking
+* Remove support for json configuration files  ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+
+## v5.3.0 (2022-11-16)
+### Feature
+* Add warning for no api ([`3c91635`](https://github.com/ral-facilities/datagateway-api/commit/3c91635bc0c3465d456a4a85c8d6c8793df408c2))
+
 ## v5.2.0 (2022-11-03)
 ### Feature
 * Add warning that tests only work with ICAT 5 ([`d8825fd`](https://github.com/ral-facilities/datagateway-api/commit/d8825fd71740e2b2d9b387dca175110cee1f9915))

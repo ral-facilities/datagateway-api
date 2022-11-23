@@ -17,7 +17,7 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
         Given a filter, return a matching Query filter object
 
         The filters are imported inside this method to enable the unit tests to not rely
-        on the contents of `config.json`. If they're imported at the top of the file,
+        on the contents of `config.yaml`. If they're imported at the top of the file,
         the backend type won't have been updated if the Flask app has been created from
         an automated test (file imports occur before `create_api_endpoints()` executes).
 
