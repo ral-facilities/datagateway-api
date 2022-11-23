@@ -5,6 +5,7 @@ import pytest
 
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.constants import Constants
+from datagateway_api.src.common.exceptions import MissingRecordError
 from datagateway_api.src.datagateway_api.database.helpers import (
     delete_row_by_id,
     insert_row_into_table,
@@ -15,6 +16,7 @@ from datagateway_api.src.datagateway_api.database.models import (
     INVESTIGATION,
     INVESTIGATIONINSTRUMENT,
 )
+from test.datagateway_api.db.endpoints.test_create_db import TestDBCreateData
 
 
 def set_meta_attributes(entity):
@@ -65,8 +67,11 @@ def single_investigation_test_data_db():
     investigation = create_investigation_db_data()
 
     yield investigation
-
-    delete_row_by_id(INVESTIGATION, investigation.id)
+    try:
+        delete_row_by_id(INVESTIGATION, investigation.id)
+    except MissingRecordError as e:
+        # This should occur on DELETE endpoints, normal behaviour for those tests
+        print(e)
 
 
 @pytest.fixture()
@@ -134,3 +139,30 @@ def final_facilitycycle_id(flask_test_app_db, valid_db_credentials_header):
         headers=valid_db_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
+
+
+@pytest.fixture()
+def remove_test_created_investigation_data(
+    flask_test_app_db, valid_db_credentials_header,
+):
+    yield
+
+    created_test_data = flask_test_app_db.get(
+        f"{Config.config.datagateway_api.extension}/investigations?where="
+        '{"name":{"like":'
+        f'"{TestDBCreateData.investigation_name_prefix}"'
+        "}}",
+        headers=valid_db_credentials_header,
+    )
+
+    investigation_ids = []
+
+    for investigation in created_test_data.json:
+        investigation_ids.append(investigation["id"])
+
+    for investigation_id in investigation_ids:
+        flask_test_app_db.delete(
+            f"{Config.config.datagateway_api.extension}/investigations"
+            f"/{investigation_id}",
+            headers=valid_db_credentials_header,
+        )

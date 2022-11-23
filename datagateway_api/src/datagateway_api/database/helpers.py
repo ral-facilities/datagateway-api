@@ -94,7 +94,7 @@ class Query(ABC):
         except Exception as e:
             log.error("Error whilst committing changes to %s, rolling back", self.table)
             self.session.rollback()
-            raise e
+            raise BadRequestError(f"Bad request: {e}")
 
 
 class CountQuery(Query):
