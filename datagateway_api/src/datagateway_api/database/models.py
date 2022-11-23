@@ -216,6 +216,30 @@ class APPLICATION(Base, EntityHelper, metaclass=EntityMeta):
     )
 
 
+class AFFILIATION(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "AFFILIATION"
+    __singularfieldname__ = "affiliation"
+    __pluralfieldname__ = "affiliations"
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    name = Column("NAME", String(255), nullable=False)
+    fullReference = Column("FULLREFERENCE", String(1023))
+    pid = Column("PID", String(255))
+    dataPublicationUserId = Column(
+        "DATAPUBLICATIONUSER_ID", ForeignKey("DATAPUBLICATIONUSER.ID"), nullable=False,
+    )
+
+    DATAPUBLICATIONUSER = relationship(
+        "DATAPUBLICATIONUSER",
+        primaryjoin="AFFILIATION.dataPublicationUserId == DATAPUBLICATIONUSER.id",
+        backref="affiliations",
+    )
+
+
 class FACILITY(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITY"
     __singularfieldname__ = "facility"
@@ -347,6 +371,210 @@ class DATACOLLECTIONPARAMETER(Base, EntityHelper, metaclass=EntityMeta):
         "PARAMETERTYPE",
         primaryjoin="DATACOLLECTIONPARAMETER.parameterTypeID == PARAMETERTYPE.id",
         backref="dataCollectionParameters",
+    )
+
+
+class DATACOLLECTIONINVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATACOLLECTIONINVESTIGATION"
+    __singularfieldname__ = "dataCollectionInvestigation"
+    __pluralfieldname__ = "dataCollectionInvestigations"
+    __table_args__ = (
+        Index(
+            "UNQ_DATACOLLECTIONINVESTIGATION_0",
+            "DATACOLLECTION_ID",
+            "INVESTIGATION_ID",
+        ),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    datacollectionId = Column(
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
+    )
+    investigationId = Column(
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False,
+    )
+
+    DATACOLLECTION = relationship(
+        "DATACOLLECTION",
+        primaryjoin="DATACOLLECTIONINVESTIGATION.datacollectionId == DATACOLLECTION.id",
+        backref="dataCollectionInvestigations",
+    )
+
+    INVESTIGATION = relationship(
+        "INVESTIGATION",
+        primaryjoin="DATACOLLECTIONINVESTIGATION.investigationId == INVESTIGATION.id",
+        backref="dataCollectionInvestigations",
+    )
+
+
+class DATAPUBLICATION(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATAPUBLICATION"
+    __singularfieldname__ = "dataPublication"
+    __pluralfieldname__ = "dataPublications"
+    __table_args__ = (
+        Index("UNQ_DATAPUBLICATION_0", "FACILITY_ID", "DATACOLLECTION_ID"),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    publicationDate = Column("PUBLICATIONDATE", DateTime)
+    title = Column("TITLE", String(255), nullable=False)
+    description = Column("DESCRIPTION", String(4000))
+    pid = Column("PID", String(255), nullable=False)
+    subject = Column("SUBJECT", String(1023))
+    datacollectionId = Column(
+        "DATACOLLECTION_ID", ForeignKey("DATACOLLECTION.ID"), nullable=False,
+    )
+    facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
+    datapublicationtypeId = Column(
+        "DATAPUBLICATIONTYPE_ID", ForeignKey("DATAPUBLICATIONTYPE.ID"), nullable=False,
+    )
+
+    DATACOLLECTION = relationship(
+        "DATACOLLECTION",
+        primaryjoin="DATAPUBLICATION.datacollectionId == DATACOLLECTION.id",
+        backref="dataPublications",
+    )
+    FACILITY = relationship(
+        "FACILITY",
+        primaryjoin="DATAPUBLICATION.facilityId == FACILITY.id",
+        backref="dataPublications",
+    )
+    DATAPUBLICATIONTYPE = relationship(
+        "DATAPUBLICATIONTYPE",
+        primaryjoin="DATAPUBLICATION.datapublicationtypeId == DATAPUBLICATIONTYPE.id",
+        backref="dataPublications",
+    )
+
+
+class DATAPUBLICATIONDATE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATAPUBLICATIONDATE"
+    __singularfieldname__ = "dataPublicationDate"
+    __pluralfieldname__ = "dataPublicationDates"
+    __table_args__ = (
+        Index("UNQ_DATAPUBLICATIONDATE_0", "DATAPUBLICATION_ID", "DATETYPE"),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    dateType = Column("DATETYPE", String(255), nullable=False)
+    date = Column("DATE_", String(255), nullable=False)
+    datapublicationId = Column(
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
+    )
+
+    DATAPUBLICATION = relationship(
+        "DATAPUBLICATION",
+        primaryjoin="DATAPUBLICATIONDATE.datapublicationId == DATAPUBLICATION.id",
+        backref="dataPublicationDates",
+    )
+
+
+class DATAPUBLICATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATAPUBLICATIONFUNDING"
+    __singularfieldname__ = "dataPublicationFunding"
+    __pluralfieldname__ = "dataPublicationFundings"
+    __table_args__ = (
+        Index("UNQ_DATAPUBLICATIONFUNDING_0", "DATAPUBLICATION_ID", "FUNDING_ID"),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    datapublicationId = Column(
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
+    )
+
+    fundingId = Column("FUNDING_ID", ForeignKey("FUNDINGREFERENCE.ID"), nullable=False)
+
+    DATAPUBLICATION = relationship(
+        "DATAPUBLICATION",
+        primaryjoin="DATAPUBLICATIONFUNDING.datapublicationId == DATAPUBLICATION.id",
+        backref="fundingReferences",
+    )
+
+    FUNDINGREFERENCE = relationship(
+        "FUNDINGREFERENCE",
+        primaryjoin="DATAPUBLICATIONFUNDING.fundingId == FUNDINGREFERENCE.id",
+        backref="publications",
+    )
+
+
+class DATAPUBLICATIONTYPE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATAPUBLICATIONTYPE"
+    __singularfieldname__ = "dataPublicationType"
+    __pluralfieldname__ = "dataPublicationTypes"
+    __table_args__ = (Index("UNQ_DATAPUBLICATIONTYPE_0", "FACILITY_ID", "NAME"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255))
+    createTime = Column("CREATE_TIME", DateTime)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    name = Column("NAME", String(255), nullable=False)
+    description = Column("DESCRIPTION", String(255))
+
+    facilityId = Column("FACILITY_ID", ForeignKey("FACILITY.ID"), nullable=False)
+
+    FACILITY = relationship(
+        "FACILITY",
+        primaryjoin="DATAPUBLICATIONTYPE.facilityId == FACILITY.id",
+        backref="dataPublicationTypes",
+    )
+
+
+class DATAPUBLICATIONUSER(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATAPUBLICATIONUSER"
+    __singularfieldname__ = "dataPublicationUser"
+    __pluralfieldname__ = "dataPublicationUsers"
+    __table_args__ = (
+        Index(
+            "UNQ_DATAPUBLICATIONUSER_0",
+            "DATAPUBLICATION_ID",
+            "USER_ID",
+            "CONTRIBUTORTYPE",
+        ),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    orderKey = Column("ORDERKEY", String(255))
+    givenName = Column("GIVENNAME", String(255))
+    fullName = Column("FULLNAME", String(255))
+    familyName = Column("FAMILYNAME", String(255))
+    email = Column("EMAIL", String(255))
+    contributorType = Column("CONTRIBUTORTYPE", String(255), nullable=False)
+    publicationId = Column(
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
+    )
+
+    userId = Column("USER_ID", ForeignKey("USER_.ID"), nullable=False)
+
+    USER = relationship(
+        "USER",
+        primaryjoin="DATAPUBLICATIONUSER.userId == USER.id",
+        backref="dataPublicationUsers",
+    )
+
+    DATAPUBLICATION = relationship(
+        "DATAPUBLICATION",
+        primaryjoin="DATAPUBLICATIONUSER.publicationId == DATAPUBLICATION.id",
+        backref="users",
     )
 
 
@@ -543,6 +771,60 @@ class DATASETTYPE(Base, EntityHelper, metaclass=EntityMeta):
     )
 
 
+class DATASETINSTRUMENT(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATASETINSTRUMENT"
+    __singularfieldname__ = "datasetInstrument"
+    __pluralfieldname__ = "datasetInstruments"
+    __table_args__ = (Index("UNQ_DATASETINSTRUMENT_0", "DATASET_ID", "INSTRUMENT_ID"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    datasetId = Column("DATASET_ID", ForeignKey("DATASET.ID"), nullable=False)
+    instrumentId = Column("INSTRUMENT_ID", ForeignKey("INSTRUMENT.ID"), nullable=False)
+
+    DATASET = relationship(
+        "DATASET",
+        primaryjoin="DATASETINSTRUMENT.datasetId == DATASET.id",
+        backref="datasetInstruments",
+    )
+
+    INSTRUMENT = relationship(
+        "INSTRUMENT",
+        primaryjoin="DATASETINSTRUMENT.instrumentId == INSTRUMENT.id",
+        backref="datasetInstruments",
+    )
+
+
+class DATASETTECHNIQUE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "DATASETTECHNIQUE"
+    __singularfieldname__ = "datasetTechnique"
+    __pluralfieldname__ = "datasetTechniques"
+    __table_args__ = (Index("UNQ_DATASETTECHNIQUE_0", "DATASET_ID", "TECHNIQUE_ID"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    datasetId = Column("DATASET_ID", ForeignKey("DATASET.ID"), nullable=False)
+    techniqueId = Column("TECHNIQUE_ID", ForeignKey("TECHNIQUE.ID"), nullable=False)
+
+    DATASET = relationship(
+        "DATASET",
+        primaryjoin="DATASETTECHNIQUE.datasetId == DATASET.id",
+        backref="datasetTechniques",
+    )
+
+    TECHNIQUE = relationship(
+        "TECHNIQUE",
+        primaryjoin="DATASETTECHNIQUE.techniqueId == TECHNIQUE.id",
+        backref="datasetTechniques",
+    )
+
+
 class FACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "FACILITYCYCLE"
     __singularfieldname__ = "facilityCycle"
@@ -565,6 +847,23 @@ class FACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="FACILITYCYCLE.facilityID == FACILITY.id",
         backref="facilityCycles",
     )
+
+
+class FUNDINGREFERENCE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "FUNDINGREFERENCE"
+    __singularfieldname__ = "fundingReference"
+    __pluralfieldname__ = "fundingReferences"
+    __table_args__ = (Index("UNQ_FUNDINGREFERENCE_0", "FUNDERNAME", "AWARDNUMBER"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    funderIdentifier = Column("FUNDERIDENTIFIER", String(255))
+    funderName = Column("FUNDERNAME", String(255), nullable=False)
+    awardNumber = Column("AWARDNUMBER", String(255), nullable=False)
+    awardTitle = Column("AWARDTITLE", String(255))
 
 
 class GROUPING(Base, EntityHelper, metaclass=EntityMeta):
@@ -668,6 +967,70 @@ class INVESTIGATION(Base, EntityHelper, metaclass=EntityMeta):
         "INVESTIGATIONTYPE",
         primaryjoin="INVESTIGATION.typeID == INVESTIGATIONTYPE.id",
         backref="investigations",
+    )
+
+
+class INVESTIGATIONFACILITYCYCLE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "INVESTIGATIONFACILITYCYCLE"
+    __singularfieldname__ = "investigationFacilityCycle"
+    __pluralfieldname__ = "investigationFacilityCycles"
+    __table_args__ = (
+        Index(
+            "UNQ_INVESTIGATIONFACILITYCYCLE_0", "FACILITYCYCLE_ID", "INVESTIGATION_ID",
+        ),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    facilityCycleId = Column(
+        "FACILITYCYCLE_ID", ForeignKey("FACILITYCYCLE.ID"), nullable=False,
+    )
+    investigationId = Column(
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
+    )
+
+    FACILITYCYCLE = relationship(
+        "FACILITYCYCLE",
+        primaryjoin="INVESTIGATIONFACILITYCYCLE.facilityCycleId == FACILITYCYCLE.id",
+        backref="investigationFacilityCycles",
+    )
+    INVESTIGATION = relationship(
+        "INVESTIGATION",
+        primaryjoin="INVESTIGATIONFACILITYCYCLE.investigationId == INVESTIGATION.id",
+        backref="investigationFacilityCycles",
+    )
+
+
+class INVESTIGATIONFUNDING(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "INVESTIGATIONFUNDING"
+    __singularfieldname__ = "investigationFunding"
+    __pluralfieldname__ = "investigationFundings"
+    __table_args__ = (
+        Index("UNQ_INVESTIGATIONFUNDING_0", "FUNDING_ID", "INVESTIGATION_ID"),
+    )
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    fundingId = Column("FUNDING_ID", ForeignKey("FUNDINGREFERENCE.ID"), nullable=False)
+    investigationId = Column(
+        "INVESTIGATION_ID", ForeignKey("INVESTIGATION.ID"), nullable=False, index=True,
+    )
+
+    FUNDINGREFERENCE = relationship(
+        "FUNDINGREFERENCE",
+        primaryjoin="INVESTIGATIONFUNDING.fundingId == FUNDINGREFERENCE.id",
+        backref="investigations",
+    )
+    INVESTIGATION = relationship(
+        "INVESTIGATION",
+        primaryjoin="INVESTIGATIONFUNDING.investigationId == INVESTIGATION.id",
+        backref="fundingReferences",
     )
 
 
@@ -1026,6 +1389,33 @@ class RELATEDDATAFILE(Base, EntityHelper, metaclass=EntityMeta):
     )
 
 
+class RELATEDITEM(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "RELATEDITEM"
+    __singularfieldname__ = "relatedItem"
+    __pluralfieldname__ = "relatedItems"
+    __table_args__ = (Index("UNQ_RELATEDITEM_0", "DATAPUBLICATION_ID", "IDENTIFIER"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    identifier = Column("IDENTIFIER", String(255), nullable=False)
+    relationType = Column("RELATIONTYPE", String(255), nullable=False)
+    fullReference = Column("FULLREFERENCE", String(1023))
+    relatedItemType = Column("RELATEDITEMTYPE", String(255))
+    title = Column("TITLE", String(255))
+    datapublicationId = Column(
+        "DATAPUBLICATION_ID", ForeignKey("DATAPUBLICATION.ID"), nullable=False,
+    )
+
+    PUBLICATION = relationship(
+        "DATAPUBLICATION",
+        primaryjoin="RELATEDITEM.datapublicationId == DATAPUBLICATION.id",
+        backref="relatedItems",
+    )
+
+
 class RULE(Base, EntityHelper, metaclass=EntityMeta):
     __tablename__ = "RULE_"
     __singularfieldname__ = "rule"
@@ -1149,6 +1539,22 @@ class SHIFT(Base, EntityHelper, metaclass=EntityMeta):
         primaryjoin="SHIFT.investigationID == INVESTIGATION.id",
         backref="shifts",
     )
+
+
+class TECHNIQUE(Base, EntityHelper, metaclass=EntityMeta):
+    __tablename__ = "TECHNIQUE"
+    __singularfieldname__ = "technique"
+    __pluralfieldname__ = "techniques"
+    __table_args__ = (Index("UNQ_TECHNIQUE_0", "NAME"),)
+
+    id = Column("ID", BigInteger, primary_key=True)
+    createId = Column("CREATE_ID", String(255), nullable=False)
+    createTime = Column("CREATE_TIME", DateTime, nullable=False)
+    modId = Column("MOD_ID", String(255), nullable=False)
+    modTime = Column("MOD_TIME", DateTime, nullable=False)
+    pid = Column("PID", String(255))
+    description = Column("DESCRIPTION", String(255))
+    name = Column("NAME", String(255), nullable=False)
 
 
 class USER(Base, EntityHelper, metaclass=EntityMeta):

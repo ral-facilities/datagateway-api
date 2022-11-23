@@ -201,6 +201,39 @@ components:
           type: object
         type: array
   schemas:
+    AFFILIATION:
+      properties:
+        DATAPUBLICATIONUSER:
+          $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataPublicationUserId:
+          type: integer
+        fullReference:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+        pid:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
+      - dataPublicationUserId
     APPLICATION:
       properties:
         FACILITY:
@@ -252,9 +285,17 @@ components:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONDATASET'
           type: array
+        dataCollectionInvestigations:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+          type: array
         dataCollectionParameters:
           items:
             $ref: '#/components/schemas/DATACOLLECTIONPARAMETER'
+          type: array
+        dataPublications:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATION'
           type: array
         doi:
           type: string
@@ -338,6 +379,37 @@ components:
       - modTime
       - dataCollectionID
       - datasetID
+    DATACOLLECTIONINVESTIGATION:
+      properties:
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datacollectionId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigationId:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datacollectionId
+      - investigationId
     DATACOLLECTIONPARAMETER:
       properties:
         DATACOLLECTION:
@@ -527,6 +599,215 @@ components:
       - modTime
       - datafileID
       - parameterTypeID
+    DATAPUBLICATION:
+      properties:
+        DATACOLLECTION:
+          $ref: '#/components/schemas/DATACOLLECTION'
+        DATAPUBLICATIONTYPE:
+          $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataPublicationDates:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+          type: array
+        datacollectionId:
+          type: integer
+        datapublicationtypeId:
+          type: integer
+        description:
+          type: string
+        facilityId:
+          type: integer
+        fundingReferences:
+          items:
+            $ref: '#/components/schemas/FUNDINGREFERENCE'
+          type: array
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        pid:
+          type: string
+        publicationDate:
+          format: datetime
+          type: string
+        relatedItems:
+          items:
+            $ref: '#/components/schemas/RELATEDITEM'
+          type: array
+        subject:
+          type: string
+        title:
+          type: string
+        users:
+          items:
+            $ref: '#/components/schemas/USER'
+          type: array
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - title
+      - pid
+      - datacollectionId
+      - facilityId
+      - datapublicationtypeId
+    DATAPUBLICATIONDATE:
+      properties:
+        DATAPUBLICATION:
+          $ref: '#/components/schemas/DATAPUBLICATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datapublicationId:
+          type: integer
+        date:
+          type: string
+        dateType:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - dateType
+      - date
+      - datapublicationId
+    DATAPUBLICATIONFUNDING:
+      properties:
+        DATAPUBLICATION:
+          $ref: '#/components/schemas/DATAPUBLICATION'
+        FUNDINGREFERENCE:
+          $ref: '#/components/schemas/FUNDINGREFERENCE'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datapublicationId:
+          type: integer
+        fundingId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datapublicationId
+      - fundingId
+    DATAPUBLICATIONTYPE:
+      properties:
+        FACILITY:
+          $ref: '#/components/schemas/FACILITY'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        dataPublications:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATION'
+          type: array
+        description:
+          type: string
+        facilityId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+      required:
+      - id
+      - modId
+      - modTime
+      - name
+      - facilityId
+    DATAPUBLICATIONUSER:
+      properties:
+        DATAPUBLICATION:
+          $ref: '#/components/schemas/DATAPUBLICATION'
+        USER:
+          $ref: '#/components/schemas/USER'
+        affiliations:
+          items:
+            $ref: '#/components/schemas/AFFILIATION'
+          type: array
+        contributorType:
+          type: string
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        email:
+          type: string
+        familyName:
+          type: string
+        fullName:
+          type: string
+        givenName:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        orderKey:
+          type: string
+        publicationId:
+          type: integer
+        userId:
+          type: integer
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - contributorType
+      - publicationId
+      - userId
     DATASET:
       properties:
         DATASETTYPE:
@@ -550,9 +831,17 @@ components:
           items:
             $ref: '#/components/schemas/DATAFILE'
           type: array
+        datasetInstruments:
+          items:
+            $ref: '#/components/schemas/DATASETINSTRUMENT'
+          type: array
         datasetParameters:
           items:
             $ref: '#/components/schemas/DATASETPARAMETER'
+          type: array
+        datasetTechniques:
+          items:
+            $ref: '#/components/schemas/DATASETTECHNIQUE'
           type: array
         description:
           type: string
@@ -592,6 +881,37 @@ components:
       - name
       - investigationID
       - typeID
+    DATASETINSTRUMENT:
+      properties:
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        INSTRUMENT:
+          $ref: '#/components/schemas/INSTRUMENT'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datasetId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        instrumentId:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datasetId
+      - instrumentId
     DATASETPARAMETER:
       properties:
         DATASET:
@@ -636,6 +956,37 @@ components:
       - modTime
       - datasetID
       - parameterTypeID
+    DATASETTECHNIQUE:
+      properties:
+        DATASET:
+          $ref: '#/components/schemas/DATASET'
+        TECHNIQUE:
+          $ref: '#/components/schemas/TECHNIQUE'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datasetId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        techniqueId:
+          type: integer
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - datasetId
+      - techniqueId
     DATASETTYPE:
       properties:
         FACILITY:
@@ -682,6 +1033,14 @@ components:
         createTime:
           format: datetime
           type: string
+        dataPublicationTypes:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+          type: array
+        dataPublications:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATION'
+          type: array
         datafileFormats:
           items:
             $ref: '#/components/schemas/DATAFILEFORMAT'
@@ -758,6 +1117,10 @@ components:
         id:
           readOnly: true
           type: integer
+        investigationFacilityCycles:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+          type: array
         modId:
           type: string
         modTime:
@@ -776,6 +1139,45 @@ components:
       - modTime
       - name
       - facilityID
+    FUNDINGREFERENCE:
+      properties:
+        awardNumber:
+          type: string
+        awardTitle:
+          type: string
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        funderIdentifier:
+          type: string
+        funderName:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        investigations:
+          items:
+            $ref: '#/components/schemas/INVESTIGATION'
+          type: array
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        publications:
+          items:
+            $ref: '#/components/schemas/PUBLICATION'
+          type: array
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - funderName
+      - awardNumber
     GROUPING:
       properties:
         createId:
@@ -821,6 +1223,10 @@ components:
         createTime:
           format: datetime
           type: string
+        datasetInstruments:
+          items:
+            $ref: '#/components/schemas/DATASETINSTRUMENT'
+          type: array
         description:
           type: string
         facilityID:
@@ -899,6 +1305,10 @@ components:
         createTime:
           format: datetime
           type: string
+        dataCollectionInvestigations:
+          items:
+            $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+          type: array
         datasets:
           items:
             $ref: '#/components/schemas/DATASET'
@@ -910,9 +1320,21 @@ components:
           type: string
         facilityID:
           type: integer
+        fileCount:
+          type: integer
+        fileSize:
+          type: integer
+        fundingReferences:
+          items:
+            $ref: '#/components/schemas/FUNDINGREFERENCE'
+          type: array
         id:
           readOnly: true
           type: integer
+        investigationFacilityCycles:
+          items:
+            $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+          type: array
         investigationGroups:
           items:
             $ref: '#/components/schemas/INVESTIGATIONGROUP'
@@ -981,6 +1403,68 @@ components:
       - visitId
       - facilityID
       - typeID
+    INVESTIGATIONFACILITYCYCLE:
+      properties:
+        FACILITYCYCLE:
+          $ref: '#/components/schemas/FACILITYCYCLE'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        facilityCycleId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigationId:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - facilityCycleId
+      - investigationId
+    INVESTIGATIONFUNDING:
+      properties:
+        FUNDINGREFERENCE:
+          $ref: '#/components/schemas/FUNDINGREFERENCE'
+        INVESTIGATION:
+          $ref: '#/components/schemas/INVESTIGATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        fundingId:
+          type: integer
+        id:
+          readOnly: true
+          type: integer
+        investigationId:
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - fundingId
+      - investigationId
     INVESTIGATIONGROUP:
       properties:
         GROUPING:
@@ -1428,6 +1912,44 @@ components:
       - relation
       - destDatafileID
       - sourceDatafileID
+    RELATEDITEM:
+      properties:
+        PUBLICATION:
+          $ref: '#/components/schemas/PUBLICATION'
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datapublicationId:
+          type: integer
+        fullReference:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        identifier:
+          type: string
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        relatedItemType:
+          type: string
+        relationType:
+          type: string
+        title:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - identifier
+      - relationType
+      - datapublicationId
     RULE:
       properties:
         GROUPING:
@@ -1710,6 +2232,38 @@ components:
       - modTime
       - investigationID
       - studyID
+    TECHNIQUE:
+      properties:
+        createId:
+          type: string
+        createTime:
+          format: datetime
+          type: string
+        datasetTechniques:
+          items:
+            $ref: '#/components/schemas/DATASETTECHNIQUE'
+          type: array
+        description:
+          type: string
+        id:
+          readOnly: true
+          type: integer
+        modId:
+          type: string
+        modTime:
+          format: datetime
+          type: string
+        name:
+          type: string
+        pid:
+          type: string
+      required:
+      - id
+      - createId
+      - createTime
+      - modId
+      - modTime
+      - name
     USER:
       properties:
         createId:
@@ -1717,6 +2271,10 @@ components:
         createTime:
           format: datetime
           type: string
+        dataPublicationUsers:
+          items:
+            $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+          type: array
         email:
           type: string
         fullName:
@@ -2032,6 +2590,479 @@ paths:
       summary: Get single Application
       tags:
       - Applications
+  /datagateway-api/affiliations:
+    get:
+      description: Retrieves a list of Affiliation objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AFFILIATION'
+                type: array
+          description: Success - returns Affiliation that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Affiliations
+      tags:
+      - Affiliations
+    patch:
+      description: Updates Affiliation object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/AFFILIATION'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AFFILIATION'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update Affiliations
+      tags:
+      - Affiliations
+    post:
+      description: Creates new Affiliation object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/AFFILIATION'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/AFFILIATION'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new Affiliations
+      tags:
+      - Affiliations
+  /datagateway-api/affiliations/{id_}:
+    delete:
+      description: Updates Affiliation with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete Affiliations by id
+      tags:
+      - Affiliations
+    get:
+      description: Retrieves a list of Affiliation objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AFFILIATION'
+          description: Success - the matching Affiliation
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the Affiliation matching the given ID
+      tags:
+      - Affiliations
+    patch:
+      description: Updates Affiliation with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AFFILIATION'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AFFILIATION'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update Affiliations by id
+      tags:
+      - Affiliations
+  /datagateway-api/affiliations/count:
+    get:
+      description: Return the count of the Affiliation objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the Affiliation objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Affiliations
+      tags:
+      - Affiliations
+  /datagateway-api/affiliations/findone:
+    get:
+      description: Retrieves the first Affiliation objects that satisfies the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AFFILIATION'
+          description: Success - a Affiliation object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single Affiliation
+      tags:
+      - Affiliations
+  /datagateway-api/datacollectioninvestigations:
+    get:
+      description: Retrieves a list of DataCollectionInvestigation objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+                type: array
+          description: Success - returns DataCollectionInvestigation that satisfy
+            the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataCollectionInvestigations
+      tags:
+      - DataCollectionInvestigations
+    patch:
+      description: Updates DataCollectionInvestigation object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataCollectionInvestigations
+      tags:
+      - DataCollectionInvestigations
+    post:
+      description: Creates new DataCollectionInvestigation object(s) with details
+        provided in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataCollectionInvestigations
+      tags:
+      - DataCollectionInvestigations
+  /datagateway-api/datacollectioninvestigations/{id_}:
+    delete:
+      description: Updates DataCollectionInvestigation with the specified ID with
+        details provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataCollectionInvestigations by id
+      tags:
+      - DataCollectionInvestigations
+    get:
+      description: Retrieves a list of DataCollectionInvestigation objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+          description: Success - the matching DataCollectionInvestigation
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataCollectionInvestigation matching the given ID
+      tags:
+      - DataCollectionInvestigations
+    patch:
+      description: Updates DataCollectionInvestigation with the specified ID with
+        details provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataCollectionInvestigations by id
+      tags:
+      - DataCollectionInvestigations
+  /datagateway-api/datacollectioninvestigations/count:
+    get:
+      description: Return the count of the DataCollectionInvestigation objects that
+        would be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataCollectionInvestigation objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataCollectionInvestigations
+      tags:
+      - DataCollectionInvestigations
+  /datagateway-api/datacollectioninvestigations/findone:
+    get:
+      description: Retrieves the first DataCollectionInvestigation objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATACOLLECTIONINVESTIGATION'
+          description: Success - a DataCollectionInvestigation object that satisfies
+            the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataCollectionInvestigation
+      tags:
+      - DataCollectionInvestigations
   /datagateway-api/datacollectiondatafiles:
     get:
       description: Retrieves a list of DataCollectionDatafile objects
@@ -2979,6 +4010,1187 @@ paths:
       summary: Get single DataCollection
       tags:
       - DataCollections
+  /datagateway-api/datapublications:
+    get:
+      description: Retrieves a list of DataPublication objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATION'
+                type: array
+          description: Success - returns DataPublication that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataPublications
+      tags:
+      - DataPublications
+    patch:
+      description: Updates DataPublication object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATION'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATION'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublications
+      tags:
+      - DataPublications
+    post:
+      description: Creates new DataPublication object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATION'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATION'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataPublications
+      tags:
+      - DataPublications
+  /datagateway-api/datapublications/{id_}:
+    delete:
+      description: Updates DataPublication with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataPublications by id
+      tags:
+      - DataPublications
+    get:
+      description: Retrieves a list of DataPublication objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATION'
+          description: Success - the matching DataPublication
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataPublication matching the given ID
+      tags:
+      - DataPublications
+    patch:
+      description: Updates DataPublication with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATAPUBLICATION'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATION'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublications by id
+      tags:
+      - DataPublications
+  /datagateway-api/datapublications/count:
+    get:
+      description: Return the count of the DataPublication objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataPublication objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataPublications
+      tags:
+      - DataPublications
+  /datagateway-api/datapublications/findone:
+    get:
+      description: Retrieves the first DataPublication objects that satisfies the
+        filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATION'
+          description: Success - a DataPublication object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataPublication
+      tags:
+      - DataPublications
+  /datagateway-api/datapublicationdates:
+    get:
+      description: Retrieves a list of DataPublicationDate objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+                type: array
+          description: Success - returns DataPublicationDate that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataPublicationDates
+      tags:
+      - DataPublicationDates
+    patch:
+      description: Updates DataPublicationDate object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationDates
+      tags:
+      - DataPublicationDates
+    post:
+      description: Creates new DataPublicationDate object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataPublicationDates
+      tags:
+      - DataPublicationDates
+  /datagateway-api/datapublicationdates/{id_}:
+    delete:
+      description: Updates DataPublicationDate with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataPublicationDates by id
+      tags:
+      - DataPublicationDates
+    get:
+      description: Retrieves a list of DataPublicationDate objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+          description: Success - the matching DataPublicationDate
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataPublicationDate matching the given ID
+      tags:
+      - DataPublicationDates
+    patch:
+      description: Updates DataPublicationDate with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationDates by id
+      tags:
+      - DataPublicationDates
+  /datagateway-api/datapublicationdates/count:
+    get:
+      description: Return the count of the DataPublicationDate objects that would
+        be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataPublicationDate objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataPublicationDates
+      tags:
+      - DataPublicationDates
+  /datagateway-api/datapublicationdates/findone:
+    get:
+      description: Retrieves the first DataPublicationDate objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONDATE'
+          description: Success - a DataPublicationDate object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataPublicationDate
+      tags:
+      - DataPublicationDates
+  /datagateway-api/datapublicationfundings:
+    get:
+      description: Retrieves a list of DataPublicationFunding objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+                type: array
+          description: Success - returns DataPublicationFunding that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataPublicationFundings
+      tags:
+      - DataPublicationFundings
+    patch:
+      description: Updates DataPublicationFunding object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationFundings
+      tags:
+      - DataPublicationFundings
+    post:
+      description: Creates new DataPublicationFunding object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataPublicationFundings
+      tags:
+      - DataPublicationFundings
+  /datagateway-api/datapublicationfundings/{id_}:
+    delete:
+      description: Updates DataPublicationFunding with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataPublicationFundings by id
+      tags:
+      - DataPublicationFundings
+    get:
+      description: Retrieves a list of DataPublicationFunding objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+          description: Success - the matching DataPublicationFunding
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataPublicationFunding matching the given ID
+      tags:
+      - DataPublicationFundings
+    patch:
+      description: Updates DataPublicationFunding with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationFundings by id
+      tags:
+      - DataPublicationFundings
+  /datagateway-api/datapublicationfundings/count:
+    get:
+      description: Return the count of the DataPublicationFunding objects that would
+        be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataPublicationFunding objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataPublicationFundings
+      tags:
+      - DataPublicationFundings
+  /datagateway-api/datapublicationfundings/findone:
+    get:
+      description: Retrieves the first DataPublicationFunding objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONFUNDING'
+          description: Success - a DataPublicationFunding object that satisfies the
+            filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataPublicationFunding
+      tags:
+      - DataPublicationFundings
+  /datagateway-api/datapublicationtypes:
+    get:
+      description: Retrieves a list of DataPublicationType objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+                type: array
+          description: Success - returns DataPublicationType that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataPublicationTypes
+      tags:
+      - DataPublicationTypes
+    patch:
+      description: Updates DataPublicationType object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationTypes
+      tags:
+      - DataPublicationTypes
+    post:
+      description: Creates new DataPublicationType object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataPublicationTypes
+      tags:
+      - DataPublicationTypes
+  /datagateway-api/datapublicationtypes/{id_}:
+    delete:
+      description: Updates DataPublicationType with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataPublicationTypes by id
+      tags:
+      - DataPublicationTypes
+    get:
+      description: Retrieves a list of DataPublicationType objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+          description: Success - the matching DataPublicationType
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataPublicationType matching the given ID
+      tags:
+      - DataPublicationTypes
+    patch:
+      description: Updates DataPublicationType with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationTypes by id
+      tags:
+      - DataPublicationTypes
+  /datagateway-api/datapublicationtypes/count:
+    get:
+      description: Return the count of the DataPublicationType objects that would
+        be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataPublicationType objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataPublicationTypes
+      tags:
+      - DataPublicationTypes
+  /datagateway-api/datapublicationtypes/findone:
+    get:
+      description: Retrieves the first DataPublicationType objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONTYPE'
+          description: Success - a DataPublicationType object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataPublicationType
+      tags:
+      - DataPublicationTypes
+  /datagateway-api/datapublicationusers:
+    get:
+      description: Retrieves a list of DataPublicationUser objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+                type: array
+          description: Success - returns DataPublicationUser that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DataPublicationUsers
+      tags:
+      - DataPublicationUsers
+    patch:
+      description: Updates DataPublicationUser object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationUsers
+      tags:
+      - DataPublicationUsers
+    post:
+      description: Creates new DataPublicationUser object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DataPublicationUsers
+      tags:
+      - DataPublicationUsers
+  /datagateway-api/datapublicationusers/{id_}:
+    delete:
+      description: Updates DataPublicationUser with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DataPublicationUsers by id
+      tags:
+      - DataPublicationUsers
+    get:
+      description: Retrieves a list of DataPublicationUser objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+          description: Success - the matching DataPublicationUser
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DataPublicationUser matching the given ID
+      tags:
+      - DataPublicationUsers
+    patch:
+      description: Updates DataPublicationUser with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DataPublicationUsers by id
+      tags:
+      - DataPublicationUsers
+  /datagateway-api/datapublicationusers/count:
+    get:
+      description: Return the count of the DataPublicationUser objects that would
+        be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DataPublicationUser objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DataPublicationUsers
+      tags:
+      - DataPublicationUsers
+  /datagateway-api/datapublicationusers/findone:
+    get:
+      description: Retrieves the first DataPublicationUser objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATAPUBLICATIONUSER'
+          description: Success - a DataPublicationUser object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DataPublicationUser
+      tags:
+      - DataPublicationUsers
   /datagateway-api/datafileformats:
     get:
       description: Retrieves a list of DatafileFormat objects
@@ -3921,6 +6133,478 @@ paths:
       summary: Get single DatasetParameter
       tags:
       - DatasetParameters
+  /datagateway-api/datasetinstruments:
+    get:
+      description: Retrieves a list of DatasetInstrument objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETINSTRUMENT'
+                type: array
+          description: Success - returns DatasetInstrument that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DatasetInstruments
+      tags:
+      - DatasetInstruments
+    patch:
+      description: Updates DatasetInstrument object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATASETINSTRUMENT'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETINSTRUMENT'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DatasetInstruments
+      tags:
+      - DatasetInstruments
+    post:
+      description: Creates new DatasetInstrument object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATASETINSTRUMENT'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETINSTRUMENT'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DatasetInstruments
+      tags:
+      - DatasetInstruments
+  /datagateway-api/datasetinstruments/{id_}:
+    delete:
+      description: Updates DatasetInstrument with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DatasetInstruments by id
+      tags:
+      - DatasetInstruments
+    get:
+      description: Retrieves a list of DatasetInstrument objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETINSTRUMENT'
+          description: Success - the matching DatasetInstrument
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DatasetInstrument matching the given ID
+      tags:
+      - DatasetInstruments
+    patch:
+      description: Updates DatasetInstrument with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATASETINSTRUMENT'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETINSTRUMENT'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DatasetInstruments by id
+      tags:
+      - DatasetInstruments
+  /datagateway-api/datasetinstruments/count:
+    get:
+      description: Return the count of the DatasetInstrument objects that would be
+        retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DatasetInstrument objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DatasetInstruments
+      tags:
+      - DatasetInstruments
+  /datagateway-api/datasetinstruments/findone:
+    get:
+      description: Retrieves the first DatasetInstrument objects that satisfies the
+        filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETINSTRUMENT'
+          description: Success - a DatasetInstrument object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DatasetInstrument
+      tags:
+      - DatasetInstruments
+  /datagateway-api/datasettechniques:
+    get:
+      description: Retrieves a list of DatasetTechnique objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETTECHNIQUE'
+                type: array
+          description: Success - returns DatasetTechnique that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get DatasetTechniques
+      tags:
+      - DatasetTechniques
+    patch:
+      description: Updates DatasetTechnique object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATASETTECHNIQUE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETTECHNIQUE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DatasetTechniques
+      tags:
+      - DatasetTechniques
+    post:
+      description: Creates new DatasetTechnique object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/DATASETTECHNIQUE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/DATASETTECHNIQUE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new DatasetTechniques
+      tags:
+      - DatasetTechniques
+  /datagateway-api/datasettechniques/{id_}:
+    delete:
+      description: Updates DatasetTechnique with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete DatasetTechniques by id
+      tags:
+      - DatasetTechniques
+    get:
+      description: Retrieves a list of DatasetTechnique objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETTECHNIQUE'
+          description: Success - the matching DatasetTechnique
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the DatasetTechnique matching the given ID
+      tags:
+      - DatasetTechniques
+    patch:
+      description: Updates DatasetTechnique with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DATASETTECHNIQUE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETTECHNIQUE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update DatasetTechniques by id
+      tags:
+      - DatasetTechniques
+  /datagateway-api/datasettechniques/count:
+    get:
+      description: Return the count of the DatasetTechnique objects that would be
+        retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the DatasetTechnique objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count DatasetTechniques
+      tags:
+      - DatasetTechniques
+  /datagateway-api/datasettechniques/findone:
+    get:
+      description: Retrieves the first DatasetTechnique objects that satisfies the
+        filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DATASETTECHNIQUE'
+          description: Success - a DatasetTechnique object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single DatasetTechnique
+      tags:
+      - DatasetTechniques
   /datagateway-api/datasettypes:
     get:
       description: Retrieves a list of DatasetType objects
@@ -4861,6 +7545,242 @@ paths:
       summary: Get single FacilityCycle
       tags:
       - FacilityCycles
+  /datagateway-api/fundingreferences:
+    get:
+      description: Retrieves a list of FundingReference objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FUNDINGREFERENCE'
+                type: array
+          description: Success - returns FundingReference that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get FundingReferences
+      tags:
+      - FundingReferences
+    patch:
+      description: Updates FundingReference object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/FUNDINGREFERENCE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FUNDINGREFERENCE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update FundingReferences
+      tags:
+      - FundingReferences
+    post:
+      description: Creates new FundingReference object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/FUNDINGREFERENCE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/FUNDINGREFERENCE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new FundingReferences
+      tags:
+      - FundingReferences
+  /datagateway-api/fundingreferences/{id_}:
+    delete:
+      description: Updates FundingReference with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete FundingReferences by id
+      tags:
+      - FundingReferences
+    get:
+      description: Retrieves a list of FundingReference objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FUNDINGREFERENCE'
+          description: Success - the matching FundingReference
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the FundingReference matching the given ID
+      tags:
+      - FundingReferences
+    patch:
+      description: Updates FundingReference with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FUNDINGREFERENCE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FUNDINGREFERENCE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update FundingReferences by id
+      tags:
+      - FundingReferences
+  /datagateway-api/fundingreferences/count:
+    get:
+      description: Return the count of the FundingReference objects that would be
+        retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the FundingReference objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count FundingReferences
+      tags:
+      - FundingReferences
+  /datagateway-api/fundingreferences/findone:
+    get:
+      description: Retrieves the first FundingReference objects that satisfies the
+        filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FUNDINGREFERENCE'
+          description: Success - a FundingReference object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single FundingReference
+      tags:
+      - FundingReferences
   /datagateway-api/groupings:
     get:
       description: Retrieves a list of Grouping objects
@@ -5567,6 +8487,481 @@ paths:
       summary: Get single Instrument
       tags:
       - Instruments
+  /datagateway-api/investigationfacilitycycles:
+    get:
+      description: Retrieves a list of InvestigationFacilityCycle objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+                type: array
+          description: Success - returns InvestigationFacilityCycle that satisfy the
+            filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get InvestigationFacilityCycles
+      tags:
+      - InvestigationFacilityCycles
+    patch:
+      description: Updates InvestigationFacilityCycle object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update InvestigationFacilityCycles
+      tags:
+      - InvestigationFacilityCycles
+    post:
+      description: Creates new InvestigationFacilityCycle object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new InvestigationFacilityCycles
+      tags:
+      - InvestigationFacilityCycles
+  /datagateway-api/investigationfacilitycycles/{id_}:
+    delete:
+      description: Updates InvestigationFacilityCycle with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete InvestigationFacilityCycles by id
+      tags:
+      - InvestigationFacilityCycles
+    get:
+      description: Retrieves a list of InvestigationFacilityCycle objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+          description: Success - the matching InvestigationFacilityCycle
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the InvestigationFacilityCycle matching the given ID
+      tags:
+      - InvestigationFacilityCycles
+    patch:
+      description: Updates InvestigationFacilityCycle with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update InvestigationFacilityCycles by id
+      tags:
+      - InvestigationFacilityCycles
+  /datagateway-api/investigationfacilitycycles/count:
+    get:
+      description: Return the count of the InvestigationFacilityCycle objects that
+        would be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the InvestigationFacilityCycle objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count InvestigationFacilityCycles
+      tags:
+      - InvestigationFacilityCycles
+  /datagateway-api/investigationfacilitycycles/findone:
+    get:
+      description: Retrieves the first InvestigationFacilityCycle objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFACILITYCYCLE'
+          description: Success - a InvestigationFacilityCycle object that satisfies
+            the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single InvestigationFacilityCycle
+      tags:
+      - InvestigationFacilityCycles
+  /datagateway-api/investigationfundings:
+    get:
+      description: Retrieves a list of InvestigationFunding objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+                type: array
+          description: Success - returns InvestigationFunding that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get InvestigationFundings
+      tags:
+      - InvestigationFundings
+    patch:
+      description: Updates InvestigationFunding object(s) with details provided in
+        the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update InvestigationFundings
+      tags:
+      - InvestigationFundings
+    post:
+      description: Creates new InvestigationFunding object(s) with details provided
+        in the request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new InvestigationFundings
+      tags:
+      - InvestigationFundings
+  /datagateway-api/investigationfundings/{id_}:
+    delete:
+      description: Updates InvestigationFunding with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete InvestigationFundings by id
+      tags:
+      - InvestigationFundings
+    get:
+      description: Retrieves a list of InvestigationFunding objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+          description: Success - the matching InvestigationFunding
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the InvestigationFunding matching the given ID
+      tags:
+      - InvestigationFundings
+    patch:
+      description: Updates InvestigationFunding with the specified ID with details
+        provided in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update InvestigationFundings by id
+      tags:
+      - InvestigationFundings
+  /datagateway-api/investigationfundings/count:
+    get:
+      description: Return the count of the InvestigationFunding objects that would
+        be retrieved given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the InvestigationFunding objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count InvestigationFundings
+      tags:
+      - InvestigationFundings
+  /datagateway-api/investigationfundings/findone:
+    get:
+      description: Retrieves the first InvestigationFunding objects that satisfies
+        the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/INVESTIGATIONFUNDING'
+          description: Success - a InvestigationFunding object that satisfies the
+            filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single InvestigationFunding
+      tags:
+      - InvestigationFundings
   /datagateway-api/investigationgroups:
     get:
       description: Retrieves a list of InvestigationGroup objects
@@ -8632,6 +12027,241 @@ paths:
       summary: Get single RelatedDatafile
       tags:
       - RelatedDatafiles
+  /datagateway-api/relateditems:
+    get:
+      description: Retrieves a list of RelatedItem objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RELATEDITEM'
+                type: array
+          description: Success - returns RelatedItem that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get RelatedItems
+      tags:
+      - RelatedItems
+    patch:
+      description: Updates RelatedItem object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RELATEDITEM'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RELATEDITEM'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update RelatedItems
+      tags:
+      - RelatedItems
+    post:
+      description: Creates new RelatedItem object(s) with details provided in the
+        request body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/RELATEDITEM'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/RELATEDITEM'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new RelatedItems
+      tags:
+      - RelatedItems
+  /datagateway-api/relateditems/{id_}:
+    delete:
+      description: Updates RelatedItem with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete RelatedItems by id
+      tags:
+      - RelatedItems
+    get:
+      description: Retrieves a list of RelatedItem objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RELATEDITEM'
+          description: Success - the matching RelatedItem
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the RelatedItem matching the given ID
+      tags:
+      - RelatedItems
+    patch:
+      description: Updates RelatedItem with the specified ID with details provided
+        in the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RELATEDITEM'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RELATEDITEM'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update RelatedItems by id
+      tags:
+      - RelatedItems
+  /datagateway-api/relateditems/count:
+    get:
+      description: Return the count of the RelatedItem objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the RelatedItem objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count RelatedItems
+      tags:
+      - RelatedItems
+  /datagateway-api/relateditems/findone:
+    get:
+      description: Retrieves the first RelatedItem objects that satisfies the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RELATEDITEM'
+          description: Success - a RelatedItem object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single RelatedItem
+      tags:
+      - RelatedItems
   /datagateway-api/rules:
     get:
       description: Retrieves a list of Rule objects
@@ -10275,6 +13905,241 @@ paths:
       summary: Get single StudyInvestigation
       tags:
       - StudyInvestigations
+  /datagateway-api/techniques:
+    get:
+      description: Retrieves a list of Technique objects
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TECHNIQUE'
+                type: array
+          description: Success - returns Technique that satisfy the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get Techniques
+      tags:
+      - Techniques
+    patch:
+      description: Updates Technique object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/TECHNIQUE'
+              type: array
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TECHNIQUE'
+                type: array
+          description: Success - returns the updated object(s)
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update Techniques
+      tags:
+      - Techniques
+    post:
+      description: Creates new Technique object(s) with details provided in the request
+        body
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/TECHNIQUE'
+              type: array
+        description: The values to use to create the new object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/TECHNIQUE'
+                type: array
+          description: Success - returns the created object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Create new Techniques
+      tags:
+      - Techniques
+  /datagateway-api/techniques/{id_}:
+    delete:
+      description: Updates Technique with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to delete
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: No Content - Object was successfully deleted
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Delete Techniques by id
+      tags:
+      - Techniques
+    get:
+      description: Retrieves a list of Technique objects
+      parameters:
+      - description: The id of the entity to retrieve
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TECHNIQUE'
+          description: Success - the matching Technique
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Find the Technique matching the given ID
+      tags:
+      - Techniques
+    patch:
+      description: Updates Technique with the specified ID with details provided in
+        the request body
+      parameters:
+      - description: The id of the entity to update
+        in: path
+        name: id_
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TECHNIQUE'
+        description: The values to use to update the object(s) with
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TECHNIQUE'
+          description: Success - returns the updated object
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Update Techniques by id
+      tags:
+      - Techniques
+  /datagateway-api/techniques/count:
+    get:
+      description: Return the count of the Technique objects that would be retrieved
+        given the filters provided
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: integer
+          description: Success - The count of the Technique objects
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Count Techniques
+      tags:
+      - Techniques
+  /datagateway-api/techniques/findone:
+    get:
+      description: Retrieves the first Technique objects that satisfies the filters.
+      parameters:
+      - $ref: '#/components/parameters/WHERE_FILTER'
+      - $ref: '#/components/parameters/ORDER_FILTER'
+      - $ref: '#/components/parameters/LIMIT_FILTER'
+      - $ref: '#/components/parameters/SKIP_FILTER'
+      - $ref: '#/components/parameters/DISTINCT_FILTER'
+      - $ref: '#/components/parameters/INCLUDE_FILTER'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TECHNIQUE'
+          description: Success - a Technique object that satisfies the filters
+        '400':
+          description: Bad request - Something was wrong with the request
+        '401':
+          description: Unauthorized - No session ID found in HTTP Auth. header
+        '403':
+          description: Forbidden - The session ID provided is invalid
+        '404':
+          description: No such record - Unable to find a record in ICAT
+      summary: Get single Technique
+      tags:
+      - Techniques
   /datagateway-api/usergroups:
     get:
       description: Retrieves a list of UserGroup objects
