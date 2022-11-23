@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v6.1.1 (2022-11-23)
+### Fix
+* Do not attempt to create related entities if not included #387 ([`819e7a1`](https://github.com/ral-facilities/datagateway-api/commit/819e7a1582d8d108fe5f18b210c08d67cd0a3845))
+
 ## v6.1.0 (2022-11-23)
 ### Feature
 * Add new entity endpoints for icat5 ([`dc14f9f`](https://github.com/ral-facilities/datagateway-api/commit/dc14f9f8aeb5a9849bc69cf647bf068b04a63d81))
