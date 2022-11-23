@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "datagateway-api"
-version = "6.0.0"
+version = "6.1.0"
 description = "ICAT API to interface with the DataGateway"
 license = "Apache-2.0"
 readme = "README.md"
