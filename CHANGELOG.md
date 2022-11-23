@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v6.2.0 (2022-11-23)
+### Feature
+* Add new entity endpoints for icat5 ([`dd18e18`](https://github.com/ral-facilities/datagateway-api/commit/dd18e18bc19f87c5aa7c99c144f262b68e4fe0c6))
+
+### Documentation
+* Updated postman collection with new entities ([`4dd4895`](https://github.com/ral-facilities/datagateway-api/commit/4dd489574245f4f6020c490d5cddeb3fc3c65c91))
+
 ## v6.1.1 (2022-11-23)
 ### Fix
 * Do not attempt to create related entities if not included #387 ([`819e7a1`](https://github.com/ral-facilities/datagateway-api/commit/819e7a1582d8d108fe5f18b210c08d67cd0a3845))
