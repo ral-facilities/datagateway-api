@@ -1,5 +1,10 @@
+import json
+from unittest.mock import mock_open, patch
+
 from icat.query import Query
 import pytest
+
+from datagateway_api.src.common.config import APIConfig
 
 
 @pytest.fixture()
@@ -48,3 +53,16 @@ def test_config_data():
         "test_user_credentials": {"username": "root", "password": "pw"},
         "test_mechanism": "simple",
     }
+
+
+@pytest.fixture()
+def test_config(test_config_data):
+    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+        return APIConfig.load("test/path")
+
+
+@pytest.fixture()
+def test_config_without_search_api(test_config_data):
+    del test_config_data["search_api"]
+    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
+        return APIConfig.load("test/path")
