@@ -3,9 +3,11 @@ import argparse
 import datetime
 from multiprocessing import Process
 import enum
+import time
 
 from faker import Faker
 from icat.client import Client
+from icat.query import Query
 from icat import entities as entity
 
 from datagateway_api.src.common.config import Config
@@ -109,9 +111,20 @@ def apply_common_parameter_attributes(entity, i):
         entity.dateTimeValue = get_start_date(i)
 
     if entity.type.valueType == "STRING":
-        entity.stringValue = entity.type.permissibleStringValues[
-            1
-        ].value  # faker.word() + str(i)
+        # print(icat_client().search(Query(icat_client(), "PermissibleStringValue", conditions = {"type.id": f"= '{entity.type.id}'"})))
+        timer = time.time()
+        entity.stringValue = (
+            icat_client()
+            .search(
+                Query(
+                    icat_client(),
+                    "PermissibleStringValue",
+                    conditions={"type.id": f"= '{entity.type.id}'"},
+                )
+            )[0]
+            .value
+        )  # faker.word() + str(i)
+        print(f"Time elapsed: {time.time() - timer}")
 
     entity.error = faker.random_int(0, 42341)
     entity.rangeBottom = faker.random_int(1, 50)
@@ -130,7 +143,8 @@ def icat_client():
 
 
 class Generator(ABC):
-    client = icat_client()
+    def __init__(self, client):
+        self.client = client
 
     @property
     @abstractmethod
@@ -507,7 +521,7 @@ class InvestigationGroupGenerator(Generator):
 
 class KeywordGenerator(Generator):
     tier = 3
-    amount = 15  # 000
+    amount = 15000
 
     def generate(self):
         for i in range(1, self.amount):
@@ -580,7 +594,7 @@ class ParameterTypeGenerator(Generator):
 
 
 class InvestigationParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = InvestigationGenerator.amount
 
     def generate(self):
@@ -733,7 +747,7 @@ class PermissibleStringValueGenerator(Generator):
 
 
 class DataCollectionParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = DataCollectionGenerator.amount
 
     def generate(self):
@@ -752,7 +766,7 @@ class DataCollectionParameterGenerator(Generator):
 
 
 class SampleParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = SampleGenerator.amount
 
     def generate(self):
@@ -789,7 +803,7 @@ class DatafileParameterGenerator(Generator):
         datafile_param.create()
 
 
-def generate_all(i, generators):
+def generate_all(i, generators, client):
     processes = []
     for generator in generators:
         if generator.tier == i:
@@ -805,11 +819,12 @@ def generate_all(i, generators):
 
 
 def main():
+    client = icat_client()
     start_time = datetime.datetime.now()
-    generators = [generator() for generator in Generator.__subclasses__()]
+    generators = [generator(client) for generator in Generator.__subclasses__()]
     tiers = 7
     for i in range(tiers):
-        generate_all(i, generators)
+        generate_all(i, generators, client)
 
     print(
         f"Added {sum(generator.amount for generator in generators)} entities in"
