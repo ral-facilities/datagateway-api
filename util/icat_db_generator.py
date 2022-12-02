@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 import argparse
 import datetime
-from multiprocessing import Process
 import enum
-import time
+from multiprocessing import Process
 
 from faker import Faker
 from icat.client import Client
 from icat.query import Query
-from icat import entities as entity
 
 from datagateway_api.src.common.config import Config
 
@@ -27,7 +25,7 @@ parser.add_argument(
     dest="years",
     help="Provide number of years to generate",
     type=int,
-    default=1,  # 20
+    default=20,
 )
 args = parser.parse_args()
 SEED = args.seed
@@ -64,67 +62,23 @@ def get_end_date(i):
     )
 
 
-def apply_common_attributes(entity, iterator, tablename):
-    # entity.createId = "user"
-    # entity.modId = "user"
-    # entity.modTime = get_date_time()
-    # entity.createTime = get_date_time()
-    try:
-        entity.name = f"{tablename} {iterator}"
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no name attribute")
-    try:
-        entity.description = faker.text()
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no description attribute")
-    try:
-        entity.facility = icat_client().get("Facility", 1)
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no facility attribute")
-    try:
-        entity.startDate = get_start_date(iterator)
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no startDate attribute")
-    try:
-        entity.endDate = get_end_date(iterator)
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no endDate attribute")
-    try:
-        entity.doi = faker.isbn10(separator="-")
-    except AttributeError:
-        pass
-        # print(f"{tablename} has no doi attribute")
-
-
-def apply_common_parameter_attributes(entity, i):
+def apply_common_parameter_attributes(entity, i, client):
     if entity.type.valueType == "NUMERIC":
         entity.numericValue = faker.random_int(
-            entity.type.minimumNumericValue, entity.type.maximumNumericValue - 1
+            entity.type.minimumNumericValue, entity.type.maximumNumericValue - 1,
         )
 
     if entity.type.valueType == "DATE_AND_TIME":
         entity.dateTimeValue = get_start_date(i)
 
     if entity.type.valueType == "STRING":
-        # print(icat_client().search(Query(icat_client(), "PermissibleStringValue", conditions = {"type.id": f"= '{entity.type.id}'"})))
-        timer = time.time()
-        entity.stringValue = (
-            icat_client()
-            .search(
-                Query(
-                    icat_client(),
-                    "PermissibleStringValue",
-                    conditions={"type.id": f"= '{entity.type.id}'"},
-                )
-            )[0]
-            .value
-        )  # faker.word() + str(i)
-        print(f"Time elapsed: {time.time() - timer}")
+        entity.stringValue = client.search(
+            Query(
+                client,
+                "PermissibleStringValue",
+                conditions={"type.id": f"= '{entity.type.id}'"},
+            ),
+        )[0].value
 
     entity.error = faker.random_int(0, 42341)
     entity.rangeBottom = faker.random_int(1, 50)
@@ -167,10 +121,6 @@ class FacilityGenerator(Generator):
 
     def generate(self):
         facility = self.client.new("facility")
-        # facility.createId = "user"
-        # facility.modId = "user"
-        # facility.modTime = get_date_time()
-        # facility.createTime = get_date_time()
         facility.daysUntilRelease = 10
         facility.description = "Lorem ipsum light source"
         facility.name = "LILS"
@@ -186,7 +136,6 @@ class DataCollectionGenerator(Generator):
             DataCollectionGenerator.generate_data_collection(self, i)
 
     def generate_data_collection(self, i):
-        tablename = "DATACOLLECTION"
         data_collection = self.client.new("dataCollection")
         data_collection.doi = faker.isbn10(separator="-")
         data_collection.create()
@@ -205,7 +154,7 @@ class ApplicationGenerator(Generator):
         application = self.client.new("application")
         application.name = f"{tablename} {i}"
         application.version = faker.random_int(1, 4)
-        application.facility = icat_client().get("Facility", 1)
+        application.facility = self.client.get("Facility", 1)
         application.create()
 
 
@@ -222,7 +171,7 @@ class DatasetTypeGenerator(Generator):
         dataset_type = self.client.new("datasetType")
         dataset_type.name = f"{tablename} {i}"
         dataset_type.description = faker.text()
-        dataset_type.facility = icat_client().get("Facility", 1)
+        dataset_type.facility = self.client.get("Facility", 1)
         dataset_type.create()
 
 
@@ -235,7 +184,6 @@ class FacilityCycleGenerator(Generator):
             FacilityCycleGenerator.generate_facility_cycle(self, i)
 
     def generate_facility_cycle(self, i):
-        tablename = "FACILITYCYCLE"
         facility_cycle = self.client.new("facilityCycle")
         facility_cycle.description = faker.text()
         # overwrite the name with a more suitable one
@@ -244,7 +192,7 @@ class FacilityCycleGenerator(Generator):
         facility_cycle.name = f"{year} cycle {k}"
         facility_cycle.startDate = datetime.datetime(year, 2 * k, k)
         facility_cycle.endDate = datetime.datetime(year, 2 * k + 3, 5 * k)
-        facility_cycle.facility = icat_client().get("Facility", 1)
+        facility_cycle.facility = self.client.get("Facility", 1)
         facility_cycle.create()
 
 
@@ -263,7 +211,7 @@ class SampleTypeGenerator(Generator):
         sample_type.name = f"{tablename} {i}"
         sample_type.molecularFormula = faker.random_int(43, 13323)
         sample_type.safetyInformation = faker.text()
-        sample_type.facility = icat_client().get("Facility", 1)
+        sample_type.facility = self.client.get("Facility", 1)
         sample_type.create()
 
 
@@ -283,7 +231,7 @@ class InstrumentGenerator(Generator):
         instrument.fullName = faker.text()
         instrument.url = faker.url()
         instrument.type = str(i)
-        instrument.facility = icat_client().get("Facility", 1)
+        instrument.facility = self.client.get("Facility", 1)
         instrument.create()
 
 
@@ -296,7 +244,6 @@ class UserGenerator(Generator):
             UserGenerator.generate_users(self, i)
 
     def generate_users(self, i):
-        tablename = "USER_"
         user = self.client.new("user")
         user.email = faker.ascii_email()
         user.name = faker.first_name() + f"{i}"
@@ -319,7 +266,7 @@ class DatafileFormatGenerator(Generator):
         datafile_format.name = f"{tablename} {i}"
         datafile_format.description = faker.text()
         datafile_format.version = faker.random_int(1, 14)
-        datafile_format.facility = icat_client().get("Facility", 1)
+        datafile_format.facility = self.client.get("Facility", 1)
         datafile_format.create()
 
 
@@ -334,10 +281,9 @@ class InvestigationTypeGenerator(Generator):
     def generate_investigation_type(self, i):
         tablename = "INVESTIGATIONTYPE"
         investigation_type = self.client.new("investigationType")
-        investigation_type.facility = icat_client().get("Facility", 1)
+        investigation_type.facility = self.client.get("Facility", 1)
         investigation_type.name = f"{tablename} {i}"
         investigation_type.description = faker.text()
-        investigation_type.facility = icat_client().get("Facility", 1)
         investigation_type.create()
 
 
@@ -379,9 +325,9 @@ class InvestigationGenerator(Generator):
         investigation.visitId = faker.random_int(1, 100)
         investigation.type = self.client.get(
             "InvestigationType",
-            faker.random_int(1, InvestigationTypeGenerator.amount - 1,),
+            faker.random_int(1, InvestigationTypeGenerator.amount - 1),
         )
-        investigation.facility = icat_client().get("Facility", 1)
+        investigation.facility = self.client.get("Facility", 1)
         investigation.create()
 
 
@@ -394,12 +340,11 @@ class InvestigationUserGenerator(Generator):
             InvestigationUserGenerator.generate_investigation_user(self, i)
 
     def generate_investigation_user(self, i):
-        tablename = "INVESTIGATIONUSER"
         investigation_user = self.client.new("investigationUser")
         investigation_user.role = ["PI", "CI"][faker.random_int(0, 1)]
         investigation_user.investigation = self.client.get("Investigation", i)
         investigation_user.user = self.client.get(
-            "User", faker.random_int(1, UserGenerator.amount - 1)
+            "User", faker.random_int(1, UserGenerator.amount - 1),
         )
         investigation_user.create()
 
@@ -413,11 +358,10 @@ class InstrumentScientistGenerator(Generator):
             InstrumentScientistGenerator.generate_instrument_scientist(self, i)
 
     def generate_instrument_scientist(self, i):
-        tablename = "INSTRUMENTSCIENTIST"
         instrument_scientist = self.client.new("instrumentScientist")
         instrument_scientist.instrument = self.client.get("Instrument", i)
         instrument_scientist.user = self.client.get(
-            "User", faker.random_int(1, UserGenerator.amount - 1)
+            "User", faker.random_int(1, UserGenerator.amount - 1),
         )
         instrument_scientist.create()
 
@@ -431,11 +375,10 @@ class InvestigationInstrumentGenerator(Generator):
             InvestigationInstrumentGenerator.generate_investigation_instrument(self, i)
 
     def generate_investigation_instrument(self, i):
-        tablename = "INVESTIGATIONINSTRUMENT"
         investigation_instrument = self.client.new("investigationInstrument")
         investigation_instrument.investigation = self.client.get("Investigation", i)
         investigation_instrument.instrument = self.client.get(
-            "Instrument", faker.random_int(1, InstrumentGenerator.amount - 1,)
+            "Instrument", faker.random_int(1, InstrumentGenerator.amount - 1),
         )
         investigation_instrument.create()
 
@@ -454,7 +397,7 @@ class SampleGenerator(Generator):
         sample.name = f"{tablename} {i}"
         sample.investigation = self.client.get("Investigation", i)
         sample.type = self.client.get(
-            "SampleType", faker.random_int(1, SampleTypeGenerator.amount - 1)
+            "SampleType", faker.random_int(1, SampleTypeGenerator.amount - 1),
         )
         sample.create()
 
@@ -468,10 +411,9 @@ class UserGroupGenerator(Generator):
             UserGroupGenerator.generate_user_groups(self, i)
 
     def generate_user_groups(self, i):
-        tablename = "USERGROUP"
         user_group = self.client.new("userGroup")
         user_group.grouping = self.client.get(
-            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1)
+            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
         )
         user_group.user = self.client.get("User", i)
         user_group.create()
@@ -509,11 +451,10 @@ class InvestigationGroupGenerator(Generator):
             InvestigationGroupGenerator.generate_investigation_group(self, i)
 
     def generate_investigation_group(self, i):
-        tablename = "INVESTIGATIONGROUP"
         investigation_group = self.client.new("investigationGroup")
         investigation_group.role = faker.text() + str(i)
         investigation_group.grouping = self.client.get(
-            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1)
+            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
         )
         investigation_group.investigation = self.client.get("Investigation", i)
         investigation_group.create()
@@ -528,11 +469,10 @@ class KeywordGenerator(Generator):
             KeywordGenerator.generate_keyword(self, i)
 
     def generate_keyword(self, i):
-        tablename = "KEYWORD"
         keyword = self.client.new("keyword")
         keyword.name = faker.word() + str(i)
         keyword.investigation = self.client.get(
-            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1)
+            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
         )
         keyword.create()
 
@@ -546,7 +486,6 @@ class PublicationGenerator(Generator):
             PublicationGenerator.generate_publication(self, i)
 
     def generate_publication(self, i):
-        tablename = "PUBLICATION"
         publication = self.client.new("publication")
         publication.doi = faker.isbn10(separator="-")
         publication.fullReference = faker.text()
@@ -554,7 +493,7 @@ class PublicationGenerator(Generator):
         publication.repositoryId = faker.random_int(1, 23232234)
         publication.url = faker.url()
         publication.investigation = self.client.get(
-            "Investigation", i % (InvestigationGenerator.amount - 1) + 1
+            "Investigation", i % (InvestigationGenerator.amount - 1) + 1,
         )
         publication.create()
 
@@ -589,7 +528,7 @@ class ParameterTypeGenerator(Generator):
         parameter_type.unitsFullName = faker.word()
         parameter_type.valueType = list(self.ValueTypeEnum)[faker.random_int(0, 2)].name
         parameter_type.verified = faker.random_int(0, 1)
-        parameter_type.facility = icat_client().get("Facility", 1)
+        parameter_type.facility = self.client.get("Facility", 1)
         parameter_type.create()
 
 
@@ -602,12 +541,11 @@ class InvestigationParameterGenerator(Generator):
             InvestigationParameterGenerator.generate_investigation_parameter(self, i)
 
     def generate_investigation_parameter(self, i):
-        tablename = "INVESTIGATIONPARAMETER"
         investigation_parameter = self.client.new("investigationParameter")
         investigation_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1,)
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        apply_common_parameter_attributes(investigation_parameter, i)
+        apply_common_parameter_attributes(investigation_parameter, i, self.client)
         investigation_parameter.investigation = self.client.get("Investigation", i)
         investigation_parameter.create()
 
@@ -621,7 +559,6 @@ class ShiftGenerator(Generator):
             ShiftGenerator.generate_shift(self, i)
 
     def generate_shift(self, i):
-        tablename = "SHIFT"
         shift = self.client.new("shift")
         shift.startDate = get_start_date(i)
         shift.endDate = get_end_date(i)
@@ -639,11 +576,10 @@ class StudyInvestigationGenerator(Generator):
             StudyInvestigationGenerator.generate_study_investigation(self, i)
 
     def generate_study_investigation(self, i):
-        tablename = "STUDYINVESTIGATION"
         study_investigation = self.client.new("studyInvestigation")
         study_investigation.investigation = self.client.get("Investigation", i)
         study_investigation.study = self.client.get(
-            "Study", faker.random_int(1, StudyGenerator.amount - 1)
+            "Study", faker.random_int(1, StudyGenerator.amount - 1),
         )
         study_investigation.create()
 
@@ -674,10 +610,10 @@ class DatasetGenerator(Generator):
         )
         sample_id = i % SampleGenerator.amount
         dataset.sample = self.client.get(
-            "Sample", sample_id if sample_id != 0 else SampleGenerator.amount - 1
+            "Sample", sample_id if sample_id != 0 else SampleGenerator.amount - 1,
         )
         dataset.type = self.client.get(
-            "DatasetType", faker.random_int(1, DatasetTypeGenerator.amount - 1)
+            "DatasetType", faker.random_int(1, DatasetTypeGenerator.amount - 1),
         )
         dataset.create()
 
@@ -691,12 +627,11 @@ class DatasetParameterGenerator(Generator):
             DatasetParameterGenerator.generate_dataset_parameter(self, i)
 
     def generate_dataset_parameter(self, i):
-        tablename = "DATASETPARAMETER"
         dataset_param = self.client.new("datasetParameter")
         dataset_param.type = self.client.get("ParameterType", i)
-        apply_common_parameter_attributes(dataset_param, i)
+        apply_common_parameter_attributes(dataset_param, i, self.client)
         dataset_param.dataset = self.client.get(
-            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1)
+            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
         )
         dataset_param.create()
 
@@ -720,10 +655,10 @@ class DatafileGenerator(Generator):
         datafile.datafileModTime = datafile.modTime
         datafile.fileSize = faker.random_int(123, 213123121)
         datafile.datafileFormat = self.client.get(
-            "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1,)
+            "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1),
         )
         datafile.dataset = self.client.get(
-            "Dataset", i % (DatasetGenerator.amount - 1) + 1
+            "Dataset", i % (DatasetGenerator.amount - 1) + 1,
         )
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
@@ -739,7 +674,6 @@ class PermissibleStringValueGenerator(Generator):
             PermissibleStringValueGenerator.generate_permissible_string_value(self, i)
 
     def generate_permissible_string_value(self, i):
-        tablename = "PERMISSIBLESTRINGVALUE"
         permissible_string_value = self.client.new("permissibleStringValue")
         permissible_string_value.value = f"value {i}"
         permissible_string_value.type = self.client.get("ParameterType", i)
@@ -755,12 +689,11 @@ class DataCollectionParameterGenerator(Generator):
             DataCollectionParameterGenerator.generate_data_collection_parameter(self, i)
 
     def generate_data_collection_parameter(self, i):
-        tablename = "DATACOLLECTIONPARAMETER"
         datacollection_parameter = self.client.new("dataCollectionParameter")
         datacollection_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1,)
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        apply_common_parameter_attributes(datacollection_parameter, i)
+        apply_common_parameter_attributes(datacollection_parameter, i, self.client)
         datacollection_parameter.dataCollection = self.client.get("DataCollection", i)
         datacollection_parameter.create()
 
@@ -774,12 +707,11 @@ class SampleParameterGenerator(Generator):
             SampleParameterGenerator.generate_sample_parameter(self, i)
 
     def generate_sample_parameter(self, i):
-        tablename = "SAMPLEPARAMETER"
         sample_parameter = self.client.new("sampleParameter")
         sample_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1,)
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        apply_common_parameter_attributes(sample_parameter, i)
+        apply_common_parameter_attributes(sample_parameter, i, self.client)
         sample_parameter.sample = self.client.get("Sample", i)
         sample_parameter.create()
 
@@ -793,12 +725,11 @@ class DatafileParameterGenerator(Generator):
             DatafileParameterGenerator.generate_datafile_parameter(self, i)
 
     def generate_datafile_parameter(self, i):
-        tablename = "DATAFILEPARAMETER"
         datafile_param = self.client.new("datafileParameter")
         datafile_param.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1,)
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        apply_common_parameter_attributes(datafile_param, i)
+        apply_common_parameter_attributes(datafile_param, i, self.client)
         datafile_param.datafile = self.client.get("Datafile", i)
         datafile_param.create()
 
