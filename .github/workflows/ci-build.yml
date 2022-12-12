@@ -29,6 +29,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
 
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
+
       # Install Nox, Poetry and API's dependencies
       - name: Install Nox
         run: pip install nox==2020.8.22
@@ -104,9 +107,6 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-
-      - name: Checkout DataGateway API
-        uses: actions/checkout@v2
 
       # Prep for using the API for tests
       - name: Create log file
