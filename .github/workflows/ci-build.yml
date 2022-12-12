@@ -55,6 +55,20 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      # Prep for using the API for tests
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`yq \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
+      - name: Configure datagateway extension
+        run: echo "`yq \
+          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+      - name: Create config.yaml
+        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+
       # Run Unit tests
       - name: Run Nox unit tests session
         run: nox -p ${{ matrix.python-version }} -s unit_tests -- --cov=datagateway_api --cov-report=xml
@@ -107,20 +121,6 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
-
-      # Prep for using the API for tests
-      - name: Create log file
-        run: touch logs.log
-      - name: Configure log file location
-        run: echo "`yq \
-          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
-      - name: Configure datagateway extension
-        run: echo "`yq \
-          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
-      - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
       - name: Add dummy data to icatdb
         run: |
