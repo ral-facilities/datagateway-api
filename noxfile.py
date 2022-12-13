@@ -73,7 +73,8 @@ def safety(session):
             external=True,
         )
         # Ignore 50916 as the latest version of pydantic and
-        # Ignore 51457 as the latest version of pytest does not support
+        # Ignore 51457 as the latest version of pytest and
+        # Ignore 51668 as the latest version of SQLAchemy as they do not support
         # python 3.6 which is still used in production
         session.run(
             "safety",
@@ -84,6 +85,8 @@ def safety(session):
             "50916",
             "--ignore",
             "51457",
+            "--ignore",
+            "51668",
         )
 
         try:
