@@ -132,7 +132,9 @@ jobs:
         run: nox -p ${{ matrix.python-version }} -s integration_tests -- --cov=datagateway_api --cov-report=xml
       - name: Upload code coverage report
         if: matrix.python-version == '3.6'
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
+        with:
+          verbose: true
 
   linting:
     runs-on: ubuntu-20.04
