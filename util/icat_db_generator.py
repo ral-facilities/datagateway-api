@@ -62,6 +62,10 @@ def get_end_date(i):
     )
 
 
+def validate():
+    pass
+
+
 def apply_common_parameter_attributes(entity, i, client):
     if entity.type.valueType == "NUMERIC":
         entity.numericValue = faker.random_int(
@@ -463,10 +467,16 @@ class InvestigationGroupGenerator(Generator):
 class KeywordGenerator(Generator):
     tier = 3
     amount = 15000
+    keywords = []
 
     def generate(self):
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
-            KeywordGenerator.generate_keyword(self, i)
+            KeywordGenerator.generate_keyword(
+                self, i
+            )  # Currently takes about 20 minutes to generate
+        self.client.createMany(self.keywords)
+        print(f"Time to generate keywords: {datetime.datetime.now() - timer}")
 
     def generate_keyword(self, i):
         keyword = self.client.new("keyword")
@@ -474,7 +484,8 @@ class KeywordGenerator(Generator):
         keyword.investigation = self.client.get(
             "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
         )
-        keyword.create()
+        keyword.validate = validate
+        self.keywords.append(keyword)
 
 
 class PublicationGenerator(Generator):
@@ -537,8 +548,12 @@ class InvestigationParameterGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             InvestigationParameterGenerator.generate_investigation_parameter(self, i)
+        print(
+            f"Time to generate Investigation Parameters: {datetime.datetime.now() - timer}"
+        )
 
     def generate_investigation_parameter(self, i):
         investigation_parameter = self.client.new("investigationParameter")
@@ -623,8 +638,10 @@ class DatasetParameterGenerator(Generator):
     amount = ParameterTypeGenerator.amount
 
     def generate(self):
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DatasetParameterGenerator.generate_dataset_parameter(self, i)
+        print(f"Time to generate Dataset Parameters: {datetime.datetime.now() - timer}")
 
     def generate_dataset_parameter(self, i):
         dataset_param = self.client.new("datasetParameter")
@@ -638,11 +655,18 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 55  # 55 files per Dataset
+    amount = DatasetGenerator.amount * 55  # 55 files per Dataset (26399)
+    datafiles = []
 
     def generate(self):
+        self.client.refresh()
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
+            timer2 = datetime.datetime.now()
             DatafileGenerator.generate_datafile(self, i)
+            print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
+        # self.client.createMany(self.datafiles)
+        print(f"Time to generate Datafiles: {datetime.datetime.now() - timer}")
 
     def generate_datafile(self, i):
         tablename = "DATAFILE"
@@ -663,6 +687,7 @@ class DatafileGenerator(Generator):
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
         datafile.create()
+        # self.datafiles.append(datafile)
 
 
 class PermissibleStringValueGenerator(Generator):
@@ -685,8 +710,12 @@ class DataCollectionParameterGenerator(Generator):
     amount = DataCollectionGenerator.amount
 
     def generate(self):
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DataCollectionParameterGenerator.generate_data_collection_parameter(self, i)
+        print(
+            f"Time to generate DataCollection Parameters: {datetime.datetime.now() - timer}"
+        )
 
     def generate_data_collection_parameter(self, i):
         datacollection_parameter = self.client.new("dataCollectionParameter")
@@ -703,8 +732,10 @@ class SampleParameterGenerator(Generator):
     amount = SampleGenerator.amount
 
     def generate(self):
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             SampleParameterGenerator.generate_sample_parameter(self, i)
+        print(f"Time to generate Sample Parameters: {datetime.datetime.now() - timer}")
 
     def generate_sample_parameter(self, i):
         sample_parameter = self.client.new("sampleParameter")
@@ -721,8 +752,13 @@ class DatafileParameterGenerator(Generator):
     amount = DatafileGenerator.amount
 
     def generate(self):
+        self.client.refresh()
+        timer = datetime.datetime.now()
         for i in range(1, self.amount):
+            timer2 = datetime.datetime.now()
             DatafileParameterGenerator.generate_datafile_parameter(self, i)
+            print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
+        print(f"Time to generate DatafileParameters: {datetime.datetime.now() - timer}")
 
     def generate_datafile_parameter(self, i):
         datafile_param = self.client.new("datafileParameter")
