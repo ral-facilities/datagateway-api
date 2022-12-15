@@ -18,11 +18,11 @@ class TestICATHelpers:
         [
             pytest.param("User", "user", id="singular single word entity name"),
             pytest.param(
-                "PublicStep", "publicStep", id="singular two word entity name",
+                "PublicStep", "publicstep", id="singular two word entity name",
             ),
             pytest.param(
                 "PermissibleStringValue",
-                "permissibleStringValue",
+                "permissiblestringvalue",
                 id="singular multi-word entity name",
             ),
         ],
