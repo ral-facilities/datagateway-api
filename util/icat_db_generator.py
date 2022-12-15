@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import argparse
 import datetime
 import enum
+import multiprocessing
 from multiprocessing import Process
 
 from faker import Faker
@@ -101,8 +102,7 @@ def icat_client():
 
 
 class Generator(ABC):
-    def __init__(self, client):
-        self.client = client
+    client = icat_client()
 
     @property
     @abstractmethod
@@ -471,21 +471,26 @@ class KeywordGenerator(Generator):
 
     def generate(self):
         timer = datetime.datetime.now()
-        for i in range(1, self.amount):
-            KeywordGenerator.generate_keyword(
-                self, i
-            )  # Currently takes about 20 minutes to generate
+        with multiprocessing.get_context("spawn").Pool() as pool:
+            pool.map(
+                KeywordGenerator.generate_keyword, range(1, self.amount)
+            )  # Takes about 5 minutes
+        # for i in range(1, self.amount):
+        #    KeywordGenerator.generate_keyword(
+        #        self, i
+        #    )  # Currently takes about 20 minutes to generate
         self.client.createMany(self.keywords)
         print(f"Time to generate keywords: {datetime.datetime.now() - timer}")
 
-    def generate_keyword(self, i):
-        keyword = self.client.new("keyword")
+    @classmethod
+    def generate_keyword(cls, i):
+        keyword = cls.client.new("keyword")
         keyword.name = faker.word() + str(i)
-        keyword.investigation = self.client.get(
+        keyword.investigation = cls.client.get(
             "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
         )
         keyword.validate = validate
-        self.keywords.append(keyword)
+        cls.keywords.append(keyword)
 
 
 class PublicationGenerator(Generator):
@@ -661,16 +666,19 @@ class DatafileGenerator(Generator):
     def generate(self):
         self.client.refresh()
         timer = datetime.datetime.now()
-        for i in range(1, self.amount):
-            timer2 = datetime.datetime.now()
-            DatafileGenerator.generate_datafile(self, i)
-            print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
+        with multiprocessing.get_context("spawn").Pool() as pool:
+            pool.map(DatafileGenerator.generate_datafile, range(1, self.amount))
+        # for i in range(1, self.amount):
+        #    timer2 = datetime.datetime.now()
+        #    DatafileGenerator.generate_datafile(self, i)
+        #    print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
         # self.client.createMany(self.datafiles)
         print(f"Time to generate Datafiles: {datetime.datetime.now() - timer}")
 
-    def generate_datafile(self, i):
+    @classmethod
+    def generate_datafile(cls, i):
         tablename = "DATAFILE"
-        datafile = self.client.new("datafile")
+        datafile = cls.client.new("datafile")
         datafile.name = f"{tablename} {i}"
         datafile.description = faker.text()
         datafile.doi = faker.isbn10(separator="-")
@@ -678,10 +686,10 @@ class DatafileGenerator(Generator):
         datafile.datafileCreateTime = datafile.createTime
         datafile.datafileModTime = datafile.modTime
         datafile.fileSize = faker.random_int(123, 213123121)
-        datafile.datafileFormat = self.client.get(
+        datafile.datafileFormat = cls.client.get(
             "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1),
         )
-        datafile.dataset = self.client.get(
+        datafile.dataset = cls.client.get(
             "Dataset", i % (DatasetGenerator.amount - 1) + 1,
         )
         datafile.name = f"Datafile {i}"
@@ -754,10 +762,16 @@ class DatafileParameterGenerator(Generator):
     def generate(self):
         self.client.refresh()
         timer = datetime.datetime.now()
-        for i in range(1, self.amount):
-            timer2 = datetime.datetime.now()
-            DatafileParameterGenerator.generate_datafile_parameter(self, i)
-            print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
+        with multiprocessing.get_context("spawn").Pool() as pool:
+            pool.map(
+                DatafileParameterGenerator.generate_datafile_parameter.range(
+                    1, self.amount
+                )
+            )
+        # for i in range(1, self.amount):
+        #    timer2 = datetime.datetime.now()
+        #    DatafileParameterGenerator.generate_datafile_parameter(self, i)
+        #    print(f"Time to generate Datafile parameter {i} {datetime.datetime.now() - timer2}")
         print(f"Time to generate DatafileParameters: {datetime.datetime.now() - timer}")
 
     def generate_datafile_parameter(self, i):
@@ -788,7 +802,7 @@ def generate_all(i, generators, client):
 def main():
     client = icat_client()
     start_time = datetime.datetime.now()
-    generators = [generator(client) for generator in Generator.__subclasses__()]
+    generators = [generator() for generator in Generator.__subclasses__()]
     tiers = 7
     for i in range(tiers):
         generate_all(i, generators, client)
