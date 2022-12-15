@@ -764,9 +764,8 @@ class DatafileParameterGenerator(Generator):
         timer = datetime.datetime.now()
         with multiprocessing.get_context("spawn").Pool() as pool:
             pool.map(
-                DatafileParameterGenerator.generate_datafile_parameter.range(
-                    1, self.amount
-                )
+                DatafileParameterGenerator.generate_datafile_parameter,
+                range(1, self.amount),
             )
         # for i in range(1, self.amount):
         #    timer2 = datetime.datetime.now()
