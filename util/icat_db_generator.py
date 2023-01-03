@@ -773,13 +773,14 @@ class DatafileParameterGenerator(Generator):
         #    print(f"Time to generate Datafile parameter {i} {datetime.datetime.now() - timer2}")
         print(f"Time to generate DatafileParameters: {datetime.datetime.now() - timer}")
 
-    def generate_datafile_parameter(self, i):
-        datafile_param = self.client.new("datafileParameter")
-        datafile_param.type = self.client.get(
+    @classmethod
+    def generate_datafile_parameter(cls, i):
+        datafile_param = cls.client.new("datafileParameter")
+        datafile_param.type = cls.client.get(
             "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        apply_common_parameter_attributes(datafile_param, i, self.client)
-        datafile_param.datafile = self.client.get("Datafile", i)
+        apply_common_parameter_attributes(datafile_param, i, cls.client)
+        datafile_param.datafile = cls.client.get("Datafile", i)
         datafile_param.create()
 
 
