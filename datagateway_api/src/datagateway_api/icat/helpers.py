@@ -4,7 +4,6 @@ import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
-from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
     ICATNoObjectError,
