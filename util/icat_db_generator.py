@@ -26,7 +26,7 @@ parser.add_argument(
     dest="years",
     help="Provide number of years to generate",
     type=int,
-    default=20,
+    default=10,
 )
 args = parser.parse_args()
 SEED = args.seed
@@ -466,7 +466,7 @@ class InvestigationGroupGenerator(Generator):
 
 class KeywordGenerator(Generator):
     tier = 3
-    amount = 15000
+    amount = 500
     keywords = []
 
     def generate(self):
@@ -660,7 +660,7 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 55  # 55 files per Dataset (26399)
+    amount = DatasetGenerator.amount * 15  # 55 files per Dataset (26399)
     datafiles = []
 
     def generate(self):
