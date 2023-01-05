@@ -133,7 +133,7 @@ class FacilityGenerator(Generator):
 
 class DataCollectionGenerator(Generator):
     tier = 0
-    amount = 1000
+    amount = 100
 
     def generate(self):
         for i in range(1, self.amount):
