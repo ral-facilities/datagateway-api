@@ -308,7 +308,7 @@ class GroupingGenerator(Generator):
 
 class InvestigationGenerator(Generator):
     tier = 2
-    amount = 3 * FacilityCycleGenerator.amount  # 60 Investigations per cycle
+    amount = 3 * FacilityCycleGenerator.amount  # 3 Investigations per cycle (120)
 
     def generate(self):
         for i in range(1, self.amount):
@@ -472,15 +472,8 @@ class KeywordGenerator(Generator):
     def generate(self):
         timer = datetime.datetime.now()
         with multiprocessing.get_context("spawn").Pool() as pool:
-            pool.map(
-                KeywordGenerator.generate_keyword, range(1, self.amount)
-            )  # Takes about 5 minutes
-        # for i in range(1, self.amount):
-        #    KeywordGenerator.generate_keyword(
-        #        self, i
-        #    )  # Currently takes about 20 minutes to generate
+            pool.map(KeywordGenerator.generate_keyword, range(1, self.amount))
         self.client.createMany(self.keywords)
-        print(f"Time to generate keywords: {datetime.datetime.now() - timer}")
 
     @classmethod
     def generate_keyword(cls, i):
@@ -556,9 +549,6 @@ class InvestigationParameterGenerator(Generator):
         timer = datetime.datetime.now()
         for i in range(1, self.amount):
             InvestigationParameterGenerator.generate_investigation_parameter(self, i)
-        print(
-            f"Time to generate Investigation Parameters: {datetime.datetime.now() - timer}"
-        )
 
     def generate_investigation_parameter(self, i):
         investigation_parameter = self.client.new("investigationParameter")
@@ -606,7 +596,7 @@ class StudyInvestigationGenerator(Generator):
 
 class DatasetGenerator(Generator):
     tier = 4
-    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
+    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation (240)
 
     def generate(self):
         for i in range(1, self.amount):
@@ -616,6 +606,9 @@ class DatasetGenerator(Generator):
         tablename = "DATASET"
         dataset = self.client.new("dataset")
         dataset.name = f"{tablename} {i}"
+        dataset.description = faker.text()
+        dataset.fileCount = 15
+        dataset.fileSize = faker.random_int(123, 213123121)
         dataset.doi = faker.isbn10(separator="-")
         dataset.startDate = get_start_date(i)
         dataset.endDate = get_end_date(i)
@@ -646,7 +639,6 @@ class DatasetParameterGenerator(Generator):
         timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DatasetParameterGenerator.generate_dataset_parameter(self, i)
-        print(f"Time to generate Dataset Parameters: {datetime.datetime.now() - timer}")
 
     def generate_dataset_parameter(self, i):
         dataset_param = self.client.new("datasetParameter")
@@ -660,7 +652,7 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 15  # 55 files per Dataset (26399)
+    amount = DatasetGenerator.amount * 15  # 15 files per Dataset (3600)
     datafiles = []
 
     def generate(self):
@@ -668,12 +660,6 @@ class DatafileGenerator(Generator):
         timer = datetime.datetime.now()
         with multiprocessing.get_context("spawn").Pool() as pool:
             pool.map(DatafileGenerator.generate_datafile, range(1, self.amount))
-        # for i in range(1, self.amount):
-        #    timer2 = datetime.datetime.now()
-        #    DatafileGenerator.generate_datafile(self, i)
-        #    print(f"Time to generate Datafile {i} {datetime.datetime.now() - timer2}")
-        # self.client.createMany(self.datafiles)
-        print(f"Time to generate Datafiles: {datetime.datetime.now() - timer}")
 
     @classmethod
     def generate_datafile(cls, i):
@@ -695,7 +681,6 @@ class DatafileGenerator(Generator):
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
         datafile.create()
-        # self.datafiles.append(datafile)
 
 
 class PermissibleStringValueGenerator(Generator):
@@ -721,9 +706,6 @@ class DataCollectionParameterGenerator(Generator):
         timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DataCollectionParameterGenerator.generate_data_collection_parameter(self, i)
-        print(
-            f"Time to generate DataCollection Parameters: {datetime.datetime.now() - timer}"
-        )
 
     def generate_data_collection_parameter(self, i):
         datacollection_parameter = self.client.new("dataCollectionParameter")
@@ -743,7 +725,6 @@ class SampleParameterGenerator(Generator):
         timer = datetime.datetime.now()
         for i in range(1, self.amount):
             SampleParameterGenerator.generate_sample_parameter(self, i)
-        print(f"Time to generate Sample Parameters: {datetime.datetime.now() - timer}")
 
     def generate_sample_parameter(self, i):
         sample_parameter = self.client.new("sampleParameter")
@@ -757,7 +738,7 @@ class SampleParameterGenerator(Generator):
 
 class DatafileParameterGenerator(Generator):
     tier = 6
-    amount = DatafileGenerator.amount
+    amount = DatafileGenerator.amount  # 3600
 
     def generate(self):
         self.client.refresh()
@@ -767,11 +748,6 @@ class DatafileParameterGenerator(Generator):
                 DatafileParameterGenerator.generate_datafile_parameter,
                 range(1, self.amount),
             )
-        # for i in range(1, self.amount):
-        #    timer2 = datetime.datetime.now()
-        #    DatafileParameterGenerator.generate_datafile_parameter(self, i)
-        #    print(f"Time to generate Datafile parameter {i} {datetime.datetime.now() - timer2}")
-        print(f"Time to generate DatafileParameters: {datetime.datetime.now() - timer}")
 
     @classmethod
     def generate_datafile_parameter(cls, i):
