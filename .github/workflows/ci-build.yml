@@ -117,9 +117,6 @@ jobs:
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
-      - name: Checkout DataGateway API
-        uses: actions/checkout@v2
-
       # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
       - name: Uninstall setuptools
         run: poetry run pip uninstall -y setuptools
