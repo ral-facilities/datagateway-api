@@ -38,6 +38,15 @@ jobs:
       - name: Install Poetry
         run: pip install poetry==1.1.9
 
+      # This command is a workaround for getting Poetry working with Python 3.10. An
+      # fix is made in Poetry 1.2.0a2 but there is currently no official release for
+      # Poetry 1.2 and am apprehensive to moving to a pre-release. Disabling the
+      # experimental installer is a workaround for Poetry 1.1.x
+      # See https://github.com/python-poetry/poetry/issues/4210 for more details
+      - name: Disable Poetry's experimental new installer
+        if: ${{ matrix.python-version == '3.10'}}
+        run: poetry config experimental.new-installer false
+
       # Prep for using the API for tests
       - name: Create log file
         run: touch logs.log
