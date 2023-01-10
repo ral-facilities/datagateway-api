@@ -117,7 +117,23 @@ jobs:
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
-      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
+
+      # Prep for using the API for tests
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`yq \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
+      - name: Configure datagateway extension
+        run: echo "`yq \
+          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+      - name: Create config.yaml
+        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+
       - name: Uninstall setuptools
         run: poetry run pip uninstall -y setuptools
       - name: Install older setuptools
