@@ -26,7 +26,7 @@ parser.add_argument(
     dest="years",
     help="Provide number of years to generate",
     type=int,
-    default=10,
+    default=5,
 )
 args = parser.parse_args()
 SEED = args.seed
@@ -308,7 +308,7 @@ class GroupingGenerator(Generator):
 
 class InvestigationGenerator(Generator):
     tier = 2
-    amount = 3 * FacilityCycleGenerator.amount  # 3 Investigations per cycle (120)
+    amount = 3 * FacilityCycleGenerator.amount  # 3 Investigations per cycle (60)
 
     def generate(self):
         for i in range(1, self.amount):
@@ -470,9 +470,11 @@ class KeywordGenerator(Generator):
     keywords = []
 
     def generate(self):
-        timer = datetime.datetime.now()
-        with multiprocessing.get_context("spawn").Pool() as pool:
-            pool.map(KeywordGenerator.generate_keyword, range(1, self.amount))
+        # timer = datetime.datetime.now()
+        # with multiprocessing.get_context("spawn").Pool() as pool:
+        #    pool.map(KeywordGenerator.generate_keyword, range(1, self.amount))
+        for i in range(1, self.amount):
+            KeywordGenerator.generate_keyword(i)
         self.client.createMany(self.keywords)
 
     @classmethod
@@ -596,7 +598,7 @@ class StudyInvestigationGenerator(Generator):
 
 class DatasetGenerator(Generator):
     tier = 4
-    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation (240)
+    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation (120)
 
     def generate(self):
         for i in range(1, self.amount):
@@ -652,14 +654,15 @@ class DatasetParameterGenerator(Generator):
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 15  # 15 files per Dataset (3600)
+    amount = DatasetGenerator.amount * 15  # 15 files per Dataset (1800)
     datafiles = []
 
     def generate(self):
-        self.client.refresh()
-        timer = datetime.datetime.now()
-        with multiprocessing.get_context("spawn").Pool() as pool:
-            pool.map(DatafileGenerator.generate_datafile, range(1, self.amount))
+        for i in range(1, self.amount):
+            DatafileGenerator.generate_datafile(i)
+        # timer = datetime.datetime.now()
+        # with multiprocessing.get_context("spawn").Pool() as pool:
+        #    pool.map(DatafileGenerator.generate_datafile, range(1, self.amount))
 
     @classmethod
     def generate_datafile(cls, i):
@@ -738,16 +741,18 @@ class SampleParameterGenerator(Generator):
 
 class DatafileParameterGenerator(Generator):
     tier = 6
-    amount = DatafileGenerator.amount  # 3600
+    amount = DatafileGenerator.amount  # 1800
 
     def generate(self):
-        self.client.refresh()
-        timer = datetime.datetime.now()
-        with multiprocessing.get_context("spawn").Pool() as pool:
-            pool.map(
-                DatafileParameterGenerator.generate_datafile_parameter,
-                range(1, self.amount),
-            )
+        for i in range(1, self.amount):
+            DatafileParameterGenerator.generate_datafile_parameter(i)
+
+        # timer = datetime.datetime.now()
+        # with multiprocessing.get_context("spawn").Pool() as pool:
+        #    pool.map(
+        #        DatafileParameterGenerator.generate_datafile_parameter,
+        #        range(1, self.amount),
+        #    )
 
     @classmethod
     def generate_datafile_parameter(cls, i):
