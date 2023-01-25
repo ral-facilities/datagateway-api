@@ -15,8 +15,8 @@ search_api:
   mechanism: "anon"
   username: ""
   password: ""
-  scoring_enabled: false,
-  scoring_server: "http://localhost:9000/score",
+  scoring_enabled: false
+  scoring_server: "http://localhost:9000/score"
   scoring_group: "investigation" #corresponds to the defined group in the scoring app. https://github.com/panosc-eu/panosc-search-scoring/blob/master/docs/md/PaNOSC_Federated_Search_Results_Scoring_API.md#model
   scoring_limit: 1000
 flask_reloader: false
