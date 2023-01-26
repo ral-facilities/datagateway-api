@@ -26,7 +26,8 @@ def icat_client():
         checkCert=Config.config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+        Config.config.test_mechanism,
+        Config.config.test_user_credentials.dict(),
     )
     return client
 
@@ -107,6 +108,10 @@ def test_config_data():
             "mechanism": "anon",
             "username": "",
             "password": "",
+            "scoring_enabled": False,
+            "scoring_server": "http://localhost:9000/score",
+            "scoring_group": "investigation",
+            "scoring_limit": 1000,
         },
         "flask_reloader": False,
         "log_level": "WARN",
