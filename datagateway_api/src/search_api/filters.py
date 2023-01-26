@@ -3,12 +3,12 @@ from datetime import datetime
 import logging
 
 from datagateway_api.src.common.date_handler import DateHandler
+from datagateway_api.src.common.filters import ScoringQueryFilter
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
     PythonICATWhereFilter,
-    ScoringQueryFilter,
 )
 from datagateway_api.src.search_api.models import PaNOSCAttribute
 from datagateway_api.src.search_api.panosc_mappings import mappings
