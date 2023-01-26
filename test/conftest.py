@@ -26,7 +26,8 @@ def icat_client():
         checkCert=Config.config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+        Config.config.test_mechanism,
+        Config.config.test_user_credentials.dict(),
     )
     return client
 
