@@ -81,3 +81,10 @@ class IncludeFilter(QueryFilter):
 
     def __init__(self, included_filters):
         self.included_filters = included_filters
+
+
+class ScoringQueryFilter(QueryFilter):
+    precedence = 6
+
+    def __init__(self, value):
+        self.value = value

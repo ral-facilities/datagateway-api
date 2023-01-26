@@ -8,7 +8,9 @@ from datagateway_api.src.search_api.helpers import (
     get_files,
     get_files_count,
     get_search,
+    get_search_api_query_filter_list,
     get_with_pid,
+    is_query_filter,
     search_api_error_handling,
 )
 
@@ -30,8 +32,18 @@ def get_search_endpoint(entity_name):
         @search_api_error_handling
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
-            log.debug("Filters: %s", filters)
-            return get_search(entity_name, filters), 200
+            # in case there is no query filter then we processed as usual
+            if not is_query_filter(filters):
+                return get_search(entity_name, filters), 200
+            else:
+                query = get_search_api_query_filter_list(filters)[0].value
+                entities = get_search(
+                    entity_name,
+                    filters,
+                    "LOWER(o.summary) like '%" + query.lower() + "%'",
+                )
+
+                return entities, 200
 
         get.__doc__ = f"""
             ---
