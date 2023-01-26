@@ -59,3 +59,9 @@ class SearchAPIError(ApiError):
     def __init__(self, msg="Search API error", *args, **kwargs):
         super().__init__(msg, *args, **kwargs)
         self.status_code = 500
+
+
+class ScoringAPIError(ApiError):
+    def __init__(self, msg="Scoring API error", *args, **kwargs):
+        super().__init__(msg, *args, **kwargs)
+        self.status_code = 500

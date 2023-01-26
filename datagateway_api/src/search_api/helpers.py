@@ -3,10 +3,13 @@ import json
 import logging
 
 from pydantic import ValidationError
+import requests
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
     MissingRecordError,
+    ScoringAPIError,
     SearchAPIError,
 )
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
@@ -73,6 +76,67 @@ def search_api_error_handling(method):
         }
 
     return wrapper_error_handling
+
+
+def get_score(entities, query):
+    """
+    Gets the score on the given entities based in the query parameter
+    that is the term to be found
+    :param entities: List of entities that have been retrieved from one ICAT query.
+    :type entities: :class:`list`
+    :param query: String with the term to be searched by
+    :type query: :class:`str`
+    """
+    try:
+        data = {
+            "query": query,
+            "group": Config.config.search_api.scoring_group,
+            "limit": Config.config.search_api.scoring_limit,
+            # With itemIds, scoring server returns a 400 error. No idea why.
+            # "itemIds": list(map(lambda entity: (entity["pid"]), entities)),  #
+        }
+        response = requests.post(
+            Config.config.search_api.scoring_server,
+            json=data,
+            timeout=5,  # Could this be a configuration parameter?
+        )
+        if response.status_code < 400:
+            return response.json()["scores"]
+        else:
+            raise ScoringAPIError(
+                Exception(f"Score API returned {response.status_code}"),
+            )
+    except ValueError as e:
+        log.error("Response is not a valid json")
+        raise e
+    except ConnectionError as e:
+        log.error("ConnectionError to %s ", Config.config.search_api.scoring_server)
+        raise e
+    except Exception as e:
+        log.error("Error on scoring")
+        raise e
+
+
+def add_scores_to_entities(entities, scores):
+    """
+    For each entity this function adds the score if it is found by matching
+    the score.item.itemsId with the pid of the entity
+    Otherwise the score is filled with -1 (arbitrarily chosen)
+    :param entities: List of entities that have been retrieved from one ICAT query.
+    :type entities: :class:`list`
+    :param scores: List of items retrieved from the scoring application
+    :type scores: :class:`list`
+    """
+    for entity in entities:
+        entity["score"] = -1
+        items = list(
+            filter(
+                lambda score: f"pid:{score['itemId']}" == str(entity["pid"]), scores,
+            ),
+        )
+        if len(items) == 1:
+            entity["score"] = items[0]["score"]
+    return entities
 
 
 @client_manager

@@ -2,11 +2,14 @@ import logging
 
 from flask_restful import Resource
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.helpers import (
+    add_scores_to_entities,
     get_count,
     get_files,
     get_files_count,
+    get_score,
     get_search,
     get_search_api_query_filter_list,
     get_with_pid,
@@ -43,6 +46,9 @@ def get_search_endpoint(entity_name):
                     "LOWER(o.summary) like '%" + query.lower() + "%'",
                 )
 
+                if Config.config.search_api.scoring_enabled:
+                    scores = get_score(entities, query)
+                    entities = add_scores_to_entities(entities, scores)
                 return entities, 200
 
         get.__doc__ = f"""
