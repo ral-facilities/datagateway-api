@@ -287,9 +287,9 @@ def create_api_endpoints(flask_app, api, specs):
         )
         search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = {
-            "datasets": "Dataset",
-            "documents": "Document",
-            "instruments": "Instrument",
+            "Datasets": "Dataset",
+            "Documents": "Document",
+            "Instruments": "Instrument",
         }
 
         for endpoint_name, entity_name in search_api_entity_endpoints.items():
