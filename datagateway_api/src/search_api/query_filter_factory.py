@@ -6,6 +6,7 @@ from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
+    SearchAPIScoringFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
@@ -62,6 +63,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 elif filter_name == "skip":
                     log.info("skip JSON object found")
                     query_filters.append(SearchAPISkipFilter(filter_input))
+                elif filter_name == "query":
+                    log.info("query JSON object found")
+                    query_filters.append(SearchAPIScoringFilter(filter_input))
                 else:
                     raise FilterError(
                         "No valid filter name given within filter query param:"
