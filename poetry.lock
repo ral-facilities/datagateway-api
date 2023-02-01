@@ -645,7 +645,7 @@ python-versions = "*"
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -697,6 +697,7 @@ testing = ["mock", "pytest", "pytest-rerunfailures"]
 
 [[package]]
 name = "pkginfo"
+
 version = "1.9.6"
 description = "Query metadata from sdists / bdists / installed packages."
 category = "dev"
@@ -812,7 +813,7 @@ ed25519 = ["PyNaCl (>=1.4.0)"]
 name = "pyparsing"
 version = "3.0.7"
 description = "Python parsing module"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -899,11 +900,15 @@ yaml = ["PyYaml (>=5.2)"]
 
 [[package]]
 name = "python-icat"
-version = "0.21.0"
+version = "1.0.0"
 description = "Python interface to ICAT and IDS"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.4"
+
+[package.dependencies]
+packaging = "*"
+suds = "*"
 
 [[package]]
 name = "python-semantic-release"
@@ -1146,6 +1151,14 @@ importlib-metadata = {version = ">=1.7.0", markers = "python_version < \"3.8\""}
 pbr = ">=2.0.0,<2.1.0 || >2.1.0"
 
 [[package]]
+name = "suds"
+version = "1.1.2"
+description = "Lightweight SOAP client (community fork)"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "suds-community"
 version = "0.8.5"
 description = "Lightweight SOAP client (community fork)"
@@ -1281,7 +1294,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.6.1,<4.0"
-content-hash = "eeb4ff9346bd1d90ab3b7b6ea3cd2bdb14d1569a49c0ce5c2cc297c3b919b769"
+content-hash = "dd0974f8d4bd51d89357dbf61ba18a53866907c44cb5ea90a234b75db65a71a8"
 
 [metadata.files]
 aniso8601 = []
@@ -1379,6 +1392,7 @@ six = []
 smmap = []
 sqlalchemy = []
 stevedore = []
+suds = []
 suds-community = []
 text-unidecode = []
 toml = []
