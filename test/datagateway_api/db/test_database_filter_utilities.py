@@ -160,22 +160,18 @@ class TestDatabaseFilterUtilities:
                 "ne",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-449-78690-0",
+                    "doi": "0-417-77631-4",
                     "endDate": "2000-07-09 00:00:00",
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Season identify professor happen third."
-                    " Beat professional blue clear style have. "
-                    "Light final summer.",
-                    "title": "Including spend increase ability music"
-                    " skill former. Agreement director concern once "
-                    "technology sometimes someone staff."
-                    "\nSuccess pull bar. Laugh senior example.",
+                    "summary": "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\nMonth shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time.",
+                    "title": "Analysis reflect work or hour color maybe."
+                    "\nMuch team discussion message weight.",
                     "facilityID": 1,
-                    "typeID": 2,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 3,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="not equal (ne)",
             ),
@@ -201,22 +197,18 @@ class TestDatabaseFilterUtilities:
                 "nlike",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-449-78690-0",
+                    "doi": "0-417-77631-4",
                     "endDate": "2000-07-09 00:00:00",
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Season identify professor happen third."
-                    " Beat professional blue clear style have. "
-                    "Light final summer.",
-                    "title": "Including spend increase ability music"
-                    " skill former. Agreement director concern once "
-                    "technology sometimes someone staff."
-                    "\nSuccess pull bar. Laugh senior example.",
+                    "summary": "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\nMonth shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time.",
+                    "title": "Analysis reflect work or hour color maybe."
+                    "\nMuch team discussion message weight.",
                     "facilityID": 1,
-                    "typeID": 2,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 3,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="not like",
             ),
@@ -224,22 +216,22 @@ class TestDatabaseFilterUtilities:
                 "lt",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-449-78690-0",
+                    "doi": "0-417-77631-4",
                     "endDate": "2000-07-09 00:00:00",
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Season identify professor happen third."
-                    " Beat professional blue clear style have. "
-                    "Light final summer.",
-                    "title": "Including spend increase ability music"
-                    " skill former. Agreement director concern once "
-                    "technology sometimes someone staff."
-                    "\nSuccess pull bar. Laugh senior example.",
+                    "summary": "Throw hope parent. Receive entire soon. "
+                    "War top air agent must voice high describe.\n"
+                    "Month shake voice. "
+                    "Do discuss despite least face again study. "
+                    "Two beyond picture rich fast sea time.",
+                    "title": "Analysis reflect work or hour color maybe."
+                    "\nMuch team discussion message weight.",
                     "facilityID": 1,
-                    "typeID": 2,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 3,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="less than",
             ),
@@ -247,22 +239,22 @@ class TestDatabaseFilterUtilities:
                 "lte",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-449-78690-0",
+                    "doi": "0-417-77631-4",
                     "endDate": "2000-07-09 00:00:00",
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Season identify professor happen third."
-                    " Beat professional blue clear style have. "
-                    "Light final summer.",
-                    "title": "Including spend increase ability music"
-                    " skill former. Agreement director concern once "
-                    "technology sometimes someone staff."
-                    "\nSuccess pull bar. Laugh senior example.",
+                    "summary": "Throw hope parent. Receive entire soon. "
+                    "War top air agent must voice high describe.\n"
+                    "Month shake voice. "
+                    "Do discuss despite least face again study. "
+                    "Two beyond picture rich fast sea time.",
+                    "title": "Analysis reflect work or hour color maybe."
+                    "\nMuch team discussion message weight.",
                     "facilityID": 1,
-                    "typeID": 2,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 3,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="less than or equal",
             ),
@@ -270,23 +262,17 @@ class TestDatabaseFilterUtilities:
                 "gt",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-9634101-9-9",
-                    "endDate": "2001-05-04 00:00:00",
-                    "name": "INVESTIGATION 4",
-                    "releaseDate": "2001-09-26 00:00:00",
-                    "startDate": "2001-02-02 00:00:00",
-                    "summary": "Fast purpose right power away health south."
-                    "\nQuality serve food buy responsibility go much."
-                    " Situation raise manage positive help daughter."
-                    " Yes player reveal.",
-                    "title": "Would easy whom fact again return choose."
-                    " Site suffer should spring painting glass."
-                    "\nThem name charge strategy machine level."
-                    " Establish better opportunity.",
+                    "doi": "0-9996467-0-2",
+                    "endDate": "2007-07-09 00:00:00",
+                    "name": "INVESTIGATION 29",
+                    "releaseDate": "2007-07-05 00:00:00",
+                    "startDate": "2007-04-03 00:00:00",
+                    "summary": "City plant especially ever eight. Wife street under. Life character drive down. Bag sport benefit also price.\nIncrease spring box successful travel.",
+                    "title": "Usually water six learn bring white development political. Meeting those voice hand.",
                     "facilityID": 1,
-                    "typeID": 3,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 1,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="greater than",
             ),
@@ -294,23 +280,17 @@ class TestDatabaseFilterUtilities:
                 "gte",
                 "Title for DataGateway API Testing (DB) 0",
                 {
-                    "doi": "0-9634101-9-9",
-                    "endDate": "2001-05-04 00:00:00",
-                    "name": "INVESTIGATION 4",
-                    "releaseDate": "2001-09-26 00:00:00",
-                    "startDate": "2001-02-02 00:00:00",
-                    "summary": "Fast purpose right power away health south."
-                    "\nQuality serve food buy responsibility go much."
-                    " Situation raise manage positive help daughter."
-                    " Yes player reveal.",
-                    "title": "Would easy whom fact again return choose."
-                    " Site suffer should spring painting glass."
-                    "\nThem name charge strategy machine level."
-                    " Establish better opportunity.",
+                    "doi": "0-9996467-0-2",
+                    "endDate": "2007-07-09 00:00:00",
+                    "name": "INVESTIGATION 29",
+                    "releaseDate": "2007-07-05 00:00:00",
+                    "startDate": "2007-04-03 00:00:00",
+                    "summary": "City plant especially ever eight. Wife street under. Life character drive down. Bag sport benefit also price.\nIncrease spring box successful travel.",
+                    "title": "Usually water six learn bring white development political. Meeting those voice hand.",
                     "facilityID": 1,
-                    "typeID": 3,
-                    "fileSize": None,
-                    "fileCount": None,
+                    "typeID": 1,
+                    "fileSize": 0,
+                    "fileCount": 0,
                 },
                 id="greater than or equal",
             ),
