@@ -38,22 +38,14 @@ jobs:
       - name: Install Poetry
         run: pip install poetry==1.1.9
 
-      # Installing an older version of setuptools for reasons explained at: https://github.com/icatproject/python-icat/issues/99
-      - name: Uninstall setuptools
-        run: poetry run pip uninstall -y setuptools
-      - name: Install older setuptools
-        run: poetry run pip install 'setuptools<58.0.0'
-
       # This command is a workaround for getting Poetry working with Python 3.10. An
       # fix is made in Poetry 1.2.0a2 but there is currently no official release for
       # Poetry 1.2 and am apprehensive to moving to a pre-release. Disabling the
       # experimental installer is a workaround for Poetry 1.1.x
       # See https://github.com/python-poetry/poetry/issues/4210 for more details
       - name: Disable Poetry's experimental new installer
+        if: ${{ matrix.python-version == '3.10' }}
         run: poetry config experimental.new-installer false
-
-      - name: Install dependencies
-        run: poetry install
 
       # Prep for using the API for tests
       - name: Create log file
@@ -124,6 +116,31 @@ jobs:
       - name: Reinstall ICAT Server
         run: |
           cd /home/runner/install/icat.server/ && ./setup -vv install
+
+      - name: Checkout DataGateway API
+        uses: actions/checkout@v2
+
+      # Prep for using the API for tests
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`yq \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
+      - name: Configure datagateway extension
+        run: echo "`yq \
+          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+      - name: Create config.yaml
+        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+
+      - name: Uninstall setuptools
+        run: poetry run pip uninstall -y setuptools
+      - name: Install older setuptools
+        run: poetry run pip install 'setuptools<58.0.0'
+
+      - name: Install dependencies
+        run: poetry install
 
       - name: Add dummy data to icatdb
         run: |

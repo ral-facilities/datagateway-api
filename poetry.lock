@@ -697,8 +697,9 @@ testing = ["mock", "pytest", "pytest-rerunfailures"]
 
 [[package]]
 name = "pkginfo"
-version = "1.9.3"
-description = "Query metadatdata from sdists / bdists / installed packages."
+
+version = "1.9.6"
+description = "Query metadata from sdists / bdists / installed packages."
 category = "dev"
 optional = false
 python-versions = ">=3.6"
