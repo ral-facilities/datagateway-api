@@ -4,7 +4,6 @@ import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
-from icat.entities import getTypeMap
 from icat.exception import (
     ICATInternalError,
     ICATNoObjectError,
@@ -143,40 +142,6 @@ def refresh_client_session(client):
     :type client: :class:`icat.client.Client`
     """
     client.refresh()
-
-
-def get_icat_entity_name_as_camel_case(client, entity_name):
-    """
-    From the entity name, this function returns a camelCase version of its input
-
-    Due to the case sensitivity of Python ICAT, a camelCase version of the entity name
-    is required for creating ICAT entities in ICAT (e.g. `client.new("parameterType")`).
-
-    :param client: ICAT client containing an authenticated user
-    :type client: :class:`icat.client.Client`
-    :param entity_name: Entity name to fetch a camelCase version of
-    :type entity_name: :class:`str`
-    :return: Entity name (of type string) in the correct casing ready to be passed into
-        Python ICAT
-    :raises BadRequestError: If the entity cannot be found
-    """
-
-    entity_names = getTypeMap(client).keys()
-    lowercase_entity_name = entity_name.lower()
-    python_icat_entity_name = None
-
-    for entity_name in entity_names:
-        lowercase_name = entity_name.lower()
-        if lowercase_name == lowercase_entity_name:
-            python_icat_entity_name = entity_name
-
-    # Raise a 400 if a valid entity cannot be found
-    if python_icat_entity_name is None:
-        raise BadRequestError(
-            f"Bad request made, cannot find {entity_name} entity within Python ICAT",
-        )
-
-    return python_icat_entity_name
 
 
 def update_attributes(old_entity, new_entity):
@@ -507,7 +472,7 @@ def create_entities(client, entity_type, data):
         data = [data]
 
     for result in data:
-        new_entity = client.new(get_icat_entity_name_as_camel_case(client, entity_type))
+        new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
             log.debug("Preparing data for %s", attribute_name)
