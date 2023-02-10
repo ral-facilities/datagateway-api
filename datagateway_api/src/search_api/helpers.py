@@ -4,6 +4,7 @@ import logging
 
 from pydantic import ValidationError
 import requests
+from requests import RequestException
 
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import (
@@ -43,7 +44,7 @@ def search_api_error_handling(method):
     def wrapper_error_handling(*args, **kwargs):
         try:
             return method(*args, **kwargs)
-        except ValidationError as e:
+        except (ValidationError, ScoringAPIError) as e:
             log.exception(msg=e.args)
             assign_status_code(e, 500)
             raise SearchAPIError(create_error_message(e))
@@ -100,21 +101,10 @@ def get_score(entities, query):
             json=data,
             timeout=5,  # Could this be a configuration parameter?
         )
-        if response.status_code < 400:
-            return response.json()["scores"]
-        else:
-            raise ScoringAPIError(
-                Exception(f"Score API returned {response.status_code}"),
-            )
-    except ValueError as e:
-        log.error("Response is not a valid json")
-        raise e
-    except ConnectionError as e:
-        log.error("ConnectionError to %s ", Config.config.search_api.scoring_server)
-        raise e
-    except Exception as e:
-        log.error("Error on scoring")
-        raise e
+        response.raise_for_status()
+        return response.json()["scores"]
+    except RequestException:
+        raise ScoringAPIError("An error occurred while trying to score the results")
 
 
 def add_scores_to_entities(entities, scores):
