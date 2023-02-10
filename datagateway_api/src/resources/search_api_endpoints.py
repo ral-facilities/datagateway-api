@@ -2,18 +2,16 @@ import logging
 
 from flask_restful import Resource
 
-from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.helpers import get_filters_from_query_string
+from datagateway_api.src.search_api.filters import SearchAPIScoringFilter
 from datagateway_api.src.search_api.helpers import (
-    add_scores_to_entities,
+    add_scores_to_results,
     get_count,
     get_files,
     get_files_count,
     get_score,
     get_search,
-    get_search_api_query_filter_list,
     get_with_pid,
-    is_query_filter,
     search_api_error_handling,
 )
 
@@ -35,21 +33,20 @@ def get_search_endpoint(entity_name):
         @search_api_error_handling
         def get(self):
             filters = get_filters_from_query_string("search_api", entity_name)
-            # in case there is no query filter then we processed as usual
-            if not is_query_filter(filters):
-                return get_search(entity_name, filters), 200
-            else:
-                query = get_search_api_query_filter_list(filters)[0].value
-                entities = get_search(
-                    entity_name,
-                    filters,
-                    "LOWER(o.summary) like '%" + query.lower() + "%'",
-                )
+            results = get_search(entity_name, filters)
+            scoring_filter = next(
+                (
+                    filter_
+                    for filter_ in filters
+                    if isinstance(filter_, SearchAPIScoringFilter)
+                ),
+                None,
+            )
+            if scoring_filter:
+                scores = get_score(results, scoring_filter.value)
+                results = add_scores_to_results(results, scores)
 
-                if Config.config.search_api.scoring_enabled:
-                    scores = get_score(entities, query)
-                    entities = add_scores_to_entities(entities, scores)
-                return entities, 200
+            return results, 200
 
         get.__doc__ = f"""
             ---

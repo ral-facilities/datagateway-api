@@ -18,7 +18,6 @@ from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPIWhereFilter,
 )
-from datagateway_api.src.search_api.filters import SearchAPIScoringFilter
 import datagateway_api.src.search_api.models as models
 from datagateway_api.src.search_api.query import SearchAPIQuery
 from datagateway_api.src.search_api.session_handler import (
@@ -283,18 +282,3 @@ def get_files_count(entity_name, filters, pid):
 
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
     return get_count(entity_name, filters)
-
-
-def get_search_api_query_filter_list(filters):
-    """
-    Returns the list of SearchAPIQueryFilter that are in the filters array
-    """
-    return list(filter(lambda x: isinstance(x, SearchAPIScoringFilter), filters))
-
-
-@client_manager
-def is_query_filter(filters):
-    """
-    Checks if there is a SearchAPIQueryFilter in the list of filters
-    """
-    return len(get_search_api_query_filter_list(filters)) == 1
