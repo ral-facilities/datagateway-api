@@ -2,7 +2,6 @@ from datetime import datetime
 
 from icat.entity import Entity
 import pytest
-
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import PythonICATError
 from datagateway_api.src.datagateway_api.icat.filters import (
@@ -30,9 +29,11 @@ def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False
 
         for attr in meta_attributes:
             entity.pop(attr)
-        for k, v in entity.items():
-            if isinstance(v, dict):
-                entity[k] = pop_nested_attributes(v, meta_attributes)
+
+        for key in entity:
+            if isinstance(entity[key], dict):
+                for attr in meta_attributes:
+                    entity[key].pop(attr)
 
         for attr in entity.keys():
             if isinstance(entity[attr], datetime):
@@ -45,13 +46,7 @@ def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False
             entity.pop("visitId")
 
         assertable_data.append(entity)
-
     return assertable_data
-
-
-def pop_nested_attributes(nested_entity, meta_attributes):
-    for attr in meta_attributes:
-        nested_entity.pop(attr)
 
 
 class TestICATQuery:
@@ -177,12 +172,10 @@ class TestICATQuery:
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "facility": {
-                            "createId": "simple/root",
                             "daysUntilRelease": 10,
                             "description": "Lorem ipsum light source",
                             "fullName": None,
                             "id": 1,
-                            "modId": "simple/root",
                             "name": "LILS",
                             "url": None,
                         },
@@ -323,7 +316,6 @@ class TestICATQuery:
             query_data = prepare_icat_data_for_assertion(
                 query_data, remove_id=True, remove_visit_id=True,
             )
-
         assert query_data[0] == expected_query_result[0]
 
     def test_invalid_query_execution(self, icat_client):
