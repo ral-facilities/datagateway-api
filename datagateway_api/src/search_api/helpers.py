@@ -107,26 +107,23 @@ def get_score(entities, query):
         raise ScoringAPIError("An error occurred while trying to score the results")
 
 
-def add_scores_to_entities(entities, scores):
+def add_scores_to_results(results, scores):
     """
     For each entity this function adds the score if it is found by matching
     the score.item.itemsId with the pid of the entity
     Otherwise the score is filled with -1 (arbitrarily chosen)
-    :param entities: List of entities that have been retrieved from one ICAT query.
-    :type entities: :class:`list`
+    :param results: List of entities that have been retrieved from one ICAT query.
+    :type results: :class:`list`
     :param scores: List of items retrieved from the scoring application
     :type scores: :class:`list`
     """
-    for entity in entities:
-        entity["score"] = -1
-        items = list(
-            filter(
-                lambda score: f"pid:{score['itemId']}" == str(entity["pid"]), scores,
-            ),
+    for result in results:
+        result["score"] = next(
+            (score["score"] for score in scores if score["itemId"] == result["pid"]),
+            -1,
         )
-        if len(items) == 1:
-            entity["score"] = items[0]["score"]
-    return entities
+
+    return results
 
 
 @client_manager
