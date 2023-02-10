@@ -107,10 +107,13 @@ def test_config_data():
             "mechanism": "anon",
             "username": "",
             "password": "",
-            "scoring_enabled": False,
-            "scoring_server": "http://localhost:9000/score",
-            "scoring_group": "investigation",
-            "scoring_limit": 1000,
+            "search_scoring": {
+                "enabled": False,
+                "api_url": "http://localhost:9000/score",
+                "api_request_timeout": 5,
+                "group": "documents",
+                "scoring_limit": 1000
+            }
         },
         "flask_reloader": False,
         "log_level": "WARN",
