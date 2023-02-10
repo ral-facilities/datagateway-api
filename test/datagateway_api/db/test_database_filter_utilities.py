@@ -165,7 +165,10 @@ class TestDatabaseFilterUtilities:
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\nMonth shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time.",
+                    "summary": "Throw hope parent. Receive entire soon."
+                    " War top air agent must voice high describe.\nMonth "
+                    "shake voice. Do discuss despite least face again study."
+                    " Two beyond picture rich fast sea time.",
                     "title": "Analysis reflect work or hour color maybe."
                     "\nMuch team discussion message weight.",
                     "facilityID": 1,
@@ -202,7 +205,10 @@ class TestDatabaseFilterUtilities:
                     "name": "INVESTIGATION 1",
                     "releaseDate": "2000-07-05 00:00:00",
                     "startDate": "2000-04-03 00:00:00",
-                    "summary": "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\nMonth shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time.",
+                    "summary": "Throw hope parent. Receive entire soon. "
+                    "War top air agent must voice high describe.\nMonth "
+                    "shake voice. Do discuss despite least face again study. "
+                    "Two beyond picture rich fast sea time.",
                     "title": "Analysis reflect work or hour color maybe."
                     "\nMuch team discussion message weight.",
                     "facilityID": 1,
@@ -267,8 +273,11 @@ class TestDatabaseFilterUtilities:
                     "name": "INVESTIGATION 29",
                     "releaseDate": "2007-07-05 00:00:00",
                     "startDate": "2007-04-03 00:00:00",
-                    "summary": "City plant especially ever eight. Wife street under. Life character drive down. Bag sport benefit also price.\nIncrease spring box successful travel.",
-                    "title": "Usually water six learn bring white development political. Meeting those voice hand.",
+                    "summary": "City plant especially ever eight. Wife street"
+                    " under. Life character drive down. Bag sport benefit also"
+                    " price.\nIncrease spring box successful travel.",
+                    "title": "Usually water six learn bring white development "
+                    "political. Meeting those voice hand.",
                     "facilityID": 1,
                     "typeID": 1,
                     "fileSize": 0,
@@ -285,8 +294,12 @@ class TestDatabaseFilterUtilities:
                     "name": "INVESTIGATION 29",
                     "releaseDate": "2007-07-05 00:00:00",
                     "startDate": "2007-04-03 00:00:00",
-                    "summary": "City plant especially ever eight. Wife street under. Life character drive down. Bag sport benefit also price.\nIncrease spring box successful travel.",
-                    "title": "Usually water six learn bring white development political. Meeting those voice hand.",
+                    "summary": "City plant especially ever eight. "
+                    "Wife street under. Life character drive down. Bag sport"
+                    " benefit also price.\nIncrease spring box successful"
+                    " travel.",
+                    "title": "Usually water six learn bring white development "
+                    "political. Meeting those voice hand.",
                     "facilityID": 1,
                     "typeID": 1,
                     "fileSize": 0,

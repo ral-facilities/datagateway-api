@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 import argparse
 import datetime
 import enum
-import multiprocessing
 from multiprocessing import Process
 
 from faker import Faker
@@ -548,7 +547,6 @@ class InvestigationParameterGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             InvestigationParameterGenerator.generate_investigation_parameter(self, i)
 
@@ -638,7 +636,6 @@ class DatasetParameterGenerator(Generator):
     amount = ParameterTypeGenerator.amount
 
     def generate(self):
-        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DatasetParameterGenerator.generate_dataset_parameter(self, i)
 
@@ -706,7 +703,6 @@ class DataCollectionParameterGenerator(Generator):
     amount = DataCollectionGenerator.amount
 
     def generate(self):
-        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             DataCollectionParameterGenerator.generate_data_collection_parameter(self, i)
 
@@ -725,7 +721,6 @@ class SampleParameterGenerator(Generator):
     amount = SampleGenerator.amount
 
     def generate(self):
-        timer = datetime.datetime.now()
         for i in range(1, self.amount):
             SampleParameterGenerator.generate_sample_parameter(self, i)
 

@@ -2,6 +2,7 @@ from datetime import datetime
 
 from icat.entity import Entity
 import pytest
+
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import PythonICATError
 from datagateway_api.src.datagateway_api.icat.filters import (
