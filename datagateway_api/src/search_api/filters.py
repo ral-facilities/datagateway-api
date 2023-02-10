@@ -3,7 +3,6 @@ from datetime import datetime
 import logging
 
 from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.common.filters import ScoringQueryFilter
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -163,12 +162,15 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
         return super().apply_filter(query.icat_query.query)
 
 
-class SearchAPIScoringFilter(ScoringQueryFilter):
+class SearchAPIScoringFilter(SearchAPIWhereFilter):
     def __init__(self, query_value):
-        super().__init__(query_value)
+        # We are only supporting scoring on the Document entity/ endpoint so hard
+        # coding the corresponding field (summary) here that is used when searching for
+        # documents that match the query_value pattern.
+        super().__init__(field="summary", value=query_value, operation="ilike")
 
     def apply_filter(self, query):
-        return
+        return super().apply_filter(query)
 
 
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
