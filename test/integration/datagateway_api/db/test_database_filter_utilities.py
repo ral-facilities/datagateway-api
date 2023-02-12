@@ -7,7 +7,7 @@ from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseWhereFilter,
 )
 from datagateway_api.src.datagateway_api.database.helpers import ReadQuery
-from test.datagateway_api.db.endpoints.test_create_db import (
+from test.integration.datagateway_api.db.endpoints.test_create_db import (
     prepare_db_data_for_assertion,
 )
 

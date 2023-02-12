@@ -205,9 +205,12 @@ Currently, the following Nox sessions have been created:
 - `safety` - this uses [safety](https://github.com/pyupio/safety) to check the
   dependencies (pulled directly from Poetry) for any known vulnerabilities. This session
   gives the output in a full ASCII style report.
-- `tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
-  automated tests in `test/`, tests for the database and ICAT backends, and non-backend
+- `unit_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
+  automated tests in `test/unit`, tests for the database and ICAT backends, and non-backend
   specific tests. More details about the tests themselves [here](#running-tests).
+- `integration_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
+  automated tests in `test/unit`, tests for the database and ICAT backends, and non-backend
+  specific tests. Requires an ICAT backend. More details about the tests themselves [here](#running-tests).
 
 Each Nox session builds an environment using the repo's dependencies (defined using
 Poetry) using `install_with_constraints()`. This stores the dependencies in a
@@ -434,9 +437,14 @@ for the Swagger interface to be up to date when using the Python ICAT backend.
 
 # Running Tests
 
-To run the tests use `nox -s tests`. The repository contains a variety of tests, to test
-the functionality of the API works as intended. The tests are split into 3 main
-sections: non-backend specific (testing features such as the date handler), ICAT backend
+There are two seperate test runners provided. The integration tests, and the unit tests.
+The unit test do not require an ICAT stack to be setup to run. The integration tests do
+require an ICAT stack. In order to cover all the code you will need to run both tests.
+
+To run the unit test use `nox -s unit_tests`, and to run the integration tests use `nox -s integration_tests`
+The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
+and quicker action runs these are additionally split into the unit and integration tests.
+The tests are split into 3 main sections: non-backend specific (testing features such as the date handler), ICAT backend
 tests (containing tests for backend specific components, including tests for the
 different types of endpoints) and Database Backend tests (like the ICAT backend tests,
 but covering only the most used aspects of the API).
@@ -450,14 +458,16 @@ Python 3.6, 3.7, 3.8, 3.9 and 3.10. For most cases, running the tests in a singl
 version will be sufficient:
 
 ```bash
-nox -p 3.6 -s tests
+nox -p 3.6 -s unit_tests
+nox -p 3.6 -s integration
 ```
 
 This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to check how much of the codebase is covered by the tests in `test/`:
 
 ```bash
-nox -p 3.6 -s tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.6 -s unit_tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.6 -s integration_tests -- --cov-report term --cov=./datagateway_api
 ```
 
 With `pytest`, you can output the duration for each test, useful for showing the slower
@@ -466,21 +476,24 @@ into setup, call and teardown to more easily understand where the tests are bein
 down:
 
 ```bash
-nox -p 3.6 -s tests -- --durations=0
+nox -p 3.6 -s unit_tests -- --durations=0
+nox -p 3.6 -s integration_tests -- --durations=0
 ```
 
-To test a specific test class (or even a specific test function), use a double colon to
-denote a each level down beyond the filename:
+To test a specific test class (or even a specific test function), you will
+need to use pytest itself through poetry. If you want to change the python
+version use `poetry env use 3.6` which will generate a virtual env with that
+version.
 
 ```bash
 # Test a specific file
-nox -p 3.6 -s tests -- test/icat/test_query.py
+poetry run pytest test/integration/datagateway_api/icat/test_query.py
 
 # Test a specific test class
-nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery
+poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery
 
 # Test a specific test function
-nox -p 3.6 -s tests -- test/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
+poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
 ```
 
 # Project Structure
