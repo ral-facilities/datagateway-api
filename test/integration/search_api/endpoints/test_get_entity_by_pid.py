@@ -1,6 +1,9 @@
 import pytest
 
 from datagateway_api.src.common.config import Config
+from test.integration.search_api.endpoints.test_get_dataset_files import (
+    prepare_data_for_assertion,
+)
 
 
 class TestSearchAPIGetByPIDEndpoint:
@@ -15,7 +18,6 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "1-4978-6907-2",
                     "title": "DATASET 1",
                     "isPublic": True,
-                    "creationDate": "2023-02-09T09:23:39.000Z",
                     "size": None,
                     "documents": [],
                     "techniques": [],
@@ -81,7 +83,6 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "1-4978-6907-2",
                     "title": "DATASET 1",
                     "isPublic": True,
-                    "creationDate": "2023-02-09T09:23:39.000Z",
                     "size": None,
                     "documents": [
                         {
@@ -157,7 +158,6 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "1-4978-6907-2",
                             "title": "DATASET 1",
                             "isPublic": True,
-                            "creationDate": "2023-02-09T09:23:39.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -170,7 +170,6 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-557-36716-6",
                             "title": "DATASET 61",
                             "isPublic": True,
-                            "creationDate": "2023-02-09T09:23:54.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -220,7 +219,6 @@ class TestSearchAPIGetByPIDEndpoint:
                     "pid": "1-4978-6907-2",
                     "title": "DATASET 1",
                     "isPublic": True,
-                    "creationDate": "2023-02-09T09:23:39.000Z",
                     "size": None,
                     "documents": [
                         {
@@ -435,7 +433,6 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "1-4978-6907-2",
                             "title": "DATASET 1",
                             "isPublic": True,
-                            "creationDate": "2023-02-09T09:23:39.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -448,7 +445,6 @@ class TestSearchAPIGetByPIDEndpoint:
                             "pid": "0-557-36716-6",
                             "title": "DATASET 61",
                             "isPublic": True,
-                            "creationDate": "2023-02-09T09:23:54.000Z",
                             "size": None,
                             "documents": [],
                             "techniques": [],
@@ -495,8 +491,10 @@ class TestSearchAPIGetByPIDEndpoint:
             f"{request_filter}",
         )
 
+        response_data = prepare_data_for_assertion(test_response.json)
+
         assert test_response.status_code == 200
-        assert test_response.json == expected_json
+        assert response_data == expected_json
 
     @pytest.mark.parametrize(
         "pid, request_filter, expected_status_code",

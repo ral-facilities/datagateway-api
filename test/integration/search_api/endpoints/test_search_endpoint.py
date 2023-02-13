@@ -1,6 +1,9 @@
 import pytest
 
 from datagateway_api.src.common.config import Config
+from test.integration.search_api.endpoints.test_get_dataset_files import (
+    prepare_data_for_assertion,
+)
 
 
 class TestSearchAPISearchEndpoint:
@@ -15,7 +18,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-4978-6907-2",
                         "title": "DATASET 1",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:39.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -28,7 +30,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-01-107043-X",
                         "title": "DATASET 2",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:39.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -84,7 +85,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-77218-518-3",
                         "title": "DATASET 6",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:41.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -118,7 +118,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-4978-6907-2",
                         "title": "DATASET 1",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:39.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -175,7 +174,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "1-4978-6907-2",
                                 "title": "DATASET 1",
                                 "isPublic": True,
-                                "creationDate": "2023-02-09T09:23:39.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -188,7 +186,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "0-557-36716-6",
                                 "title": "DATASET 61",
                                 "isPublic": True,
-                                "creationDate": "2023-02-09T09:23:54.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -253,7 +250,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-4978-6907-2",
                         "title": "DATASET 1",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:39.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -291,7 +287,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-85271-859-5",
                         "title": "DATASET 33",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:49.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -339,7 +334,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-71395-013-8",
                         "title": "DATASET 71",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:56.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -379,7 +373,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-71395-013-8",
                         "title": "DATASET 71",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:56.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -418,7 +411,6 @@ class TestSearchAPISearchEndpoint:
                         "pid": "1-85150-280-7",
                         "title": "DATASET 13",
                         "isPublic": True,
-                        "creationDate": "2023-02-09T09:23:44.000Z",
                         "size": None,
                         "documents": [],
                         "techniques": [],
@@ -682,7 +674,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "1-4978-6907-2",
                                 "title": "DATASET 1",
                                 "isPublic": True,
-                                "creationDate": "2023-02-09T09:23:39.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -704,7 +695,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "0-557-36716-6",
                                 "title": "DATASET 61",
                                 "isPublic": True,
-                                "creationDate": "2023-02-09T09:23:54.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -807,7 +797,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "1-937941-39-6",
                                 "title": "DATASET 244",
                                 "isPublic": True,
-                                "creationDate": "2000-10-23T03:58:02.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -828,7 +817,6 @@ class TestSearchAPISearchEndpoint:
                                 "pid": "1-397-29815-4",
                                 "title": "DATASET 4",
                                 "isPublic": True,
-                                "creationDate": "2016-06-09T06:36:38.000Z",
                                 "size": None,
                                 "documents": [],
                                 "techniques": [],
@@ -866,7 +854,9 @@ class TestSearchAPISearchEndpoint:
             f"{request_filter}",
         )
 
-        assert test_response.json == expected_json
+        response_data = prepare_data_for_assertion(test_response.json)
+
+        assert response_data == expected_json
 
     @pytest.mark.parametrize(
         "request_filter, expected_status_code",
