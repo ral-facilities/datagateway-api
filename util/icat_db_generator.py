@@ -62,10 +62,6 @@ def get_end_date(i):
     )
 
 
-def validate():
-    pass
-
-
 def apply_common_parameter_attributes(entity, i, client):
     if entity.type.valueType == "NUMERIC":
         entity.numericValue = faker.random_int(
@@ -469,9 +465,6 @@ class KeywordGenerator(Generator):
     keywords = []
 
     def generate(self):
-        # timer = datetime.datetime.now()
-        # with multiprocessing.get_context("spawn").Pool() as pool:
-        #    pool.map(KeywordGenerator.generate_keyword, range(1, self.amount))
         for i in range(1, self.amount):
             KeywordGenerator.generate_keyword(i)
         self.client.createMany(self.keywords)
@@ -483,7 +476,6 @@ class KeywordGenerator(Generator):
         keyword.investigation = cls.client.get(
             "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
         )
-        keyword.validate = validate
         cls.keywords.append(keyword)
 
 
@@ -741,13 +733,6 @@ class DatafileParameterGenerator(Generator):
     def generate(self):
         for i in range(1, self.amount):
             DatafileParameterGenerator.generate_datafile_parameter(i)
-
-        # timer = datetime.datetime.now()
-        # with multiprocessing.get_context("spawn").Pool() as pool:
-        #    pool.map(
-        #        DatafileParameterGenerator.generate_datafile_parameter,
-        #        range(1, self.amount),
-        #    )
 
     @classmethod
     def generate_datafile_parameter(cls, i):
