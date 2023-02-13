@@ -90,15 +90,15 @@ def get_score(entities, query):
     try:
         data = {
             "query": query,
-            "group": Config.config.search_api.scoring_group,
-            "limit": Config.config.search_api.scoring_limit,
+            "group": Config.config.search_api.search_scoring.group,
+            "limit": Config.config.search_api.search_scoring.limit,
             # With itemIds, scoring server returns a 400 error. No idea why.
             # "itemIds": list(map(lambda entity: (entity["pid"]), entities)),  #
         }
         response = requests.post(
-            Config.config.search_api.scoring_server,
+            Config.config.search_api.search_scoring.api_url,
             json=data,
-            timeout=5,  # Could this be a configuration parameter?
+            timeout=Config.config.search_api.search_scoring.api_request_timeout,
         )
         response.raise_for_status()
         return response.json()["scores"]
