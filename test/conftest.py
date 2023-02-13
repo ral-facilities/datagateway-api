@@ -47,7 +47,7 @@ def test_config_data():
                 "api_url": "http://localhost:9000/score",
                 "api_request_timeout": 5,
                 "group": "documents",
-                "scoring_limit": 1000
+                "limit": 1000
             }
         },
         "flask_reloader": False,
