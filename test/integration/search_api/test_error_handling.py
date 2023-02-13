@@ -5,6 +5,7 @@ from datagateway_api.src.common.exceptions import (
     BadRequestError,
     FilterError,
     MissingRecordError,
+    ScoringAPIError,
     SearchAPIError,
 )
 from datagateway_api.src.search_api.helpers import search_api_error_handling
@@ -20,6 +21,7 @@ class TestErrorHandling:
             pytest.param(
                 MissingRecordError, MissingRecordError, 404, id="Missing record",
             ),
+            pytest.param(ScoringAPIError, SearchAPIError, 500, id="Scoring API error"),
             pytest.param(SearchAPIError, SearchAPIError, 500, id="Search API error"),
             pytest.param(TypeError, BadRequestError, 400, id="Type error"),
             pytest.param(ValueError, BadRequestError, 400, id="Value error"),

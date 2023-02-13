@@ -1421,6 +1421,15 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
                 id="Search documents with multiple include and scopes (ICAT 5)",
             ),
+            pytest.param(
+                "documents",
+                '{"filter": {"query": "TODO"}}',
+                [],
+                # Skipped because this test relies the search scoring component
+                # TODO - edit the QUERY filter value and expected_json
+                marks=pytest.mark.skip,
+                id="Search documents with query filter",
+            ),
         ],
     )
     def test_valid_search_endpoint(
