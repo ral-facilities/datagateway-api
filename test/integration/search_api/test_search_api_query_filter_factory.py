@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
@@ -1906,6 +1908,11 @@ class TestSearchAPIQueryFilterFactory:
         assert isinstance(filters[0], SearchAPISkipFilter)
         assert filters[0].skip_value == expected_skip_value
 
+    @patch(
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring"
+        ".enabled",
+        True,
+    )
     def test_valid_scoring_filter(self):
         scoring_query_filter_value = "My test query"
         test_request_filter = {"filter": {"query": scoring_query_filter_value}}
@@ -1921,6 +1928,11 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].value == scoring_query_filter_value
         assert filters[0].operation == "ilike"
 
+    @patch(
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring"
+        ".enabled",
+        True,
+    )
     @pytest.mark.parametrize(
         "entity_name",
         [
