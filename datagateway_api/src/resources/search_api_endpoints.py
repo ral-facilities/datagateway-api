@@ -21,7 +21,7 @@ def get_search_endpoint(entity_name):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
-    `api.add_resource(get_search_endpoint("Dataset"), "/datasets")`
+    `api.add_resource(get_search_endpoint("Dataset"), "/Datasets")`
 
     :param entity_name: Name of the entity
     :type entity_name: :class:`str`
@@ -80,7 +80,7 @@ def get_single_endpoint(entity_name):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
-    `api.add_resource(get_single_endpoint("Dataset"), "/datasets/<string:pid>")`
+    `api.add_resource(get_single_endpoint("Dataset"), "/Datasets/<string:pid>")`
 
     :param entity_name: Name of the entity
     :type entity_name: :class:`str`
@@ -130,7 +130,7 @@ def get_number_count_endpoint(entity_name):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
-    `api.add_resource(get_number_count_endpoint("Dataset"), "/datasets/count")`
+    `api.add_resource(get_number_count_endpoint("Dataset"), "/Datasets/count")`
 
     :param entity_name: Name of the entity
     :type entity_name: :class:`str`
@@ -175,7 +175,7 @@ def get_files_endpoint(entity_name):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
-    `api.add_resource(get_files_endpoint("Dataset"), "/datasets/<string:pid>/files")`
+    `api.add_resource(get_files_endpoint("Dataset"), "/Datasets/<string:pid>/files")`
 
     :param entity_name: Name of the entity
     :type entity_name: :class:`str`
@@ -231,7 +231,7 @@ def get_number_count_files_endpoint(entity_name):
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
     `api.add_resource(get_number_count_files_endpoint("Dataset"),
-    "/datasets<string:pid>/files/count")`
+    "/Datasets<string:pid>/files/count")`
 
     :param entity_name: Name of the entity
     :type entity_name: :class:`str`
