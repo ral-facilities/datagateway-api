@@ -5,15 +5,14 @@ from flask_restful import Resource
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api.filters import SearchAPIScoringFilter
 from datagateway_api.src.search_api.helpers import (
-    add_scores_to_results,
     get_count,
     get_files,
     get_files_count,
-    get_score,
     get_search,
     get_with_pid,
     search_api_error_handling,
 )
+from datagateway_api.src.search_api.search_scoring import SearchScoring
 
 log = logging.getLogger()
 
@@ -43,8 +42,8 @@ def get_search_endpoint(entity_name):
                 None,
             )
             if scoring_filter:
-                scores = get_score(results, scoring_filter.value)
-                results = add_scores_to_results(results, scores)
+                scores = SearchScoring.get_score(scoring_filter.value)
+                results = SearchScoring.add_scores_to_results(results, scores)
 
             return results, 200
 

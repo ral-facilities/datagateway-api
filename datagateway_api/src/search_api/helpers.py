@@ -3,10 +3,7 @@ import json
 import logging
 
 from pydantic import ValidationError
-import requests
-from requests import RequestException
 
-from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
     MissingRecordError,
@@ -76,53 +73,6 @@ def search_api_error_handling(method):
         }
 
     return wrapper_error_handling
-
-
-def get_score(entities, query):
-    """
-    Gets the score on the given entities based in the query parameter
-    that is the term to be found
-    :param entities: List of entities that have been retrieved from one ICAT query.
-    :type entities: :class:`list`
-    :param query: String with the term to be searched by
-    :type query: :class:`str`
-    """
-    try:
-        data = {
-            "query": query,
-            "group": Config.config.search_api.search_scoring.group,
-            "limit": Config.config.search_api.search_scoring.limit,
-            # With itemIds, scoring server returns a 400 error. No idea why.
-            # "itemIds": list(map(lambda entity: (entity["pid"]), entities)),  #
-        }
-        response = requests.post(
-            Config.config.search_api.search_scoring.api_url,
-            json=data,
-            timeout=Config.config.search_api.search_scoring.api_request_timeout,
-        )
-        response.raise_for_status()
-        return response.json()["scores"]
-    except RequestException:
-        raise ScoringAPIError("An error occurred while trying to score the results")
-
-
-def add_scores_to_results(results, scores):
-    """
-    For each entity this function adds the score if it is found by matching
-    the score.item.itemsId with the pid of the entity
-    Otherwise the score is filled with -1 (arbitrarily chosen)
-    :param results: List of entities that have been retrieved from one ICAT query.
-    :type results: :class:`list`
-    :param scores: List of items retrieved from the scoring application
-    :type scores: :class:`list`
-    """
-    for result in results:
-        result["score"] = next(
-            (score["score"] for score in scores if score["itemId"] == result["pid"]),
-            -1,
-        )
-
-    return results
 
 
 @client_manager

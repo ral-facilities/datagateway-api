@@ -5,7 +5,7 @@ from requests import RequestException
 
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.exceptions import ScoringAPIError
-from datagateway_api.src.search_api.helpers import add_scores_to_results, get_score
+from datagateway_api.src.search_api.search_scoring import SearchScoring
 
 SEARCH_SCORING_API_SCORES_DATA = {
     "request": {
@@ -83,13 +83,13 @@ class TestHelpers:
         scoring_query_filter_value = "My test query"
         post_request_data = {
             "query": scoring_query_filter_value,
-            "group": "Documents",
-            "limit": 1000,
+            "group": Config.config.search_api.search_scoring.group,
+            "limit": Config.config.search_api.search_scoring.limit,
         }
         post_mock.return_value.status_code = 200
         post_mock.return_value.json.return_value = SEARCH_SCORING_API_SCORES_DATA
 
-        scores = get_score(SEARCH_API_DOCUMENT_RESULTS, scoring_query_filter_value)
+        scores = SearchScoring.get_score(scoring_query_filter_value)
 
         post_mock.assert_called_once_with(
             Config.config.search_api.search_scoring.api_url,
@@ -102,21 +102,18 @@ class TestHelpers:
     def test_get_score_raises_scoring_api_error(self, post_mock):
         post_mock.side_effect = RequestException
         with pytest.raises(ScoringAPIError):
-            get_score(SEARCH_API_DOCUMENT_RESULTS, "My test query")
+            SearchScoring.get_score("My test query")
 
     def test_add_score_to_results(self):
-        expected_search_api_document_results_with_scores = []
+        expected_results_with_scores = []
         # Add scores to document results
         scores = [0.7071067811865475, -1, 0.53843041]
         for i, result in enumerate(SEARCH_API_DOCUMENT_RESULTS):
-            expected_search_api_document_results_with_scores.append(result.copy())
-            expected_search_api_document_results_with_scores[i]["score"] = scores[i]
+            expected_results_with_scores.append(result.copy())
+            expected_results_with_scores[i]["score"] = scores[i]
 
-        actual_search_api_document_results_with_scores = add_scores_to_results(
+        actual_results_with_scores = SearchScoring.add_scores_to_results(
             SEARCH_API_DOCUMENT_RESULTS, SEARCH_SCORING_API_SCORES_DATA["scores"],
         )
 
-        assert (
-            actual_search_api_document_results_with_scores
-            == expected_search_api_document_results_with_scores
-        )
+        assert actual_results_with_scores == expected_results_with_scores
