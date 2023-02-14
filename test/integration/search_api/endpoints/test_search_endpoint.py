@@ -8,7 +8,7 @@ class TestSearchAPISearchEndpoint:
         "endpoint_name, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 2}',
                 [
                     {
@@ -38,10 +38,10 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Basic /datasets request",
+                id="Basic /Datasets request",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"limit": 1}',
                 [
                     {
@@ -141,10 +141,10 @@ class TestSearchAPISearchEndpoint:
                         "parameters": [],
                     },
                 ],
-                id="Basic /documents request",
+                id="Basic /Documents request",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"limit": 2}',
                 [
                     {
@@ -160,10 +160,10 @@ class TestSearchAPISearchEndpoint:
                         "pid": "pid:2",
                     },
                 ],
-                id="Basic /instruments request",
+                id="Basic /Instruments request",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 1, "skip": 5}',
                 [
                     {
@@ -183,7 +183,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with skip filter",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"limit": 2, "where": {"name": "INSTRUMENT 10"}}',
                 [
                     {
@@ -196,7 +196,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search instruments with name condition",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 1, "where": {"creationDate": {"gt":'
                 ' "2007-06-30T08:30:58.000Z"}}}',
                 [
@@ -217,7 +217,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with creation date filter (operator specified)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "documents"}, {"relation": "techniques"},'
                 ' {"relation": "instrument"}, {"relation": "files"},'
                 ' {"relation": "parameters"}, {"relation": "samples"}], "limit": 1}',
@@ -227,7 +227,7 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "datasets"}, {"relation": "members"},'
                 ' {"relation": "parameters"}], "limit": 1}',
                 [
@@ -375,7 +375,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search documents including all possible related entities",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"include": [{"relation": "datasets"}], "limit": 1}',
                 {
                     "description": "Former outside source play nearly Congress before"
@@ -399,7 +399,7 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 1, "where": {"isPublic": true}}',
                 [
                     {
@@ -419,13 +419,13 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with isPublic condition (True)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"where": {"isPublic": false}}',
                 [],
                 id="Search datasets with isPublic condition (False)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "techniques", "scope": {"where": {"name":'
                 '"TODO"}}}]}',
                 [],
@@ -435,7 +435,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with condition on techniques name (ICAT 5)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 39"}, {"value": {"between": [320300, 320320]}},'
                 '{"unit": "unit 39"}]}}}]}',
@@ -467,7 +467,7 @@ class TestSearchAPISearchEndpoint:
                 " operator, A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 39"}, {"value": {"lt": 800000}}, {"unit":'
                 ' "unit 39"}]}}}]}',
@@ -499,7 +499,7 @@ class TestSearchAPISearchEndpoint:
                 ", A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"or": [{'
                 '"and": [{"name": "sample_state"}, {"value": "solid"}]}, {"and": [{'
                 '"name": "PARAMETERTYPE 39"}, {"value": 320310}]}]}}}]}',
@@ -531,7 +531,7 @@ class TestSearchAPISearchEndpoint:
                 " OR (C AND D)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "files", "scope": {"where": {"text":'
                 ' "Datafile 10064"}}}]}',
                 [
@@ -945,7 +945,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets' files using full text search",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"where": {"type": "INVESTIGATIONTYPE 2"}, "include": [{"relation":'
                 '"datasets"}, {"relation": "members", "scope": {"where": {"role": "PI"'
                 '}, "include": [{"relation": "person", "scope": {"where": {"fullName":'
@@ -1051,7 +1051,7 @@ class TestSearchAPISearchEndpoint:
                 " conditions",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 27"}, {"value": {"between": [127260, 127270]}},'
                 '{"unit": "unit 27"}]}}}]}',
@@ -1166,7 +1166,7 @@ class TestSearchAPISearchEndpoint:
                 " operator, A AND B AND C)",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "datasets", "scope": {"include": [{'
                 '"relation": "parameters", "scope": {"where": {"and": [{"name":'
                 ' "PARAMETERTYPE 27"}, {"value": {"between": [177670, 177680]}}, {'
@@ -1296,7 +1296,7 @@ class TestSearchAPISearchEndpoint:
                 " (between operator, A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "datasets", "scope": {"include": [{'
                 '"relation": "samples", "scope": {"where": {"name": "SAMPLE 4"}}}, {'
                 '"relation": "techniques", "scope": {"where": {"name": "TODO"}}}]}}]}',
@@ -1422,7 +1422,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search documents with multiple include and scopes (ICAT 5)",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"filter": {"query": "TODO"}}',
                 [],
                 # Skipped because this test relies the search scoring component
@@ -1455,7 +1455,7 @@ class TestSearchAPISearchEndpoint:
         self, flask_test_app_search_api, request_filter, expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/instruments?filter={request_filter}",
+            f"{Config.config.search_api.extension}/Instruments?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code

@@ -11,7 +11,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
                 "0-8401-1070-7",
                 "{}",
                 {"count": 56},
-                id="Basic /datasets/{pid}/files/count request",
+                id="Basic /Datasets/{pid}/files/count request",
                 # Skipped because empty dict for filter doesn't work on where
                 marks=pytest.mark.skip,
             ),
@@ -54,7 +54,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
     ):
 
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files/count"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
             f"?where={request_filter}",
         )
 
@@ -76,7 +76,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
         self, flask_test_app_search_api, pid, request_filter,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files/count"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
             f"?where={request_filter}",
         )
 
