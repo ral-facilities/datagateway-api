@@ -51,14 +51,14 @@ class TestSearchAPICountEndpoint:
             ),
             pytest.param(
                 "datasets",
-                '{"title": {"like": "DATASET 30"}}',
+                '{"title": {"like": "DATASET 3"}}',
                 {"count": 11},
                 id="Dataset count with where (operator specified)",
             ),
             pytest.param(
                 "documents",
                 '{"summary": {"ilike": "nature"}}',
-                {"count": 7},
+                {"count": 1},
                 id="Document count with where (operator specified)",
             ),
             pytest.param(
@@ -92,13 +92,13 @@ class TestSearchAPICountEndpoint:
             pytest.param(
                 "datasets",
                 '{"isPublic": true}',
-                {"count": 479},
+                {"count": 119},
                 id="Dataset count with isPublic condition (True)",
             ),
             pytest.param(
                 "documents",
                 '{"isPublic": true}',
-                {"count": 239},
+                {"count": 59},
                 id="Document count with isPublic condition (True)",
             ),
             pytest.param(

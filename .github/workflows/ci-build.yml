@@ -292,7 +292,9 @@ jobs:
 
       - name: Add dummy data to icatdb
         run: poetry run python -m util.icat_db_generator
-      - name: Get SQL dump of dummy data
+      - name: Drop modTime and createTime
+        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
+      - name: Get SQL dump of dummy data to be prepared
         run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_1.sql
 
       # Drop and re-create icatdb to remove generated data
@@ -307,6 +309,8 @@ jobs:
       - name: Add (new) dummy data to icatdb
         run: |
           cd /home/runner/work/datagateway-api/datagateway-api; poetry run python -m util.icat_db_generator
+      - name: Drop modTime and createTime
+        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
       - name: Get SQL dump of new dummy data
         run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_2.sql
 
@@ -344,6 +348,8 @@ jobs:
 
       - name: Add dummy data to icatdb
         run: poetry run python -m util.icat_db_generator
+      - name: Drop modTime and createTime
+        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
       - name: Get SQL dump of dummy data from main's generator script
         run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_main.sql
 
