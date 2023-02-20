@@ -1,15 +1,14 @@
 from abc import ABC, abstractmethod
 import argparse
 import datetime
+import enum
 from multiprocessing import Process
 
 from faker import Faker
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.pool import QueuePool
+from icat.client import Client
+from icat.query import Query
 
 from datagateway_api.src.common.config import Config
-from datagateway_api.src.datagateway_api.database import models
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -26,34 +25,13 @@ parser.add_argument(
     dest="years",
     help="Provide number of years to generate",
     type=int,
-    default=20,
+    default=5,
 )
 args = parser.parse_args()
 SEED = args.seed
 YEARS = args.years  # 4 Cycles per years generated
 faker = Faker()
 Faker.seed(SEED)
-
-
-engine = create_engine(
-    Config.config.datagateway_api.db_url,
-    poolclass=QueuePool,
-    pool_size=100,
-    max_overflow=0,
-)
-session_factory = sessionmaker(engine)
-session = scoped_session(session_factory)()
-
-
-def post_entity(entity):
-    """
-    Given an entity, insert it into the ICAT DB
-    :param entity:  The entity to be inserted
-    :return: None
-    """
-    session.add(entity)
-    session.commit()
-    session.close()
 
 
 def get_date_time():
@@ -84,29 +62,43 @@ def get_end_date(i):
     )
 
 
-def apply_common_attributes(entity, iterator):
-    entity.createId = "user"
-    entity.modId = "user"
-    entity.modTime = get_date_time()
-    entity.createTime = get_date_time()
-    entity.name = f"{entity.__tablename__} {iterator}"
-    entity.description = faker.text()
-    entity.facilityID = 1
-    entity.startDate = get_start_date(iterator)
-    entity.endDate = get_end_date(iterator)
-    entity.doi = faker.isbn10(separator="-")
+def apply_common_parameter_attributes(entity, i, client):
+    if entity.type.valueType == "NUMERIC":
+        entity.numericValue = faker.random_int(
+            entity.type.minimumNumericValue, entity.type.maximumNumericValue - 1,
+        )
 
+    if entity.type.valueType == "DATE_AND_TIME":
+        entity.dateTimeValue = get_start_date(i)
 
-def apply_common_parameter_attributes(entity, i):
-    entity.dateTimeValue = get_start_date(i)
+    if entity.type.valueType == "STRING":
+        entity.stringValue = client.search(
+            Query(
+                client,
+                "PermissibleStringValue",
+                conditions={"type.id": f"= '{entity.type.id}'"},
+            ),
+        )[0].value
+
     entity.error = faker.random_int(0, 42341)
-    entity.numericValue = faker.random_int(0, 352351)
     entity.rangeBottom = faker.random_int(1, 50)
     entity.rangeTop = faker.random_int(50, 101)
-    entity.stringValue = faker.word() + str(i)
+
+
+def icat_client():
+    client = Client(
+        Config.config.datagateway_api.icat_url,
+        checkCert=Config.config.datagateway_api.icat_check_cert,
+    )
+    client.login(
+        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+    )
+    return client
 
 
 class Generator(ABC):
+    client = icat_client()
+
     @property
     @abstractmethod
     def tier(self):
@@ -127,30 +119,25 @@ class FacilityGenerator(Generator):
     amount = 1
 
     def generate(self):
-        facility = models.FACILITY()
-        facility.createId = "user"
-        facility.modId = "user"
-        facility.modTime = get_date_time()
-        facility.createTime = get_date_time()
+        facility = self.client.new("facility")
         facility.daysUntilRelease = 10
         facility.description = "Lorem ipsum light source"
         facility.name = "LILS"
-        post_entity(facility)
+        facility.create()
 
 
 class DataCollectionGenerator(Generator):
     tier = 0
-    amount = 1000
+    amount = 100
 
     def generate(self):
         for i in range(1, self.amount):
-            DataCollectionGenerator.generate_data_collection(i)
+            DataCollectionGenerator.generate_data_collection(self, i)
 
-    @staticmethod
-    def generate_data_collection(i):
-        data_collection = models.DATACOLLECTION()
-        apply_common_attributes(data_collection, i)
-        post_entity(data_collection)
+    def generate_data_collection(self, i):
+        data_collection = self.client.new("dataCollection")
+        data_collection.doi = faker.isbn10(separator="-")
+        data_collection.create()
 
 
 class ApplicationGenerator(Generator):
@@ -159,14 +146,15 @@ class ApplicationGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            ApplicationGenerator.generate_applications(i)
+            ApplicationGenerator.generate_applications(self, i)
 
-    @staticmethod
-    def generate_applications(i):
-        application = models.APPLICATION()
-        apply_common_attributes(application, i)
+    def generate_applications(self, i):
+        tablename = "APPLICATION"
+        application = self.client.new("application")
+        application.name = f"{tablename} {i}"
         application.version = faker.random_int(1, 4)
-        post_entity(application)
+        application.facility = self.client.get("Facility", 1)
+        application.create()
 
 
 class DatasetTypeGenerator(Generator):
@@ -175,13 +163,15 @@ class DatasetTypeGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            DatasetTypeGenerator.generate_dataset_type(i)
+            DatasetTypeGenerator.generate_dataset_type(self, i)
 
-    @staticmethod
-    def generate_dataset_type(i):
-        dataset_type = models.DATASETTYPE()
-        apply_common_attributes(dataset_type, i)
-        post_entity(dataset_type)
+    def generate_dataset_type(self, i):
+        tablename = "DATASETTYPE"
+        dataset_type = self.client.new("datasetType")
+        dataset_type.name = f"{tablename} {i}"
+        dataset_type.description = faker.text()
+        dataset_type.facility = self.client.get("Facility", 1)
+        dataset_type.create()
 
 
 class FacilityCycleGenerator(Generator):
@@ -190,19 +180,19 @@ class FacilityCycleGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            FacilityCycleGenerator.generate_facility_cycle(i)
+            FacilityCycleGenerator.generate_facility_cycle(self, i)
 
-    @staticmethod
-    def generate_facility_cycle(i):
-        facility_cycle = models.FACILITYCYCLE()
-        apply_common_attributes(facility_cycle, i)
+    def generate_facility_cycle(self, i):
+        facility_cycle = self.client.new("facilityCycle")
+        facility_cycle.description = faker.text()
         # overwrite the name with a more suitable one
         k = i % 4 + 1  # This will give a repeated 1, 2, 3, 4 for 4 cycles per year
         year = 2000 + i // 4
         facility_cycle.name = f"{year} cycle {k}"
         facility_cycle.startDate = datetime.datetime(year, 2 * k, k)
         facility_cycle.endDate = datetime.datetime(year, 2 * k + 3, 5 * k)
-        post_entity(facility_cycle)
+        facility_cycle.facility = self.client.get("Facility", 1)
+        facility_cycle.create()
 
 
 class SampleTypeGenerator(Generator):
@@ -212,15 +202,16 @@ class SampleTypeGenerator(Generator):
     def generate(self):
 
         for i in range(1, self.amount):
-            SampleTypeGenerator.generate_sample_type(i)
+            SampleTypeGenerator.generate_sample_type(self, i)
 
-    @staticmethod
-    def generate_sample_type(i):
-        sample_type = models.SAMPLETYPE()
-        apply_common_attributes(sample_type, i)
+    def generate_sample_type(self, i):
+        tablename = "SAMPLETYPE"
+        sample_type = self.client.new("sampleType")
+        sample_type.name = f"{tablename} {i}"
         sample_type.molecularFormula = faker.random_int(43, 13323)
         sample_type.safetyInformation = faker.text()
-        post_entity(sample_type)
+        sample_type.facility = self.client.get("Facility", 1)
+        sample_type.create()
 
 
 class InstrumentGenerator(Generator):
@@ -229,16 +220,18 @@ class InstrumentGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InstrumentGenerator.generate_instruments(i)
+            InstrumentGenerator.generate_instruments(self, i)
 
-    @staticmethod
-    def generate_instruments(i):
-        instrument = models.INSTRUMENT()
-        apply_common_attributes(instrument, i)
+    def generate_instruments(self, i):
+        tablename = "INSTRUMENT"
+        instrument = self.client.new("instrument")
+        instrument.name = f"{tablename} {i}"
+        instrument.description = faker.text()
         instrument.fullName = faker.text()
         instrument.url = faker.url()
         instrument.type = str(i)
-        post_entity(instrument)
+        instrument.facility = self.client.get("Facility", 1)
+        instrument.create()
 
 
 class UserGenerator(Generator):
@@ -247,17 +240,15 @@ class UserGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            UserGenerator.generate_users(i)
+            UserGenerator.generate_users(self, i)
 
-    @staticmethod
-    def generate_users(i):
-        user = models.USER()
-        apply_common_attributes(user, i)
+    def generate_users(self, i):
+        user = self.client.new("user")
         user.email = faker.ascii_email()
         user.name = faker.first_name() + f"{i}"
         user.fullName = faker.name()
         user.orcidId = faker.random_int(2332, 24242)
-        post_entity(user)
+        user.create()
 
 
 class DatafileFormatGenerator(Generator):
@@ -266,14 +257,16 @@ class DatafileFormatGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            DatafileFormatGenerator.generate_datafile_format(i)
+            DatafileFormatGenerator.generate_datafile_format(self, i)
 
-    @staticmethod
-    def generate_datafile_format(i):
-        datafile_format = models.DATAFILEFORMAT()
-        apply_common_attributes(datafile_format, i)
+    def generate_datafile_format(self, i):
+        tablename = "DATAFILEFORMAT"
+        datafile_format = self.client.new("datafileFormat")
+        datafile_format.name = f"{tablename} {i}"
+        datafile_format.description = faker.text()
         datafile_format.version = faker.random_int(1, 14)
-        post_entity(datafile_format)
+        datafile_format.facility = self.client.get("Facility", 1)
+        datafile_format.create()
 
 
 class InvestigationTypeGenerator(Generator):
@@ -282,13 +275,15 @@ class InvestigationTypeGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationTypeGenerator.generate_investigation_type(i)
+            InvestigationTypeGenerator.generate_investigation_type(self, i)
 
-    @staticmethod
-    def generate_investigation_type(i):
-        investigation_type = models.INVESTIGATIONTYPE()
-        apply_common_attributes(investigation_type, i)
-        post_entity(investigation_type)
+    def generate_investigation_type(self, i):
+        tablename = "INVESTIGATIONTYPE"
+        investigation_type = self.client.new("investigationType")
+        investigation_type.facility = self.client.get("Facility", 1)
+        investigation_type.name = f"{tablename} {i}"
+        investigation_type.description = faker.text()
+        investigation_type.create()
 
 
 class GroupingGenerator(Generator):
@@ -297,27 +292,28 @@ class GroupingGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            GroupingGenerator.generate_groupings(i)
+            GroupingGenerator.generate_groupings(self, i)
 
-    @staticmethod
-    def generate_groupings(i):
-        grouping = models.GROUPING()
-        apply_common_attributes(grouping, i)
-        post_entity(grouping)
+    def generate_groupings(self, i):
+        tablename = "GROUPING"
+        grouping = self.client.new("grouping")
+        grouping.name = f"{tablename} {i}"
+        grouping.create()
 
 
 class InvestigationGenerator(Generator):
     tier = 2
-    amount = 3 * FacilityCycleGenerator.amount  # 60 Investigations per cycle
+    amount = 3 * FacilityCycleGenerator.amount  # 3 Investigations per cycle (60)
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationGenerator.generate_investigations(i)
+            InvestigationGenerator.generate_investigations(self, i)
 
-    @staticmethod
-    def generate_investigations(i):
-        investigation = models.INVESTIGATION()
-        apply_common_attributes(investigation, i)
+    def generate_investigations(self, i):
+        tablename = "INVESTIGATION"
+        investigation = self.client.new("investigation")
+        investigation.name = f"{tablename} {i}"
+        investigation.doi = faker.isbn10(separator="-")
         k = i % 4 + 1
         year = 2000 + (i % 80) // 4
         investigation.startDate = datetime.datetime(year, 2 * k, k + 1)
@@ -326,10 +322,12 @@ class InvestigationGenerator(Generator):
         investigation.summary = faker.text()
         investigation.title = faker.text()
         investigation.visitId = faker.random_int(1, 100)
-        investigation.typeID = faker.random_int(
-            1, InvestigationTypeGenerator.amount - 1,
+        investigation.type = self.client.get(
+            "InvestigationType",
+            faker.random_int(1, InvestigationTypeGenerator.amount - 1),
         )
-        post_entity(investigation)
+        investigation.facility = self.client.get("Facility", 1)
+        investigation.create()
 
 
 class InvestigationUserGenerator(Generator):
@@ -338,16 +336,16 @@ class InvestigationUserGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationUserGenerator.generate_investigation_user(i)
+            InvestigationUserGenerator.generate_investigation_user(self, i)
 
-    @staticmethod
-    def generate_investigation_user(i):
-        investigation_user = models.INVESTIGATIONUSER()
-        apply_common_attributes(investigation_user, i)
+    def generate_investigation_user(self, i):
+        investigation_user = self.client.new("investigationUser")
         investigation_user.role = ["PI", "CI"][faker.random_int(0, 1)]
-        investigation_user.investigationID = i
-        investigation_user.userID = faker.random_int(1, UserGenerator.amount - 1)
-        post_entity(investigation_user)
+        investigation_user.investigation = self.client.get("Investigation", i)
+        investigation_user.user = self.client.get(
+            "User", faker.random_int(1, UserGenerator.amount - 1),
+        )
+        investigation_user.create()
 
 
 class InstrumentScientistGenerator(Generator):
@@ -356,15 +354,15 @@ class InstrumentScientistGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InstrumentScientistGenerator.generate_instrument_scientist(i)
+            InstrumentScientistGenerator.generate_instrument_scientist(self, i)
 
-    @staticmethod
-    def generate_instrument_scientist(i):
-        instrument_scientist = models.INSTRUMENTSCIENTIST()
-        apply_common_attributes(instrument_scientist, i)
-        instrument_scientist.instrumentID = i
-        instrument_scientist.userID = faker.random_int(1, UserGenerator.amount - 1)
-        post_entity(instrument_scientist)
+    def generate_instrument_scientist(self, i):
+        instrument_scientist = self.client.new("instrumentScientist")
+        instrument_scientist.instrument = self.client.get("Instrument", i)
+        instrument_scientist.user = self.client.get(
+            "User", faker.random_int(1, UserGenerator.amount - 1),
+        )
+        instrument_scientist.create()
 
 
 class InvestigationInstrumentGenerator(Generator):
@@ -373,17 +371,15 @@ class InvestigationInstrumentGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationInstrumentGenerator.generate_investigation_instrument(i)
+            InvestigationInstrumentGenerator.generate_investigation_instrument(self, i)
 
-    @staticmethod
-    def generate_investigation_instrument(i):
-        investigation_instrument = models.INVESTIGATIONINSTRUMENT()
-        apply_common_attributes(investigation_instrument, i)
-        investigation_instrument.investigationID = i
-        investigation_instrument.instrumentID = faker.random_int(
-            1, InstrumentGenerator.amount - 1,
+    def generate_investigation_instrument(self, i):
+        investigation_instrument = self.client.new("investigationInstrument")
+        investigation_instrument.investigation = self.client.get("Investigation", i)
+        investigation_instrument.instrument = self.client.get(
+            "Instrument", faker.random_int(1, InstrumentGenerator.amount - 1),
         )
-        post_entity(investigation_instrument)
+        investigation_instrument.create()
 
 
 class SampleGenerator(Generator):
@@ -392,15 +388,17 @@ class SampleGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            SampleGenerator.generate_sample(i)
+            SampleGenerator.generate_sample(self, i)
 
-    @staticmethod
-    def generate_sample(i):
-        sample = models.SAMPLE()
-        apply_common_attributes(sample, i)
-        sample.investigationID = i
-        sample.typeID = faker.random_int(1, SampleTypeGenerator.amount - 1)
-        post_entity(sample)
+    def generate_sample(self, i):
+        tablename = "SAMPLE"
+        sample = self.client.new("sample")
+        sample.name = f"{tablename} {i}"
+        sample.investigation = self.client.get("Investigation", i)
+        sample.type = self.client.get(
+            "SampleType", faker.random_int(1, SampleTypeGenerator.amount - 1),
+        )
+        sample.create()
 
 
 class UserGroupGenerator(Generator):
@@ -409,15 +407,15 @@ class UserGroupGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            UserGroupGenerator.generate_user_groups(i)
+            UserGroupGenerator.generate_user_groups(self, i)
 
-    @staticmethod
-    def generate_user_groups(i):
-        user_group = models.USERGROUP()
-        apply_common_attributes(user_group, i)
-        user_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
-        user_group.userID = i
-        post_entity(user_group)
+    def generate_user_groups(self, i):
+        user_group = self.client.new("userGroup")
+        user_group.grouping = self.client.get(
+            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
+        )
+        user_group.user = self.client.get("User", i)
+        user_group.create()
 
 
 class StudyGenerator(Generator):
@@ -428,17 +426,19 @@ class StudyGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            StudyGenerator.generate_studies(i)
+            StudyGenerator.generate_studies(self, i)
 
-    @staticmethod
-    def generate_studies(i):
-        study = models.STUDY()
-        apply_common_attributes(study, i)
+    def generate_studies(self, i):
+        tablename = "STUDY"
+        study = self.client.new("study")
+        study.name = f"{tablename} {i}"
+        study.description = faker.text()
         study.startDate = get_start_date(i)
+        study.endDate = get_end_date(i)
         study.status = faker.random_int(0, 1)
         study.pid = StudyGenerator.pid_faker.isbn10(separator="-")
-        study.userID = i
-        post_entity(study)
+        study.user = self.client.get("User", i)
+        study.create()
 
 
 class InvestigationGroupGenerator(Generator):
@@ -447,33 +447,36 @@ class InvestigationGroupGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationGroupGenerator.generate_investigation_group(i)
+            InvestigationGroupGenerator.generate_investigation_group(self, i)
 
-    @staticmethod
-    def generate_investigation_group(i):
-        investigation_group = models.INVESTIGATIONGROUP()
-        apply_common_attributes(investigation_group, i)
+    def generate_investigation_group(self, i):
+        investigation_group = self.client.new("investigationGroup")
         investigation_group.role = faker.text() + str(i)
-        investigation_group.groupID = faker.random_int(1, GroupingGenerator.amount - 1)
-        investigation_group.investigationID = i
-        post_entity(investigation_group)
+        investigation_group.grouping = self.client.get(
+            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
+        )
+        investigation_group.investigation = self.client.get("Investigation", i)
+        investigation_group.create()
 
 
 class KeywordGenerator(Generator):
     tier = 3
-    amount = 15000
+    amount = 500
+    keywords = []
 
     def generate(self):
         for i in range(1, self.amount):
             KeywordGenerator.generate_keyword(i)
+        self.client.createMany(self.keywords)
 
-    @staticmethod
-    def generate_keyword(i):
-        keyword = models.KEYWORD()
-        apply_common_attributes(keyword, i)
+    @classmethod
+    def generate_keyword(cls, i):
+        keyword = cls.client.new("keyword")
         keyword.name = faker.word() + str(i)
-        keyword.investigationID = faker.random_int(1, InvestigationGenerator.amount - 1)
-        post_entity(keyword)
+        keyword.investigation = cls.client.get(
+            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
+        )
+        cls.keywords.append(keyword)
 
 
 class PublicationGenerator(Generator):
@@ -482,66 +485,71 @@ class PublicationGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            PublicationGenerator.generate_publication(i)
+            PublicationGenerator.generate_publication(self, i)
 
-    @staticmethod
-    def generate_publication(i):
-        publication = models.PUBLICATION()
-        apply_common_attributes(publication, i)
+    def generate_publication(self, i):
+        publication = self.client.new("publication")
+        publication.doi = faker.isbn10(separator="-")
         publication.fullReference = faker.text()
         publication.repository = faker.uri()
         publication.repositoryId = faker.random_int(1, 23232234)
         publication.url = faker.url()
-        publication.investigationID = i % (InvestigationGenerator.amount - 1) + 1
-        post_entity(publication)
+        publication.investigation = self.client.get(
+            "Investigation", i % (InvestigationGenerator.amount - 1) + 1,
+        )
+        publication.create()
 
 
 class ParameterTypeGenerator(Generator):
     tier = 3
     amount = 50
 
+    class ValueTypeEnum(enum.Enum):
+        DATE_AND_TIME = 0
+        NUMERIC = 1
+        STRING = 2
+
     def generate(self):
         for i in range(1, self.amount):
-            ParameterTypeGenerator.generate_parameter_type(i)
+            ParameterTypeGenerator.generate_parameter_type(self, i)
 
-    @staticmethod
-    def generate_parameter_type(i):
-        parameter_type = models.PARAMETERTYPE()
-        apply_common_attributes(parameter_type, i)
-        parameter_type.applicableToDataCollection = faker.random_int(0, 1)
-        parameter_type.applicableToDatafile = faker.random_int(0, 1)
-        parameter_type.applicableToDataset = faker.random_int(0, 1)
-        parameter_type.applicableToSample = faker.random_int(0, 1)
+    def generate_parameter_type(self, i):
+        tablename = "PARAMETERTYPE"
+        parameter_type = self.client.new("parameterType")
+        parameter_type.name = f"{tablename} {i}"
+        parameter_type.description = faker.text()
+        parameter_type.applicableToDataCollection = 1
+        parameter_type.applicableToDatafile = 1
+        parameter_type.applicableToDataset = 1
+        parameter_type.applicableToSample = 1
+        parameter_type.applicableToInvestigation = 1
         parameter_type.enforced = faker.random_int(0, 1)
         parameter_type.maximumNumericValue = faker.random_int(10, 100)
         parameter_type.minimumNumericValue = faker.random_int(0, 9)
         parameter_type.units = f"unit {i}"
         parameter_type.unitsFullName = faker.word()
-        parameter_type.valueType = list(models.PARAMETERTYPE.ValueTypeEnum)[
-            faker.random_int(0, 2)
-        ]
+        parameter_type.valueType = list(self.ValueTypeEnum)[faker.random_int(0, 2)].name
         parameter_type.verified = faker.random_int(0, 1)
-        post_entity(parameter_type)
+        parameter_type.facility = self.client.get("Facility", 1)
+        parameter_type.create()
 
 
 class InvestigationParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = InvestigationGenerator.amount
 
     def generate(self):
         for i in range(1, self.amount):
-            InvestigationParameterGenerator.generate_investigation_parameter(i)
+            InvestigationParameterGenerator.generate_investigation_parameter(self, i)
 
-    @staticmethod
-    def generate_investigation_parameter(i):
-        investigation_parameter = models.INVESTIGATIONPARAMETER()
-        apply_common_attributes(investigation_parameter, i)
-        apply_common_parameter_attributes(investigation_parameter, i)
-        investigation_parameter.investigationID = i
-        investigation_parameter.parameterTypeID = faker.random_int(
-            1, ParameterTypeGenerator.amount - 1,
+    def generate_investigation_parameter(self, i):
+        investigation_parameter = self.client.new("investigationParameter")
+        investigation_parameter.type = self.client.get(
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        post_entity(investigation_parameter)
+        apply_common_parameter_attributes(investigation_parameter, i, self.client)
+        investigation_parameter.investigation = self.client.get("Investigation", i)
+        investigation_parameter.create()
 
 
 class ShiftGenerator(Generator):
@@ -550,15 +558,15 @@ class ShiftGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            ShiftGenerator.generate_shift(i)
+            ShiftGenerator.generate_shift(self, i)
 
-    @staticmethod
-    def generate_shift(i):
-        shift = models.SHIFT()
-        apply_common_attributes(shift, i)
+    def generate_shift(self, i):
+        shift = self.client.new("shift")
+        shift.startDate = get_start_date(i)
+        shift.endDate = get_end_date(i)
         shift.comment = faker.text()
-        shift.investigationID = i
-        post_entity(shift)
+        shift.investigation = self.client.get("Investigation", i)
+        shift.create()
 
 
 class StudyInvestigationGenerator(Generator):
@@ -567,41 +575,52 @@ class StudyInvestigationGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            StudyInvestigationGenerator.generate_study_investigation(i)
+            StudyInvestigationGenerator.generate_study_investigation(self, i)
 
-    @staticmethod
-    def generate_study_investigation(i):
-        study_investigation = models.STUDYINVESTIGATION()
-        apply_common_attributes(study_investigation, i)
-        study_investigation.investigationID = i
-        study_investigation.studyID = faker.random_int(1, StudyGenerator.amount - 1)
-        post_entity(study_investigation)
+    def generate_study_investigation(self, i):
+        study_investigation = self.client.new("studyInvestigation")
+        study_investigation.investigation = self.client.get("Investigation", i)
+        study_investigation.study = self.client.get(
+            "Study", faker.random_int(1, StudyGenerator.amount - 1),
+        )
+        study_investigation.create()
 
 
 class DatasetGenerator(Generator):
     tier = 4
-    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation
+    amount = InvestigationGenerator.amount * 2  # Two Datasets per investigation (120)
 
     def generate(self):
         for i in range(1, self.amount):
-            DatasetGenerator.generate_dataset(i)
+            DatasetGenerator.generate_dataset(self, i)
 
-    @staticmethod
-    def generate_dataset(i):
-        dataset = models.DATASET()
-        apply_common_attributes(dataset, i)
+    def generate_dataset(self, i):
+        tablename = "DATASET"
+        dataset = self.client.new("dataset")
+        dataset.name = f"{tablename} {i}"
+        dataset.description = faker.text()
+        dataset.fileCount = 15
+        dataset.fileSize = faker.random_int(123, 213123121)
+        dataset.doi = faker.isbn10(separator="-")
+        dataset.startDate = get_start_date(i)
+        dataset.endDate = get_end_date(i)
         dataset.complete = faker.random_int(0, 1)
         dataset.location = faker.file_path()
         investigation_id = i % InvestigationGenerator.amount
-        dataset.investigationID = (
+        dataset.investigation = self.client.get(
+            "Investigation",
             investigation_id
             if investigation_id != 0
-            else InvestigationGenerator.amount - 1
+            else InvestigationGenerator.amount - 1,
         )
         sample_id = i % SampleGenerator.amount
-        dataset.sampleID = sample_id if sample_id != 0 else SampleGenerator.amount - 1
-        dataset.typeID = faker.random_int(1, DatasetTypeGenerator.amount - 1)
-        post_entity(dataset)
+        dataset.sample = self.client.get(
+            "Sample", sample_id if sample_id != 0 else SampleGenerator.amount - 1,
+        )
+        dataset.type = self.client.get(
+            "DatasetType", faker.random_int(1, DatasetTypeGenerator.amount - 1),
+        )
+        dataset.create()
 
 
 class DatasetParameterGenerator(Generator):
@@ -610,41 +629,50 @@ class DatasetParameterGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            DatasetParameterGenerator.generate_dataset_parameter(i)
+            DatasetParameterGenerator.generate_dataset_parameter(self, i)
 
-    @staticmethod
-    def generate_dataset_parameter(i):
-        dataset_param = models.DATASETPARAMETER()
-        apply_common_attributes(dataset_param, i)
-        apply_common_parameter_attributes(dataset_param, i)
-        dataset_param.datasetID = faker.random_int(1, DatasetGenerator.amount - 1)
-        dataset_param.parameterTypeID = i
-        post_entity(dataset_param)
+    def generate_dataset_parameter(self, i):
+        dataset_param = self.client.new("datasetParameter")
+        dataset_param.type = self.client.get("ParameterType", i)
+        apply_common_parameter_attributes(dataset_param, i, self.client)
+        dataset_param.dataset = self.client.get(
+            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+        )
+        dataset_param.create()
 
 
 class DatafileGenerator(Generator):
     tier = 5
-    amount = DatasetGenerator.amount * 55  # 55 files per Dataset
+    amount = DatasetGenerator.amount * 15  # 15 files per Dataset (1800)
+    datafiles = []
 
     def generate(self):
         for i in range(1, self.amount):
             DatafileGenerator.generate_datafile(i)
+        # timer = datetime.datetime.now()
+        # with multiprocessing.get_context("spawn").Pool() as pool:
+        #    pool.map(DatafileGenerator.generate_datafile, range(1, self.amount))
 
-    @staticmethod
-    def generate_datafile(i):
-        datafile = models.DATAFILE()
-        apply_common_attributes(datafile, i % 19)
+    @classmethod
+    def generate_datafile(cls, i):
+        tablename = "DATAFILE"
+        datafile = cls.client.new("datafile")
+        datafile.name = f"{tablename} {i}"
+        datafile.description = faker.text()
+        datafile.doi = faker.isbn10(separator="-")
         datafile.checksum = faker.md5()
         datafile.datafileCreateTime = datafile.createTime
         datafile.datafileModTime = datafile.modTime
         datafile.fileSize = faker.random_int(123, 213123121)
-        datafile.datafileFormatID = faker.random_int(
-            1, DatafileFormatGenerator.amount - 1,
+        datafile.datafileFormat = cls.client.get(
+            "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1),
         )
-        datafile.datasetID = i % (DatasetGenerator.amount - 1) + 1
+        datafile.dataset = cls.client.get(
+            "Dataset", i % (DatasetGenerator.amount - 1) + 1,
+        )
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
-        post_entity(datafile)
+        datafile.create()
 
 
 class PermissibleStringValueGenerator(Generator):
@@ -653,78 +681,71 @@ class PermissibleStringValueGenerator(Generator):
 
     def generate(self):
         for i in range(1, self.amount):
-            generate_permissible_string_value(i)
+            PermissibleStringValueGenerator.generate_permissible_string_value(self, i)
 
-
-def generate_permissible_string_value(i):
-    permissible_string_value = models.PERMISSIBLESTRINGVALUE()
-    apply_common_attributes(permissible_string_value, i)
-    permissible_string_value.value = f"value {i}"
-    permissible_string_value.parameterTypeID = i
-    post_entity(permissible_string_value)
+    def generate_permissible_string_value(self, i):
+        permissible_string_value = self.client.new("permissibleStringValue")
+        permissible_string_value.value = f"value {i}"
+        permissible_string_value.type = self.client.get("ParameterType", i)
+        permissible_string_value.create()
 
 
 class DataCollectionParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = DataCollectionGenerator.amount
 
     def generate(self):
         for i in range(1, self.amount):
-            DataCollectionParameterGenerator.generate_data_collection_parameter(i)
+            DataCollectionParameterGenerator.generate_data_collection_parameter(self, i)
 
-    @staticmethod
-    def generate_data_collection_parameter(i):
-        datacollection_parameter = models.DATACOLLECTIONPARAMETER()
-        apply_common_attributes(datacollection_parameter, i)
-        apply_common_parameter_attributes(datacollection_parameter, i)
-        datacollection_parameter.dataCollectionID = i
-        datacollection_parameter.parameterTypeID = faker.random_int(
-            1, ParameterTypeGenerator.amount - 1,
+    def generate_data_collection_parameter(self, i):
+        datacollection_parameter = self.client.new("dataCollectionParameter")
+        datacollection_parameter.type = self.client.get(
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        post_entity(datacollection_parameter)
+        apply_common_parameter_attributes(datacollection_parameter, i, self.client)
+        datacollection_parameter.dataCollection = self.client.get("DataCollection", i)
+        datacollection_parameter.create()
 
 
 class SampleParameterGenerator(Generator):
-    tier = 4
+    tier = 5
     amount = SampleGenerator.amount
 
     def generate(self):
         for i in range(1, self.amount):
-            SampleParameterGenerator.generate_sample_parameter(i)
+            SampleParameterGenerator.generate_sample_parameter(self, i)
 
-    @staticmethod
-    def generate_sample_parameter(i):
-        sample_parameter = models.SAMPLEPARAMETER()
-        apply_common_attributes(sample_parameter, i)
-        apply_common_parameter_attributes(sample_parameter, i)
-        sample_parameter.sampleID = i
-        sample_parameter.parameterTypeID = faker.random_int(
-            1, ParameterTypeGenerator.amount - 1,
+    def generate_sample_parameter(self, i):
+        sample_parameter = self.client.new("sampleParameter")
+        sample_parameter.type = self.client.get(
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        post_entity(sample_parameter)
+        apply_common_parameter_attributes(sample_parameter, i, self.client)
+        sample_parameter.sample = self.client.get("Sample", i)
+        sample_parameter.create()
 
 
 class DatafileParameterGenerator(Generator):
     tier = 6
-    amount = DatafileGenerator.amount
+    amount = DatafileGenerator.amount  # 1800
 
     def generate(self):
         for i in range(1, self.amount):
             DatafileParameterGenerator.generate_datafile_parameter(i)
 
-    @staticmethod
-    def generate_datafile_parameter(i):
-        datafile_param = models.DATAFILEPARAMETER()
-        apply_common_attributes(datafile_param, i)
-        apply_common_parameter_attributes(datafile_param, i)
-        datafile_param.datafileID = i
-        datafile_param.parameterTypeID = faker.random_int(
-            1, ParameterTypeGenerator.amount - 1,
+    @classmethod
+    def generate_datafile_parameter(cls, i):
+        datafile_param = cls.client.new("datafileParameter")
+        datafile_param.type = cls.client.get(
+            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
-        post_entity(datafile_param)
+        apply_common_parameter_attributes(datafile_param, i, cls.client)
+        datafile_param.datafile = cls.client.get("Datafile", i)
+        datafile_param.create()
 
 
-def generate_all(i, generators):
+def generate_all(i, generators, client):
     processes = []
     for generator in generators:
         if generator.tier == i:
@@ -740,11 +761,12 @@ def generate_all(i, generators):
 
 
 def main():
+    client = icat_client()
     start_time = datetime.datetime.now()
     generators = [generator() for generator in Generator.__subclasses__()]
     tiers = 7
     for i in range(tiers):
-        generate_all(i, generators)
+        generate_all(i, generators, client)
 
     print(
         f"Added {sum(generator.amount for generator in generators)} entities in"

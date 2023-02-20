@@ -148,7 +148,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
 class SearchAPISkipFilter(PythonICATSkipFilter):
     def __init__(self, skip_value):
-        super().__init__(skip_value, filter_use="search_api")
+        super().__init__(int(skip_value), filter_use="search_api")
 
     def apply_filter(self, query):
         return super().apply_filter(query.icat_query.query)
@@ -156,7 +156,7 @@ class SearchAPISkipFilter(PythonICATSkipFilter):
 
 class SearchAPILimitFilter(PythonICATLimitFilter):
     def __init__(self, limit_value):
-        super().__init__(limit_value)
+        super().__init__(int(limit_value))
 
     def apply_filter(self, query):
         return super().apply_filter(query.icat_query.query)

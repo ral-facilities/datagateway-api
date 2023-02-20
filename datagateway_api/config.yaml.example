@@ -1,0 +1,26 @@
+---
+datagateway_api:
+  extension: "/"
+  backend: "python_icat"
+  client_cache_size: 5
+  client_pool_init_size: 2
+  client_pool_max_size: 5
+  db_url: "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb"
+  icat_url: "https://localhost:8181"
+  icat_check_cert: false
+search_api:
+  extension: "/search-api"
+  icat_url: "https://localhost:8181"
+  icat_check_cert: false
+  mechanism: "anon"
+  username: ""
+  password: ""
+flask_reloader: false
+log_level: "DEBUG"
+log_location: "/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"
+debug_mode: true
+generate_swagger: false
+host: "127.0.0.1"
+port: "5000"
+test_user_credentials: { username: "root", password: "pw" }
+test_mechanism: "simple"
