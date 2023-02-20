@@ -1,19 +1,44 @@
 # Dockerfile to build and serve datagateway-api
 
-FROM python:3.6-slim-bullseye
+# Build stage
+FROM python:3-alpine as builder
 
-WORKDIR /datagateway-api
+WORKDIR /datagateway-api-build
 
-COPY poetry.lock pyproject.toml ./
+COPY . .
 
-RUN python -m pip install --upgrade pip \
-  && pip install 'poetry==1.1.13' \
-  && poetry run pip uninstall -y setuptools \
-  && poetry run pip install 'setuptools<58.0.0' \
-  && poetry run pip install 'gunicorn==20.1.0' \
-  && poetry install --no-dev
+RUN python3 -m pip install poetry \
+ && poetry build
 
-COPY datagateway_api ./datagateway_api
+
+# Install & run stage
+FROM python:3-alpine
+
+WORKDIR /datagateway-api-run
+
+COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl .
+
+# Workaround for https://github.com/icatproject/python-icat/issues/99
+RUN python3 -m pip install 'setuptools<58.0.0'
+
+RUN python3 -m pip install datagateway_api-*.whl gunicorn \
+ && DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')" \
+ && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json" \
+ && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" "/datagateway-api-run/config.yaml" \
+ && ln -s "/datagateway-api-run/config.yaml" "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml" \
+ && addgroup -S datagateway-api \
+ && adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api \
+ && chown datagateway-api:datagateway-api /datagateway-api-run /datagateway-api-run/config.yaml
+
+USER datagateway-api
+
+ENV ICAT_URL="http://localhost"
+ENV ICAT_CHECK_CERT="true"
+ENV LOG_LOCATION="/dev/stdout"
+
+COPY docker/docker-entrypoint.sh .
+ENTRYPOINT ["./docker-entrypoint.sh"]
 
 # Serve the application using gunicorn - production ready WSGI server
-ENTRYPOINT ["poetry", "run", "gunicorn", "-c", "gunicorn.conf.py", "datagateway_api.wsgi:application"]
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "datagateway_api.wsgi"]
+EXPOSE 8000
