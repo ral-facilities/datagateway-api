@@ -17,14 +17,14 @@ FROM python:3.11-alpine3.17
 
 WORKDIR /datagateway-api-run
 
-COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl .
+COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl /tmp
 
 RUN --mount=type=cache,target=/root/.cache \
     python3 -m pip install \
         'gunicorn~=20.1.0' \
 # Workaround for https://github.com/icatproject/python-icat/issues/99
         'setuptools<58.0.0' \
-        datagateway_api-*.whl \
+        /tmp/datagateway_api-*.whl \
  && DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')" \
 # Create search_api_mapping.json from its .example file
  && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json" \
@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/root/.cache \
 # Create a non-root user to run as
  && addgroup -S datagateway-api \
  && adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api \
- && chown datagateway-api:datagateway-api /datagateway-api-run /datagateway-api-run/config.yaml
+ && chown -R datagateway-api:datagateway-api /datagateway-api-run
 
 USER datagateway-api
 
@@ -42,8 +42,8 @@ ENV ICAT_URL="http://localhost"
 ENV ICAT_CHECK_CERT="true"
 ENV LOG_LOCATION="/dev/stdout"
 
-COPY docker/docker-entrypoint.sh .
-ENTRYPOINT ["./docker-entrypoint.sh"]
+COPY docker/docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 # Serve the application using gunicorn - production ready WSGI server
 CMD ["gunicorn", "-b", "0.0.0.0:8000", "datagateway_api.wsgi"]
