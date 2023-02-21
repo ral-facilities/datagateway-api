@@ -7,7 +7,7 @@ WORKDIR /datagateway-api-build
 
 COPY . .
 
-RUN python3 -m pip install poetry \
+RUN python3 -m pip install 'poetry~=1.3.2' \
  && poetry build
 
 
@@ -18,10 +18,11 @@ WORKDIR /datagateway-api-run
 
 COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl .
 
+RUN python3 -m pip install \
+        'gunicorn~=20.1.0' \
 # Workaround for https://github.com/icatproject/python-icat/issues/99
-RUN python3 -m pip install 'setuptools<58.0.0'
-
-RUN python3 -m pip install datagateway_api-*.whl gunicorn \
+        'setuptools<58.0.0' \
+        datagateway_api-*.whl \
  && DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')" \
  && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json" \
  && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" "/datagateway-api-run/config.yaml" \
