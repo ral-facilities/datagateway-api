@@ -2,6 +2,59 @@
 
 <!--next-version-placeholder-->
 
+## v6.3.0 (2023-02-17)
+### Feature
+* Refactor icat generator to use python-icat ([`ae6ae0b`](https://github.com/ral-facilities/datagateway-api/commit/ae6ae0b2a2ce375fb0d47851b3091c952735f5c6))
+
+## v6.2.0 (2022-11-23)
+### Feature
+* Add new entity endpoints for icat5 ([`dd18e18`](https://github.com/ral-facilities/datagateway-api/commit/dd18e18bc19f87c5aa7c99c144f262b68e4fe0c6))
+
+### Documentation
+* Updated postman collection with new entities ([`4dd4895`](https://github.com/ral-facilities/datagateway-api/commit/4dd489574245f4f6020c490d5cddeb3fc3c65c91))
+
+## v6.1.1 (2022-11-23)
+### Fix
+* Do not attempt to create related entities if not included #387 ([`819e7a1`](https://github.com/ral-facilities/datagateway-api/commit/819e7a1582d8d108fe5f18b210c08d67cd0a3845))
+
+## v6.1.0 (2022-11-23)
+### Feature
+* Add new entity endpoints for icat5 ([`dc14f9f`](https://github.com/ral-facilities/datagateway-api/commit/dc14f9f8aeb5a9849bc69cf647bf068b04a63d81))
+
+### Documentation
+* Updated postman collection with new entities ([`c4b850f`](https://github.com/ral-facilities/datagateway-api/commit/c4b850f913dbded35e6b1a88c8f8d8e1b36cbdec))
+
+## v6.0.0 (2022-11-22)
+### Feature
+* Enable support for yaml configuration files for DatagatewayAPI ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+* Add support for yaml configuration ([`02c3e41`](https://github.com/ral-facilities/datagateway-api/commit/02c3e41c92c721d793b27b44c7b27cfb3af6ffbb))
+
+### Breaking
+* Remove support for json configuration files  ([`46723de`](https://github.com/ral-facilities/datagateway-api/commit/46723de2bf5336244b3dd37808f565e554b5cbdb))
+
+## v5.3.0 (2022-11-16)
+### Feature
+* Add warning for no api ([`3c91635`](https://github.com/ral-facilities/datagateway-api/commit/3c91635bc0c3465d456a4a85c8d6c8793df408c2))
+
+## v5.2.0 (2022-11-03)
+### Feature
+* Add warning that tests only work with ICAT 5 ([`d8825fd`](https://github.com/ral-facilities/datagateway-api/commit/d8825fd71740e2b2d9b387dca175110cee1f9915))
+* Changes to tests so they pass with icat 5 ([`73f3c77`](https://github.com/ral-facilities/datagateway-api/commit/73f3c777f8d3841cf09537140922a9bbdd8dad7c))
+
+### Documentation
+* Update the poetry installation documentation ([`68d4267`](https://github.com/ral-facilities/datagateway-api/commit/68d426722862613358b0b136188d2b61accdc56f))
+
+## v5.1.1 (2022-09-22)
+### Fix
+* Update to latest dependencies ([`11a0eeb`](https://github.com/ral-facilities/datagateway-api/commit/11a0eeb3cbc4b5db2a0fa8dcd825dbeceb6ac111))
+
+## v5.1.0 (2022-05-25)
+### Feature
+* Support skip and limit string parameters on search-api ([`db94b37`](https://github.com/ral-facilities/datagateway-api/commit/db94b375438873969db2d05621d9860a304ca8bd))
+* Support skip and limit string parameters on search-api ([`eb74970`](https://github.com/ral-facilities/datagateway-api/commit/eb74970c1a74c6e0bed62460dab5ba5881ba1df7))
+* Support skip/limit string parameters on search-api and added testing ([`8c3dde1`](https://github.com/ral-facilities/datagateway-api/commit/8c3dde11deb7614dfd22e6433c24727eeff2f800))
+* Support skip/limit string parameters on search-api ([`d601ba7`](https://github.com/ral-facilities/datagateway-api/commit/d601ba7e9b48186e624db4891c503484f8895b2a))
+
 ## v5.0.1 (2022-05-16)
 ### Fix
 * Fix internal server error when running DG API on its own #359 ([`b0d3e06`](https://github.com/ral-facilities/datagateway-api/commit/b0d3e064dc842143de7f7f0a31b947122fae9f88))
