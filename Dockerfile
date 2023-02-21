@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway-api
 
 # Build stage
-FROM python:3-alpine as builder
+FROM python:3.11-alpine3.17 as builder
 
 WORKDIR /datagateway-api-build
 
@@ -12,7 +12,7 @@ RUN python3 -m pip install poetry \
 
 
 # Install & run stage
-FROM python:3-alpine
+FROM python:3.11-alpine3.17
 
 WORKDIR /datagateway-api-run
 
