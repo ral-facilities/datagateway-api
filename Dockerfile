@@ -26,9 +26,12 @@ RUN --mount=type=cache,target=/root/.cache \
         'setuptools<58.0.0' \
         datagateway_api-*.whl \
  && DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')" \
+# Create search_api_mapping.json from its .example file
  && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json" \
+# Create config.yaml from its .example file. It will need to be editted by the entrypoint script so create it in our non-root user's home directory and create a symlink
  && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" "/datagateway-api-run/config.yaml" \
  && ln -s "/datagateway-api-run/config.yaml" "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml" \
+# Create a non-root user to run as
  && addgroup -S datagateway-api \
  && adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api \
  && chown datagateway-api:datagateway-api /datagateway-api-run /datagateway-api-run/config.yaml
