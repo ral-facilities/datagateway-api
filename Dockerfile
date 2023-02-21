@@ -7,7 +7,8 @@ WORKDIR /datagateway-api-build
 
 COPY . .
 
-RUN python3 -m pip install 'poetry~=1.3.2' \
+RUN --mount=type=cache,target=/root/.cache \
+    python3 -m pip install 'poetry~=1.3.2' \
  && poetry build
 
 
@@ -18,7 +19,8 @@ WORKDIR /datagateway-api-run
 
 COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl .
 
-RUN python3 -m pip install \
+RUN --mount=type=cache,target=/root/.cache \
+    python3 -m pip install \
         'gunicorn~=20.1.0' \
 # Workaround for https://github.com/icatproject/python-icat/issues/99
         'setuptools<58.0.0' \
