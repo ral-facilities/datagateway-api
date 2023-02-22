@@ -5,7 +5,8 @@ FROM python:3.11-alpine3.17 as builder
 
 WORKDIR /datagateway-api-build
 
-COPY . .
+COPY README.md poetry.lock pyproject.toml ./
+COPY datagateway_api/ datagateway_api/
 
 RUN --mount=type=cache,target=/root/.cache \
     python3 -m pip install 'poetry~=1.3.2' \
@@ -17,7 +18,7 @@ FROM python:3.11-alpine3.17
 
 WORKDIR /datagateway-api-run
 
-COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl /tmp
+COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl /tmp/
 
 RUN --mount=type=cache,target=/root/.cache \
     python3 -m pip install \
