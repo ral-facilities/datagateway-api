@@ -9,8 +9,10 @@ COPY README.md poetry.lock pyproject.toml ./
 COPY datagateway_api/ datagateway_api/
 
 RUN --mount=type=cache,target=/root/.cache \
-    python3 -m pip install 'poetry~=1.3.2' \
- && poetry build
+    set -eux; \
+    \
+    python3 -m pip install 'poetry~=1.3.2'; \
+    poetry build;
 
 
 # Install & run stage
@@ -21,19 +23,25 @@ WORKDIR /datagateway-api-run
 COPY --from=builder /datagateway-api-build/dist/datagateway_api-*.whl /tmp/
 
 RUN --mount=type=cache,target=/root/.cache \
+    set -eux; \
+    \
     python3 -m pip install \
         'gunicorn~=20.1.0' \
-        /tmp/datagateway_api-*.whl \
- && DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')" \
-# Create search_api_mapping.json from its .example file
- && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json" \
-# Create config.yaml from its .example file. It will need to be editted by the entrypoint script so create it in our non-root user's home directory and create a symlink
- && cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" "/datagateway-api-run/config.yaml" \
- && ln -s "/datagateway-api-run/config.yaml" "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml" \
-# Create a non-root user to run as
- && addgroup -S datagateway-api \
- && adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api \
- && chown -R datagateway-api:datagateway-api /datagateway-api-run
+        /tmp/datagateway_api-*.whl; \
+    \
+    DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')"; \
+    \
+    # Create search_api_mapping.json from its .example file \
+    cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json"; \
+    \
+    # Create config.yaml from its .example file. It will need to be editted by the entrypoint script so create it in our non-root user's home directory and create a symlink \
+    cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" /datagateway-api-run/config.yaml; \
+    ln -s /datagateway-api-run/config.yaml "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml"; \
+    \
+    # Create a non-root user to run as \
+    addgroup -S datagateway-api; \
+    adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api; \
+    chown -R datagateway-api:datagateway-api /datagateway-api-run;
 
 USER datagateway-api
 
