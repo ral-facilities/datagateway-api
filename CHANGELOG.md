@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v6.3.1 (2023-02-23)
+### Fix
+* Remove dataset filesize generator ([`fb466dd`](https://github.com/ral-facilities/datagateway-api/commit/fb466dd6012088fb25f575f3c7198a9d7d28e070))
+
 ## v6.3.0 (2023-02-17)
 ### Feature
 * Refactor icat generator to use python-icat ([`ae6ae0b`](https://github.com/ral-facilities/datagateway-api/commit/ae6ae0b2a2ce375fb0d47851b3091c952735f5c6))
