@@ -305,8 +305,14 @@ jobs:
       # Regenerate table structure of icatdb
       - name: Reinstall ICAT Server
         run: cd /home/runner/install/icat.server; ./setup -vv install
+
+
       - name: Add ICAT 5 triggers
-        run: cd /home/runner/install/icat.server; mysql -ppw -uroot icatdb < create_triggers_mysql_5_0.sql
+        run: cd /home/runner/install/icat.server; mysql -picatdbuserpw -uicatdbuser -D icatdb < create_triggers_mysql_5_0.sql
+
+      - name: tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
 
       - name: Add (new) dummy data to icatdb
         run: |
