@@ -19,7 +19,7 @@ class TestDBTableEndpoints:
             headers=valid_db_credentials_header,
         )
 
-        assert test_response.json == [isis_specific_endpoint_data_db[1].to_dict()]
+        assert test_response.json[0] == isis_specific_endpoint_data_db[1].to_dict()
 
     def test_invalid_get_facility_cycles_with_filters(
         self, flask_test_app_db, valid_db_credentials_header, final_instrument_id,

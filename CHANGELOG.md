@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v6.3.0 (2023-02-17)
+### Feature
+* Refactor icat generator to use python-icat ([`ae6ae0b`](https://github.com/ral-facilities/datagateway-api/commit/ae6ae0b2a2ce375fb0d47851b3091c952735f5c6))
+
 ## v6.2.0 (2022-11-23)
 ### Feature
 * Add new entity endpoints for icat5 ([`dd18e18`](https://github.com/ral-facilities/datagateway-api/commit/dd18e18bc19f87c5aa7c99c144f262b68e4fe0c6))

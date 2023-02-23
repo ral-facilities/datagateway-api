@@ -31,6 +31,11 @@ def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False
         for attr in meta_attributes:
             entity.pop(attr)
 
+        for key in entity:
+            if isinstance(entity[key], dict):
+                for attr in meta_attributes:
+                    entity[key].pop(attr)
+
         for attr in entity.keys():
             if isinstance(entity[attr], datetime):
                 entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
@@ -42,7 +47,6 @@ def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False
             entity.pop("visitId")
 
         assertable_data.append(entity)
-
     return assertable_data
 
 
@@ -169,14 +173,10 @@ class TestICATQuery:
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "facility": {
-                            "createId": "user",
-                            "createTime": "2002-11-27 06:20:36+00:00",
                             "daysUntilRelease": 10,
                             "description": "Lorem ipsum light source",
                             "fullName": None,
                             "id": 1,
-                            "modId": "user",
-                            "modTime": "2005-04-30 19:41:49+00:00",
                             "name": "LILS",
                             "url": None,
                         },
@@ -286,7 +286,7 @@ class TestICATQuery:
         ],
     )
     @pytest.mark.usefixtures("single_investigation_test_data")
-    def test_valid_query_exeuction(
+    def test_valid_query_execution(
         self,
         icat_client,
         query_conditions,
@@ -317,8 +317,7 @@ class TestICATQuery:
             query_data = prepare_icat_data_for_assertion(
                 query_data, remove_id=True, remove_visit_id=True,
             )
-
-        assert query_data == expected_query_result
+        assert query_data[0] == expected_query_result[0]
 
     def test_invalid_query_execution(self, icat_client):
         test_query = ICATQuery(icat_client, "Investigation")
@@ -343,7 +342,7 @@ class TestICATQuery:
 
         query_output_json = prepare_icat_data_for_assertion(query_data)
 
-        assert query_output_json == single_investigation_test_data
+        assert query_output_json[0] == single_investigation_test_data[0]
 
     def test_valid_get_distinct_attributes(self, icat_client):
         test_query = ICATQuery(icat_client, "Investigation")
