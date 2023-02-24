@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v6.3.2 (2023-02-24)
+### Fix
+* Add triggers for later stages of consistency test ([`2d7d677`](https://github.com/ral-facilities/datagateway-api/commit/2d7d677fbab85a93fb36fc12afb434ba74dbfc27))
+
 ## v6.3.1 (2023-02-23)
 ### Fix
 * Remove dataset filesize generator ([`fb466dd`](https://github.com/ral-facilities/datagateway-api/commit/fb466dd6012088fb25f575f3c7198a9d7d28e070))
