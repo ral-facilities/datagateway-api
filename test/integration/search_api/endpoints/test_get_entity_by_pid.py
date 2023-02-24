@@ -12,10 +12,10 @@ class TestSearchAPIGetByPIDEndpoint:
         [
             pytest.param(
                 "Datasets",
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 "{}",
                 {
-                    "pid": "1-4978-6907-2",
+                    "pid": "0-449-78690-0",
                     "title": "DATASET 1",
                     "isPublic": True,
                     "size": None,
@@ -77,10 +77,10 @@ class TestSearchAPIGetByPIDEndpoint:
             ),
             pytest.param(
                 "Datasets",
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"include": [{"relation": "documents"}]}',
                 {
-                    "pid": "1-4978-6907-2",
+                    "pid": "0-449-78690-0",
                     "title": "DATASET 1",
                     "isPublic": True,
                     "size": None,
@@ -155,7 +155,7 @@ class TestSearchAPIGetByPIDEndpoint:
                     ],
                     "datasets": [
                         {
-                            "pid": "1-4978-6907-2",
+                            "pid": "0-449-78690-0",
                             "title": "DATASET 1",
                             "isPublic": True,
                             "size": None,
@@ -167,7 +167,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "samples": [],
                         },
                         {
-                            "pid": "0-557-36716-6",
+                            "pid": "1-182-78162-4",
                             "title": "DATASET 61",
                             "isPublic": True,
                             "size": None,
@@ -211,12 +211,12 @@ class TestSearchAPIGetByPIDEndpoint:
             ),
             pytest.param(
                 "Datasets",
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"include": [{"relation": "documents"},'
                 ' {"relation": "files"}, {"relation": "parameters"},'
                 ' {"relation": "samples"}]}',
                 {
-                    "pid": "1-4978-6907-2",
+                    "pid": "0-449-78690-0",
                     "title": "DATASET 1",
                     "isPublic": True,
                     "size": None,
@@ -430,7 +430,7 @@ class TestSearchAPIGetByPIDEndpoint:
                     ],
                     "datasets": [
                         {
-                            "pid": "1-4978-6907-2",
+                            "pid": "0-449-78690-0",
                             "title": "DATASET 1",
                             "isPublic": True,
                             "size": None,
@@ -442,7 +442,7 @@ class TestSearchAPIGetByPIDEndpoint:
                             "samples": [],
                         },
                         {
-                            "pid": "0-557-36716-6",
+                            "pid": "1-182-78162-4",
                             "title": "DATASET 61",
                             "isPublic": True,
                             "size": None,

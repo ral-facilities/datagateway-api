@@ -37,7 +37,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         "pid, request_filter, expected_json",
         [
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 2}',
                 [
                     {
@@ -58,7 +58,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                 id="Basic /Datasets/{pid}/files request",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 1, "skip": 5}',
                 [
                     {
@@ -72,7 +72,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                 id="Get dataset files with skip",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 1, "where": {"name": "Datafile 1547"}}',
                 [
                     {
@@ -86,7 +86,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                 id="Get dataset files with name condition",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 1, "where": {"name": {"nilike": "Datafile 10060"}}}',
                 [
                     {
@@ -100,27 +100,27 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                 id="Get dataset files with name condition (operator specified)",
             ),
             pytest.param(
-                "1-4978-6907-2",
-                '{"limit": 1, "where": {"size": {"gt": 5000000}}}',
+                "0-449-78690-0",
+                '{"limit": 1, "where": {"size": {"gt": 155061161}}}',
                 [
                     {
-                        "id": "1071",
-                        "name": "Datafile 1071",
-                        "path": "/sense/through/candidate.jpeg",
-                        "size": 9390543,
+                        "id": "1309",
+                        "name": "Datafile 1309",
+                        "path": "/writer/family/pull.bmp",
+                        "size": 171717920,
                         "dataset": None,
                     },
                 ],
                 id="Get dataset files with size condition",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 1, "where": {"size": {"gt": 50000000000}}}',
                 [],
                 id="Get dataset files with condition to return empty list",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"limit": 1, "include": [{"relation": "dataset"}]}',
                 [
                     {
@@ -129,7 +129,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                         "path": "/sense/through/candidate.jpeg",
                         "size": 9390543,
                         "dataset": {
-                            "pid": "1-4978-6907-2",
+                            "pid": "0-449-78690-0",
                             "title": "DATASET 1",
                             "isPublic": True,
                             "size": None,

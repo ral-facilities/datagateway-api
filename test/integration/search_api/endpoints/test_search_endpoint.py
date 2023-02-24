@@ -15,7 +15,7 @@ class TestSearchAPISearchEndpoint:
                 '{"limit": 2}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -27,7 +27,7 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                     {
-                        "pid": "1-01-107043-X",
+                        "pid": "1-07-598386-X",
                         "title": "DATASET 2",
                         "isPublic": True,
                         "size": None,
@@ -101,7 +101,7 @@ class TestSearchAPISearchEndpoint:
                 '{"limit": 1, "skip": 5}',
                 [
                     {
-                        "pid": "1-77218-518-3",
+                        "pid": "0-614-81100-7",
                         "title": "DATASET 6",
                         "isPublic": True,
                         "size": None,
@@ -134,7 +134,7 @@ class TestSearchAPISearchEndpoint:
                 ' "2007-06-30T08:30:58.000Z"}}}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -190,7 +190,7 @@ class TestSearchAPISearchEndpoint:
                         ],
                         "datasets": [
                             {
-                                "pid": "1-4978-6907-2",
+                                "pid": "0-449-78690-0",
                                 "title": "DATASET 1",
                                 "isPublic": True,
                                 "size": None,
@@ -202,7 +202,7 @@ class TestSearchAPISearchEndpoint:
                                 "samples": [],
                             },
                             {
-                                "pid": "0-557-36716-6",
+                                "pid": "1-182-78162-4",
                                 "title": "DATASET 61",
                                 "isPublic": True,
                                 "size": None,
@@ -266,7 +266,7 @@ class TestSearchAPISearchEndpoint:
                 '{"where":{"isPublic": {"eq": "True"}}, "limit": 1}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -303,7 +303,7 @@ class TestSearchAPISearchEndpoint:
                 '{"unit": "unit 1"}]}}}]}',
                 [
                     {
-                        "pid": "1-85271-859-5",
+                        "pid": "0-490-31235-7",
                         "title": "DATASET 33",
                         "isPublic": True,
                         "size": None,
@@ -350,7 +350,7 @@ class TestSearchAPISearchEndpoint:
                 ' "unit 39"}]}}}]}',
                 [
                     {
-                        "pid": "1-71395-013-8",
+                        "pid": "1-351-03363-8",
                         "title": "DATASET 71",
                         "isPublic": True,
                         "size": None,
@@ -389,7 +389,7 @@ class TestSearchAPISearchEndpoint:
                 '"name": "PARAMETERTYPE 39"}, {"value": 44}]}]}}}]}',
                 [
                     {
-                        "pid": "1-71395-013-8",
+                        "pid": "1-351-03363-8",
                         "title": "DATASET 71",
                         "isPublic": True,
                         "size": None,
@@ -427,7 +427,7 @@ class TestSearchAPISearchEndpoint:
                 ' "Datafile 25"}}}], "limit": 1}',
                 [
                     {
-                        "pid": "1-85150-280-7",
+                        "pid": "0-87851-502-X",
                         "title": "DATASET 13",
                         "isPublic": True,
                         "size": None,
@@ -690,7 +690,7 @@ class TestSearchAPISearchEndpoint:
                         ],
                         "datasets": [
                             {
-                                "pid": "1-4978-6907-2",
+                                "pid": "0-449-78690-0",
                                 "title": "DATASET 1",
                                 "isPublic": True,
                                 "size": None,
@@ -711,7 +711,7 @@ class TestSearchAPISearchEndpoint:
                                 "samples": [],
                             },
                             {
-                                "pid": "0-557-36716-6",
+                                "pid": "1-182-78162-4",
                                 "title": "DATASET 61",
                                 "isPublic": True,
                                 "size": None,
