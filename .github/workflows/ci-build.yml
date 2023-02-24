@@ -189,42 +189,9 @@ jobs:
           python-version: "3.9.7"
           architecture: x64
 
-      # ICAT Ansible clone and install dependencies
-      - name: Checkout icat-ansible
-        uses: actions/checkout@v2
-        with:
-          repository: icatproject-contrib/icat-ansible
-          ref: master
-          path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
-
-      # Prep for running the playbook
-      - name: Create hosts file
-        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-      - name: Prepare vault pass
-        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-      - name: Move vault to directory it'll get detected by Ansible
-        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-      - name: Replace default payara user with Actions user
-        run: |
-          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
-
-      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-      - name: Change hostname to localhost
-        run: sudo hostname -b localhost
-
-      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
-      - name: Remove existing mysql
-        run: |
-          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-          sudo apt-get remove --purge "mysql*"
-          sudo rm -rf /var/lib/mysql* /etc/mysql
-
-      # Create local instance of ICAT
-      - name: Run ICAT Ansible Playbook
-        run: |
-          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
+      # Install ICAT
+      - name: Install ICAT
+        uses: Reillyhewitson/icat-ansible-installer@feature/installer-action
 
       - name: Checkout DataGateway API
         uses: actions/checkout@v2
