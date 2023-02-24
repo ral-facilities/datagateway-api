@@ -11,30 +11,30 @@ class TestSearchAPICountDatasetFilesEndpoint:
                 "1-4978-6907-2",
                 "{}",
                 {"count": 15},
-                id="Basic /datasets/{pid}/files/count request",
+                id="Basic /Datasets/{pid}/files/count request",
                 # Skipped because empty dict for filter doesn't work on where
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "1-4978-6907-2",
-                '{"name": "Datafile 1547"}',
+                "0-449-78690-0",
+                '{"name": "Datafile 1071"}',
                 {"count": 1},
                 id="Count dataset files with name condition",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"name": {"nlike": "Datafile 9"}}',
                 {"count": 14},
                 id="Count dataset files with name condition (operator specified)",
             ),
             pytest.param(
-                "1-4978-6907-2",
-                '{"size": {"gt": 500}}',
-                {"count": 15},
+                "0-449-78690-0",
+                '{"size": {"gt": 155061161}}',
+                {"count": 3},
                 id="Count dataset files with size condition",
             ),
             pytest.param(
-                "1-4978-6907-2",
+                "0-449-78690-0",
                 '{"name": "Unknown Datafile"}',
                 {"count": 0},
                 id="Count dataset files with filter to return zero count",
@@ -54,7 +54,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
     ):
 
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files/count"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
             f"?where={request_filter}",
         )
 
@@ -76,7 +76,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
         self, flask_test_app_search_api, pid, request_filter,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files/count"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
             f"?where={request_filter}",
         )
 

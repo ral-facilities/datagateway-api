@@ -600,7 +600,6 @@ class DatasetGenerator(Generator):
         dataset.name = f"{tablename} {i}"
         dataset.description = faker.text()
         dataset.fileCount = 15
-        dataset.fileSize = faker.random_int(123, 213123121)
         dataset.doi = faker.isbn10(separator="-")
         dataset.startDate = get_start_date(i)
         dataset.endDate = get_end_date(i)

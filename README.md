@@ -802,6 +802,24 @@ adding conditions via dictionaries. This is needed where queries are joined with
 or `OR`. This collates all the work from `NestedWhereFilters` so all requires types of
 conditions can be supported.
 
+### Search Scoring
+
+Search scoring allows for the results returned by the Search API to be scored in terms of
+relevancy. The config option `enabled` from the `search_scoring` object in `config.yaml`
+can be used to enable or disable the search scoring. When enabled, it handles the `query`
+filter provided in the requests sent by the [Federated Photon and Neutron Search Service](https://github.com/panosc-eu/panosc-federated-search-service),
+otherwise, it returns an error to indicate that the `query` filter is not supported.
+For this functionality to work, an instance of the [PaNOSC Search Scoring Service](https://github.com/panosc-eu/panosc-search-scoring/)
+is needed which has been configured and populated as per the instructions in its
+repository and can return scores. The full URL to its `/score` endpoint will need to be
+provided to the config option `api_url` from the `search_scoring` object in `config.yaml`
+so that the Search API know where to send its result from ICAT along with the value from
+the `query` filter for scoring.
+
+The [European Photon and Neutron Open Data Search Portal](https://data.panosc.eu/)
+requires all Search APIs that want to be integrated with the portal to support search
+scoring.
+
 ## Generating the OpenAPI Specification
 
 When the config option `generate_swagger` is set to true in `config.yaml`, a YAML

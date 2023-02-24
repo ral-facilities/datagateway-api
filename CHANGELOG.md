@@ -2,6 +2,26 @@
 
 <!--next-version-placeholder-->
 
+## v7.0.0 (2023-02-24)
+### Feature
+* **config:** Add scoring related values to config #398 ([`0472d96`](https://github.com/ral-facilities/datagateway-api/commit/0472d9617b6771c6b64ebbaa49953b5583d1d3c9))
+* Add support for scoring results #398 ([`dd58a8b`](https://github.com/ral-facilities/datagateway-api/commit/dd58a8b4bef706b343144ab8fe14a8b4737b3781))
+
+### Breaking
+* modify Search API endpoint URL paths ([`1dc815b`](https://github.com/ral-facilities/datagateway-api/commit/1dc815bfcd0316e92471e0f8a24ae19a753c1405))
+* add scoring related values to config ([`0472d96`](https://github.com/ral-facilities/datagateway-api/commit/0472d9617b6771c6b64ebbaa49953b5583d1d3c9))
+
+### Documentation
+* Add search scoring information to README #398 ([`a4f833e`](https://github.com/ral-facilities/datagateway-api/commit/a4f833e41ad9a5a0227ee0e04504091d1f05f1cf))
+
+## v6.3.2 (2023-02-24)
+### Fix
+* Add triggers for later stages of consistency test ([`2d7d677`](https://github.com/ral-facilities/datagateway-api/commit/2d7d677fbab85a93fb36fc12afb434ba74dbfc27))
+
+## v6.3.1 (2023-02-23)
+### Fix
+* Remove dataset filesize generator ([`fb466dd`](https://github.com/ral-facilities/datagateway-api/commit/fb466dd6012088fb25f575f3c7198a9d7d28e070))
+
 ## v6.3.0 (2023-02-17)
 ### Feature
 * Refactor icat generator to use python-icat ([`ae6ae0b`](https://github.com/ral-facilities/datagateway-api/commit/ae6ae0b2a2ce375fb0d47851b3091c952735f5c6))

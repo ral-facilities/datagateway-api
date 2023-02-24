@@ -121,6 +121,14 @@ class DataGatewayAPI(BaseModel):
         validate_assignment = True
 
 
+class SearchScoring(BaseModel):
+    enabled: StrictBool
+    api_url: StrictStr
+    api_request_timeout: StrictInt
+    group: StrictStr
+    limit: StrictInt
+
+
 class SearchAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
@@ -133,6 +141,7 @@ class SearchAPI(BaseModel):
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
+    search_scoring: SearchScoring
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

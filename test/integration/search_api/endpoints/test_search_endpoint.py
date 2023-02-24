@@ -11,11 +11,11 @@ class TestSearchAPISearchEndpoint:
         "endpoint_name, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 2}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -27,7 +27,7 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                     {
-                        "pid": "1-01-107043-X",
+                        "pid": "1-07-598386-X",
                         "title": "DATASET 2",
                         "isPublic": True,
                         "size": None,
@@ -39,10 +39,10 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Basic /datasets request",
+                id="Basic /Datasets request",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"limit": 1}',
                 [
                     {
@@ -75,14 +75,33 @@ class TestSearchAPISearchEndpoint:
                         "parameters": [],
                     },
                 ],
-                id="Basic /instruments request",
+                id="Basic /Documents request",
             ),
             pytest.param(
-                "datasets",
+                "Instruments",
+                '{"limit": 2}',
+                [
+                    {
+                        "datasets": [],
+                        "facility": "LILS",
+                        "name": "INSTRUMENT 1",
+                        "pid": "pid:1",
+                    },
+                    {
+                        "datasets": [],
+                        "facility": "LILS",
+                        "name": "INSTRUMENT 2",
+                        "pid": "pid:2",
+                    },
+                ],
+                id="Basic /Instruments request",
+            ),
+            pytest.param(
+                "Datasets",
                 '{"limit": 1, "skip": 5}',
                 [
                     {
-                        "pid": "1-77218-518-3",
+                        "pid": "0-614-81100-7",
                         "title": "DATASET 6",
                         "isPublic": True,
                         "size": None,
@@ -97,7 +116,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with skip filter",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"limit": 2, "where": {"name": "INSTRUMENT 10"}}',
                 [
                     {
@@ -110,12 +129,12 @@ class TestSearchAPISearchEndpoint:
                 id="Search instruments with name condition",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"limit": 1, "where": {"creationDate": {"gt":'
                 ' "2007-06-30T08:30:58.000Z"}}}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -130,7 +149,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with creation date filter (operator specified)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "documents"}, {"relation": "techniques"},'
                 ' {"relation": "instrument"}, {"relation": "files"},'
                 ' {"relation": "parameters"}, {"relation": "samples"}], "limit": 1}',
@@ -140,7 +159,7 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "datasets"}, {"relation": "members"},'
                 ' {"relation": "parameters"}], "limit": 1}',
                 [
@@ -171,7 +190,7 @@ class TestSearchAPISearchEndpoint:
                         ],
                         "datasets": [
                             {
-                                "pid": "1-4978-6907-2",
+                                "pid": "0-449-78690-0",
                                 "title": "DATASET 1",
                                 "isPublic": True,
                                 "size": None,
@@ -183,7 +202,7 @@ class TestSearchAPISearchEndpoint:
                                 "samples": [],
                             },
                             {
-                                "pid": "0-557-36716-6",
+                                "pid": "1-182-78162-4",
                                 "title": "DATASET 61",
                                 "isPublic": True,
                                 "size": None,
@@ -219,7 +238,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search documents including all possible related entities",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"include": [{"relation": "datasets"}], "limit": 1}',
                 {
                     "description": "Former outside source play nearly Congress before"
@@ -243,11 +262,11 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"where":{"isPublic": {"eq": "True"}}, "limit": 1}',
                 [
                     {
-                        "pid": "1-4978-6907-2",
+                        "pid": "0-449-78690-0",
                         "title": "DATASET 1",
                         "isPublic": True,
                         "size": None,
@@ -262,13 +281,13 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with isPublic condition (True)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"where": {"isPublic": false}}',
                 [],
                 id="Search datasets with isPublic condition (False)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "techniques", "scope": {"where": {"name":'
                 '"TODO"}}}]}',
                 [],
@@ -278,13 +297,13 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets with condition on techniques name (ICAT 5)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 1"}, {"value": {"between": [0, 20]}},'
                 '{"unit": "unit 1"}]}}}]}',
                 [
                     {
-                        "pid": "1-85271-859-5",
+                        "pid": "0-490-31235-7",
                         "title": "DATASET 33",
                         "isPublic": True,
                         "size": None,
@@ -325,13 +344,13 @@ class TestSearchAPISearchEndpoint:
                 " operator, A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 39"}, {"value": {"lt": 800000}}, {"unit":'
                 ' "unit 39"}]}}}]}',
                 [
                     {
-                        "pid": "1-71395-013-8",
+                        "pid": "1-351-03363-8",
                         "title": "DATASET 71",
                         "isPublic": True,
                         "size": None,
@@ -364,13 +383,13 @@ class TestSearchAPISearchEndpoint:
                 ", A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"or": [{'
                 '"and": [{"name": "sample_state"}, {"value": "solid"}]}, {"and": [{'
                 '"name": "PARAMETERTYPE 39"}, {"value": 44}]}]}}}]}',
                 [
                     {
-                        "pid": "1-71395-013-8",
+                        "pid": "1-351-03363-8",
                         "title": "DATASET 71",
                         "isPublic": True,
                         "size": None,
@@ -403,12 +422,12 @@ class TestSearchAPISearchEndpoint:
                 " OR (C AND D)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "files", "scope": {"where": {"text":'
                 ' "Datafile 25"}}}], "limit": 1}',
                 [
                     {
-                        "pid": "1-85150-280-7",
+                        "pid": "0-87851-502-X",
                         "title": "DATASET 13",
                         "isPublic": True,
                         "size": None,
@@ -536,7 +555,7 @@ class TestSearchAPISearchEndpoint:
                 id="Search datasets' files using full text search",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"where": {"type": "INVESTIGATIONTYPE 2"}, "include": [{"relation":'
                 '"datasets"}, {"relation": "members", "scope": {"where": {"role": "PI"'
                 '}, "include": [{"relation": "person", "scope": {"where": {"fullName":'
@@ -599,7 +618,7 @@ class TestSearchAPISearchEndpoint:
                 " conditions",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "parameters", "scope": {"where": {"and": [{'
                 '"name": "PARAMETERTYPE 2"}, {"value": {"between": [23, 55]}},'
                 '{"unit": "unit 2"}]}}}]}',
@@ -638,7 +657,7 @@ class TestSearchAPISearchEndpoint:
                 " operator, A AND B AND C)",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"include": [{"relation": "datasets", "scope": {"include": [{'
                 '"relation": "parameters", "scope": {"where": {"and": [{"name":'
                 ' "PARAMETERTYPE 2"}, {"value": {"between": [15, 22]}}, {'
@@ -671,7 +690,7 @@ class TestSearchAPISearchEndpoint:
                         ],
                         "datasets": [
                             {
-                                "pid": "1-4978-6907-2",
+                                "pid": "0-449-78690-0",
                                 "title": "DATASET 1",
                                 "isPublic": True,
                                 "size": None,
@@ -692,7 +711,7 @@ class TestSearchAPISearchEndpoint:
                                 "samples": [],
                             },
                             {
-                                "pid": "0-557-36716-6",
+                                "pid": "1-182-78162-4",
                                 "title": "DATASET 61",
                                 "isPublic": True,
                                 "size": None,
@@ -721,7 +740,7 @@ class TestSearchAPISearchEndpoint:
                 " (between operator, A AND B AND C)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"include": [{"relation": "datasets", "scope": {"include": [{'
                 '"relation": "samples", "scope": {"where": {"name": "SAMPLE 4"}}}, {'
                 '"relation": "techniques", "scope": {"where": {"name": "TODO"}}}]}}]}',
@@ -844,6 +863,15 @@ class TestSearchAPISearchEndpoint:
                 marks=pytest.mark.skip,
                 id="Search documents with multiple include and scopes (ICAT 5)",
             ),
+            pytest.param(
+                "Documents",
+                '{"filter": {"query": "TODO"}}',
+                [],
+                # Skipped because this test relies the search scoring component
+                # TODO - edit the QUERY filter value and expected_json
+                marks=pytest.mark.skip,
+                id="Search documents with query filter",
+            ),
         ],
     )
     def test_valid_search_endpoint(
@@ -871,7 +899,7 @@ class TestSearchAPISearchEndpoint:
         self, flask_test_app_search_api, request_filter, expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/instruments?filter={request_filter}",
+            f"{Config.config.search_api.extension}/Instruments?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code
