@@ -321,10 +321,6 @@ jobs:
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
 
-      - name: tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
-
       # Drop and re-create icatdb to remove generated data
       - name: Drop icatdb
         run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
