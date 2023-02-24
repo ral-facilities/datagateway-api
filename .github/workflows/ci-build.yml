@@ -266,6 +266,9 @@ jobs:
           sudo apt-get remove --purge "mysql*"
           sudo rm -rf /var/lib/mysql* /etc/mysql
 
+      - name: tmate session
+        uses: mxschmitt/action-tmate@v3
+
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
@@ -306,13 +309,8 @@ jobs:
       - name: Reinstall ICAT Server
         run: cd /home/runner/install/icat.server; ./setup -vv install
 
-
       - name: Add ICAT 5 triggers
         run: cd /home/runner/install/icat.server; mysql -picatdbuserpw -uicatdbuser -D icatdb < create_triggers_mysql_5_0.sql
-
-      - name: tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
 
       - name: Add (new) dummy data to icatdb
         run: |
