@@ -266,9 +266,6 @@ jobs:
           sudo apt-get remove --purge "mysql*"
           sudo rm -rf /var/lib/mysql* /etc/mysql
 
-      - name: tmate session
-        uses: mxschmitt/action-tmate@v3
-
       # Create local instance of ICAT
       - name: Run ICAT Ansible Playbook
         run: |
@@ -310,7 +307,7 @@ jobs:
         run: cd /home/runner/install/icat.server; ./setup -vv install
 
       - name: Add ICAT 5 triggers
-        run: cd /home/runner/install/icat.server; mysql -picatdbuserpw -uicatdbuser -D icatdb < create_triggers_mysql_5_0.sql
+        run: cd /home/runner/install/icat.server; sudo mysql -uroot -D icatdb < create_triggers_mysql_5_0.sql
 
       - name: Add (new) dummy data to icatdb
         run: |
@@ -324,6 +321,10 @@ jobs:
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
 
+      - name: tmate session
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ failure() }}
+
       # Drop and re-create icatdb to remove generated data
       - name: Drop icatdb
         run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
@@ -333,7 +334,7 @@ jobs:
       - name: Reinstall ICAT Server
         run: cd /home/runner/install/icat.server; ./setup -vv install
       - name: Add ICAT 5 triggers
-        run: cd /home/runner/install/icat.server; mysql -ppw -uroot icatdb < create_triggers_mysql_5_0.sql
+        run: cd /home/runner/install/icat.server; sudo mysql -uroot -D icatdb < create_triggers_mysql_5_0.sql
 
       - name: Checkout DataGateway API (default branch)
         uses: actions/checkout@v2
