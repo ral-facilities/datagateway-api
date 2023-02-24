@@ -70,7 +70,7 @@ jobs:
 
       # Install ICAT
       - name: Install ICAT
-        uses: Reillyhewitson/icat-ansible-installer@feature/installer-action
+        uses: ral-facilities/icat-ansible-installer@main
 
       - name: Checkout DataGateway API
         uses: actions/checkout@v2
@@ -191,7 +191,7 @@ jobs:
 
       # Install ICAT
       - name: Install ICAT
-        uses: Reillyhewitson/icat-ansible-installer@feature/installer-action
+        uses: ral-facilities/icat-ansible-installer@main
 
       - name: Checkout DataGateway API
         uses: actions/checkout@v2
