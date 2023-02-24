@@ -42,6 +42,13 @@ def test_config_data():
             "mechanism": "anon",
             "username": "",
             "password": "",
+            "search_scoring": {
+                "enabled": False,
+                "api_url": "http://localhost:9000/score",
+                "api_request_timeout": 5,
+                "group": "documents",
+                "limit": 1000,
+            },
         },
         "flask_reloader": False,
         "log_level": "WARN",

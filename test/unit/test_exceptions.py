@@ -10,6 +10,8 @@ from datagateway_api.src.common.exceptions import (
     MissingRecordError,
     MultipleIncludeError,
     PythonICATError,
+    ScoringAPIError,
+    SearchAPIError,
 )
 
 
@@ -37,6 +39,8 @@ class TestExceptions:
                 id="MultipleIncludeError",
             ),
             pytest.param(PythonICATError, "Python ICAT error", id="PythonICATError"),
+            pytest.param(ScoringAPIError, "Scoring API error", id="ScoringAPIError"),
+            pytest.param(SearchAPIError, "Search API error", id="SearchAPIError"),
         ],
     )
     def test_valid_exception_message(self, exception_class, expected_message):
@@ -54,6 +58,8 @@ class TestExceptions:
             pytest.param(MissingRecordError, 404, id="MissingRecordError"),
             pytest.param(MultipleIncludeError, 400, id="MultipleIncludeError"),
             pytest.param(PythonICATError, 500, id="PythonICATError"),
+            pytest.param(ScoringAPIError, 500, id="ScoringAPIError"),
+            pytest.param(SearchAPIError, 500, id="SearchAPIError"),
         ],
     )
     def test_valid_exception_status_code(self, exception_class, expected_status_code):
@@ -71,6 +77,8 @@ class TestExceptions:
             pytest.param(MissingRecordError, id="MissingRecordError"),
             pytest.param(MultipleIncludeError, id="MultipleIncludeError"),
             pytest.param(PythonICATError, id="PythonICATError"),
+            pytest.param(ScoringAPIError, id="ScoringAPIError"),
+            pytest.param(SearchAPIError, id="SearchAPIError"),
         ],
     )
     def test_valid_raise_exception(self, exception_class):

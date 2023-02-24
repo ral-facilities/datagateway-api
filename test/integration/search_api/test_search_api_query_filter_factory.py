@@ -1,9 +1,12 @@
+from unittest.mock import patch
+
 import pytest
 
 from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.src.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
+    SearchAPIScoringFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
@@ -1904,6 +1907,45 @@ class TestSearchAPIQueryFilterFactory:
         assert len(filters) == 1
         assert isinstance(filters[0], SearchAPISkipFilter)
         assert filters[0].skip_value == expected_skip_value
+
+    @patch(
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring"
+        ".enabled",
+        True,
+    )
+    def test_valid_scoring_filter(self):
+        scoring_query_filter_value = "My test query"
+        test_request_filter = {"filter": {"query": scoring_query_filter_value}}
+
+        filters = SearchAPIQueryFilterFactory.get_query_filter(
+            test_request_filter, "Document",
+        )
+
+        assert len(filters) == 1
+        assert isinstance(filters[0], SearchAPIScoringFilter)
+        assert isinstance(filters[0], SearchAPIWhereFilter)
+        assert filters[0].field == "summary"
+        assert filters[0].value == scoring_query_filter_value
+        assert filters[0].operation == "ilike"
+
+    @patch(
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring"
+        ".enabled",
+        True,
+    )
+    @pytest.mark.parametrize(
+        "entity_name",
+        [
+            pytest.param("Dataset", id="Dataset endpoint"),
+            pytest.param("Instrument", id="Instrument endpoint"),
+        ],
+    )
+    def test_unsupported_scoring_filter(self, entity_name):
+        test_request_filter = {"filter": {"query": "My test query"}}
+        with pytest.raises(FilterError):
+            SearchAPIQueryFilterFactory.get_query_filter(
+                test_request_filter, entity_name,
+            )
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"

@@ -70,57 +70,57 @@ class TestEndpointRules:
                 id="count ISIS investigations",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets",
+                f"{Config.config.search_api.extension}/Datasets",
                 ["GET"],
                 id="Search API search datasets",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/documents",
+                f"{Config.config.search_api.extension}/Documents",
                 ["GET"],
                 id="Search API search documents",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/instruments",
+                f"{Config.config.search_api.extension}/Instruments",
                 ["GET"],
                 id="Search API search instruments",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<string:pid>",
+                f"{Config.config.search_api.extension}/Datasets/<string:pid>",
                 ["GET"],
                 id="Search API get single dataset",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/documents/<string:pid>",
+                f"{Config.config.search_api.extension}/Documents/<string:pid>",
                 ["GET"],
                 id="Search API get single document",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/instruments/<string:pid>",
+                f"{Config.config.search_api.extension}/Instruments/<string:pid>",
                 ["GET"],
                 id="Search API get single instrument",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/count",
+                f"{Config.config.search_api.extension}/Datasets/count",
                 ["GET"],
                 id="Search API dataset count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/documents/count",
+                f"{Config.config.search_api.extension}/Documents/count",
                 ["GET"],
                 id="Search API document count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/instruments/count",
+                f"{Config.config.search_api.extension}/Instruments/count",
                 ["GET"],
                 id="Search API instrument count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<string:pid>/files",
+                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files",
                 ["GET"],
                 id="Search API get dataset files",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/datasets/<string:pid>/files"
+                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files"
                 "/count",
                 ["GET"],
                 id="Search API dataset files count",

@@ -11,7 +11,7 @@ class TestSearchAPIGetByPIDEndpoint:
         "endpoint_name, pid, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
+                "Datasets",
                 "0-449-78690-0",
                 "{}",
                 {
@@ -26,10 +26,10 @@ class TestSearchAPIGetByPIDEndpoint:
                     "parameters": [],
                     "samples": [],
                 },
-                id="Basic /datasets/{pid} request",
+                id="Basic /Datasets/{pid} request",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 "0-417-77631-4",
                 "{}",
                 {
@@ -61,10 +61,10 @@ class TestSearchAPIGetByPIDEndpoint:
                     "members": [],
                     "parameters": [],
                 },
-                id="Basic /documents/{pid} request",
+                id="Basic /Documents/{pid} request",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 "pid:2",
                 "{}",
                 {
@@ -73,10 +73,10 @@ class TestSearchAPIGetByPIDEndpoint:
                     "facility": "LILS",
                     "datasets": [],
                 },
-                id="Basic /instruments/{pid} request",
+                id="Basic /Instruments/{pid} request",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 "0-449-78690-0",
                 '{"include": [{"relation": "documents"}]}',
                 {
@@ -125,7 +125,7 @@ class TestSearchAPIGetByPIDEndpoint:
                 id="Get dataset by pid with include filter",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 "0-417-77631-4",
                 '{"include": [{"relation": "datasets"}]}',
                 {
@@ -185,7 +185,7 @@ class TestSearchAPIGetByPIDEndpoint:
                 id="Get document by pid with include filter",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 "2",
                 '{"include": [{"relation": "datasets"}]}',
                 {
@@ -210,7 +210,7 @@ class TestSearchAPIGetByPIDEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 "0-449-78690-0",
                 '{"include": [{"relation": "documents"},'
                 ' {"relation": "files"}, {"relation": "parameters"},'
@@ -388,7 +388,7 @@ class TestSearchAPIGetByPIDEndpoint:
                 id="Get dataset by pid including all ICAT 4 related entities",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 "0-8401-1070-7",
                 '{"include": [{"relation": "documents"}, {"relation": "techniques"},'
                 ' {"relation": "instrument"}, {"relation": "files"},'
@@ -399,7 +399,7 @@ class TestSearchAPIGetByPIDEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 "0-417-77631-4",
                 '{"include": [{"relation": "datasets"}, {"relation": "members"},'
                 ' {"relation": "parameters"}]}',
@@ -512,7 +512,7 @@ class TestSearchAPIGetByPIDEndpoint:
         self, flask_test_app_search_api, pid, request_filter, expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}"
+            f"{Config.config.search_api.extension}/Datasets/{pid}"
             f"?filter={request_filter}",
         )
 

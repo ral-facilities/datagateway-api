@@ -8,67 +8,67 @@ class TestSearchAPICountEndpoint:
         "endpoint_name, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
+                "Datasets",
                 "{}",
                 {"count": 479},
-                id="Basic /datasets/count request",
+                id="Basic /Datasets/count request",
                 # Skipped because empty dict for filter doesn't work on where
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 "{}",
                 {"count": 239},
-                id="Basic /documents/count request",
+                id="Basic /Documents/count request",
                 # Skipped because empty dict for filter doesn't work on where
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 "{}",
                 {"count": 14},
-                id="Basic /instruments/count request",
+                id="Basic /Instruments/count request",
                 # Skipped because empty dict for filter doesn't work on where
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"title": "DATASET 30"}',
                 {"count": 1},
                 id="Dataset count with basic where",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"title": "INVESTIGATION 2"}',
                 {"count": 1},
                 id="Document count with basic where",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"name": "INSTRUMENT 12"}',
                 {"count": 1},
                 id="Instrument count with basic where",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"title": {"like": "DATASET 3"}}',
                 {"count": 11},
                 id="Dataset count with where (operator specified)",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"summary": {"ilike": "nature"}}',
                 {"count": 1},
                 id="Document count with where (operator specified)",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"name": {"nilike": "INSTRUMENT 5"}}',
                 {"count": 13},
                 id="Instrument count with where (operator specified)",
             ),
             pytest.param(
-                "instruments",
+                "Instruments",
                 '{"facility": {"like": "LILS"}}',
                 {"count": 14},
                 id="Instrument count with where using related ICAT mapping",
@@ -90,19 +90,19 @@ class TestSearchAPICountEndpoint:
         "endpoint_name, request_filter, expected_json",
         [
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"isPublic": true}',
                 {"count": 119},
                 id="Dataset count with isPublic condition (True)",
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"isPublic": true}',
                 {"count": 59},
                 id="Document count with isPublic condition (True)",
             ),
             pytest.param(
-                "datasets",
+                "Datasets",
                 '{"isPublic": false}',
                 {"count": 0},
                 id="Dataset count with isPublic condition (False)",
@@ -110,7 +110,7 @@ class TestSearchAPICountEndpoint:
                 marks=pytest.mark.skip,
             ),
             pytest.param(
-                "documents",
+                "Documents",
                 '{"isPublic": false}',
                 {"count": 0},
                 id="Document count with isPublic condition (False)",
@@ -144,7 +144,7 @@ class TestSearchAPICountEndpoint:
         self, flask_test_app_search_api, request_filter,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/count"
+            f"{Config.config.search_api.extension}/Datasets/count"
             f"?where={request_filter}",
         )
 

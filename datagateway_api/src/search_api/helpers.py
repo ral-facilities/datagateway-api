@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
     MissingRecordError,
+    ScoringAPIError,
     SearchAPIError,
 )
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
@@ -39,7 +40,7 @@ def search_api_error_handling(method):
     def wrapper_error_handling(*args, **kwargs):
         try:
             return method(*args, **kwargs)
-        except ValidationError as e:
+        except (ValidationError, ScoringAPIError) as e:
             log.exception(msg=e.args)
             assign_status_code(e, 500)
             raise SearchAPIError(create_error_message(e))

@@ -162,6 +162,19 @@ class SearchAPILimitFilter(PythonICATLimitFilter):
         return super().apply_filter(query.icat_query.query)
 
 
+class SearchAPIScoringFilter(SearchAPIWhereFilter):
+    def __init__(self, query_value):
+        if not isinstance(query_value, str):
+            raise ValueError("The value of the query filter must be a string")
+        # We are only supporting scoring on the Document entity/ endpoint so hard
+        # coding the corresponding field (summary) here that is used when searching for
+        # documents that match the query_value pattern.
+        super().__init__(field="summary", value=query_value, operation="ilike")
+
+    def apply_filter(self, query):
+        return super().apply_filter(query)
+
+
 class SearchAPIIncludeFilter(PythonICATIncludeFilter):
     def __init__(self, included_filters, panosc_entity_name):
         self.included_filters = included_filters

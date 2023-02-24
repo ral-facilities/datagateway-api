@@ -287,9 +287,9 @@ def create_api_endpoints(flask_app, api, specs):
         )
         search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = {
-            "datasets": "Dataset",
-            "documents": "Document",
-            "instruments": "Instrument",
+            "Datasets": "Dataset",
+            "Documents": "Document",
+            "Instruments": "Instrument",
         }
 
         for endpoint_name, entity_name in search_api_entity_endpoints.items():
@@ -320,8 +320,8 @@ def create_api_endpoints(flask_app, api, specs):
         get_files_endpoint_resource = get_files_endpoint("File")
         api.add_resource(
             get_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<string:pid>/files",
-            endpoint="search_api_get_dataset_files",
+            f"{search_api_extension}/Datasets/<string:pid>/files",
+            endpoint="search_api_get_Dataset_files",
         )
         search_api_spec.path(resource=get_files_endpoint_resource, api=api)
 
@@ -330,8 +330,8 @@ def create_api_endpoints(flask_app, api, specs):
         )
         api.add_resource(
             get_number_count_files_endpoint_resource,
-            f"{search_api_extension}/datasets/<string:pid>/files/count",
-            endpoint="search_api_count_dataset_files",
+            f"{search_api_extension}/Datasets/<string:pid>/files/count",
+            endpoint="search_api_count_Dataset_files",
         )
         search_api_spec.path(resource=get_number_count_files_endpoint_resource, api=api)
 

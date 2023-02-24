@@ -55,7 +55,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
                         "dataset": None,
                     },
                 ],
-                id="Basic /datasets/{pid}/files request",
+                id="Basic /Datasets/{pid}/files request",
             ),
             pytest.param(
                 "0-449-78690-0",
@@ -150,7 +150,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         self, flask_test_app_search_api, pid, request_filter, expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files"
             f"?filter={request_filter}",
         )
 
@@ -185,7 +185,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         self, flask_test_app_search_api, pid, request_filter, expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/datasets/{pid}/files"
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files"
             f"?filter={request_filter}",
         )
 
