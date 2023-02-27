@@ -29,19 +29,20 @@ RUN --mount=type=cache,target=/root/.cache \
         'gunicorn~=20.1.0' \
         /tmp/datagateway_api-*.whl; \
     \
+    # Create a symlink to the installed python module \
     DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')"; \
+    ln -s "$DATAGATEWAY_API_LOCATION/datagateway_api/" datagateway_api; \
     \
-    # Create search_api_mapping.json from its .example file \
-    cp "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json.example" "$DATAGATEWAY_API_LOCATION/datagateway_api/search_api_mapping.json"; \
-    \
-    # Create config.yaml from its .example file. It will need to be editted by the entrypoint script so create it in our non-root user's home directory and create a symlink \
-    cp "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml.example" /datagateway-api-run/config.yaml; \
-    ln -s /datagateway-api-run/config.yaml "$DATAGATEWAY_API_LOCATION/datagateway_api/config.yaml"; \
+    # Create config.yaml and search_api_mapping.json from their .example files \
+    cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
+    cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
     \
     # Create a non-root user to run as \
     addgroup -S datagateway-api; \
     adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api; \
-    chown -R datagateway-api:datagateway-api /datagateway-api-run;
+    \
+    # Change ownership of config.yaml - the entrypoint script will need to edit it \
+    chown datagateway-api:datagateway-api datagateway_api/config.yaml;
 
 USER datagateway-api
 
