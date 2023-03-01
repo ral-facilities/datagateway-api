@@ -140,6 +140,39 @@ class DataCollectionGenerator(Generator):
         data_collection.create()
 
 
+class FundingReferenceGenerator(Generator):
+    tier = 0
+    amount = 100
+
+    def generate(self):
+        for i in range(1, self.amount):
+            FundingReferenceGenerator.generate_funding_reference(self, i)
+
+    def generate_funding_reference(self, i):
+        funding_reference = self.client.new("fundingReference")
+        funding_reference.funderIdentifier = faker.ssn()
+        funding_reference.funderName = faker.company()
+        funding_reference.awardNumber = faker.isbn10(separator="")
+        funding_reference.awardTitle = faker.text()
+        funding_reference.create()
+
+
+class TechniqueGenerator(Generator):
+    tier = 0
+    amount = 100
+
+    def generate(self):
+        for i in range(1, self.amount):
+            TechniqueGenerator.generate_technique(self, i)
+
+    def generate_technique(self, i):
+        technique = self.client.new("technique")
+        technique.pid = faker.word()
+        technique.description = faker.text()
+        technique.name = faker.text()
+        technique.create()
+
+
 class ApplicationGenerator(Generator):
     tier = 1
     amount = 80
@@ -569,6 +602,129 @@ class ShiftGenerator(Generator):
         shift.create()
 
 
+class DataPublicationGenerator(Generator):
+    tier = 3
+    amount = InvestigationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataPublicationGenerator().generate_data_publication(i)
+
+    def generate_data_publication(self, i):
+        data_publication = self.client.new("DataPublication")
+        data_publication.title = faker.text()
+        data_publication.description = faker.text()
+        data_publication.pid = faker.isbn10(separator="-")
+        data_publication.publicationDate = faker.date_between(start_date="-15y")
+        data_publication.subject = faker.word()
+        data_publication.facility = self.client.get("Facility", 1)
+        data_publication.content = self.client.get(
+            "DataCollection", faker.random_int(1, DataCollectionGenerator.amount - 1),
+        )
+
+        data_publication.create()
+
+
+class DataPublicationFundingGenerator(Generator):
+    tier = 4
+    amount = DataPublicationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataPublicationFundingGenerator.generate_data_publication_funding(self, i)
+
+    def generate_data_publication_funding(self, i):
+        data_publication_funding = self.client.new("dataPublicationFunding")
+        data_publication_funding.funding = self.client.get(
+            "FundingReference",
+            faker.random_int(1, FundingReferenceGenerator.amount - 1),
+        )
+        data_publication_funding.dataPublication = self.client.get("DataPublication", i)
+        data_publication_funding.create()
+
+
+class DataPublicationDateGenerator(Generator):
+    tier = 4
+    amount = DataPublicationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataPublicationDateGenerator.generate_data_publication_date(self, i)
+
+    def generate_data_publication_date(self, i):
+        data_publication_date = self.client.new("dataPublicationDate")
+        # Elements of list taken from https://support.datacite.org/docs/schema-40
+        data_publication_date.dateType = faker.random_element(
+            elements=(
+                "Accepted",
+                "Available",
+                "Copyrighted",
+                "Collected",
+                "Created",
+                "Issued",
+                "Submitted",
+                "Updated",
+                "Valid",
+            ),
+        )
+        data_publication_date.date = faker.date_between(start_date="-15y")
+        data_publication_date.publication = self.client.get("DataPublication", i)
+
+
+class DataPublicationTypeGenerator(Generator):
+    tier = 4
+    amount = 20
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataPublicationTypeGenerator.generate_data_publication_type(self, i)
+
+    def generate_data_publication_type(self, i):
+        data_publication_type = self.client.new("dataPublicationType")
+        data_publication_type.name = faker.word()
+        data_publication_type.description = faker.text()
+        data_publication_type.facility = self.client.get("Facility", 1)
+        data_publication_type.create()
+
+
+class DataPublicationUserGenerator(Generator):
+    tier = 4
+    amount = DataPublicationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataPublicationUserGenerator.generate_data_publication_user(self, i)
+
+    def generate_data_publication_user(self, i):
+        data_publication_user = self.client.new("dataPublicationUser")
+        data_publication_user.orderKey = str(faker.random_int(1, 9))
+        data_publication_user.user = self.client.get(
+            "User", faker.random_int(1, UserGenerator.amount - 1),
+        )
+        data_publication_user.givenName = data_publication_user.user.fullName.split()[0]
+        data_publication_user.fullName = data_publication_user.user.fullName
+        data_publication_user.familyName = data_publication_user.fullName.split()[1]
+        data_publication_user.contributorType = faker.random_element(
+            elements=(
+                "ContactPerson",
+                "DataCollector",
+                "DataCurator",
+                "DataManager",
+                "Distributor",
+                "Editor",
+                "Producer",
+                "ProjectLeader",
+                "ProjectManager",
+                "ProjectMember",
+                "RelatedPerson",
+                "Researcher",
+            ),
+        )
+        data_publication_user.email = data_publication_user.user.email
+        data_publication_user.publication = self.client.get("DataPublication", i)
+        data_publication_user.create()
+
+
 class StudyInvestigationGenerator(Generator):
     tier = 4
     amount = InvestigationGenerator.amount
@@ -638,6 +794,40 @@ class DatasetParameterGenerator(Generator):
             "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
         )
         dataset_param.create()
+
+
+class DatasetTechniqueGenerator(Generator):
+    tier = 5
+    amount = TechniqueGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DatasetTechniqueGenerator.generate_dataset_technique(self, i)
+
+    def generate_dataset_technique(self, i):
+        dataset_technique = self.client.new("datasetTechnique")
+        dataset_technique.dataset = self.client.get(
+            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+        )
+        dataset_technique.technique = self.client.get("Technique", i)
+        dataset_technique.create()
+
+
+class DatasetInstrumentGenerator(Generator):
+    tier = 5
+    amount = InstrumentGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DatasetInstrumentGenerator.generate_dataset_instrument(self, i)
+
+    def generate_dataset_instrument(self, i):
+        dataset_instrument = self.client.new("datasetInstrument")
+        dataset_instrument.dataset = self.client.get(
+            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+        )
+        dataset_instrument.instrument = self.client.get("Instrument", i)
+        dataset_instrument.create()
 
 
 class DatafileGenerator(Generator):
