@@ -725,6 +725,53 @@ class DataPublicationUserGenerator(Generator):
         data_publication_user.create()
 
 
+class RelatedItemGenerator(Generator):
+    tier = 4
+    amount = DataPublicationGenerator.amount * 2
+
+    def generate(self):
+        for i in range(1, self.amount):
+            RelatedItemGenerator.generate_related_item(self, i)
+
+    def generate_related_item(self, i):
+        related_item = self.client.new("relatedItem")
+        related_item.identifier = faker.isbn10(separator="-")
+        related_item.relationType = faker.random_element(
+            elements=(
+                "IsCitedBy",
+                "Cites",
+                "IsPublishedIn",
+                "IsReferencedBy",
+                "References",
+                "IsReviewedBy",
+                "Reviews",
+                "IsObseletedBy",
+            ),
+        )
+        related_item.relatedItemType = faker.random_element(
+            elements=(
+                "Book",
+                "ComputationalNotebook",
+                "ConferencePaper",
+                "DataPaper",
+                "Dataset",
+                "Dissertation",
+                "Model",
+                "PeerReview",
+                "Preprint",
+                "Report",
+                "Text",
+                "Other",
+            ),
+        )
+        related_item.title = faker.text()
+        related_item.fullReference = faker.text()
+        related_item.publication = self.client.get(
+            "DataPublication", i % (DataPublicationGenerator.amount - 1) + 1,
+        )
+        related_item.create()
+
+
 class StudyInvestigationGenerator(Generator):
     tier = 4
     amount = InvestigationGenerator.amount
