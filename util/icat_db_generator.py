@@ -674,7 +674,7 @@ class DataPublicationGenerator(Generator):
         data_publication.description = faker.text()
         data_publication.pid = faker.isbn10(separator="-")
         data_publication.publicationDate = faker.date_between(start_date="-15y")
-        data_publication.subject = faker.word()
+        data_publication.subject = faker.words()
         data_publication.facility = self.client.get("Facility", 1)
         data_publication.content = self.client.get(
             "DataCollection", faker.random_int(1, DataCollectionGenerator.amount - 1),
@@ -727,6 +727,7 @@ class DataPublicationDateGenerator(Generator):
         )
         data_publication_date.date = faker.date_between(start_date="-15y")
         data_publication_date.publication = self.client.get("DataPublication", i)
+        data_publication_date.create()
 
 
 class DataPublicationTypeGenerator(Generator):
