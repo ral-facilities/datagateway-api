@@ -602,6 +602,64 @@ class ShiftGenerator(Generator):
         shift.create()
 
 
+class DataCollectionInvestigationGenerator(Generator):
+    tier = 3
+    amount = InvestigationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            DataCollectionInvestigationGenerator.generate_data_collection_investigation(
+                self, i,
+            )
+
+    def generate_data_collection_investigation(self, i):
+        data_collection_investigation = self.client.new("dataCollectionInvestigation")
+        data_collection_investigation.dataCollection = self.client.get(
+            "DataCollection", faker.random_int(1, DataCollectionGenerator.amount - 1),
+        )
+        data_collection_investigation.investigation = self.client.get(
+            "Investigation", i,
+        )
+        data_collection_investigation.create()
+
+
+class InvestigationFacilityCycleGenerator(Generator):
+    tier = 3
+    amount = FacilityCycleGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            InvestigationFacilityCycleGenerator.generate_investigation_facility_cycle(
+                self, i,
+            )
+
+    def generate_investigation_facility_cycle(self, i):
+        investigation_facility_cycle = self.client.new("investigationFacilityCycle")
+        investigation_facility_cycle.investigation = self.client.get(
+            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
+        )
+        investigation_facility_cycle.facilityCycle = self.client.get("FacilityCycle", i)
+        investigation_facility_cycle.create()
+
+
+class InvestigationFundingGenerator(Generator):
+    tier = 3
+    amount = InvestigationGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            InvestigationFundingGenerator.generate_investigation_funding(self, i)
+
+    def generate_investigation_funding(self, i):
+        investigation_funding = self.client.new("investigationFunding")
+        investigation_funding.funding = self.client.get(
+            "FundingReference",
+            faker.random_int(1, FundingReferenceGenerator.amount - 1),
+        )
+        investigation_funding.investigation = self.client.get("Investigation", i)
+        investigation_funding.create()
+
+
 class DataPublicationGenerator(Generator):
     tier = 3
     amount = InvestigationGenerator.amount
@@ -960,6 +1018,23 @@ class SampleParameterGenerator(Generator):
         apply_common_parameter_attributes(sample_parameter, i, self.client)
         sample_parameter.sample = self.client.get("Sample", i)
         sample_parameter.create()
+
+
+class AffiliationGenerator(Generator):
+    tier = 5
+    amount = DataPublicationUserGenerator.amount
+
+    def generate(self):
+        for i in range(1, self.amount):
+            AffiliationGenerator.generate_affiliation(self, i)
+
+    def generate_affiliation(self, i):
+        affiliation = self.client.new("affiliation")
+        affiliation.fullReference = faker.text()
+        affiliation.pid = faker.isbn10(separator="-")
+        affiliation.name = faker.text()
+        affiliation.user = self.client.get("DataPublicationUser", i)
+        affiliation.create()
 
 
 class DatafileParameterGenerator(Generator):
