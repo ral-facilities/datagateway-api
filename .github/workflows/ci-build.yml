@@ -29,6 +29,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
           architecture: x64
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Checkout DataGateway API
         uses: actions/checkout@v2
 
