@@ -669,7 +669,7 @@ class DataPublicationGenerator(Generator):
             DataPublicationGenerator().generate_data_publication(i)
 
     def generate_data_publication(self, i):
-        data_publication = self.client.new("DataPublication")
+        data_publication = self.client.new("dataPublication")
         data_publication.title = faker.text()
         data_publication.description = faker.text()
         data_publication.pid = faker.isbn10(separator="-")
