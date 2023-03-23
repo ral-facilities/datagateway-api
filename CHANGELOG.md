@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v7.1.0 (2023-03-23)
+### Feature
+* Add icat 5 entity generation to the data generator script ([`579e321`](https://github.com/ral-facilities/datagateway-api/commit/579e321d9ae368d5840e602154bdb155e902478b))
+
 ## v7.0.0 (2023-02-24)
 ### Feature
 * **config:** Add scoring related values to config #398 ([`0472d96`](https://github.com/ral-facilities/datagateway-api/commit/0472d9617b6771c6b64ebbaa49953b5583d1d3c9))
