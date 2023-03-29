@@ -30,3 +30,4 @@ host: "127.0.0.1"
 port: "5000"
 test_user_credentials: { username: "root", password: "pw" }
 test_mechanism: "simple"
+url_prefix: "/"

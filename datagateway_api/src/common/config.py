@@ -32,6 +32,8 @@ def validate_extension(extension):
             raise ValueError("must start with '/'")
         if extension.endswith("/") and len(extension) != 1:
             raise ValueError("must not end with '/'")
+        if extension == "/":
+            extension = ""
 
     return extension
 
@@ -183,6 +185,9 @@ class APIConfig(BaseModel):
     search_api: Optional[SearchAPI]
     test_mechanism: Optional[StrictStr]
     test_user_credentials: Optional[TestUserCredentials]
+    url_prefix: StrictStr
+
+    _validate_extension = validator("url_prefix", allow_reuse=True)(validate_extension)
 
     @classmethod
     def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml"):
