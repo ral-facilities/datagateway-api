@@ -1,6 +1,8 @@
 import logging
 
 from flask import Flask
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.wrappers import Response
 
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
@@ -9,8 +11,7 @@ from datagateway_api.src.api_start_utils import (
 )
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.logger_setup import setup_logger
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from werkzeug.wrappers import Response
+
 
 setup_logger()
 log = logging.getLogger()
@@ -24,8 +25,7 @@ app.config["APPLICATION_ROOT"] = Config.config.url_prefix
 
 if __name__ == "__main__":
     app.wsgi_app = DispatcherMiddleware(
-        Response('Not Found', status=404),
-        {Config.config.url_prefix: app.wsgi_app}
+        Response("Not Found", status=404), {Config.config.url_prefix: app.wsgi_app},
     )
     app.run(
         host=Config.config.host,
