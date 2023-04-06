@@ -19,18 +19,18 @@ jobs:
 
       # Setup Java & Python
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # v3.10.0
         with:
+          distribution: 'temurin'
           java-version: 8
-          java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: ${{ matrix.python-version }}
           architecture: x64
 
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       # Install Nox, Poetry and API's dependencies
       - name: Install Nox
@@ -66,12 +66,12 @@ jobs:
         run: nox -p ${{ matrix.python-version }} -s unit_tests -- --cov=datagateway_api --cov-report=xml
       - name: Upload unit test code coverage report
         if: matrix.python-version == '3.6'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # v3.1.1
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
         if: success()
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -118,7 +118,7 @@ jobs:
           cd /home/runner/install/icat.server/ && ./setup -vv install
 
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       # Prep for using the API for tests
       - name: Create log file
@@ -152,19 +152,19 @@ jobs:
         run: nox -p ${{ matrix.python-version }} -s integration_tests -- --cov=datagateway_api --cov-report=xml
       - name: Upload integration test code coverage report
         if: matrix.python-version == '3.6'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@d9f34f8cd5cb3b3eb79b3e4b5dae3a16df499a70 # v3.1.1
 
   linting:
     runs-on: ubuntu-20.04
     name: Linting
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: "3.9.7"
           architecture: x64
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Install Nox
         run: pip install nox==2020.8.22
@@ -179,12 +179,12 @@ jobs:
     name: Code Formatting
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: "3.9.7"
           architecture: x64
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Install Nox
         run: pip install nox==2020.8.22
@@ -199,12 +199,12 @@ jobs:
     name: Dependency Safety
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: "3.9.7"
           architecture: x64
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Install Nox
         run: pip install nox==2020.8.22
@@ -224,19 +224,19 @@ jobs:
 
       # Setup Java & Python
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # v3.10.0
         with:
+          distribution: 'temurin'
           java-version: 8
-          java-package: jdk
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@d27e3f3d7c64b4bbf8e4abfb9b63b83e846e0435 # v4.5.0
         with:
           python-version: "3.9.7"
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           repository: icatproject-contrib/icat-ansible
           ref: master
@@ -272,7 +272,7 @@ jobs:
           ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
 
       - name: Checkout DataGateway API
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
       - name: Create config.yaml
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
@@ -333,7 +333,7 @@ jobs:
         run: cd /home/runner/install/icat.server; sudo mysql -uroot -D icatdb < create_triggers_mysql_5_0.sql
 
       - name: Checkout DataGateway API (default branch)
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           ref: ${{ github.event.repository.default_branch }}
 

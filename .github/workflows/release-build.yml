@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
         with:
           fetch-depth: 0
           token: ${{ secrets.ADMIN_PAT }}
 
       - name: Python Semantic Release
-        uses: relekang/python-semantic-release@master
+        uses: python-semantic-release/python-semantic-release@bfa503c3ef98d240a6d9cb09a8a8603e84200b42 # v7.33.2
         with:
           github_token: ${{ secrets.ADMIN_PAT }}
