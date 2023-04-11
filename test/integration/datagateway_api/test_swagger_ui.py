@@ -53,17 +53,17 @@ class TestSwaggerUI:
             test_client = test_app.test_client()
 
             test_response = test_client.get(
-                f"{test_config_swagger.url_prefix}{test_config_swagger[api_type].extension}", # noqa: B950
+                f"{test_config_swagger.url_prefix}{test_config_swagger[api_type].extension}",  # noqa: B950
             )
 
             test_response_string = test_response.get_data(as_text=True)
 
             assert f"{api_name} OpenAPI Spec" in test_response_string
             assert (
-                f"{test_config_swagger.url_prefix}{test_config_swagger[api_type].extension}/swagger-ui" # noqa: B950
+                f"{test_config_swagger.url_prefix}{test_config_swagger[api_type].extension}/swagger-ui"  # noqa: B950
                 in test_response_string
             )
             assert (
-                f"{test_config_swagger.url_prefix}/{api_type.replace('_', '-')}/openapi.json" # noqa: B950
+                f"{test_config_swagger.url_prefix}/{api_type.replace('_', '-')}/openapi.json"  # noqa: B950
                 in test_response_string
             )
