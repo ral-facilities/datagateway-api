@@ -371,22 +371,6 @@ Poetry environment:
 ModuleNotFoundError: No module named 'urlparse'
 ```
 
-Explanation of the cause for this issue can be found in a
-[Python ICAT issue](https://github.com/icatproject/python-icat/issues/99). Essentially,
-the version of `setuptools` used must be < 58.0.0
-([see above](#api-dependency-management-poetry) for further details). If you have
-already installed the API's dependencies (via `poetry install`), you will need to re-install `setuptools` (using a suitable version) and re-install Python ICAT so it can be rebuilt correctly. The following commands can be used for this process:
-
-```bash
-# Uninstall and re-install setuptools using a version < 58.0.0
-poetry run pip uninstall -y setuptools
-poetry run pip install 'setuptools<58.0.0'
-
-# Re-install Python ICAT so it can be built properly
-poetry remove python-icat
-poetry add python-icat=0.21.0
-```
-
 If using Python 3.10, please use Payara 5 on the ICAT stack which the API is being
 pointed at. There is a known issue when making HTTPS connections to Payara (via Python
 ICAT).
