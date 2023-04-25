@@ -9,6 +9,8 @@ from apispec import yaml_utils
 from apispec.exceptions import APISpecError
 import yaml
 
+from datagateway_api.src.common.config import Config
+
 
 def deduce_path(resource, **kwargs):
     """Find resource path using provided API or path itself"""
@@ -73,6 +75,7 @@ class RestfulPlugin(apispec.BasePlugin):
             resource = kwargs.pop("resource")
             path = deduce_path(resource, **kwargs)
             path = re.sub(r"<(?:[^:<>]+:)?([^<>]+)>", r"{\1}", path)
+            path = f"{Config.config.url_prefix}{path}"
             return path
         except Exception as exc:
             logging.getLogger(__name__).exception(

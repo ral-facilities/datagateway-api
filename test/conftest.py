@@ -59,6 +59,7 @@ def test_config_data():
         "port": "5000",
         "test_user_credentials": {"username": "root", "password": "pw"},
         "test_mechanism": "simple",
+        "url_prefix": "",
     }
 
 

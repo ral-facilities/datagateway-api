@@ -60,7 +60,7 @@ class TestAPIConfig:
     @pytest.mark.parametrize(
         "input_extension, expected_extension",
         [
-            pytest.param("/", "/", id="Slash"),
+            pytest.param("/", "", id="Slash"),
             pytest.param("", "", id="Empty string, implied slash"),
             pytest.param("/datagateway-api", "/datagateway-api", id="DataGateway API"),
             pytest.param(

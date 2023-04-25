@@ -69,8 +69,8 @@ class CustomErrorHandledApi(Api):
 
 def configure_datagateway_api_swaggerui_blueprint(flask_app):
     swaggerui_blueprint = get_swaggerui_blueprint(
-        base_url=Config.config.datagateway_api.extension,
-        api_url="/datagateway-api/openapi.json",
+        base_url=f"{Config.config.url_prefix}{Config.config.datagateway_api.extension}",
+        api_url=f"{Config.config.url_prefix}/datagateway-api/openapi.json",
         config={"app_name": "DataGateway API OpenAPI Spec"},
         blueprint_name="DataGateway API Swagger UI",
     )
@@ -83,8 +83,8 @@ def configure_datagateway_api_swaggerui_blueprint(flask_app):
 
 def configure_search_api_swaggerui_blueprint(flask_app):
     swaggerui_blueprint = get_swaggerui_blueprint(
-        base_url=Config.config.search_api.extension,
-        api_url="/search-api/openapi.json",
+        base_url=f"{Config.config.url_prefix}{Config.config.search_api.extension}",
+        api_url=f"{Config.config.url_prefix}/search-api/openapi.json",
         config={"app_name": "Search API OpenAPI Spec"},
         blueprint_name="Search API Swagger UI",
     )
