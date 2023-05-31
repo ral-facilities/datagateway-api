@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v8.0.0 (2023-04-25)
+### Fix
+* Add url_prefix param to fix swagger docs at non-root paths #408 ([`49632ea`](https://github.com/ral-facilities/datagateway-api/commit/49632ea19f6dc24e0174c2dfa47ffc253261db3d))
+
+### Breaking
+* add url_prefix param to fix swagger docs at non-root paths #408 ([`49632ea`](https://github.com/ral-facilities/datagateway-api/commit/49632ea19f6dc24e0174c2dfa47ffc253261db3d))
+
+## v7.1.0 (2023-03-23)
+### Feature
+* Add icat 5 entity generation to the data generator script ([`579e321`](https://github.com/ral-facilities/datagateway-api/commit/579e321d9ae368d5840e602154bdb155e902478b))
+
 ## v7.0.0 (2023-02-24)
 ### Feature
 * **config:** Add scoring related values to config #398 ([`0472d96`](https://github.com/ral-facilities/datagateway-api/commit/0472d9617b6771c6b64ebbaa49953b5583d1d3c9))
