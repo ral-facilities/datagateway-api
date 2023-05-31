@@ -47,7 +47,7 @@ RUN --mount=type=cache,target=/root/.cache \
 USER datagateway-api
 
 ENV ICAT_URL="http://localhost"
-ENV ICAT_CHECK_CERT="true"
+ENV ICAT_CHECK_CERT="false"
 ENV LOG_LOCATION="/dev/stdout"
 
 COPY docker/docker-entrypoint.sh /usr/local/bin/
