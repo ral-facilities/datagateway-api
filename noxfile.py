@@ -75,9 +75,10 @@ def safety(session):
         # Ignore 50916 as the latest version of pydantic and
         # Ignore 51457 as the latest version of pytest and
         # Ignore 51668 as the latest version of SQLAchemy and
-        # Ignore 52355 and 52518 as the latest version of gitpython
-        # as they do not support
-        # python 3.6 which is still used in production
+        # Ignore 52322 and 52518 as the latest version of Gitpython does not
+        # support python 3.6 which is still used in production
+        # Ignore 53325, 53326, 54456, and 55261 as the fixed versions do not support
+        # python 3.6
         session.run(
             "safety",
             "check",
@@ -97,6 +98,10 @@ def safety(session):
             "53325",
             "--ignore",
             "53326",
+            "--ignore",
+            "54456",
+            "--ignore",
+            "55261",
         )
 
         try:
