@@ -72,9 +72,8 @@ def safety(session):
             f"--output={requirements.name}",
             external=True,
         )
-        # Ignore 50916, 51457, 51668, 52322, 52518, 53325, 53326, 54456, 55261, 58910,
-        # 58755 as the patched versions of dependencies that they relate don't support
-        # Python 3.6 which is still required for production
+        # Ignore vulnerabilities as the patched versions of dependencies that they
+        # relate to don't support Python 3.6 which is still required for production
         session.run(
             "safety",
             "check",
@@ -102,6 +101,10 @@ def safety(session):
             "58910",
             "--ignore",
             "58755",
+            "--ignore",
+            "59062",
+            "--ignore",
+            "59473",
         )
 
         try:
