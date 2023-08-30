@@ -37,9 +37,6 @@ class ICATQuery:
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
         """
-        # Needed for ISIS endpoints as they use DISTINCT keyword but don't select
-        # multiple attributes
-        self.isis_endpoint = False
 
         try:
             log.info("Creating ICATQuery for entity: %s", entity_name)
@@ -96,7 +93,6 @@ class ICATQuery:
             self.query.aggregate == "DISTINCT"
             and not count_query
             and not self.query.manual_count
-            and not self.isis_endpoint
         ):
             distinct_query = True
             log.info("Extracting the distinct fields from query's conditions")

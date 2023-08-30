@@ -483,8 +483,8 @@ api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
 
 ## Endpoints
 
-The logic for each endpoint is within `/src/resources`. They are split into entities,
-non_entities and table_endpoints.
+The logic for each endpoint is within `/src/resources` - they're split into entities and
+non_entities.
 
 The entities package contains `entity_map` which
 maps entity names to their field name used in backend-specific code. The Database
@@ -492,10 +492,8 @@ Backend uses this for its mapped classes (explained below) and the Python ICAT B
 uses this for interacting with ICAT objects within Python ICAT. In most instances, the
 dictionary found in `entity_map.py` is simply mapping the plural entity name (used to
 build the entity endpoints) to the singular version. The `entity_endpoint` module
-contains the function that is used to generate endpoints at start up. `table_endpoints`
-contains the endpoint classes that are table specific (currently these are the ISIS
-specific endpoints required for their use cases). Finally, `non_entities` contains the
-session endpoint for session handling.
+contains the function that is used to generate endpoints at start up. Finally,
+`non_entities` contains the session endpoint for session handling.
 
 ## Logging
 

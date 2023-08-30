@@ -13,11 +13,7 @@ from datagateway_api.src.datagateway_api.icat.helpers import (
     get_count_with_filters,
     get_entity_by_id,
     get_entity_with_filters,
-    get_facility_cycles_for_instrument,
-    get_facility_cycles_for_instrument_count,
     get_first_result_with_filters,
-    get_investigations_for_instrument_in_facility_cycle,
-    get_investigations_for_instrument_in_facility_cycle_count,
     get_session_details_helper,
     logout_icat_client,
     refresh_client_session,
@@ -128,39 +124,3 @@ class PythonICATBackend(Backend):
     @queries_records
     def update_with_id(self, session_id, entity_type, id_, data, **kwargs):
         return update_entity_by_id(kwargs.get("client"), entity_type, id_, data)
-
-    @requires_session_id
-    @queries_records
-    def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters, **kwargs,
-    ):
-        return get_facility_cycles_for_instrument(
-            kwargs.get("client"), instrument_id, filters,
-        )
-
-    @requires_session_id
-    @queries_records
-    def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters, **kwargs,
-    ):
-        return get_facility_cycles_for_instrument_count(
-            kwargs.get("client"), instrument_id, filters,
-        )
-
-    @requires_session_id
-    @queries_records
-    def get_investigations_for_instrument_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
-    ):
-        return get_investigations_for_instrument_in_facility_cycle(
-            kwargs.get("client"), instrument_id, facilitycycle_id, filters,
-        )
-
-    @requires_session_id
-    @queries_records
-    def get_investigation_count_instrument_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
-    ):
-        return get_investigations_for_instrument_in_facility_cycle_count(
-            kwargs.get("client"), instrument_id, facilitycycle_id, filters,
-        )

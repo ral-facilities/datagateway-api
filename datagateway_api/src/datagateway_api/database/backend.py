@@ -16,12 +16,8 @@ from datagateway_api.src.datagateway_api.database.helpers import (
     create_rows_from_json,
     db,
     delete_row_by_id,
-    get_facility_cycles_for_instrument,
-    get_facility_cycles_for_instrument_count,
     get_filtered_row_count,
     get_first_filtered_row,
-    get_investigations_for_instrument_in_facility_cycle,
-    get_investigations_for_instrument_in_facility_cycle_count,
     get_row_by_id,
     get_rows_by_filter,
     insert_row_into_table,
@@ -127,35 +123,3 @@ class DatabaseBackend(Backend):
     def update_with_id(self, session_id, entity_type, id_, data, **kwargs):
         table = get_entity_object_from_name(entity_type)
         return update_row_from_id(table, id_, data)
-
-    @requires_session_id
-    @queries_records
-    def get_facility_cycles_for_instrument_with_filters(
-        self, session_id, instrument_id, filters, **kwargs,
-    ):
-        return get_facility_cycles_for_instrument(instrument_id, filters)
-
-    @requires_session_id
-    @queries_records
-    def get_facility_cycles_for_instrument_count_with_filters(
-        self, session_id, instrument_id, filters, **kwargs,
-    ):
-        return get_facility_cycles_for_instrument_count(instrument_id, filters)
-
-    @requires_session_id
-    @queries_records
-    def get_investigations_for_instrument_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
-    ):
-        return get_investigations_for_instrument_in_facility_cycle(
-            instrument_id, facilitycycle_id, filters,
-        )
-
-    @requires_session_id
-    @queries_records
-    def get_investigation_count_instrument_facility_cycle_with_filters(
-        self, session_id, instrument_id, facilitycycle_id, filters, **kwargs,
-    ):
-        return get_investigations_for_instrument_in_facility_cycle_count(
-            instrument_id, facilitycycle_id, filters,
-        )
