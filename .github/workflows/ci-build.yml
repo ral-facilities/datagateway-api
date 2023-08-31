@@ -360,3 +360,35 @@ jobs:
       # different to SciGateway preprod
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
+
+  docker:
+    # This job triggers only if all the other jobs succeed and does different things depending on the context.
+    # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
+    # pushed to the main branch.
+    needs: [tests, linting, formatting, safety, generator-script-testing]
+    name: Docker
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+
+    - name: Login to Harbor
+      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+      with:
+        registry: harbor.stfc.ac.uk/datagateway
+        username: ${{ secrets.HARBOR_USERNAME }}
+        password: ${{ secrets.HARBOR_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@c4ee3adeed93b1fa6a762f209fb01608c1a22f1e # v4.4.0
+      with:
+        images: harbor.stfc.ac.uk/datagateway/datagateway-api
+
+    - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
+      uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # v4.0.0
+      with:
+        context: .
+        push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
