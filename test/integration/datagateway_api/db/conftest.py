@@ -11,7 +11,6 @@ from datagateway_api.src.datagateway_api.database.helpers import (
     insert_row_into_table,
 )
 from datagateway_api.src.datagateway_api.database.models import (
-    FACILITYCYCLE,
     INSTRUMENT,
     INVESTIGATION,
     INVESTIGATIONINSTRUMENT,
@@ -87,19 +86,7 @@ def multiple_investigation_test_data_db():
 
 
 @pytest.fixture()
-def isis_specific_endpoint_data_db():
-    facility_cycle = FACILITYCYCLE()
-    facility_cycle.name = "Test cycle for DG API testing (DB)"
-    facility_cycle.startDate = datetime(
-        year=2020, month=1, day=1, hour=1, minute=1, second=1,
-    )
-    facility_cycle.endDate = datetime(
-        year=2020, month=2, day=1, hour=1, minute=1, second=1,
-    )
-    facility_cycle.facilityID = 1
-    set_meta_attributes(facility_cycle)
-    insert_row_into_table(FACILITYCYCLE, facility_cycle)
-
+def related_distinct_data_db():
     investigation = create_investigation_db_data()
 
     instrument = INSTRUMENT()
@@ -115,10 +102,9 @@ def isis_specific_endpoint_data_db():
 
     insert_row_into_table(INVESTIGATIONINSTRUMENT, investigation_instrument)
 
-    yield (instrument.id, facility_cycle, investigation)
+    yield (instrument.id, investigation)
 
     delete_row_by_id(INVESTIGATIONINSTRUMENT, investigation_instrument.id)
-    delete_row_by_id(FACILITYCYCLE, facility_cycle.id)
     delete_row_by_id(INVESTIGATION, investigation.id)
     delete_row_by_id(INSTRUMENT, instrument.id)
 

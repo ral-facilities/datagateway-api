@@ -4,7 +4,6 @@ from functools import wraps
 import logging
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import aliased
 
 from datagateway_api.src.common.exceptions import (
     AuthenticationError,
@@ -18,14 +17,7 @@ from datagateway_api.src.datagateway_api.database.filters import (
     DatabaseIncludeFilter as IncludeFilter,
     DatabaseWhereFilter as WhereFilter,
 )
-from datagateway_api.src.datagateway_api.database.models import (
-    FACILITY,
-    FACILITYCYCLE,
-    INSTRUMENT,
-    INVESTIGATION,
-    INVESTIGATIONINSTRUMENT,
-    SESSION,
-)
+from datagateway_api.src.datagateway_api.database.models import SESSION
 
 
 log = logging.getLogger()
@@ -394,143 +386,3 @@ def patch_entities(table, json_list):
         raise BadRequestError(f" Bad request made, request: {json_list}")
 
     return results
-
-
-class InstrumentFacilityCyclesQuery(ReadQuery):
-    def __init__(self, instrument_id):
-        super().__init__(FACILITYCYCLE)
-        investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = (
-            self.base_query.join(FACILITYCYCLE.FACILITY)
-            .join(FACILITY.instruments)
-            .join(FACILITY.investigations)
-            .join(INVESTIGATION.investigationInstruments)
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.id == instrument_id)
-            .filter(investigation_instrument.id == INSTRUMENT.id)
-            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
-            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
-        )
-
-
-def get_facility_cycles_for_instrument(instrument_id, filters):
-    """
-    Given an instrument_id get facility cycles where the instrument has investigations
-    that occur within that cycle
-
-    :param filters: The filters to be applied to the query
-    :param instrument_id: The id of the instrument
-    :return: A list of facility cycle entities
-    """
-    with InstrumentFacilityCyclesQuery(instrument_id) as query:
-        filter_handler = FilterOrderHandler()
-        return get_filtered_read_query_results(filter_handler, filters, query)
-
-
-class InstrumentFacilityCyclesCountQuery(CountQuery):
-    def __init__(self, instrument_id):
-        super().__init__(FACILITYCYCLE)
-        investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = (
-            self.base_query.join(FACILITYCYCLE.FACILITY)
-            .join(FACILITY.instruments)
-            .join(FACILITY.investigations)
-            .join(INVESTIGATION.investigationInstruments)
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.id == instrument_id)
-            .filter(investigation_instrument.id == INSTRUMENT.id)
-            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
-            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
-        )
-
-
-def get_facility_cycles_for_instrument_count(instrument_id, filters):
-    """
-    Given an instrument_id get the facility cycles count where the instrument has
-    investigations that occur within that cycle
-
-    :param filters: The filters to be applied to the query
-    :param instrument_id: The id of the instrument
-    :return: The count of the facility cycles
-    """
-    with InstrumentFacilityCyclesCountQuery(instrument_id) as query:
-        filter_handler = FilterOrderHandler()
-        filter_handler.add_filters(filters)
-        filter_handler.apply_filters(query)
-        return query.get_count()
-
-
-class InstrumentFacilityCycleInvestigationsQuery(ReadQuery):
-    def __init__(self, instrument_id, facility_cycle_id):
-        super().__init__(INVESTIGATION)
-        investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = (
-            self.base_query.join(INVESTIGATION.FACILITY)
-            .join(FACILITY.facilityCycles)
-            .join(FACILITY.instruments)
-            .join(INVESTIGATION.investigationInstruments)
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.id == instrument_id)
-            .filter(FACILITYCYCLE.id == facility_cycle_id)
-            .filter(investigation_instrument.id == INSTRUMENT.id)
-            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
-            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
-        )
-
-
-def get_investigations_for_instrument_in_facility_cycle(
-    instrument_id, facility_cycle_id, filters,
-):
-    """
-    Given an instrument id and facility cycle id, get investigations that use the given
-    instrument in the given cycle
-
-    :param filters: The filters to be applied to the query
-    :param instrument_id: The id of the instrument
-    :param facility_cycle_id:  the ID of the facility cycle
-    :return: The investigations
-    """
-    filter_handler = FilterOrderHandler()
-    with InstrumentFacilityCycleInvestigationsQuery(
-        instrument_id, facility_cycle_id,
-    ) as query:
-        return get_filtered_read_query_results(filter_handler, filters, query)
-
-
-class InstrumentFacilityCycleInvestigationsCountQuery(CountQuery):
-    def __init__(self, instrument_id, facility_cycle_id):
-        super().__init__(INVESTIGATION)
-        investigation_instrument = aliased(INSTRUMENT)
-        self.base_query = (
-            self.base_query.join(INVESTIGATION.FACILITY)
-            .join(FACILITY.facilityCycles)
-            .join(FACILITY.instruments)
-            .join(INVESTIGATION.investigationInstruments)
-            .join(investigation_instrument, INVESTIGATIONINSTRUMENT.INSTRUMENT)
-            .filter(INSTRUMENT.id == instrument_id)
-            .filter(FACILITYCYCLE.id == facility_cycle_id)
-            .filter(investigation_instrument.id == INSTRUMENT.id)
-            .filter(INVESTIGATION.startDate >= FACILITYCYCLE.startDate)
-            .filter(INVESTIGATION.startDate <= FACILITYCYCLE.endDate)
-        )
-
-
-def get_investigations_for_instrument_in_facility_cycle_count(
-    instrument_id, facility_cycle_id, filters,
-):
-    """
-    Given an instrument id and facility cycle id, get the count of the investigations
-    that use the given instrument in the given cycle
-
-    :param filters: The filters to be applied to the query
-    :param instrument_id: The id of the instrument
-    :param facility_cycle_id:  the ID of the facility cycle
-    :return: The investigations count
-    """
-    with InstrumentFacilityCycleInvestigationsCountQuery(
-        instrument_id, facility_cycle_id,
-    ) as query:
-        filter_handler = FilterOrderHandler()
-        filter_handler.add_filters(filters)
-        filter_handler.apply_filters(query)
-        return query.get_count()

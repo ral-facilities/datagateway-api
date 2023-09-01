@@ -39,8 +39,6 @@ class TestBackends:
         entity_type = "entity_type"
         filters = "filters"
         data = "data"
-        instrument_id = "instrument_id"
-        facilitycycle_id = "facilitycycle_id"
         id_ = "id_"
 
         assert d.ping() is None
@@ -56,27 +54,3 @@ class TestBackends:
         assert d.get_with_id(session_id, entity_type, id_) is None
         assert d.delete_with_id(session_id, entity_type, id_) is None
         assert d.update_with_id(session_id, entity_type, id_, data) is None
-        assert (
-            d.get_facility_cycles_for_instrument_with_filters(
-                session_id, instrument_id, filters,
-            )
-            is None
-        )
-        assert (
-            d.get_facility_cycles_for_instrument_count_with_filters(
-                session_id, instrument_id, filters,
-            )
-            is None
-        )
-        assert (
-            d.get_investigations_for_instrument_facility_cycle_with_filters(
-                session_id, instrument_id, facilitycycle_id, filters,
-            )
-            is None
-        )
-        assert (
-            d.get_investigation_count_instrument_facility_cycle_with_filters(
-                session_id, instrument_id, facilitycycle_id, filters,
-            )
-            is None
-        )

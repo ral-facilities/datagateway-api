@@ -45,31 +45,6 @@ class TestEndpointRules:
                 id="sessions",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}/instruments/<int:id_>"
-                f"/facilitycycles",
-                ["GET"],
-                id="ISIS instrument's facility cycles",
-            ),
-            pytest.param(
-                f"{Config.config.datagateway_api.extension}/instruments/<int:id_>"
-                f"/facilitycycles/count",
-                ["GET"],
-                id="count ISIS instrument's facility cycles",
-            ),
-            pytest.param(
-                f"{Config.config.datagateway_api.extension}/instruments"
-                "/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations",
-                ["GET"],
-                id="ISIS investigations",
-            ),
-            pytest.param(
-                f"{Config.config.datagateway_api.extension}/instruments"
-                "/<int:instrument_id>/facilitycycles/<int:cycle_id>/investigations"
-                "/count",
-                ["GET"],
-                id="count ISIS investigations",
-            ),
-            pytest.param(
                 f"{Config.config.search_api.extension}/Datasets",
                 ["GET"],
                 id="Search API search datasets",

@@ -119,7 +119,7 @@ class TestDBGetWithFilters:
             ),
         ],
     )
-    @pytest.mark.usefixtures("isis_specific_endpoint_data_db")
+    @pytest.mark.usefixtures("related_distinct_data_db")
     def test_valid_get_with_filters_related_distinct(
         self,
         flask_test_app_db,

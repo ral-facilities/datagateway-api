@@ -28,6 +28,11 @@ from datagateway_api.src.resources.non_entities.ping_endpoint import ping_endpoi
 from datagateway_api.src.resources.non_entities.sessions_endpoints import (
     session_endpoints,
 )
+from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
+from datagateway_api.src.swagger.initialise_spec import (
+    initialise_datagateway_api_spec,
+    initialise_search_api_spec,
+)
 
 if Config.config.search_api:
     from datagateway_api.src.resources.search_api_endpoints import (
@@ -37,17 +42,6 @@ if Config.config.search_api:
         get_search_endpoint,
         get_single_endpoint,
     )
-from datagateway_api.src.resources.table_endpoints.table_endpoints import (  # noqa: I202, B950
-    count_instrument_facility_cycles_endpoint,
-    count_instrument_investigation_endpoint,
-    instrument_facility_cycles_endpoint,
-    instrument_investigation_endpoint,
-)
-from datagateway_api.src.swagger.apispec_flask_restful import RestfulPlugin
-from datagateway_api.src.swagger.initialise_spec import (
-    initialise_datagateway_api_spec,
-    initialise_search_api_spec,
-)
 
 log = logging.getLogger()
 
@@ -231,49 +225,6 @@ def create_api_endpoints(flask_app, api, specs):
             endpoint="datagateway_sessions",
         )
         datagateway_api_spec.path(resource=session_endpoint_resource, api=api)
-
-        # Table specific endpoints
-        instrument_facility_cycle_resource = instrument_facility_cycles_endpoint(
-            backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(
-            instrument_facility_cycle_resource,
-            f"{datagateway_api_extension}/instruments/<int:id_>/facilitycycles",
-            endpoint="datagateway_isis_instrument_facility_cycle",
-        )
-        datagateway_api_spec.path(resource=instrument_facility_cycle_resource, api=api)
-
-        count_instrument_facility_cycle_res = count_instrument_facility_cycles_endpoint(
-            backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(
-            count_instrument_facility_cycle_res,
-            f"{datagateway_api_extension}/instruments/<int:id_>/facilitycycles/count",
-            endpoint="datagateway_isis_count_instrument_facility_cycle",
-        )
-        datagateway_api_spec.path(resource=count_instrument_facility_cycle_res, api=api)
-
-        instrument_investigation_resource = instrument_investigation_endpoint(
-            backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(
-            instrument_investigation_resource,
-            f"{datagateway_api_extension}/instruments/<int:instrument_id>"
-            f"/facilitycycles/<int:cycle_id>/investigations",
-            endpoint="datagateway_isis_instrument_investigation",
-        )
-        datagateway_api_spec.path(resource=instrument_investigation_resource, api=api)
-
-        count_instrument_investigation_res = count_instrument_investigation_endpoint(
-            backend, client_pool=icat_client_pool,
-        )
-        api.add_resource(
-            count_instrument_investigation_res,
-            f"{datagateway_api_extension}/instruments/<int:instrument_id>"
-            f"/facilitycycles/<int:cycle_id>/investigations/count",
-            endpoint="datagateway_isis_count_instrument_investigation",
-        )
-        datagateway_api_spec.path(resource=count_instrument_investigation_res, api=api)
 
         # Ping endpoint
         ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
