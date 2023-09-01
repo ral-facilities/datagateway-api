@@ -375,6 +375,32 @@ If using Python 3.10, please use Payara 5 on the ICAT stack which the API is bei
 pointed at. There is a known issue when making HTTPS connections to Payara (via Python
 ICAT).
 
+It is also possible to run the API inside Docker. The `Dockerfile` can be used to build
+a Docker image which in turn can be used to create a container. The `Dockerfile` is
+configured to create a production image and runs a Gunicorn serve on port `8000` when a
+container is started. Environment variables have also been defined in the `Dockerfile`
+to allow for values to be passed at runtime to future running containers. These values
+are used by the `docker/docker-entrypoint.sh` script to update the config values in the
+`config.yaml` file. The environment varialbes are:
+- `ICAT_URL` (Default value: `http://localhost`)
+- `ICAT_CHECK_CERT` (Default value: `false`)
+- `LOG_LOCATION` (Default value: `/dev/stdout`)
+
+To build an image, run:
+```bash
+docker build -t datagateway_api_image .
+```
+
+To start a container on port `8000` from the image that you just built, run:
+```bash
+docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image 
+```
+
+If you want to pass values for the environment variables then instead run:
+```bash
+docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true --env LOG_LOCATION=/datagateway-api-run/logs.log datagateway_api_image
+```
+
 ## DataGateway API Authentication
 
 Each request requires a valid session ID to be provided in the Authorization header.
