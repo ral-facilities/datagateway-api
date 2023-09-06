@@ -729,8 +729,9 @@ class DataPublicationDateGenerator(Generator):
             ),
         )
         data_publication_date.publication = self.client.get("DataPublication", i)
-        data_publication_date.date = (
-            data_publication_date.publication.publicationDate.date()
+        data_publication_date.date = faker.date_between(
+            start_date=datetime.datetime(2008, 1, 1),
+            end_date=datetime.datetime(2023, 1, 1),
         )
         data_publication_date.create()
 
