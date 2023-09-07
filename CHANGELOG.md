@@ -2,6 +2,25 @@
 
 
 
+## v9.0.1 (2023-09-07)
+
+### Ci
+
+* ci: fix Safety CI job
+
+- As ever, we&#39;re having to ignore these vulnerabilities as patched versions don&#39;t support Python 3.6 ([`04c3eaf`](https://github.com/ral-facilities/datagateway-api/commit/04c3eaf6a35466ad77d2b0551ca2b994be8ea040))
+
+### Fix
+
+* fix: Make `DataPublicationDate.date` to be different to `DataPublication.publicationDate` #444 ([`312c466`](https://github.com/ral-facilities/datagateway-api/commit/312c466030c0e12131fd575011da273c8b5a267c))
+
+### Unknown
+
+* Merge pull request #447 from ral-facilities/bugfix/data-publication-dates-#444
+
+ fix: #444 Generate publication dates between two specific dates ([`b21002e`](https://github.com/ral-facilities/datagateway-api/commit/b21002ee55d869a69f178267ff12368f428776c0))
+
+
 ## v9.0.0 (2023-09-01)
 
 ### Breaking
@@ -116,11 +135,19 @@ Signed-off-by: dependabot[bot] &lt;support@github.com&gt; ([`c07bf92`](https://g
 
 - This is no longer needed as Python ICAT 1.0 is now used, which doesn&#39;t require an older version of setuptools ([`bd0a1ad`](https://github.com/ral-facilities/datagateway-api/commit/bd0a1adec903326daa187204e0893b4f29220764))
 
+### Fix
+
+* fix: #444 Generate publication dates between two specific dates
+
+- This should stop relative generation causing different data to be generated on different days ([`7908c10`](https://github.com/ral-facilities/datagateway-api/commit/7908c10422ec859d9c923366731897ee859035f0))
+
 ### Unknown
 
 * Merge pull request #448 from ral-facilities/remove-isis-endpoints-#432
 
 feat!: Remove code and references to ISIS specific table endpoints ([`2825ea2`](https://github.com/ral-facilities/datagateway-api/commit/2825ea2fb3f3061dfe0ab7d6f02ed730691a4c32))
+
+* Merge branch &#39;main&#39; into bugfix/data-publication-dates-#444 ([`9916813`](https://github.com/ral-facilities/datagateway-api/commit/99168139fe01959740247abbfb26b88f0d82688e))
 
 * Merge branch &#39;main&#39; into remove-isis-endpoints-#432 ([`e667c78`](https://github.com/ral-facilities/datagateway-api/commit/e667c78508e9a4532a3b4654aa15aa94d0947e61))
 
