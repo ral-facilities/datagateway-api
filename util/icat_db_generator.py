@@ -673,7 +673,10 @@ class DataPublicationGenerator(Generator):
         data_publication.title = faker.text()
         data_publication.description = faker.text()
         data_publication.pid = faker.isbn10(separator="-")
-        data_publication.publicationDate = faker.date_between(start_date="-15y")
+        data_publication.publicationDate = faker.date_between(
+            start_date=datetime.datetime(2008, 1, 1),
+            end_date=datetime.datetime(2023, 1, 1),
+        )
         data_publication.subject = faker.words()
         data_publication.facility = self.client.get("Facility", 1)
         data_publication.content = self.client.get(
@@ -725,8 +728,11 @@ class DataPublicationDateGenerator(Generator):
                 "Valid",
             ),
         )
-        data_publication_date.date = faker.date_between(start_date="-15y")
         data_publication_date.publication = self.client.get("DataPublication", i)
+        data_publication_date.date = faker.date_between(
+            start_date=datetime.datetime(2008, 1, 1),
+            end_date=datetime.datetime(2023, 1, 1),
+        )
         data_publication_date.create()
 
 
