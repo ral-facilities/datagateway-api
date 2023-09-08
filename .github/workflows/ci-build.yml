@@ -83,6 +83,10 @@ jobs:
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
 
+      - name: Run tmate
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ always() }}
+
       # Prep for running the playbook
       - name: Create hosts file
         run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
