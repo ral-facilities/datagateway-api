@@ -17,12 +17,6 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
 
-      # Setup Java & Python
-      - name: Setup Java
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3.12.0
-        with:
-          distribution: 'temurin'
-          java-version: 8
       - name: Setup Python
         uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
         with:
@@ -221,12 +215,6 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
 
-      # Setup Java & Python
-      - name: Setup Java
-        uses: actions/setup-java@cd89f46ac9d01407894225f350157564c9c7cee2 # v3.12.0
-        with:
-          distribution: 'temurin'
-          java-version: 8
       - name: Setup Python
         uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
         with:
