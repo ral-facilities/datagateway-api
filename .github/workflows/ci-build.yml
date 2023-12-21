@@ -362,7 +362,7 @@ jobs:
         run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
 
   pip-install-test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
