@@ -408,18 +408,6 @@ jobs:
       - name: Start API
         run: timeout 10 python -m datagateway_api.src.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: always()
-
-  test-job:
-    runs-on: ubuntu-22.04
-    name: Test Job
-    steps:
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
-
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
