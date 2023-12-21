@@ -397,9 +397,11 @@ jobs:
           '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
       - name: Create config.yaml
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      # These sections are removed so the API doesn't try to (and fail) to connect to an ICAT stack on startup
+      - name: Remove DataGateway API and Search API sections from config
+        run: yq -i 'del(.datagateway_api, .search_api)' datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-
 
       # Launch API to see if it starts correctly or has a startup issue
       # Code logic used from https://stackoverflow.com/a/63643845
