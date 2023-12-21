@@ -361,6 +361,30 @@ jobs:
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
 
+  pip-install-test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+    name: Pip Install ${{ matrix.python-version }} Test
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.5.3
+  
+      - name: Setup Python
+        uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+      
+      - name: Install DataGateway API via pip
+        run: pip install .
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
+
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
