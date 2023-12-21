@@ -384,6 +384,13 @@ jobs:
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
 
+  test-job:
+    runs-on: ubuntu-22.04
+    name: Test Job
+    steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
 
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
