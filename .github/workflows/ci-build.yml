@@ -361,11 +361,58 @@ jobs:
       - name: Diff SQL dumps
         run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
 
+  pip-install-testing:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9", "3.10"]
+    name: Pip Install ${{ matrix.python-version }} Test
+    steps:
+      # Checkout DataGateway API and setup Python
+      - name: Check out repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.5.3
+      - name: Setup Python
+        uses: actions/setup-python@61a6322f88396a6271a6ee3565807d608ecaddd1 # v4.7.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      # Create virtual environment and install DataGateway API
+      - name: Create and activate virtual environment
+        run: |
+          python3 -m venv dg-api-venv
+          source dg-api-venv/bin/activate
+      - name: Install DataGateway API via pip
+        run: pip install .
+
+      # Prep for using the API for tests
+      - name: Create log file
+        run: touch logs.log
+      - name: Configure log file location
+        run: echo "`yq \
+          '.log_location="${GITHUB_WORKSPACE}/logs.log"' datagateway_api/config.yaml.example | envsubst`" > datagateway_api/config.yaml.example
+      - name: Configure datagateway extension
+        run: echo "`yq \
+          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+      - name: Create config.yaml
+        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      # These sections are removed so the API doesn't try to (and fail) to connect to an ICAT stack on startup
+      - name: Remove DataGateway API and Search API sections from config
+        run: yq -i 'del(.datagateway_api, .search_api)' datagateway_api/config.yaml
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+
+      # Launch API to see if it starts correctly or has a startup issue
+      # Code logic used from https://stackoverflow.com/a/63643845
+      - name: Start API
+        run: timeout 10 python -m datagateway_api.src.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
     # pushed to the main branch.
-    needs: [tests, linting, formatting, safety, generator-script-testing]
+    needs: [tests, linting, formatting, safety, generator-script-testing, pip-install-testing]
     name: Docker
     runs-on: ubuntu-20.04
     steps:
