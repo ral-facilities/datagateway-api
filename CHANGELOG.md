@@ -2,6 +2,29 @@
 
 
 
+## v9.0.2 (2024-01-04)
+
+### Ci
+
+* ci: Ignore Safety vulnerabilities #467
+
+- As normal, we can&#39;t upgrade because all patched versions have dropped support for Python 3.6 ([`05b3e13`](https://github.com/ral-facilities/datagateway-api/commit/05b3e13c64fef1913b5cc15ba9d32fe112f322a6))
+
+* ci: Add job to test that the API can be installed via Pip #467 ([`8c2258d`](https://github.com/ral-facilities/datagateway-api/commit/8c2258d3c9abe2ba149a893b335465efa67cb6e5))
+
+### Fix
+
+* fix: Pin Flask to 2.0.3 in `pyproject.toml` #467
+
+- This will ensure this version is used when the API is installed via Pip ([`50dd13c`](https://github.com/ral-facilities/datagateway-api/commit/50dd13cdde39fbddd04a2504578d3ecf57cb5f33))
+
+### Unknown
+
+* Merge pull request #468 from ral-facilities/pip-install-#467
+
+Fix Pip Install Issues ([`2d7736f`](https://github.com/ral-facilities/datagateway-api/commit/2d7736f7300ae0640772b57333638a2d3a962e34))
+
+
 ## v9.0.1 (2023-09-07)
 
 ### Ci
