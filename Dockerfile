@@ -34,8 +34,14 @@ RUN --mount=type=cache,target=/root/.cache \
     ln -s "$DATAGATEWAY_API_LOCATION/datagateway_api/" datagateway_api; \
     \
     # Create config.yaml and search_api_mapping.json from their .example files \
-    cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
-    cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
+    #cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
+    #cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json;
+
+# Copy config.yaml that has the search_api section removed
+COPY docker/config.yaml datagateway_api/config.yaml
+
+RUN --mount=type=cache,target=/root/.cache \
+    set -eux; \
     \
     # Create a non-root user to run as \
     addgroup -S datagateway-api; \
