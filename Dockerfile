@@ -31,8 +31,8 @@ RUN --mount=type=cache,target=/root/.cache \
     \
     # Create a symlink to the installed python module \
     DATAGATEWAY_API_LOCATION="$(python3 -m pip show datagateway_api | awk '/^Location:/ { print $2 }')"; \
-    ln -s "$DATAGATEWAY_API_LOCATION/datagateway_api/" datagateway_api; \
-    \
+    ln -s "$DATAGATEWAY_API_LOCATION/datagateway_api/" datagateway_api;
+    #\
     # Create config.yaml and search_api_mapping.json from their .example files \
     #cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
     #cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json;
