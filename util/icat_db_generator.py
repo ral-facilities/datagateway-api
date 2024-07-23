@@ -962,8 +962,6 @@ class DatafileGenerator(Generator):
         datafile.description = faker.text()
         datafile.doi = faker.isbn10(separator="-")
         datafile.checksum = faker.md5()
-        datafile.datafileCreateTime = datafile.createTime
-        datafile.datafileModTime = datafile.modTime
         datafile.fileSize = faker.random_int(123, 213123121)
         datafile.datafileFormat = cls.client.get(
             "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1),
@@ -973,7 +971,14 @@ class DatafileGenerator(Generator):
         )
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
+        
         datafile.create()
+        
+        datafile.get()
+        datafile.datafileCreateTime = datafile.createTime
+        datafile.datafileModTime = datafile.modTime
+        
+        datafile.update()
 
 
 class PermissibleStringValueGenerator(Generator):
