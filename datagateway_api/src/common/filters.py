@@ -39,6 +39,9 @@ class WhereFilter(QueryFilter):
                     "must contain two values e.g. [1, 2]",
                 )
 
+    def __repr__(self):
+        return f"Field: {self.field}, Operation: {self.operation}, Value: {self.value}"
+
 
 class DistinctFieldFilter(QueryFilter):
     precedence = 0
