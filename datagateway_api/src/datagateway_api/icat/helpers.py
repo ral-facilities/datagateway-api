@@ -13,6 +13,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
     AuthenticationError,
@@ -25,8 +26,12 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
 from datagateway_api.src.datagateway_api.icat.lru_cache import ExtendedLRUCache
 from datagateway_api.src.datagateway_api.icat.query import ICATQuery
+from datagateway_api.src.datagateway_api.icat.reader_query_handler import (
+    ReaderQueryHandler,
+)
 
 log = logging.getLogger()
 
@@ -298,15 +303,7 @@ def get_entity_with_filters(client, entity_type, filters):
         result of the query
     """
     log.info("Getting entity using request's filters")
-
-    query = ICATQuery(client, entity_type)
-
-    filter_handler = FilterOrderHandler()
-    filter_handler.manage_icat_filters(filters, query.query)
-
-    data = query.execute_query(client, True)
-
-    return data
+    return get_data_with_filters(client, entity_type, filters)
 
 
 def get_count_with_filters(client, entity_type, filters):
@@ -329,15 +326,52 @@ def get_count_with_filters(client, entity_type, filters):
         entity_type,
     )
 
-    query = ICATQuery(client, entity_type, aggregate="COUNT")
+    data = get_data_with_filters(client, entity_type, filters, aggregate="COUNT")
+    # Only ever 1 element in a count query result
+    return data[0]
+
+
+def get_data_with_filters(client, entity_type, filters, aggregate=None):
+    reader_query = ReaderQueryHandler(entity_type, filters)
+    if reader_query.is_query_eligible_for_reader_performance():
+        log.info("Query is eligible to be passed as reader acount")
+        if reader_query.is_user_authorised_to_see_entity_id(client):
+            # TODO - make reader client reuseable
+            reader_client = ICATClient("datagateway_api")
+            reader_config = Config.config.datagateway_api.use_reader_for_performance
+            login_credentals = {
+                "username": reader_config.reader_username,
+                "password": reader_config.reader_password,
+            }
+            reader_client.login(reader_config.reader_mechanism, login_credentals)
+            log.info("Query to be executed as reader account")
+            return execute_entity_query(
+                reader_client, entity_type, filters, aggregate=aggregate,
+            )
+        else:
+            raise AuthenticationError(
+                "Not authorised to access the"
+                f" {ReaderQueryHandler.entity_filter_check[entity_type]}"
+                " you have filtered on",
+            )
+    else:
+        log.info("Query to be executed as user from request: %s", client.getUserName())
+        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+
+
+def execute_entity_query(client, entity_type, filters, aggregate=None):
+    query = ICATQuery(client, entity_type, aggregate=aggregate)
 
     filter_handler = FilterOrderHandler()
     filter_handler.manage_icat_filters(filters, query.query)
 
-    data = query.execute_query(client, True)
-
-    # Only ever 1 element in a count query result
-    return data[0]
+    log.debug(
+        "Query on entity '%s' (aggregate: %s), executed as user: %s",
+        entity_type,
+        aggregate,
+        client.getUserName(),
+    )
+    return query.execute_query(client, True)
 
 
 def get_first_result_with_filters(client, entity_type, filters):
