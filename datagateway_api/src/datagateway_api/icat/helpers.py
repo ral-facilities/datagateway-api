@@ -289,7 +289,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     return get_entity_by_id(client, entity_type, id_, True)
 
 
-def get_entity_with_filters(client, entity_type, filters):
+def get_entity_with_filters(client, entity_type, filters, client_pool=None):
     """
     Gets all the records of a given entity, based on the filters provided in the request
 
@@ -303,10 +303,10 @@ def get_entity_with_filters(client, entity_type, filters):
         result of the query
     """
     log.info("Getting entity using request's filters")
-    return get_data_with_filters(client, entity_type, filters)
+    return get_data_with_filters(client, entity_type, filters, client_pool=client_pool)
 
 
-def get_count_with_filters(client, entity_type, filters):
+def get_count_with_filters(client, entity_type, filters, client_pool=None):
     """
     Get the number of results of a given entity, based on the filters provided in the
     request. This acts very much like `get_entity_with_filters()` but returns the number
@@ -326,18 +326,25 @@ def get_count_with_filters(client, entity_type, filters):
         entity_type,
     )
 
-    data = get_data_with_filters(client, entity_type, filters, aggregate="COUNT")
+    data = get_data_with_filters(
+        client, entity_type, filters, aggregate="COUNT", client_pool=client_pool,
+    )
     # Only ever 1 element in a count query result
     return data[0]
 
 
-def get_data_with_filters(client, entity_type, filters, aggregate=None):
+def get_data_with_filters(
+    client, entity_type, filters, aggregate=None, client_pool=None,
+):
     reader_query = ReaderQueryHandler(entity_type, filters)
     if reader_query.is_query_eligible_for_reader_performance():
         log.info("Query is eligible to be passed as reader acount")
         if reader_query.is_user_authorised_to_see_entity_id(client):
             # TODO - make reader client reuseable
-            reader_client = ICATClient("datagateway_api")
+            if client_pool:
+                reader_client = get_cached_client(None, client_pool)
+            else:
+                reader_client = ICATClient("datagateway_api")
             reader_config = Config.config.datagateway_api.use_reader_for_performance
             login_credentals = {
                 "username": reader_config.reader_username,
