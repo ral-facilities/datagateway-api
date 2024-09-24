@@ -63,7 +63,10 @@ class ReaderQueryHandler:
             ReaderQueryHandler.entity_filter_check[self.entity_type],
             self.where_filter_entity_id,
         )
-        access_query = ICATQuery(client, self.entity_type)
+        access_query = ICATQuery(
+            client,
+            ReaderQueryHandler.entity_type_check[self.entity_type],
+        )
         id_check = PythonICATWhereFilter("id", self.where_filter_entity_id, "eq")
         access_filter_handler = FilterOrderHandler()
         access_filter_handler.manage_icat_filters([id_check], access_query.query)
