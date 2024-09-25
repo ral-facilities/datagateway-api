@@ -3,6 +3,7 @@ import logging
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
 from datagateway_api.src.datagateway_api.icat.query import ICATQuery
 
 log = logging.getLogger()
@@ -13,6 +14,8 @@ class ReaderQueryHandler:
     # TODO - add docstrings
     entity_filter_check = {"Datafile": "dataset.id", "Dataset": "investigation.id"}
     entity_type_check = {"Datafile": "Dataset", "Dataset": "Investigation"}
+    # keep a cached reader_client for faster queries
+    reader_client = None
 
     def __init__(self, entity_type, filters):
         self.entity_type = entity_type
@@ -22,6 +25,21 @@ class ReaderQueryHandler:
             self.entity_type,
         )
         self.reader_query_eligible = self.check_eligibility()
+        self.create_reader_client()
+
+    def create_reader_client(self):
+        log.info("Creating reader_client")
+        ReaderQueryHandler.reader_client = ICATClient("datagateway_api")
+        reader_config = Config.config.datagateway_api.use_reader_for_performance
+        login_credentals = {
+            "username": reader_config.reader_username,
+            "password": reader_config.reader_password,
+        }
+        ReaderQueryHandler.reader_client.login(
+            reader_config.reader_mechanism,
+            login_credentals,
+        )
+        return ReaderQueryHandler.reader_client
 
     def check_eligibility(self):
         reader_config = Config.config.datagateway_api.use_reader_for_performance
