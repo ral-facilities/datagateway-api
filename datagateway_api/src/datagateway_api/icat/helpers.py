@@ -13,7 +13,6 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
     AuthenticationError,
@@ -26,7 +25,6 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
 from datagateway_api.src.datagateway_api.icat.lru_cache import ExtendedLRUCache
 from datagateway_api.src.datagateway_api.icat.query import ICATQuery
 from datagateway_api.src.datagateway_api.icat.reader_query_handler import (
