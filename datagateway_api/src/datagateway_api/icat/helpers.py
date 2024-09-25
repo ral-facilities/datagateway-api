@@ -340,21 +340,19 @@ def get_data_with_filters(
     if reader_query.is_query_eligible_for_reader_performance():
         log.info("Query is eligible to be passed as reader acount")
         if reader_query.is_user_authorised_to_see_entity_id(client):
-            # TODO - make reader client reuseable
-            if client_pool:
-                reader_client = get_cached_client(None, client_pool)
-            else:
-                reader_client = ICATClient("datagateway_api")
-            reader_config = Config.config.datagateway_api.use_reader_for_performance
-            login_credentals = {
-                "username": reader_config.reader_username,
-                "password": reader_config.reader_password,
-            }
-            reader_client.login(reader_config.reader_mechanism, login_credentals)
+            reader_client = ReaderQueryHandler.reader_client
             log.info("Query to be executed as reader account")
-            return execute_entity_query(
-                reader_client, entity_type, filters, aggregate=aggregate,
-            )
+            try:
+                results = execute_entity_query(
+                    reader_client, entity_type, filters, aggregate=aggregate,
+                )
+            except ICATSessionError:
+                # re-login as reader and try the query again
+                reader_client = reader_query.create_reader_client()
+                results = execute_entity_query(
+                    reader_client, entity_type, filters, aggregate=aggregate,
+                )
+            return results
         else:
             raise AuthenticationError(
                 "Not authorised to access the"
