@@ -43,12 +43,6 @@ class ReaderQueryHandler:
         return ReaderQueryHandler.reader_client
 
     def check_eligibility(self):
-        reader_config = Config.config.datagateway_api.use_reader_for_performance
-        if not reader_config:
-            return False
-        if not reader_config.enabled:
-            return False
-
         log.info("Checking whether query is eligible to go via reader account")
         if self.entity_type in ReaderQueryHandler.entity_filter_check.keys():
             if self.get_where_filter_for_entity_id_check():
