@@ -25,7 +25,8 @@ class ReaderQueryHandler:
             self.entity_type,
         )
         self.reader_query_eligible = self.check_eligibility()
-        self.create_reader_client()
+        if not ReaderQueryHandler.reader_client:
+            self.create_reader_client()
 
     def create_reader_client(self):
         log.info("Creating reader_client")
