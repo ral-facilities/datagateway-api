@@ -4,7 +4,6 @@ import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
-from datagateway_api.src.common.config import Config
 from icat.exception import (
     ICATInternalError,
     ICATNoObjectError,
@@ -14,6 +13,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
     AuthenticationError,
@@ -386,7 +386,7 @@ def execute_entity_query(client, entity_type, filters, aggregate=None):
 
 def is_use_reader_for_performance_enabled():
     """
-    Returns true is the 'use_reader_for_performance' section is present in the 
+    Returns true is the 'use_reader_for_performance' section is present in the
     config file and 'enabled' in that section is set to true
     """
     reader_config = Config.config.datagateway_api.use_reader_for_performance
