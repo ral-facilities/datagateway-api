@@ -4,6 +4,7 @@ import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
+from datagateway_api.src.common.config import Config
 from icat.exception import (
     ICATInternalError,
     ICATNoObjectError,
@@ -334,6 +335,12 @@ def get_count_with_filters(client, entity_type, filters, client_pool=None):
 def get_data_with_filters(
     client, entity_type, filters, aggregate=None, client_pool=None,
 ):
+    if not is_use_reader_for_performance_enabled():
+        # just execute the query as normal
+        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+
+    # otherwise see if this query is eligible to benefit from running
+    # faster using the reader account
     reader_query = ReaderQueryHandler(entity_type, filters)
     if reader_query.is_query_eligible_for_reader_performance():
         log.info("Query is eligible to be passed as reader acount")
@@ -375,6 +382,20 @@ def execute_entity_query(client, entity_type, filters, aggregate=None):
         client.getUserName(),
     )
     return query.execute_query(client, True)
+
+
+def is_use_reader_for_performance_enabled():
+    """
+    Returns true is the 'use_reader_for_performance' section is present in the 
+    config file and 'enabled' in that section is set to true
+    """
+    reader_config = Config.config.datagateway_api.use_reader_for_performance
+    if not reader_config:
+        return False
+    if not reader_config.enabled:
+        return False
+
+    return True
 
 
 def get_first_result_with_filters(client, entity_type, filters):
