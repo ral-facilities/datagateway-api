@@ -88,9 +88,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def get_with_filters(self, session_id, entity_type, filters, **kwargs):
-        return get_entity_with_filters(
-            kwargs.get("client"), entity_type, filters, kwargs.get("client_pool"),
-        )
+        return get_entity_with_filters(kwargs.get("client"), entity_type, filters)
 
     @requires_session_id
     @queries_records
@@ -110,9 +108,7 @@ class PythonICATBackend(Backend):
     @requires_session_id
     @queries_records
     def count_with_filters(self, session_id, entity_type, filters, **kwargs):
-        return get_count_with_filters(
-            kwargs.get("client"), entity_type, filters, kwargs.get("client_pool"),
-        )
+        return get_count_with_filters(kwargs.get("client"), entity_type, filters)
 
     @requires_session_id
     @queries_records

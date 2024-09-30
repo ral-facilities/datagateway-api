@@ -288,7 +288,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     return get_entity_by_id(client, entity_type, id_, True)
 
 
-def get_entity_with_filters(client, entity_type, filters, client_pool=None):
+def get_entity_with_filters(client, entity_type, filters):
     """
     Gets all the records of a given entity, based on the filters provided in the request
 
@@ -302,10 +302,10 @@ def get_entity_with_filters(client, entity_type, filters, client_pool=None):
         result of the query
     """
     log.info("Getting entity using request's filters")
-    return get_data_with_filters(client, entity_type, filters, client_pool=client_pool)
+    return get_data_with_filters(client, entity_type, filters)
 
 
-def get_count_with_filters(client, entity_type, filters, client_pool=None):
+def get_count_with_filters(client, entity_type, filters):
     """
     Get the number of results of a given entity, based on the filters provided in the
     request. This acts very much like `get_entity_with_filters()` but returns the number
@@ -325,16 +325,24 @@ def get_count_with_filters(client, entity_type, filters, client_pool=None):
         entity_type,
     )
 
-    data = get_data_with_filters(
-        client, entity_type, filters, aggregate="COUNT", client_pool=client_pool,
-    )
+    data = get_data_with_filters(client, entity_type, filters, aggregate="COUNT")
     # Only ever 1 element in a count query result
     return data[0]
 
 
-def get_data_with_filters(
-    client, entity_type, filters, aggregate=None, client_pool=None,
-):
+def get_data_with_filters(client, entity_type, filters, aggregate=None):
+    """
+    Gets all the records of a given entity, based on the filters and an optional
+    aggregate provided in the request. This function is called by
+    `get_entity_with_filters()` and `get_count_with_filters()` that deal with GET entity
+    and GET /count entity endpoints respectively
+
+    This function uses the reader performance query functionality IF it is enabled in
+    the config. Checks are done to see whether this functionality has been enabled and
+    whether the query is suitable to be completed with the reader account. There are
+    more details about the inner workings in ReaderQueryHandler
+    """
+
     if not is_use_reader_for_performance_enabled():
         # just execute the query as normal
         return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
@@ -370,6 +378,11 @@ def get_data_with_filters(
 
 
 def execute_entity_query(client, entity_type, filters, aggregate=None):
+    """
+    Assemble a query object with the user's query filters and execute the query by
+    passing it to ICAT, returning them in this function
+    """
+
     query = ICATQuery(client, entity_type, aggregate=aggregate)
 
     filter_handler = FilterOrderHandler()
@@ -384,7 +397,7 @@ def execute_entity_query(client, entity_type, filters, aggregate=None):
     return query.execute_query(client, True)
 
 
-def is_use_reader_for_performance_enabled():
+def is_use_reader_for_performance_enabled() -> bool:
     """
     Returns true is the 'use_reader_for_performance' section is present in the
     config file and 'enabled' in that section is set to true
