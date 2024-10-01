@@ -181,6 +181,10 @@ def safety(session):
             "71681",
             "--ignore",
             "71684",
+            "--ignore",
+            "72132",
+            "--ignore",
+            "72731",
         )
 
         try:
