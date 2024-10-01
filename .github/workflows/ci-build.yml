@@ -142,10 +142,13 @@ jobs:
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
 
+      - name: tmate session
+        uses: mxschmitt/action-tmate@v3
+
       # See comment in noxfile.py for explanation regarding this step
-      - name: Downgrade setuptools
-        run: pip install --upgrade setuptools==70.0.0
-        if: matrix.python-version == '3.8' || matrix.python-version == '3.9' || matrix.python-version == '3.10'
+      #- name: Downgrade setuptools
+      #  run: pip install --upgrade setuptools==70.0.0
+      #  if: matrix.python-version == '3.8' || matrix.python-version == '3.9' || matrix.python-version == '3.10'
       - name: Install dependencies
         run: poetry install
 
