@@ -138,6 +138,10 @@ jobs:
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
+       # See comment in noxfile.py for explanation regarding this step
+      - name: Downgrade setuptools
+        run: poetry run pip install --upgrade setuptools==70.0.0
+        if: matrix.python-version == '3.8' || matrix.python-version == '3.9' || matrix.python-version == '3.10'
       - name: Install dependencies
         run: poetry install
 
@@ -284,6 +288,9 @@ jobs:
       - name: Install Requests
         run: pip install 'requests<2.30'
 
+      # See comment in noxfile.py for explanation regarding this step
+      - name: Downgrade setuptools
+        run: poetry run pip install --upgrade setuptools==70.0.0
       - name: Install dependencies
         run: poetry install
 
@@ -339,6 +346,9 @@ jobs:
       - name: Create search_api_mapping.json
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
+      # See comment in noxfile.py for explanation regarding this step
+      - name: Downgrade setuptools
+        run: poetry run pip install --upgrade setuptools==70.0.0
       - name: Install dependencies
         run: poetry install
 
