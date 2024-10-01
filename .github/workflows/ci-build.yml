@@ -65,6 +65,9 @@ jobs:
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
 
+      - name: tmate session
+        uses: mxschmitt/action-tmate@v3
+
       # Run Unit tests
       - name: Run Nox unit tests session
         run: nox -p ${{ matrix.python-version }} -s unit_tests -- --cov=datagateway_api --cov-report=xml
