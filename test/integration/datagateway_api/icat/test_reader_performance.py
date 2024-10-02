@@ -58,8 +58,13 @@ class TestReaderPerformance:
             ),
         ],
     )
+    @patch(
+        "datagateway_api.src.common.config.Config.config.datagateway_api"
+        ".use_reader_for_performance.enabled",
+        return_value=True,
+    )
     def test_eligbility(
-        self, test_entity_type, test_query_filters, expected_eligbility,
+        self, _, test_entity_type, test_query_filters, expected_eligbility,
     ):
         reader_performance_enabled = is_use_reader_for_performance_enabled()
         assert reader_performance_enabled
@@ -105,7 +110,12 @@ class TestReaderPerformance:
         assert is_authorised == expected_authorisation
 
     @patch("datagateway_api.src.datagateway_api.icat.helpers.execute_entity_query")
-    def test_execute_query_as_reader(self, mock_execute_entity_query, icat_client):
+    @patch(
+        "datagateway_api.src.common.config.Config.config.datagateway_api"
+        ".use_reader_for_performance.enabled",
+        return_value=True,
+    )
+    def test_execute_query_as_reader(self, _, mock_execute_entity_query, icat_client):
         get_data_with_filters(
             icat_client, "Datafile", [PythonICATWhereFilter("dataset.id", 3, "eq")],
         )
