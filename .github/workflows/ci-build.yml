@@ -430,7 +430,7 @@ jobs:
       uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v3.5.3
 
     - name: Login to Harbor
-      uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+      uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
       with:
         registry: harbor.stfc.ac.uk/datagateway
         username: ${{ secrets.HARBOR_USERNAME }}
