@@ -8,6 +8,11 @@ datagateway_api:
   db_url: "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb"
   icat_url: "https://localhost:8181"
   icat_check_cert: false
+  use_reader_for_performance:
+    enabled: false
+    reader_mechanism: simple
+    reader_username: reader
+    reader_password: readerpw
 search_api:
   extension: "/search-api"
   icat_url: "https://localhost:8181"

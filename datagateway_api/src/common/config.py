@@ -38,6 +38,13 @@ def validate_extension(extension):
     return extension
 
 
+class UseReaderForPerformance(BaseModel):
+    enabled: StrictBool
+    reader_mechanism: StrictStr
+    reader_username: StrictStr
+    reader_password: StrictStr
+
+
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
@@ -54,6 +61,7 @@ class DataGatewayAPI(BaseModel):
     extension: StrictStr
     icat_check_cert: Optional[StrictBool]
     icat_url: Optional[StrictStr]
+    use_reader_for_performance: Optional[UseReaderForPerformance]
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 

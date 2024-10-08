@@ -114,7 +114,7 @@ python-versions = "~=3.5"
 
 [[package]]
 name = "certifi"
-version = "2023.11.17"
+version = "2024.8.30"
 description = "Python package for providing Mozilla's CA Bundle."
 category = "main"
 optional = false
@@ -426,7 +426,7 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "flask-cors"
-version = "4.0.1"
+version = "4.0.2"
 description = "A Flask extension adding a decorator for CORS support"
 category = "main"
 optional = false
@@ -1341,8 +1341,8 @@ cachetools = [
     {file = "cachetools-4.2.4.tar.gz", hash = "sha256:89ea6f1b638d5a73a4f9226be57ac5e4f399d22770b92355f92dcb0f7f001693"},
 ]
 certifi = [
-    {file = "certifi-2023.11.17-py3-none-any.whl", hash = "sha256:e036ab49d5b79556f99cfc2d9320b34cfbe5be05c5871b51de9329f0603b0474"},
-    {file = "certifi-2023.11.17.tar.gz", hash = "sha256:9b469f3a900bf28dc19b8cfbf8019bf47f7fdd1a65a1d4ffb98fc14166beb4d1"},
+    {file = "certifi-2024.8.30-py3-none-any.whl", hash = "sha256:922820b53db7a7257ffbda3f597266d435245903d80737e34f8a45ff3e3230d8"},
+    {file = "certifi-2024.8.30.tar.gz", hash = "sha256:bec941d2aa8195e248a60b31ff9f0558284cf01a52591ceda73ea9afffd69fd9"},
 ]
 cffi = [
     {file = "cffi-1.15.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:a66d3508133af6e8548451b25058d5812812ec3798c886bf38ed24a98216fab2"},
@@ -1572,8 +1572,8 @@ flask = [
     {file = "Flask-2.0.3.tar.gz", hash = "sha256:e1120c228ca2f553b470df4a5fa927ab66258467526069981b3eb0a91902687d"},
 ]
 flask-cors = [
-    {file = "Flask_Cors-4.0.1-py2.py3-none-any.whl", hash = "sha256:f2a704e4458665580c074b714c4627dd5a306b333deb9074d0b1794dfa2fb677"},
-    {file = "flask_cors-4.0.1.tar.gz", hash = "sha256:eeb69b342142fdbf4766ad99357a7f3876a2ceb77689dc10ff912aac06c389e4"},
+    {file = "Flask_Cors-4.0.2-py2.py3-none-any.whl", hash = "sha256:38364faf1a7a5d0a55bd1d2e2f83ee9e359039182f5e6a029557e1f56d92c09a"},
+    {file = "flask_cors-4.0.2.tar.gz", hash = "sha256:493b98e2d1e2f1a4720a7af25693ef2fe32fbafec09a2f72c59f3e475eda61d2"},
 ]
 flask-restful = [
     {file = "Flask-RESTful-0.3.10.tar.gz", hash = "sha256:fe4af2ef0027df8f9b4f797aba20c5566801b6ade995ac63b588abf1a59cec37"},

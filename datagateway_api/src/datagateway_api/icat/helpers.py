@@ -13,6 +13,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
+from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
     AuthenticationError,
@@ -27,6 +28,9 @@ from datagateway_api.src.datagateway_api.icat.filters import (
 )
 from datagateway_api.src.datagateway_api.icat.lru_cache import ExtendedLRUCache
 from datagateway_api.src.datagateway_api.icat.query import ICATQuery
+from datagateway_api.src.datagateway_api.icat.reader_query_handler import (
+    ReaderQueryHandler,
+)
 
 log = logging.getLogger()
 
@@ -298,15 +302,7 @@ def get_entity_with_filters(client, entity_type, filters):
         result of the query
     """
     log.info("Getting entity using request's filters")
-
-    query = ICATQuery(client, entity_type)
-
-    filter_handler = FilterOrderHandler()
-    filter_handler.manage_icat_filters(filters, query.query)
-
-    data = query.execute_query(client, True)
-
-    return data
+    return get_data_with_filters(client, entity_type, filters)
 
 
 def get_count_with_filters(client, entity_type, filters):
@@ -329,15 +325,90 @@ def get_count_with_filters(client, entity_type, filters):
         entity_type,
     )
 
-    query = ICATQuery(client, entity_type, aggregate="COUNT")
+    data = get_data_with_filters(client, entity_type, filters, aggregate="COUNT")
+    # Only ever 1 element in a count query result
+    return data[0]
+
+
+def get_data_with_filters(client, entity_type, filters, aggregate=None):
+    """
+    Gets all the records of a given entity, based on the filters and an optional
+    aggregate provided in the request. This function is called by
+    `get_entity_with_filters()` and `get_count_with_filters()` that deal with GET entity
+    and GET /count entity endpoints respectively
+
+    This function uses the reader performance query functionality IF it is enabled in
+    the config. Checks are done to see whether this functionality has been enabled and
+    whether the query is suitable to be completed with the reader account. There are
+    more details about the inner workings in ReaderQueryHandler
+    """
+
+    if not is_use_reader_for_performance_enabled():
+        # just execute the query as normal
+        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+
+    # otherwise see if this query is eligible to benefit from running
+    # faster using the reader account
+    reader_query = ReaderQueryHandler(entity_type, filters)
+    if reader_query.is_query_eligible_for_reader_performance():
+        log.info("Query is eligible to be passed as reader acount")
+        if reader_query.is_user_authorised_to_see_entity_id(client):
+            reader_client = ReaderQueryHandler.reader_client
+            log.info("Query to be executed as reader account")
+            try:
+                results = execute_entity_query(
+                    reader_client, entity_type, filters, aggregate=aggregate,
+                )
+            except ICATSessionError:
+                # re-login as reader and try the query again
+                reader_client = reader_query.create_reader_client()
+                results = execute_entity_query(
+                    reader_client, entity_type, filters, aggregate=aggregate,
+                )
+            return results
+        else:
+            raise AuthenticationError(
+                "Not authorised to access the"
+                f" {ReaderQueryHandler.entity_filter_check[entity_type]}"
+                " you have filtered on",
+            )
+    else:
+        log.info("Query to be executed as user from request: %s", client.getUserName())
+        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+
+
+def execute_entity_query(client, entity_type, filters, aggregate=None):
+    """
+    Assemble a query object with the user's query filters and execute the query by
+    passing it to ICAT, returning them in this function
+    """
+
+    query = ICATQuery(client, entity_type, aggregate=aggregate)
 
     filter_handler = FilterOrderHandler()
     filter_handler.manage_icat_filters(filters, query.query)
 
-    data = query.execute_query(client, True)
+    log.debug(
+        "Query on entity '%s' (aggregate: %s), executed as user: %s",
+        entity_type,
+        aggregate,
+        client.getUserName(),
+    )
+    return query.execute_query(client, True)
 
-    # Only ever 1 element in a count query result
-    return data[0]
+
+def is_use_reader_for_performance_enabled() -> bool:
+    """
+    Returns true is the 'use_reader_for_performance' section is present in the
+    config file and 'enabled' in that section is set to true
+    """
+    reader_config = Config.config.datagateway_api.use_reader_for_performance
+    if not reader_config:
+        return False
+    if not reader_config.enabled:
+        return False
+
+    return True
 
 
 def get_first_result_with_filters(client, entity_type, filters):
