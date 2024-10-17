@@ -675,6 +675,8 @@ to be slow to start as the pool of object needs to be created. A rough guide wou
 multiply the configured initial pool size by around 5 or 6 seconds to get a time
 estimate for pool creation.
 
+![client cache pool model](https://github.com/user-attachments/assets/bd31a7ab-a16d-448c-bb4a-d98cf1420643)
+
 #### Configuring Client Handling
 
 When configuring the cache size and the client pool, the following should be considered.
