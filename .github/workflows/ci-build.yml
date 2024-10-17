@@ -432,7 +432,7 @@ jobs:
     - name: Login to Harbor
       uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
       with:
-        registry: harbor.stfc.ac.uk/datagateway
+        registry: ${{ secrets.HARBOR_URL }}
         username: ${{ secrets.HARBOR_USERNAME }}
         password: ${{ secrets.HARBOR_TOKEN }}
 
@@ -440,7 +440,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 # v5.5.1
       with:
-        images: harbor.stfc.ac.uk/datagateway/datagateway-api
+        images: ${{ secrets.HARBOR_URL }}/datagateway-api
 
     - name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
       uses: docker/build-push-action@4f58ea79222b3b9dc2c8bbdd6debcef730109a75 # v6.9.0
