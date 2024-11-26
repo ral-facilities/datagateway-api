@@ -48,16 +48,12 @@ class UseReaderForPerformance(BaseModel):
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
-    validation of the DataGatewayAPI config data using Python type annotations. It takes
-    the backend into account, meaning only the config options for the backend used are
-    required.
+    validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    backend: StrictStr
     client_cache_size: Optional[StrictInt]
     client_pool_init_size: Optional[StrictInt]
     client_pool_max_size: Optional[StrictInt]
-    db_url: Optional[StrictStr]
     extension: StrictStr
     icat_check_cert: Optional[StrictBool]
     icat_url: Optional[StrictStr]
@@ -68,23 +64,6 @@ class DataGatewayAPI(BaseModel):
     def __getitem__(self, item):
         return getattr(self, item)
 
-    @validator("db_url", always=True)
-    def require_db_config_value(cls, value, values):  # noqa: B902, N805
-        """
-        By default the `db_url` config field is optional so that it does not have to be
-        present in the config file if `backend` is set to `python_icat`. However, if the
-        `backend` is set to `db`, this validator esentially makes the `db_url` config
-        field mandatory. This means that an error is raised, at which point the
-        application exits, if a `db_url` config value is not present in the config file.
-
-        :param cls: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
-        """
-        if "backend" in values and values["backend"] == "db" and value is None:
-            raise TypeError("field required")
-        return value
-
     @validator(
         "client_cache_size",
         "client_pool_init_size",
@@ -93,36 +72,18 @@ class DataGatewayAPI(BaseModel):
         "icat_url",
         always=True,
     )
-    def require_icat_config_value(cls, value, values):  # noqa: B902, N805
+    def require_icat_config_value(cls, value):  # noqa: B902, N805
         """
-        By default the above config fields that are passed to the `@validator` decorator
-        are optional so that they do not have to be present in the config file if
-        `backend` is set to `db`. However, if the `backend` is set to `python_icat`,
-        this validator esentially makes these config fields mandatory. This means that
-        an error is raised, at which point the application exits, if any of these config
-        values are not present in the config file.
+        Validates that the required config fields for the `python_icat`
+        are present and not None. If any of these config values are missing,
+        an error is raised, causing the application to exit.
 
         :param cls: :class:`DataGatewayAPI` pointer
         :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
         """
-
-        if "backend" in values and values["backend"] == "python_icat" and value is None:
-            raise TypeError("field required")
+        if value is None:
+            raise TypeError("Field required for `python_icat`.")
         return value
-
-    def set_backend_type(self, backend_type):
-        """
-        This setter is used as a way for automated tests to set the backend type. The
-        API can detect if the Flask app setup is from an automated test by checking the
-        app's config for a `TEST_BACKEND`. If this value exists (a KeyError will be
-        raised when the API is run normally, which will then grab the backend type from
-        `config.yaml`), it needs to be set using this function. This is required because
-        creating filters in the `QueryFilterFactory` is backend-specific so the backend
-        type must be fetched. This must be done using this module (rather than directly
-        importing and checking the Flask app's config) to avoid circular import issues.
-        """
-        self.backend = backend_type
 
     class Config:
         """
@@ -130,7 +91,6 @@ class DataGatewayAPI(BaseModel):
         """
 
         # Enables assignment validation on the BaseModel fields. Useful for when the
-        # backend type is changed using the set_backend_type function.
         validate_assignment = True
 
 

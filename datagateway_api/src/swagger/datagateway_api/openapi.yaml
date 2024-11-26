@@ -2355,7 +2355,7 @@ info:
   version: '1.0'
 openapi: 3.0.3
 paths:
-  /datagateway-api/applications:
+  /applications:
     get:
       description: Retrieves a list of Application objects
       parameters:
@@ -2449,7 +2449,7 @@ paths:
       summary: Create new Applications
       tags:
       - Applications
-  /datagateway-api/applications/{id_}:
+  /applications/{id_}:
     delete:
       description: Updates Application with the specified ID with details provided
         in the request body
@@ -2536,7 +2536,7 @@ paths:
       summary: Update Applications by id
       tags:
       - Applications
-  /datagateway-api/applications/count:
+  /applications/count:
     get:
       description: Return the count of the Application objects that would be retrieved
         given the filters provided
@@ -2562,7 +2562,7 @@ paths:
       summary: Count Applications
       tags:
       - Applications
-  /datagateway-api/applications/findone:
+  /applications/findone:
     get:
       description: Retrieves the first Application objects that satisfies the filters.
       parameters:
@@ -2590,7 +2590,7 @@ paths:
       summary: Get single Application
       tags:
       - Applications
-  /datagateway-api/affiliations:
+  /affiliations:
     get:
       description: Retrieves a list of Affiliation objects
       parameters:
@@ -2684,7 +2684,7 @@ paths:
       summary: Create new Affiliations
       tags:
       - Affiliations
-  /datagateway-api/affiliations/{id_}:
+  /affiliations/{id_}:
     delete:
       description: Updates Affiliation with the specified ID with details provided
         in the request body
@@ -2771,7 +2771,7 @@ paths:
       summary: Update Affiliations by id
       tags:
       - Affiliations
-  /datagateway-api/affiliations/count:
+  /affiliations/count:
     get:
       description: Return the count of the Affiliation objects that would be retrieved
         given the filters provided
@@ -2797,7 +2797,7 @@ paths:
       summary: Count Affiliations
       tags:
       - Affiliations
-  /datagateway-api/affiliations/findone:
+  /affiliations/findone:
     get:
       description: Retrieves the first Affiliation objects that satisfies the filters.
       parameters:
@@ -2825,7 +2825,7 @@ paths:
       summary: Get single Affiliation
       tags:
       - Affiliations
-  /datagateway-api/datacollectioninvestigations:
+  /datacollectioninvestigations:
     get:
       description: Retrieves a list of DataCollectionInvestigation objects
       parameters:
@@ -2920,7 +2920,7 @@ paths:
       summary: Create new DataCollectionInvestigations
       tags:
       - DataCollectionInvestigations
-  /datagateway-api/datacollectioninvestigations/{id_}:
+  /datacollectioninvestigations/{id_}:
     delete:
       description: Updates DataCollectionInvestigation with the specified ID with
         details provided in the request body
@@ -3007,7 +3007,7 @@ paths:
       summary: Update DataCollectionInvestigations by id
       tags:
       - DataCollectionInvestigations
-  /datagateway-api/datacollectioninvestigations/count:
+  /datacollectioninvestigations/count:
     get:
       description: Return the count of the DataCollectionInvestigation objects that
         would be retrieved given the filters provided
@@ -3033,7 +3033,7 @@ paths:
       summary: Count DataCollectionInvestigations
       tags:
       - DataCollectionInvestigations
-  /datagateway-api/datacollectioninvestigations/findone:
+  /datacollectioninvestigations/findone:
     get:
       description: Retrieves the first DataCollectionInvestigation objects that satisfies
         the filters.
@@ -3063,7 +3063,7 @@ paths:
       summary: Get single DataCollectionInvestigation
       tags:
       - DataCollectionInvestigations
-  /datagateway-api/datacollectiondatafiles:
+  /datacollectiondatafiles:
     get:
       description: Retrieves a list of DataCollectionDatafile objects
       parameters:
@@ -3157,7 +3157,7 @@ paths:
       summary: Create new DataCollectionDatafiles
       tags:
       - DataCollectionDatafiles
-  /datagateway-api/datacollectiondatafiles/{id_}:
+  /datacollectiondatafiles/{id_}:
     delete:
       description: Updates DataCollectionDatafile with the specified ID with details
         provided in the request body
@@ -3244,7 +3244,7 @@ paths:
       summary: Update DataCollectionDatafiles by id
       tags:
       - DataCollectionDatafiles
-  /datagateway-api/datacollectiondatafiles/count:
+  /datacollectiondatafiles/count:
     get:
       description: Return the count of the DataCollectionDatafile objects that would
         be retrieved given the filters provided
@@ -3270,7 +3270,7 @@ paths:
       summary: Count DataCollectionDatafiles
       tags:
       - DataCollectionDatafiles
-  /datagateway-api/datacollectiondatafiles/findone:
+  /datacollectiondatafiles/findone:
     get:
       description: Retrieves the first DataCollectionDatafile objects that satisfies
         the filters.
@@ -3300,7 +3300,7 @@ paths:
       summary: Get single DataCollectionDatafile
       tags:
       - DataCollectionDatafiles
-  /datagateway-api/datacollectiondatasets:
+  /datacollectiondatasets:
     get:
       description: Retrieves a list of DataCollectionDataset objects
       parameters:
@@ -3394,7 +3394,7 @@ paths:
       summary: Create new DataCollectionDatasets
       tags:
       - DataCollectionDatasets
-  /datagateway-api/datacollectiondatasets/{id_}:
+  /datacollectiondatasets/{id_}:
     delete:
       description: Updates DataCollectionDataset with the specified ID with details
         provided in the request body
@@ -3481,7 +3481,7 @@ paths:
       summary: Update DataCollectionDatasets by id
       tags:
       - DataCollectionDatasets
-  /datagateway-api/datacollectiondatasets/count:
+  /datacollectiondatasets/count:
     get:
       description: Return the count of the DataCollectionDataset objects that would
         be retrieved given the filters provided
@@ -3507,7 +3507,7 @@ paths:
       summary: Count DataCollectionDatasets
       tags:
       - DataCollectionDatasets
-  /datagateway-api/datacollectiondatasets/findone:
+  /datacollectiondatasets/findone:
     get:
       description: Retrieves the first DataCollectionDataset objects that satisfies
         the filters.
@@ -3537,7 +3537,7 @@ paths:
       summary: Get single DataCollectionDataset
       tags:
       - DataCollectionDatasets
-  /datagateway-api/datacollectionparameters:
+  /datacollectionparameters:
     get:
       description: Retrieves a list of DataCollectionParameter objects
       parameters:
@@ -3632,7 +3632,7 @@ paths:
       summary: Create new DataCollectionParameters
       tags:
       - DataCollectionParameters
-  /datagateway-api/datacollectionparameters/{id_}:
+  /datacollectionparameters/{id_}:
     delete:
       description: Updates DataCollectionParameter with the specified ID with details
         provided in the request body
@@ -3719,7 +3719,7 @@ paths:
       summary: Update DataCollectionParameters by id
       tags:
       - DataCollectionParameters
-  /datagateway-api/datacollectionparameters/count:
+  /datacollectionparameters/count:
     get:
       description: Return the count of the DataCollectionParameter objects that would
         be retrieved given the filters provided
@@ -3745,7 +3745,7 @@ paths:
       summary: Count DataCollectionParameters
       tags:
       - DataCollectionParameters
-  /datagateway-api/datacollectionparameters/findone:
+  /datacollectionparameters/findone:
     get:
       description: Retrieves the first DataCollectionParameter objects that satisfies
         the filters.
@@ -3775,7 +3775,7 @@ paths:
       summary: Get single DataCollectionParameter
       tags:
       - DataCollectionParameters
-  /datagateway-api/datacollections:
+  /datacollections:
     get:
       description: Retrieves a list of DataCollection objects
       parameters:
@@ -3869,7 +3869,7 @@ paths:
       summary: Create new DataCollections
       tags:
       - DataCollections
-  /datagateway-api/datacollections/{id_}:
+  /datacollections/{id_}:
     delete:
       description: Updates DataCollection with the specified ID with details provided
         in the request body
@@ -3956,7 +3956,7 @@ paths:
       summary: Update DataCollections by id
       tags:
       - DataCollections
-  /datagateway-api/datacollections/count:
+  /datacollections/count:
     get:
       description: Return the count of the DataCollection objects that would be retrieved
         given the filters provided
@@ -3982,7 +3982,7 @@ paths:
       summary: Count DataCollections
       tags:
       - DataCollections
-  /datagateway-api/datacollections/findone:
+  /datacollections/findone:
     get:
       description: Retrieves the first DataCollection objects that satisfies the filters.
       parameters:
@@ -4010,7 +4010,7 @@ paths:
       summary: Get single DataCollection
       tags:
       - DataCollections
-  /datagateway-api/datapublications:
+  /datapublications:
     get:
       description: Retrieves a list of DataPublication objects
       parameters:
@@ -4104,7 +4104,7 @@ paths:
       summary: Create new DataPublications
       tags:
       - DataPublications
-  /datagateway-api/datapublications/{id_}:
+  /datapublications/{id_}:
     delete:
       description: Updates DataPublication with the specified ID with details provided
         in the request body
@@ -4191,7 +4191,7 @@ paths:
       summary: Update DataPublications by id
       tags:
       - DataPublications
-  /datagateway-api/datapublications/count:
+  /datapublications/count:
     get:
       description: Return the count of the DataPublication objects that would be retrieved
         given the filters provided
@@ -4217,7 +4217,7 @@ paths:
       summary: Count DataPublications
       tags:
       - DataPublications
-  /datagateway-api/datapublications/findone:
+  /datapublications/findone:
     get:
       description: Retrieves the first DataPublication objects that satisfies the
         filters.
@@ -4246,7 +4246,7 @@ paths:
       summary: Get single DataPublication
       tags:
       - DataPublications
-  /datagateway-api/datapublicationdates:
+  /datapublicationdates:
     get:
       description: Retrieves a list of DataPublicationDate objects
       parameters:
@@ -4340,7 +4340,7 @@ paths:
       summary: Create new DataPublicationDates
       tags:
       - DataPublicationDates
-  /datagateway-api/datapublicationdates/{id_}:
+  /datapublicationdates/{id_}:
     delete:
       description: Updates DataPublicationDate with the specified ID with details
         provided in the request body
@@ -4427,7 +4427,7 @@ paths:
       summary: Update DataPublicationDates by id
       tags:
       - DataPublicationDates
-  /datagateway-api/datapublicationdates/count:
+  /datapublicationdates/count:
     get:
       description: Return the count of the DataPublicationDate objects that would
         be retrieved given the filters provided
@@ -4453,7 +4453,7 @@ paths:
       summary: Count DataPublicationDates
       tags:
       - DataPublicationDates
-  /datagateway-api/datapublicationdates/findone:
+  /datapublicationdates/findone:
     get:
       description: Retrieves the first DataPublicationDate objects that satisfies
         the filters.
@@ -4482,7 +4482,7 @@ paths:
       summary: Get single DataPublicationDate
       tags:
       - DataPublicationDates
-  /datagateway-api/datapublicationfundings:
+  /datapublicationfundings:
     get:
       description: Retrieves a list of DataPublicationFunding objects
       parameters:
@@ -4576,7 +4576,7 @@ paths:
       summary: Create new DataPublicationFundings
       tags:
       - DataPublicationFundings
-  /datagateway-api/datapublicationfundings/{id_}:
+  /datapublicationfundings/{id_}:
     delete:
       description: Updates DataPublicationFunding with the specified ID with details
         provided in the request body
@@ -4663,7 +4663,7 @@ paths:
       summary: Update DataPublicationFundings by id
       tags:
       - DataPublicationFundings
-  /datagateway-api/datapublicationfundings/count:
+  /datapublicationfundings/count:
     get:
       description: Return the count of the DataPublicationFunding objects that would
         be retrieved given the filters provided
@@ -4689,7 +4689,7 @@ paths:
       summary: Count DataPublicationFundings
       tags:
       - DataPublicationFundings
-  /datagateway-api/datapublicationfundings/findone:
+  /datapublicationfundings/findone:
     get:
       description: Retrieves the first DataPublicationFunding objects that satisfies
         the filters.
@@ -4719,7 +4719,7 @@ paths:
       summary: Get single DataPublicationFunding
       tags:
       - DataPublicationFundings
-  /datagateway-api/datapublicationtypes:
+  /datapublicationtypes:
     get:
       description: Retrieves a list of DataPublicationType objects
       parameters:
@@ -4813,7 +4813,7 @@ paths:
       summary: Create new DataPublicationTypes
       tags:
       - DataPublicationTypes
-  /datagateway-api/datapublicationtypes/{id_}:
+  /datapublicationtypes/{id_}:
     delete:
       description: Updates DataPublicationType with the specified ID with details
         provided in the request body
@@ -4900,7 +4900,7 @@ paths:
       summary: Update DataPublicationTypes by id
       tags:
       - DataPublicationTypes
-  /datagateway-api/datapublicationtypes/count:
+  /datapublicationtypes/count:
     get:
       description: Return the count of the DataPublicationType objects that would
         be retrieved given the filters provided
@@ -4926,7 +4926,7 @@ paths:
       summary: Count DataPublicationTypes
       tags:
       - DataPublicationTypes
-  /datagateway-api/datapublicationtypes/findone:
+  /datapublicationtypes/findone:
     get:
       description: Retrieves the first DataPublicationType objects that satisfies
         the filters.
@@ -4955,7 +4955,7 @@ paths:
       summary: Get single DataPublicationType
       tags:
       - DataPublicationTypes
-  /datagateway-api/datapublicationusers:
+  /datapublicationusers:
     get:
       description: Retrieves a list of DataPublicationUser objects
       parameters:
@@ -5049,7 +5049,7 @@ paths:
       summary: Create new DataPublicationUsers
       tags:
       - DataPublicationUsers
-  /datagateway-api/datapublicationusers/{id_}:
+  /datapublicationusers/{id_}:
     delete:
       description: Updates DataPublicationUser with the specified ID with details
         provided in the request body
@@ -5136,7 +5136,7 @@ paths:
       summary: Update DataPublicationUsers by id
       tags:
       - DataPublicationUsers
-  /datagateway-api/datapublicationusers/count:
+  /datapublicationusers/count:
     get:
       description: Return the count of the DataPublicationUser objects that would
         be retrieved given the filters provided
@@ -5162,7 +5162,7 @@ paths:
       summary: Count DataPublicationUsers
       tags:
       - DataPublicationUsers
-  /datagateway-api/datapublicationusers/findone:
+  /datapublicationusers/findone:
     get:
       description: Retrieves the first DataPublicationUser objects that satisfies
         the filters.
@@ -5191,7 +5191,7 @@ paths:
       summary: Get single DataPublicationUser
       tags:
       - DataPublicationUsers
-  /datagateway-api/datafileformats:
+  /datafileformats:
     get:
       description: Retrieves a list of DatafileFormat objects
       parameters:
@@ -5285,7 +5285,7 @@ paths:
       summary: Create new DatafileFormats
       tags:
       - DatafileFormats
-  /datagateway-api/datafileformats/{id_}:
+  /datafileformats/{id_}:
     delete:
       description: Updates DatafileFormat with the specified ID with details provided
         in the request body
@@ -5372,7 +5372,7 @@ paths:
       summary: Update DatafileFormats by id
       tags:
       - DatafileFormats
-  /datagateway-api/datafileformats/count:
+  /datafileformats/count:
     get:
       description: Return the count of the DatafileFormat objects that would be retrieved
         given the filters provided
@@ -5398,7 +5398,7 @@ paths:
       summary: Count DatafileFormats
       tags:
       - DatafileFormats
-  /datagateway-api/datafileformats/findone:
+  /datafileformats/findone:
     get:
       description: Retrieves the first DatafileFormat objects that satisfies the filters.
       parameters:
@@ -5426,7 +5426,7 @@ paths:
       summary: Get single DatafileFormat
       tags:
       - DatafileFormats
-  /datagateway-api/datafileparameters:
+  /datafileparameters:
     get:
       description: Retrieves a list of DatafileParameter objects
       parameters:
@@ -5520,7 +5520,7 @@ paths:
       summary: Create new DatafileParameters
       tags:
       - DatafileParameters
-  /datagateway-api/datafileparameters/{id_}:
+  /datafileparameters/{id_}:
     delete:
       description: Updates DatafileParameter with the specified ID with details provided
         in the request body
@@ -5607,7 +5607,7 @@ paths:
       summary: Update DatafileParameters by id
       tags:
       - DatafileParameters
-  /datagateway-api/datafileparameters/count:
+  /datafileparameters/count:
     get:
       description: Return the count of the DatafileParameter objects that would be
         retrieved given the filters provided
@@ -5633,7 +5633,7 @@ paths:
       summary: Count DatafileParameters
       tags:
       - DatafileParameters
-  /datagateway-api/datafileparameters/findone:
+  /datafileparameters/findone:
     get:
       description: Retrieves the first DatafileParameter objects that satisfies the
         filters.
@@ -5662,7 +5662,7 @@ paths:
       summary: Get single DatafileParameter
       tags:
       - DatafileParameters
-  /datagateway-api/datafiles:
+  /datafiles:
     get:
       description: Retrieves a list of Datafile objects
       parameters:
@@ -5756,7 +5756,7 @@ paths:
       summary: Create new Datafiles
       tags:
       - Datafiles
-  /datagateway-api/datafiles/{id_}:
+  /datafiles/{id_}:
     delete:
       description: Updates Datafile with the specified ID with details provided in
         the request body
@@ -5843,7 +5843,7 @@ paths:
       summary: Update Datafiles by id
       tags:
       - Datafiles
-  /datagateway-api/datafiles/count:
+  /datafiles/count:
     get:
       description: Return the count of the Datafile objects that would be retrieved
         given the filters provided
@@ -5869,7 +5869,7 @@ paths:
       summary: Count Datafiles
       tags:
       - Datafiles
-  /datagateway-api/datafiles/findone:
+  /datafiles/findone:
     get:
       description: Retrieves the first Datafile objects that satisfies the filters.
       parameters:
@@ -5897,7 +5897,7 @@ paths:
       summary: Get single Datafile
       tags:
       - Datafiles
-  /datagateway-api/datasetparameters:
+  /datasetparameters:
     get:
       description: Retrieves a list of DatasetParameter objects
       parameters:
@@ -5991,7 +5991,7 @@ paths:
       summary: Create new DatasetParameters
       tags:
       - DatasetParameters
-  /datagateway-api/datasetparameters/{id_}:
+  /datasetparameters/{id_}:
     delete:
       description: Updates DatasetParameter with the specified ID with details provided
         in the request body
@@ -6078,7 +6078,7 @@ paths:
       summary: Update DatasetParameters by id
       tags:
       - DatasetParameters
-  /datagateway-api/datasetparameters/count:
+  /datasetparameters/count:
     get:
       description: Return the count of the DatasetParameter objects that would be
         retrieved given the filters provided
@@ -6104,7 +6104,7 @@ paths:
       summary: Count DatasetParameters
       tags:
       - DatasetParameters
-  /datagateway-api/datasetparameters/findone:
+  /datasetparameters/findone:
     get:
       description: Retrieves the first DatasetParameter objects that satisfies the
         filters.
@@ -6133,7 +6133,7 @@ paths:
       summary: Get single DatasetParameter
       tags:
       - DatasetParameters
-  /datagateway-api/datasetinstruments:
+  /datasetinstruments:
     get:
       description: Retrieves a list of DatasetInstrument objects
       parameters:
@@ -6227,7 +6227,7 @@ paths:
       summary: Create new DatasetInstruments
       tags:
       - DatasetInstruments
-  /datagateway-api/datasetinstruments/{id_}:
+  /datasetinstruments/{id_}:
     delete:
       description: Updates DatasetInstrument with the specified ID with details provided
         in the request body
@@ -6314,7 +6314,7 @@ paths:
       summary: Update DatasetInstruments by id
       tags:
       - DatasetInstruments
-  /datagateway-api/datasetinstruments/count:
+  /datasetinstruments/count:
     get:
       description: Return the count of the DatasetInstrument objects that would be
         retrieved given the filters provided
@@ -6340,7 +6340,7 @@ paths:
       summary: Count DatasetInstruments
       tags:
       - DatasetInstruments
-  /datagateway-api/datasetinstruments/findone:
+  /datasetinstruments/findone:
     get:
       description: Retrieves the first DatasetInstrument objects that satisfies the
         filters.
@@ -6369,7 +6369,7 @@ paths:
       summary: Get single DatasetInstrument
       tags:
       - DatasetInstruments
-  /datagateway-api/datasettechniques:
+  /datasettechniques:
     get:
       description: Retrieves a list of DatasetTechnique objects
       parameters:
@@ -6463,7 +6463,7 @@ paths:
       summary: Create new DatasetTechniques
       tags:
       - DatasetTechniques
-  /datagateway-api/datasettechniques/{id_}:
+  /datasettechniques/{id_}:
     delete:
       description: Updates DatasetTechnique with the specified ID with details provided
         in the request body
@@ -6550,7 +6550,7 @@ paths:
       summary: Update DatasetTechniques by id
       tags:
       - DatasetTechniques
-  /datagateway-api/datasettechniques/count:
+  /datasettechniques/count:
     get:
       description: Return the count of the DatasetTechnique objects that would be
         retrieved given the filters provided
@@ -6576,7 +6576,7 @@ paths:
       summary: Count DatasetTechniques
       tags:
       - DatasetTechniques
-  /datagateway-api/datasettechniques/findone:
+  /datasettechniques/findone:
     get:
       description: Retrieves the first DatasetTechnique objects that satisfies the
         filters.
@@ -6605,7 +6605,7 @@ paths:
       summary: Get single DatasetTechnique
       tags:
       - DatasetTechniques
-  /datagateway-api/datasettypes:
+  /datasettypes:
     get:
       description: Retrieves a list of DatasetType objects
       parameters:
@@ -6699,7 +6699,7 @@ paths:
       summary: Create new DatasetTypes
       tags:
       - DatasetTypes
-  /datagateway-api/datasettypes/{id_}:
+  /datasettypes/{id_}:
     delete:
       description: Updates DatasetType with the specified ID with details provided
         in the request body
@@ -6786,7 +6786,7 @@ paths:
       summary: Update DatasetTypes by id
       tags:
       - DatasetTypes
-  /datagateway-api/datasettypes/count:
+  /datasettypes/count:
     get:
       description: Return the count of the DatasetType objects that would be retrieved
         given the filters provided
@@ -6812,7 +6812,7 @@ paths:
       summary: Count DatasetTypes
       tags:
       - DatasetTypes
-  /datagateway-api/datasettypes/findone:
+  /datasettypes/findone:
     get:
       description: Retrieves the first DatasetType objects that satisfies the filters.
       parameters:
@@ -6840,7 +6840,7 @@ paths:
       summary: Get single DatasetType
       tags:
       - DatasetTypes
-  /datagateway-api/datasets:
+  /datasets:
     get:
       description: Retrieves a list of Dataset objects
       parameters:
@@ -6934,7 +6934,7 @@ paths:
       summary: Create new Datasets
       tags:
       - Datasets
-  /datagateway-api/datasets/{id_}:
+  /datasets/{id_}:
     delete:
       description: Updates Dataset with the specified ID with details provided in
         the request body
@@ -7021,7 +7021,7 @@ paths:
       summary: Update Datasets by id
       tags:
       - Datasets
-  /datagateway-api/datasets/count:
+  /datasets/count:
     get:
       description: Return the count of the Dataset objects that would be retrieved
         given the filters provided
@@ -7047,7 +7047,7 @@ paths:
       summary: Count Datasets
       tags:
       - Datasets
-  /datagateway-api/datasets/findone:
+  /datasets/findone:
     get:
       description: Retrieves the first Dataset objects that satisfies the filters.
       parameters:
@@ -7075,7 +7075,7 @@ paths:
       summary: Get single Dataset
       tags:
       - Datasets
-  /datagateway-api/facilities:
+  /facilities:
     get:
       description: Retrieves a list of Facility objects
       parameters:
@@ -7169,7 +7169,7 @@ paths:
       summary: Create new Facilities
       tags:
       - Facilities
-  /datagateway-api/facilities/{id_}:
+  /facilities/{id_}:
     delete:
       description: Updates Facility with the specified ID with details provided in
         the request body
@@ -7256,7 +7256,7 @@ paths:
       summary: Update Facilities by id
       tags:
       - Facilities
-  /datagateway-api/facilities/count:
+  /facilities/count:
     get:
       description: Return the count of the Facility objects that would be retrieved
         given the filters provided
@@ -7282,7 +7282,7 @@ paths:
       summary: Count Facilities
       tags:
       - Facilities
-  /datagateway-api/facilities/findone:
+  /facilities/findone:
     get:
       description: Retrieves the first Facility objects that satisfies the filters.
       parameters:
@@ -7310,7 +7310,7 @@ paths:
       summary: Get single Facility
       tags:
       - Facilities
-  /datagateway-api/facilitycycles:
+  /facilitycycles:
     get:
       description: Retrieves a list of FacilityCycle objects
       parameters:
@@ -7404,7 +7404,7 @@ paths:
       summary: Create new FacilityCycles
       tags:
       - FacilityCycles
-  /datagateway-api/facilitycycles/{id_}:
+  /facilitycycles/{id_}:
     delete:
       description: Updates FacilityCycle with the specified ID with details provided
         in the request body
@@ -7491,7 +7491,7 @@ paths:
       summary: Update FacilityCycles by id
       tags:
       - FacilityCycles
-  /datagateway-api/facilitycycles/count:
+  /facilitycycles/count:
     get:
       description: Return the count of the FacilityCycle objects that would be retrieved
         given the filters provided
@@ -7517,7 +7517,7 @@ paths:
       summary: Count FacilityCycles
       tags:
       - FacilityCycles
-  /datagateway-api/facilitycycles/findone:
+  /facilitycycles/findone:
     get:
       description: Retrieves the first FacilityCycle objects that satisfies the filters.
       parameters:
@@ -7545,7 +7545,7 @@ paths:
       summary: Get single FacilityCycle
       tags:
       - FacilityCycles
-  /datagateway-api/fundingreferences:
+  /fundingreferences:
     get:
       description: Retrieves a list of FundingReference objects
       parameters:
@@ -7639,7 +7639,7 @@ paths:
       summary: Create new FundingReferences
       tags:
       - FundingReferences
-  /datagateway-api/fundingreferences/{id_}:
+  /fundingreferences/{id_}:
     delete:
       description: Updates FundingReference with the specified ID with details provided
         in the request body
@@ -7726,7 +7726,7 @@ paths:
       summary: Update FundingReferences by id
       tags:
       - FundingReferences
-  /datagateway-api/fundingreferences/count:
+  /fundingreferences/count:
     get:
       description: Return the count of the FundingReference objects that would be
         retrieved given the filters provided
@@ -7752,7 +7752,7 @@ paths:
       summary: Count FundingReferences
       tags:
       - FundingReferences
-  /datagateway-api/fundingreferences/findone:
+  /fundingreferences/findone:
     get:
       description: Retrieves the first FundingReference objects that satisfies the
         filters.
@@ -7781,7 +7781,7 @@ paths:
       summary: Get single FundingReference
       tags:
       - FundingReferences
-  /datagateway-api/groupings:
+  /groupings:
     get:
       description: Retrieves a list of Grouping objects
       parameters:
@@ -7875,7 +7875,7 @@ paths:
       summary: Create new Groupings
       tags:
       - Groupings
-  /datagateway-api/groupings/{id_}:
+  /groupings/{id_}:
     delete:
       description: Updates Grouping with the specified ID with details provided in
         the request body
@@ -7962,7 +7962,7 @@ paths:
       summary: Update Groupings by id
       tags:
       - Groupings
-  /datagateway-api/groupings/count:
+  /groupings/count:
     get:
       description: Return the count of the Grouping objects that would be retrieved
         given the filters provided
@@ -7988,7 +7988,7 @@ paths:
       summary: Count Groupings
       tags:
       - Groupings
-  /datagateway-api/groupings/findone:
+  /groupings/findone:
     get:
       description: Retrieves the first Grouping objects that satisfies the filters.
       parameters:
@@ -8016,7 +8016,7 @@ paths:
       summary: Get single Grouping
       tags:
       - Groupings
-  /datagateway-api/instrumentscientists:
+  /instrumentscientists:
     get:
       description: Retrieves a list of InstrumentScientist objects
       parameters:
@@ -8110,7 +8110,7 @@ paths:
       summary: Create new InstrumentScientists
       tags:
       - InstrumentScientists
-  /datagateway-api/instrumentscientists/{id_}:
+  /instrumentscientists/{id_}:
     delete:
       description: Updates InstrumentScientist with the specified ID with details
         provided in the request body
@@ -8197,7 +8197,7 @@ paths:
       summary: Update InstrumentScientists by id
       tags:
       - InstrumentScientists
-  /datagateway-api/instrumentscientists/count:
+  /instrumentscientists/count:
     get:
       description: Return the count of the InstrumentScientist objects that would
         be retrieved given the filters provided
@@ -8223,7 +8223,7 @@ paths:
       summary: Count InstrumentScientists
       tags:
       - InstrumentScientists
-  /datagateway-api/instrumentscientists/findone:
+  /instrumentscientists/findone:
     get:
       description: Retrieves the first InstrumentScientist objects that satisfies
         the filters.
@@ -8252,7 +8252,7 @@ paths:
       summary: Get single InstrumentScientist
       tags:
       - InstrumentScientists
-  /datagateway-api/instruments:
+  /instruments:
     get:
       description: Retrieves a list of Instrument objects
       parameters:
@@ -8346,7 +8346,7 @@ paths:
       summary: Create new Instruments
       tags:
       - Instruments
-  /datagateway-api/instruments/{id_}:
+  /instruments/{id_}:
     delete:
       description: Updates Instrument with the specified ID with details provided
         in the request body
@@ -8433,7 +8433,7 @@ paths:
       summary: Update Instruments by id
       tags:
       - Instruments
-  /datagateway-api/instruments/count:
+  /instruments/count:
     get:
       description: Return the count of the Instrument objects that would be retrieved
         given the filters provided
@@ -8459,7 +8459,7 @@ paths:
       summary: Count Instruments
       tags:
       - Instruments
-  /datagateway-api/instruments/findone:
+  /instruments/findone:
     get:
       description: Retrieves the first Instrument objects that satisfies the filters.
       parameters:
@@ -8487,7 +8487,7 @@ paths:
       summary: Get single Instrument
       tags:
       - Instruments
-  /datagateway-api/investigationfacilitycycles:
+  /investigationfacilitycycles:
     get:
       description: Retrieves a list of InvestigationFacilityCycle objects
       parameters:
@@ -8582,7 +8582,7 @@ paths:
       summary: Create new InvestigationFacilityCycles
       tags:
       - InvestigationFacilityCycles
-  /datagateway-api/investigationfacilitycycles/{id_}:
+  /investigationfacilitycycles/{id_}:
     delete:
       description: Updates InvestigationFacilityCycle with the specified ID with details
         provided in the request body
@@ -8669,7 +8669,7 @@ paths:
       summary: Update InvestigationFacilityCycles by id
       tags:
       - InvestigationFacilityCycles
-  /datagateway-api/investigationfacilitycycles/count:
+  /investigationfacilitycycles/count:
     get:
       description: Return the count of the InvestigationFacilityCycle objects that
         would be retrieved given the filters provided
@@ -8695,7 +8695,7 @@ paths:
       summary: Count InvestigationFacilityCycles
       tags:
       - InvestigationFacilityCycles
-  /datagateway-api/investigationfacilitycycles/findone:
+  /investigationfacilitycycles/findone:
     get:
       description: Retrieves the first InvestigationFacilityCycle objects that satisfies
         the filters.
@@ -8725,7 +8725,7 @@ paths:
       summary: Get single InvestigationFacilityCycle
       tags:
       - InvestigationFacilityCycles
-  /datagateway-api/investigationfundings:
+  /investigationfundings:
     get:
       description: Retrieves a list of InvestigationFunding objects
       parameters:
@@ -8819,7 +8819,7 @@ paths:
       summary: Create new InvestigationFundings
       tags:
       - InvestigationFundings
-  /datagateway-api/investigationfundings/{id_}:
+  /investigationfundings/{id_}:
     delete:
       description: Updates InvestigationFunding with the specified ID with details
         provided in the request body
@@ -8906,7 +8906,7 @@ paths:
       summary: Update InvestigationFundings by id
       tags:
       - InvestigationFundings
-  /datagateway-api/investigationfundings/count:
+  /investigationfundings/count:
     get:
       description: Return the count of the InvestigationFunding objects that would
         be retrieved given the filters provided
@@ -8932,7 +8932,7 @@ paths:
       summary: Count InvestigationFundings
       tags:
       - InvestigationFundings
-  /datagateway-api/investigationfundings/findone:
+  /investigationfundings/findone:
     get:
       description: Retrieves the first InvestigationFunding objects that satisfies
         the filters.
@@ -8962,7 +8962,7 @@ paths:
       summary: Get single InvestigationFunding
       tags:
       - InvestigationFundings
-  /datagateway-api/investigationgroups:
+  /investigationgroups:
     get:
       description: Retrieves a list of InvestigationGroup objects
       parameters:
@@ -9056,7 +9056,7 @@ paths:
       summary: Create new InvestigationGroups
       tags:
       - InvestigationGroups
-  /datagateway-api/investigationgroups/{id_}:
+  /investigationgroups/{id_}:
     delete:
       description: Updates InvestigationGroup with the specified ID with details provided
         in the request body
@@ -9143,7 +9143,7 @@ paths:
       summary: Update InvestigationGroups by id
       tags:
       - InvestigationGroups
-  /datagateway-api/investigationgroups/count:
+  /investigationgroups/count:
     get:
       description: Return the count of the InvestigationGroup objects that would be
         retrieved given the filters provided
@@ -9169,7 +9169,7 @@ paths:
       summary: Count InvestigationGroups
       tags:
       - InvestigationGroups
-  /datagateway-api/investigationgroups/findone:
+  /investigationgroups/findone:
     get:
       description: Retrieves the first InvestigationGroup objects that satisfies the
         filters.
@@ -9198,7 +9198,7 @@ paths:
       summary: Get single InvestigationGroup
       tags:
       - InvestigationGroups
-  /datagateway-api/investigationinstruments:
+  /investigationinstruments:
     get:
       description: Retrieves a list of InvestigationInstrument objects
       parameters:
@@ -9293,7 +9293,7 @@ paths:
       summary: Create new InvestigationInstruments
       tags:
       - InvestigationInstruments
-  /datagateway-api/investigationinstruments/{id_}:
+  /investigationinstruments/{id_}:
     delete:
       description: Updates InvestigationInstrument with the specified ID with details
         provided in the request body
@@ -9380,7 +9380,7 @@ paths:
       summary: Update InvestigationInstruments by id
       tags:
       - InvestigationInstruments
-  /datagateway-api/investigationinstruments/count:
+  /investigationinstruments/count:
     get:
       description: Return the count of the InvestigationInstrument objects that would
         be retrieved given the filters provided
@@ -9406,7 +9406,7 @@ paths:
       summary: Count InvestigationInstruments
       tags:
       - InvestigationInstruments
-  /datagateway-api/investigationinstruments/findone:
+  /investigationinstruments/findone:
     get:
       description: Retrieves the first InvestigationInstrument objects that satisfies
         the filters.
@@ -9436,7 +9436,7 @@ paths:
       summary: Get single InvestigationInstrument
       tags:
       - InvestigationInstruments
-  /datagateway-api/investigationparameters:
+  /investigationparameters:
     get:
       description: Retrieves a list of InvestigationParameter objects
       parameters:
@@ -9530,7 +9530,7 @@ paths:
       summary: Create new InvestigationParameters
       tags:
       - InvestigationParameters
-  /datagateway-api/investigationparameters/{id_}:
+  /investigationparameters/{id_}:
     delete:
       description: Updates InvestigationParameter with the specified ID with details
         provided in the request body
@@ -9617,7 +9617,7 @@ paths:
       summary: Update InvestigationParameters by id
       tags:
       - InvestigationParameters
-  /datagateway-api/investigationparameters/count:
+  /investigationparameters/count:
     get:
       description: Return the count of the InvestigationParameter objects that would
         be retrieved given the filters provided
@@ -9643,7 +9643,7 @@ paths:
       summary: Count InvestigationParameters
       tags:
       - InvestigationParameters
-  /datagateway-api/investigationparameters/findone:
+  /investigationparameters/findone:
     get:
       description: Retrieves the first InvestigationParameter objects that satisfies
         the filters.
@@ -9673,7 +9673,7 @@ paths:
       summary: Get single InvestigationParameter
       tags:
       - InvestigationParameters
-  /datagateway-api/investigationtypes:
+  /investigationtypes:
     get:
       description: Retrieves a list of InvestigationType objects
       parameters:
@@ -9767,7 +9767,7 @@ paths:
       summary: Create new InvestigationTypes
       tags:
       - InvestigationTypes
-  /datagateway-api/investigationtypes/{id_}:
+  /investigationtypes/{id_}:
     delete:
       description: Updates InvestigationType with the specified ID with details provided
         in the request body
@@ -9854,7 +9854,7 @@ paths:
       summary: Update InvestigationTypes by id
       tags:
       - InvestigationTypes
-  /datagateway-api/investigationtypes/count:
+  /investigationtypes/count:
     get:
       description: Return the count of the InvestigationType objects that would be
         retrieved given the filters provided
@@ -9880,7 +9880,7 @@ paths:
       summary: Count InvestigationTypes
       tags:
       - InvestigationTypes
-  /datagateway-api/investigationtypes/findone:
+  /investigationtypes/findone:
     get:
       description: Retrieves the first InvestigationType objects that satisfies the
         filters.
@@ -9909,7 +9909,7 @@ paths:
       summary: Get single InvestigationType
       tags:
       - InvestigationTypes
-  /datagateway-api/investigationusers:
+  /investigationusers:
     get:
       description: Retrieves a list of InvestigationUser objects
       parameters:
@@ -10003,7 +10003,7 @@ paths:
       summary: Create new InvestigationUsers
       tags:
       - InvestigationUsers
-  /datagateway-api/investigationusers/{id_}:
+  /investigationusers/{id_}:
     delete:
       description: Updates InvestigationUser with the specified ID with details provided
         in the request body
@@ -10090,7 +10090,7 @@ paths:
       summary: Update InvestigationUsers by id
       tags:
       - InvestigationUsers
-  /datagateway-api/investigationusers/count:
+  /investigationusers/count:
     get:
       description: Return the count of the InvestigationUser objects that would be
         retrieved given the filters provided
@@ -10116,7 +10116,7 @@ paths:
       summary: Count InvestigationUsers
       tags:
       - InvestigationUsers
-  /datagateway-api/investigationusers/findone:
+  /investigationusers/findone:
     get:
       description: Retrieves the first InvestigationUser objects that satisfies the
         filters.
@@ -10145,7 +10145,7 @@ paths:
       summary: Get single InvestigationUser
       tags:
       - InvestigationUsers
-  /datagateway-api/investigations:
+  /investigations:
     get:
       description: Retrieves a list of Investigation objects
       parameters:
@@ -10239,7 +10239,7 @@ paths:
       summary: Create new Investigations
       tags:
       - Investigations
-  /datagateway-api/investigations/{id_}:
+  /investigations/{id_}:
     delete:
       description: Updates Investigation with the specified ID with details provided
         in the request body
@@ -10326,7 +10326,7 @@ paths:
       summary: Update Investigations by id
       tags:
       - Investigations
-  /datagateway-api/investigations/count:
+  /investigations/count:
     get:
       description: Return the count of the Investigation objects that would be retrieved
         given the filters provided
@@ -10352,7 +10352,7 @@ paths:
       summary: Count Investigations
       tags:
       - Investigations
-  /datagateway-api/investigations/findone:
+  /investigations/findone:
     get:
       description: Retrieves the first Investigation objects that satisfies the filters.
       parameters:
@@ -10380,7 +10380,7 @@ paths:
       summary: Get single Investigation
       tags:
       - Investigations
-  /datagateway-api/jobs:
+  /jobs:
     get:
       description: Retrieves a list of Job objects
       parameters:
@@ -10473,7 +10473,7 @@ paths:
       summary: Create new Jobs
       tags:
       - Jobs
-  /datagateway-api/jobs/{id_}:
+  /jobs/{id_}:
     delete:
       description: Updates Job with the specified ID with details provided in the
         request body
@@ -10560,7 +10560,7 @@ paths:
       summary: Update Jobs by id
       tags:
       - Jobs
-  /datagateway-api/jobs/count:
+  /jobs/count:
     get:
       description: Return the count of the Job objects that would be retrieved given
         the filters provided
@@ -10586,7 +10586,7 @@ paths:
       summary: Count Jobs
       tags:
       - Jobs
-  /datagateway-api/jobs/findone:
+  /jobs/findone:
     get:
       description: Retrieves the first Job objects that satisfies the filters.
       parameters:
@@ -10614,7 +10614,7 @@ paths:
       summary: Get single Job
       tags:
       - Jobs
-  /datagateway-api/keywords:
+  /keywords:
     get:
       description: Retrieves a list of Keyword objects
       parameters:
@@ -10708,7 +10708,7 @@ paths:
       summary: Create new Keywords
       tags:
       - Keywords
-  /datagateway-api/keywords/{id_}:
+  /keywords/{id_}:
     delete:
       description: Updates Keyword with the specified ID with details provided in
         the request body
@@ -10795,7 +10795,7 @@ paths:
       summary: Update Keywords by id
       tags:
       - Keywords
-  /datagateway-api/keywords/count:
+  /keywords/count:
     get:
       description: Return the count of the Keyword objects that would be retrieved
         given the filters provided
@@ -10821,7 +10821,7 @@ paths:
       summary: Count Keywords
       tags:
       - Keywords
-  /datagateway-api/keywords/findone:
+  /keywords/findone:
     get:
       description: Retrieves the first Keyword objects that satisfies the filters.
       parameters:
@@ -10849,7 +10849,7 @@ paths:
       summary: Get single Keyword
       tags:
       - Keywords
-  /datagateway-api/parametertypes:
+  /parametertypes:
     get:
       description: Retrieves a list of ParameterType objects
       parameters:
@@ -10943,7 +10943,7 @@ paths:
       summary: Create new ParameterTypes
       tags:
       - ParameterTypes
-  /datagateway-api/parametertypes/{id_}:
+  /parametertypes/{id_}:
     delete:
       description: Updates ParameterType with the specified ID with details provided
         in the request body
@@ -11030,7 +11030,7 @@ paths:
       summary: Update ParameterTypes by id
       tags:
       - ParameterTypes
-  /datagateway-api/parametertypes/count:
+  /parametertypes/count:
     get:
       description: Return the count of the ParameterType objects that would be retrieved
         given the filters provided
@@ -11056,7 +11056,7 @@ paths:
       summary: Count ParameterTypes
       tags:
       - ParameterTypes
-  /datagateway-api/parametertypes/findone:
+  /parametertypes/findone:
     get:
       description: Retrieves the first ParameterType objects that satisfies the filters.
       parameters:
@@ -11084,7 +11084,7 @@ paths:
       summary: Get single ParameterType
       tags:
       - ParameterTypes
-  /datagateway-api/permissiblestringvalues:
+  /permissiblestringvalues:
     get:
       description: Retrieves a list of PermissibleStringValue objects
       parameters:
@@ -11178,7 +11178,7 @@ paths:
       summary: Create new PermissibleStringValues
       tags:
       - PermissibleStringValues
-  /datagateway-api/permissiblestringvalues/{id_}:
+  /permissiblestringvalues/{id_}:
     delete:
       description: Updates PermissibleStringValue with the specified ID with details
         provided in the request body
@@ -11265,7 +11265,7 @@ paths:
       summary: Update PermissibleStringValues by id
       tags:
       - PermissibleStringValues
-  /datagateway-api/permissiblestringvalues/count:
+  /permissiblestringvalues/count:
     get:
       description: Return the count of the PermissibleStringValue objects that would
         be retrieved given the filters provided
@@ -11291,7 +11291,7 @@ paths:
       summary: Count PermissibleStringValues
       tags:
       - PermissibleStringValues
-  /datagateway-api/permissiblestringvalues/findone:
+  /permissiblestringvalues/findone:
     get:
       description: Retrieves the first PermissibleStringValue objects that satisfies
         the filters.
@@ -11321,7 +11321,7 @@ paths:
       summary: Get single PermissibleStringValue
       tags:
       - PermissibleStringValues
-  /datagateway-api/publicsteps:
+  /publicsteps:
     get:
       description: Retrieves a list of PublicStep objects
       parameters:
@@ -11415,7 +11415,7 @@ paths:
       summary: Create new PublicSteps
       tags:
       - PublicSteps
-  /datagateway-api/publicsteps/{id_}:
+  /publicsteps/{id_}:
     delete:
       description: Updates PublicStep with the specified ID with details provided
         in the request body
@@ -11502,7 +11502,7 @@ paths:
       summary: Update PublicSteps by id
       tags:
       - PublicSteps
-  /datagateway-api/publicsteps/count:
+  /publicsteps/count:
     get:
       description: Return the count of the PublicStep objects that would be retrieved
         given the filters provided
@@ -11528,7 +11528,7 @@ paths:
       summary: Count PublicSteps
       tags:
       - PublicSteps
-  /datagateway-api/publicsteps/findone:
+  /publicsteps/findone:
     get:
       description: Retrieves the first PublicStep objects that satisfies the filters.
       parameters:
@@ -11556,7 +11556,7 @@ paths:
       summary: Get single PublicStep
       tags:
       - PublicSteps
-  /datagateway-api/publications:
+  /publications:
     get:
       description: Retrieves a list of Publication objects
       parameters:
@@ -11650,7 +11650,7 @@ paths:
       summary: Create new Publications
       tags:
       - Publications
-  /datagateway-api/publications/{id_}:
+  /publications/{id_}:
     delete:
       description: Updates Publication with the specified ID with details provided
         in the request body
@@ -11737,7 +11737,7 @@ paths:
       summary: Update Publications by id
       tags:
       - Publications
-  /datagateway-api/publications/count:
+  /publications/count:
     get:
       description: Return the count of the Publication objects that would be retrieved
         given the filters provided
@@ -11763,7 +11763,7 @@ paths:
       summary: Count Publications
       tags:
       - Publications
-  /datagateway-api/publications/findone:
+  /publications/findone:
     get:
       description: Retrieves the first Publication objects that satisfies the filters.
       parameters:
@@ -11791,7 +11791,7 @@ paths:
       summary: Get single Publication
       tags:
       - Publications
-  /datagateway-api/relateddatafiles:
+  /relateddatafiles:
     get:
       description: Retrieves a list of RelatedDatafile objects
       parameters:
@@ -11885,7 +11885,7 @@ paths:
       summary: Create new RelatedDatafiles
       tags:
       - RelatedDatafiles
-  /datagateway-api/relateddatafiles/{id_}:
+  /relateddatafiles/{id_}:
     delete:
       description: Updates RelatedDatafile with the specified ID with details provided
         in the request body
@@ -11972,7 +11972,7 @@ paths:
       summary: Update RelatedDatafiles by id
       tags:
       - RelatedDatafiles
-  /datagateway-api/relateddatafiles/count:
+  /relateddatafiles/count:
     get:
       description: Return the count of the RelatedDatafile objects that would be retrieved
         given the filters provided
@@ -11998,7 +11998,7 @@ paths:
       summary: Count RelatedDatafiles
       tags:
       - RelatedDatafiles
-  /datagateway-api/relateddatafiles/findone:
+  /relateddatafiles/findone:
     get:
       description: Retrieves the first RelatedDatafile objects that satisfies the
         filters.
@@ -12027,7 +12027,7 @@ paths:
       summary: Get single RelatedDatafile
       tags:
       - RelatedDatafiles
-  /datagateway-api/relateditems:
+  /relateditems:
     get:
       description: Retrieves a list of RelatedItem objects
       parameters:
@@ -12121,7 +12121,7 @@ paths:
       summary: Create new RelatedItems
       tags:
       - RelatedItems
-  /datagateway-api/relateditems/{id_}:
+  /relateditems/{id_}:
     delete:
       description: Updates RelatedItem with the specified ID with details provided
         in the request body
@@ -12208,7 +12208,7 @@ paths:
       summary: Update RelatedItems by id
       tags:
       - RelatedItems
-  /datagateway-api/relateditems/count:
+  /relateditems/count:
     get:
       description: Return the count of the RelatedItem objects that would be retrieved
         given the filters provided
@@ -12234,7 +12234,7 @@ paths:
       summary: Count RelatedItems
       tags:
       - RelatedItems
-  /datagateway-api/relateditems/findone:
+  /relateditems/findone:
     get:
       description: Retrieves the first RelatedItem objects that satisfies the filters.
       parameters:
@@ -12262,7 +12262,7 @@ paths:
       summary: Get single RelatedItem
       tags:
       - RelatedItems
-  /datagateway-api/rules:
+  /rules:
     get:
       description: Retrieves a list of Rule objects
       parameters:
@@ -12355,7 +12355,7 @@ paths:
       summary: Create new Rules
       tags:
       - Rules
-  /datagateway-api/rules/{id_}:
+  /rules/{id_}:
     delete:
       description: Updates Rule with the specified ID with details provided in the
         request body
@@ -12442,7 +12442,7 @@ paths:
       summary: Update Rules by id
       tags:
       - Rules
-  /datagateway-api/rules/count:
+  /rules/count:
     get:
       description: Return the count of the Rule objects that would be retrieved given
         the filters provided
@@ -12468,7 +12468,7 @@ paths:
       summary: Count Rules
       tags:
       - Rules
-  /datagateway-api/rules/findone:
+  /rules/findone:
     get:
       description: Retrieves the first Rule objects that satisfies the filters.
       parameters:
@@ -12496,7 +12496,7 @@ paths:
       summary: Get single Rule
       tags:
       - Rules
-  /datagateway-api/sampleparameters:
+  /sampleparameters:
     get:
       description: Retrieves a list of SampleParameter objects
       parameters:
@@ -12590,7 +12590,7 @@ paths:
       summary: Create new SampleParameters
       tags:
       - SampleParameters
-  /datagateway-api/sampleparameters/{id_}:
+  /sampleparameters/{id_}:
     delete:
       description: Updates SampleParameter with the specified ID with details provided
         in the request body
@@ -12677,7 +12677,7 @@ paths:
       summary: Update SampleParameters by id
       tags:
       - SampleParameters
-  /datagateway-api/sampleparameters/count:
+  /sampleparameters/count:
     get:
       description: Return the count of the SampleParameter objects that would be retrieved
         given the filters provided
@@ -12703,7 +12703,7 @@ paths:
       summary: Count SampleParameters
       tags:
       - SampleParameters
-  /datagateway-api/sampleparameters/findone:
+  /sampleparameters/findone:
     get:
       description: Retrieves the first SampleParameter objects that satisfies the
         filters.
@@ -12732,7 +12732,7 @@ paths:
       summary: Get single SampleParameter
       tags:
       - SampleParameters
-  /datagateway-api/sampletypes:
+  /sampletypes:
     get:
       description: Retrieves a list of SampleType objects
       parameters:
@@ -12826,7 +12826,7 @@ paths:
       summary: Create new SampleTypes
       tags:
       - SampleTypes
-  /datagateway-api/sampletypes/{id_}:
+  /sampletypes/{id_}:
     delete:
       description: Updates SampleType with the specified ID with details provided
         in the request body
@@ -12913,7 +12913,7 @@ paths:
       summary: Update SampleTypes by id
       tags:
       - SampleTypes
-  /datagateway-api/sampletypes/count:
+  /sampletypes/count:
     get:
       description: Return the count of the SampleType objects that would be retrieved
         given the filters provided
@@ -12939,7 +12939,7 @@ paths:
       summary: Count SampleTypes
       tags:
       - SampleTypes
-  /datagateway-api/sampletypes/findone:
+  /sampletypes/findone:
     get:
       description: Retrieves the first SampleType objects that satisfies the filters.
       parameters:
@@ -12967,7 +12967,7 @@ paths:
       summary: Get single SampleType
       tags:
       - SampleTypes
-  /datagateway-api/samples:
+  /samples:
     get:
       description: Retrieves a list of Sample objects
       parameters:
@@ -13060,7 +13060,7 @@ paths:
       summary: Create new Samples
       tags:
       - Samples
-  /datagateway-api/samples/{id_}:
+  /samples/{id_}:
     delete:
       description: Updates Sample with the specified ID with details provided in the
         request body
@@ -13147,7 +13147,7 @@ paths:
       summary: Update Samples by id
       tags:
       - Samples
-  /datagateway-api/samples/count:
+  /samples/count:
     get:
       description: Return the count of the Sample objects that would be retrieved
         given the filters provided
@@ -13173,7 +13173,7 @@ paths:
       summary: Count Samples
       tags:
       - Samples
-  /datagateway-api/samples/findone:
+  /samples/findone:
     get:
       description: Retrieves the first Sample objects that satisfies the filters.
       parameters:
@@ -13201,7 +13201,7 @@ paths:
       summary: Get single Sample
       tags:
       - Samples
-  /datagateway-api/shifts:
+  /shifts:
     get:
       description: Retrieves a list of Shift objects
       parameters:
@@ -13294,7 +13294,7 @@ paths:
       summary: Create new Shifts
       tags:
       - Shifts
-  /datagateway-api/shifts/{id_}:
+  /shifts/{id_}:
     delete:
       description: Updates Shift with the specified ID with details provided in the
         request body
@@ -13381,7 +13381,7 @@ paths:
       summary: Update Shifts by id
       tags:
       - Shifts
-  /datagateway-api/shifts/count:
+  /shifts/count:
     get:
       description: Return the count of the Shift objects that would be retrieved given
         the filters provided
@@ -13407,7 +13407,7 @@ paths:
       summary: Count Shifts
       tags:
       - Shifts
-  /datagateway-api/shifts/findone:
+  /shifts/findone:
     get:
       description: Retrieves the first Shift objects that satisfies the filters.
       parameters:
@@ -13435,7 +13435,7 @@ paths:
       summary: Get single Shift
       tags:
       - Shifts
-  /datagateway-api/studies:
+  /studies:
     get:
       description: Retrieves a list of Study objects
       parameters:
@@ -13528,7 +13528,7 @@ paths:
       summary: Create new Studies
       tags:
       - Studies
-  /datagateway-api/studies/{id_}:
+  /studies/{id_}:
     delete:
       description: Updates Study with the specified ID with details provided in the
         request body
@@ -13615,7 +13615,7 @@ paths:
       summary: Update Studies by id
       tags:
       - Studies
-  /datagateway-api/studies/count:
+  /studies/count:
     get:
       description: Return the count of the Study objects that would be retrieved given
         the filters provided
@@ -13641,7 +13641,7 @@ paths:
       summary: Count Studies
       tags:
       - Studies
-  /datagateway-api/studies/findone:
+  /studies/findone:
     get:
       description: Retrieves the first Study objects that satisfies the filters.
       parameters:
@@ -13669,7 +13669,7 @@ paths:
       summary: Get single Study
       tags:
       - Studies
-  /datagateway-api/studyinvestigations:
+  /studyinvestigations:
     get:
       description: Retrieves a list of StudyInvestigation objects
       parameters:
@@ -13763,7 +13763,7 @@ paths:
       summary: Create new StudyInvestigations
       tags:
       - StudyInvestigations
-  /datagateway-api/studyinvestigations/{id_}:
+  /studyinvestigations/{id_}:
     delete:
       description: Updates StudyInvestigation with the specified ID with details provided
         in the request body
@@ -13850,7 +13850,7 @@ paths:
       summary: Update StudyInvestigations by id
       tags:
       - StudyInvestigations
-  /datagateway-api/studyinvestigations/count:
+  /studyinvestigations/count:
     get:
       description: Return the count of the StudyInvestigation objects that would be
         retrieved given the filters provided
@@ -13876,7 +13876,7 @@ paths:
       summary: Count StudyInvestigations
       tags:
       - StudyInvestigations
-  /datagateway-api/studyinvestigations/findone:
+  /studyinvestigations/findone:
     get:
       description: Retrieves the first StudyInvestigation objects that satisfies the
         filters.
@@ -13905,7 +13905,7 @@ paths:
       summary: Get single StudyInvestigation
       tags:
       - StudyInvestigations
-  /datagateway-api/techniques:
+  /techniques:
     get:
       description: Retrieves a list of Technique objects
       parameters:
@@ -13999,7 +13999,7 @@ paths:
       summary: Create new Techniques
       tags:
       - Techniques
-  /datagateway-api/techniques/{id_}:
+  /techniques/{id_}:
     delete:
       description: Updates Technique with the specified ID with details provided in
         the request body
@@ -14086,7 +14086,7 @@ paths:
       summary: Update Techniques by id
       tags:
       - Techniques
-  /datagateway-api/techniques/count:
+  /techniques/count:
     get:
       description: Return the count of the Technique objects that would be retrieved
         given the filters provided
@@ -14112,7 +14112,7 @@ paths:
       summary: Count Techniques
       tags:
       - Techniques
-  /datagateway-api/techniques/findone:
+  /techniques/findone:
     get:
       description: Retrieves the first Technique objects that satisfies the filters.
       parameters:
@@ -14140,7 +14140,7 @@ paths:
       summary: Get single Technique
       tags:
       - Techniques
-  /datagateway-api/usergroups:
+  /usergroups:
     get:
       description: Retrieves a list of UserGroup objects
       parameters:
@@ -14234,7 +14234,7 @@ paths:
       summary: Create new UserGroups
       tags:
       - UserGroups
-  /datagateway-api/usergroups/{id_}:
+  /usergroups/{id_}:
     delete:
       description: Updates UserGroup with the specified ID with details provided in
         the request body
@@ -14321,7 +14321,7 @@ paths:
       summary: Update UserGroups by id
       tags:
       - UserGroups
-  /datagateway-api/usergroups/count:
+  /usergroups/count:
     get:
       description: Return the count of the UserGroup objects that would be retrieved
         given the filters provided
@@ -14347,7 +14347,7 @@ paths:
       summary: Count UserGroups
       tags:
       - UserGroups
-  /datagateway-api/usergroups/findone:
+  /usergroups/findone:
     get:
       description: Retrieves the first UserGroup objects that satisfies the filters.
       parameters:
@@ -14375,7 +14375,7 @@ paths:
       summary: Get single UserGroup
       tags:
       - UserGroups
-  /datagateway-api/users:
+  /users:
     get:
       description: Retrieves a list of User objects
       parameters:
@@ -14468,7 +14468,7 @@ paths:
       summary: Create new Users
       tags:
       - Users
-  /datagateway-api/users/{id_}:
+  /users/{id_}:
     delete:
       description: Updates User with the specified ID with details provided in the
         request body
@@ -14555,7 +14555,7 @@ paths:
       summary: Update Users by id
       tags:
       - Users
-  /datagateway-api/users/count:
+  /users/count:
     get:
       description: Return the count of the User objects that would be retrieved given
         the filters provided
@@ -14581,7 +14581,7 @@ paths:
       summary: Count Users
       tags:
       - Users
-  /datagateway-api/users/findone:
+  /users/findone:
     get:
       description: Retrieves the first User objects that satisfies the filters.
       parameters:
@@ -14609,7 +14609,7 @@ paths:
       summary: Get single User
       tags:
       - Users
-  /datagateway-api/sessions:
+  /sessions:
     delete:
       description: Deletes a users sessionID when they logout
       responses:
@@ -14709,7 +14709,7 @@ paths:
       summary: Refresh session
       tags:
       - Sessions
-  /datagateway-api/ping:
+  /ping:
     get:
       description: Pings the API's connection method to check responsiveness
       responses:
@@ -14720,7 +14720,7 @@ paths:
                 description: OK message
                 example: DataGateway API OK
                 type: string
-          description: Success - the API is responsive on the backend configured
+          description: Success - the API is responsive on the python ICAT server
         '500':
           description: Pinging the API's connection method has gone wrong
       summary: Ping API connection method

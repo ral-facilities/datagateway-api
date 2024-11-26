@@ -37,7 +37,7 @@ log = logging.getLogger()
 
 def requires_session_id(method):
     """
-    Decorator for Python ICAT backend methods that looks out for session errors when
+    Decorator for Python ICAT methods that looks out for session errors when
     using the API. The API call runs and an ICATSessionError may be raised due to an
     expired session, invalid session ID etc.
 
@@ -50,7 +50,7 @@ def requires_session_id(method):
     decorator is applied, which is reasonable to assume considering the current method
     signatures of all the endpoints.
 
-    :param method: The method for the backend operation
+    :param method: The method for the python ICAT operation
     :raises AuthenticationError: If a valid session_id is not provided with the request
     """
 
@@ -61,7 +61,8 @@ def requires_session_id(method):
 
             client = get_cached_client(args[1], client_pool)
             client.sessionId = args[1]
-            # Client object put into kwargs so it can be accessed by backend functions
+            # Client object put into kwargs so it can be accessed by
+            # python ICAT functions
             kwargs["client"] = client
 
             # Find out if session has expired

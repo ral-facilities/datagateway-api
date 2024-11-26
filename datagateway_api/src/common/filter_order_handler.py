@@ -176,7 +176,7 @@ class FilterOrderHandler(object):
     def manage_icat_filters(self, filters, query):
         """
         Utility function to call other functions in this class, used to manage filters
-        when using the Python ICAT backend. These steps are the same with the different
+        when using the Python ICAT. These steps are the same with the different
         types of requests that utilise filters, therefore this function helps to reduce
         code duplication
 

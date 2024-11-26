@@ -17,7 +17,7 @@ from datagateway_api.src.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.src.datagateway_api.database import models
+from datagateway_api.src.datagateway_api.icat import models
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
@@ -137,7 +137,7 @@ def get_entity_object_from_name(entity_name):
     :param entity_name: Name of the entity to fetch a version from this model
     :type entity_name: :class:`str`
     :return: Object of the entity requested (e.g.
-        :class:`.datagateway_api.database.models.INVESTIGATIONINSTRUMENT`)
+        :class:`.datagateway_api.icat.models.INVESTIGATIONINSTRUMENT`)
     :raises: KeyError: If an entity model cannot be found as a class in this model
     """
     try:

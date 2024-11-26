@@ -83,7 +83,7 @@ class EntityHelper(ABC):
         :return: The converted field
         """
         if isinstance(field, datetime):
-            # Add timezone info to match ICAT backend
+            # Add timezone info to match for python ICAT
             field = field.replace(tzinfo=tzlocal())
             return DateHandler.datetime_object_to_str(field)
         elif isinstance(field, Decimal):

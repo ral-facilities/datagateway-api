@@ -27,11 +27,9 @@ def test_config_data():
     return {
         "datagateway_api": {
             "extension": "/datagateway-api",
-            "backend": "db",
             "client_cache_size": 5,
             "client_pool_init_size": 2,
             "client_pool_max_size": 5,
-            "db_url": "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb",
             "icat_url": "https://localhost:8181",
             "icat_check_cert": False,
         },

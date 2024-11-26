@@ -9,14 +9,8 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.src.common.config import Config
-
-# Only attempt to create a DataGateway API backend if the datagateway_api object
-# is present in the config. This ensures that the API does not error on startup
-# due to an AttributeError exception being thrown if the object is missing.
-if Config.config.datagateway_api:
-    from datagateway_api.src.datagateway_api.backends import create_backend
-from datagateway_api.src.datagateway_api.database.helpers import db  # noqa: I202
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,
@@ -112,21 +106,6 @@ def create_app_infrastructure(flask_app):
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
-
-    if Config.config.datagateway_api is not None:
-        try:
-            backend_type = flask_app.config["TEST_BACKEND"]
-            Config.config.datagateway_api.set_backend_type(backend_type)
-        except KeyError:
-            backend_type = Config.config.datagateway_api.backend
-
-        if backend_type == "db":
-            flask_app.config[
-                "SQLALCHEMY_DATABASE_URI"
-            ] = Config.config.datagateway_api.db_url
-            flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-            db.init_app(flask_app)
-
     specs = []
     if Config.config.datagateway_api is not None:
         configure_datagateway_api_swaggerui_blueprint(flask_app)
@@ -148,25 +127,18 @@ def create_api_endpoints(flask_app, api, specs):
         datagateway_api_spec = next(
             (spec for spec in specs if spec.title == "DataGateway API"), None,
         )
-        try:
-            backend_type = flask_app.config["TEST_BACKEND"]
-            Config.config.datagateway_api.set_backend_type(backend_type)
-        except KeyError:
-            backend_type = Config.config.datagateway_api.backend
 
-        backend = create_backend(backend_type)
+        python_icat = PythonICAT()
 
-        icat_client_pool = None
-        if backend_type == "python_icat":
-            # Create client pool
-            icat_client_pool = create_client_pool()
+        # Create client pool
+        icat_client_pool = create_client_pool()
 
         datagateway_api_extension = Config.config.datagateway_api.extension
         for entity_name in endpoints:
             get_endpoint_resource = get_endpoint(
                 entity_name,
                 endpoints[entity_name],
-                backend,
+                python_icat,
                 client_pool=icat_client_pool,
             )
             api.add_resource(
@@ -179,7 +151,7 @@ def create_api_endpoints(flask_app, api, specs):
             get_id_endpoint_resource = get_id_endpoint(
                 entity_name,
                 endpoints[entity_name],
-                backend,
+                python_icat,
                 client_pool=icat_client_pool,
             )
             api.add_resource(
@@ -192,7 +164,7 @@ def create_api_endpoints(flask_app, api, specs):
             get_count_endpoint_resource = get_count_endpoint(
                 entity_name,
                 endpoints[entity_name],
-                backend,
+                python_icat,
                 client_pool=icat_client_pool,
             )
             api.add_resource(
@@ -205,7 +177,7 @@ def create_api_endpoints(flask_app, api, specs):
             get_find_one_endpoint_resource = get_find_one_endpoint(
                 entity_name,
                 endpoints[entity_name],
-                backend,
+                python_icat,
                 client_pool=icat_client_pool,
             )
             api.add_resource(
@@ -217,7 +189,7 @@ def create_api_endpoints(flask_app, api, specs):
 
         # Session endpoint
         session_endpoint_resource = session_endpoints(
-            backend, client_pool=icat_client_pool,
+            python_icat, client_pool=icat_client_pool,
         )
         api.add_resource(
             session_endpoint_resource,
@@ -227,7 +199,7 @@ def create_api_endpoints(flask_app, api, specs):
         datagateway_api_spec.path(resource=session_endpoint_resource, api=api)
 
         # Ping endpoint
-        ping_resource = ping_endpoint(backend, client_pool=icat_client_pool)
+        ping_resource = ping_endpoint(python_icat, client_pool=icat_client_pool)
         api.add_resource(ping_resource, f"{datagateway_api_extension}/ping")
         datagateway_api_spec.path(resource=ping_resource, api=api)
 

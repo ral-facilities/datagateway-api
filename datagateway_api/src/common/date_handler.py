@@ -32,8 +32,7 @@ class DateHandler:
     @staticmethod
     def str_to_datetime_object(data):
         """
-        Convert a string to a `datetime.datetime` object. This is commonly used when
-        storing user input in ICAT (using the Python ICAT backend).
+        Convert a string to a `datetime.datetime` object.
 
         Python 3.7+ has support for `datetime.fromisoformat()` which would be a more
         elegant solution to this conversion operation since dates are converted into ISO
