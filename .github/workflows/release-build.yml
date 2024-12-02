@@ -17,6 +17,6 @@ jobs:
           token: ${{ secrets.ADMIN_PAT }}
 
       - name: Python Semantic Release
-        uses: python-semantic-release/python-semantic-release@c1bcfdbb994243ac7cf419365d5894d6bfb2950e # v9.12.0
+        uses: python-semantic-release/python-semantic-release@2773f6d901a5cefed959c6ccda302ef41fed67dc # v9.15.0
         with:
           github_token: ${{ secrets.ADMIN_PAT }}
