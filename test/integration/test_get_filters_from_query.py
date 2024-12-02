@@ -1,4 +1,13 @@
+import pytest
+
 from datagateway_api.src.common.helpers import get_filters_from_query_string
+from datagateway_api.src.datagateway_api.icat.filters import (
+    PythonICATDistinctFieldFilter,
+    PythonICATIncludeFilter,
+    PythonICATLimitFilter,
+    PythonICATOrderFilter,
+    PythonICATSkipFilter,
+)
 
 
 class TestGetFiltersFromQueryString:
@@ -8,6 +17,22 @@ class TestGetFiltersFromQueryString:
 
             assert [] == get_filters_from_query_string("datagateway_api")
 
+    @pytest.mark.parametrize(
+        "filter_input, filter_type",
+        [
+            pytest.param(
+                'distinct="id"', PythonICATDistinctFieldFilter, id="DB distinct filter",
+            ),
+            pytest.param(
+                'include="TEST"', PythonICATIncludeFilter, id="DB include filter",
+            ),
+            pytest.param("limit=10", PythonICATLimitFilter, id="DB limit filter"),
+            pytest.param(
+                'order="id DESC"', PythonICATOrderFilter, id="DB order filter",
+            ),
+            pytest.param("skip=10", PythonICATSkipFilter, id="DB skip filter"),
+        ],
+    )
     def test_valid_filter(self, flask_test_app_db, filter_input, filter_type):
         with flask_test_app_db:
             flask_test_app_db.get(f"/?{filter_input}")
