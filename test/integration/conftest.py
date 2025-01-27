@@ -6,6 +6,7 @@ from flask import Flask
 from icat.client import Client
 import pytest
 
+
 from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
@@ -40,7 +41,7 @@ def flask_test_app():
 def flask_test_app_db():
     """
     This is in the common conftest file because this test app is also used in
-    non-backend specific tests
+    non Python ICAT specific tests
     """
     db_app = Flask(__name__)
     db_app.config["TESTING"] = True

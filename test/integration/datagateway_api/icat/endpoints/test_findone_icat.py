@@ -13,7 +13,7 @@ class TestICATFindone:
     ):
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations/findone?where="
-            '{"title": {"like": "Test data for the Python ICAT Backend on '
+            '{"title": {"like": "Test data for Python ICAT on '
             'DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )

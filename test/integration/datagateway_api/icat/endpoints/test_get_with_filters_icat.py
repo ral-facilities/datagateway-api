@@ -15,7 +15,7 @@ class TestICATGetWithFilters:
     ):
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations?where="
-            '{"title": {"like": "Test data for the Python ICAT Backend on '
+            '{"title": {"like": "Test data for Python ICAT on '
             'DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
@@ -41,13 +41,13 @@ class TestICATGetWithFilters:
     ):
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations?where="
-            '{"title": {"like": "Test data for the Python ICAT Backend on '
+            '{"title": {"like": "Test data for Python ICAT on '
             'DataGateway API"}}&distinct="title"',
             headers=valid_icat_credentials_header,
         )
 
         expected = [
-            {"title": f"Test data for the Python ICAT Backend on DataGateway API {i}"}
+            {"title": f"Test data for Python ICAT on DataGateway API {i}"}
             for i in range(5)
         ]
 
@@ -65,7 +65,7 @@ class TestICATGetWithFilters:
 
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations?where="
-            '{"title": {"like": "Test data for the Python ICAT Backend on '
+            '{"title": {"like": "Test data for Python ICAT on '
             'DataGateway API"}}'
             f'&skip={skip_value}&limit={limit_value}&order="id ASC"',
             headers=valid_icat_credentials_header,

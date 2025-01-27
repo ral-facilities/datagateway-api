@@ -18,7 +18,7 @@ class TestAPIConfig:
             with pytest.raises(SystemExit):
                 APIConfig.load("test/path")
 
-    def test_load_with_datagateway_api_icat_backend_and_missing_icat_config_data(
+    def test_load_with_datagateway_api_python_icat_and_missing_icat_config_data(
         self, test_config_data,
     ):
         del test_config_data["datagateway_api"]["icat_url"]

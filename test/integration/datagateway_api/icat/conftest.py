@@ -30,9 +30,7 @@ def create_investigation_test_data(client, num_entities=1):
     for i in range(num_entities):
         investigation = client.new("investigation")
         investigation.name = f"Test Data for DataGateway API Testing {i}"
-        investigation.title = (
-            f"Test data for the Python ICAT Backend on DataGateway API {i}"
-        )
+        investigation.title = f"Test data for Python ICAT on DataGateway API {i}"
         investigation.startDate = datetime(
             year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=tzlocal(),
         )
@@ -86,7 +84,6 @@ def multiple_investigation_test_data(icat_client):
 def flask_test_app_icat(flask_test_app):
     icat_app = Flask(__name__)
     icat_app.config["TESTING"] = True
-    icat_app.config["TEST_BACKEND"] = "python_icat"
 
     api, spec = create_app_infrastructure(icat_app)
     create_api_endpoints(icat_app, api, spec)

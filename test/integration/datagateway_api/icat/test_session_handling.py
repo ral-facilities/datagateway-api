@@ -5,7 +5,6 @@ from dateutil.tz import tzlocal
 from icat.client import Client
 import pytest
 
-
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import AuthenticationError
@@ -109,7 +108,7 @@ class TestSessionHandling:
         icat_client.sessionId = login_response.json["sessionID"]
         icat_query.setAggregate("COUNT")
         title_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
+            "title", "Test data for Python ICAT on DataGateway API", "like",
         )
         title_filter.apply_filter(icat_query)
 

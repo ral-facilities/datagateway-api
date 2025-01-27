@@ -12,7 +12,9 @@ from datagateway_api.src.datagateway_api.icat.filters import (
 from datagateway_api.src.datagateway_api.icat.query import ICATQuery
 
 
-def prepare_icat_data_for_assertion(data, remove_id=False, remove_visit_id=False):
+def prepare_icat_data_for_assertion(
+    data, remove_id=False, remove_visit_id=False,
+):
     """
     Remove meta attributes from ICAT data. Meta attributes contain data about data
     creation/modification, and should be removed to ensure correct assertion values
@@ -125,10 +127,7 @@ class TestICATQuery:
         ", manual_count, return_json_format_flag, expected_query_result",
         [
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 None,
                 None,
                 None,
@@ -144,17 +143,13 @@ class TestICATQuery:
                         "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
                         "summary": None,
-                        "title": "Test data for the Python ICAT Backend on DataGateway"
-                        " API 0",
+                        "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],
                 id="Ordinary query",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 None,
                 ["facility"],
                 None,
@@ -168,8 +163,7 @@ class TestICATQuery:
                         "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
                         "summary": None,
-                        "title": "Test data for the Python ICAT Backend on DataGateway"
-                        " API 0",
+                        "title": "Test data for Python ICAT on DataGateway" " API 0",
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "facility": {
@@ -185,10 +179,7 @@ class TestICATQuery:
                 id="Query with included entity",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 "COUNT",
                 None,
                 None,
@@ -198,10 +189,7 @@ class TestICATQuery:
                 id="Count query",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 None,
                 None,
                 None,
@@ -217,35 +205,23 @@ class TestICATQuery:
                         "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
                         "summary": None,
-                        "title": "Test data for the Python ICAT Backend on DataGateway"
-                        " API 0",
+                        "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],
                 id="Data returned as entity objects",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 "DISTINCT",
                 None,
                 "title",
                 False,
                 True,
-                [
-                    {
-                        "title": "Test data for the Python ICAT Backend on DataGateway"
-                        " API 0",
-                    },
-                ],
+                [{"title": "Test data for Python ICAT on DataGateway" " API 0"}],
                 id="Single distinct field",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 "DISTINCT",
                 None,
                 ["title", "name"],
@@ -253,18 +229,14 @@ class TestICATQuery:
                 True,
                 [
                     {
-                        "title": "Test data for the Python ICAT Backend on DataGateway"
-                        " API 0",
+                        "title": "Test data for Python ICAT on DataGateway" " API 0",
                         "name": "Test Data for DataGateway API Testing 0",
                     },
                 ],
                 id="Multiple distinct fields",
             ),
             pytest.param(
-                {
-                    "title": "like '%Test data for the Python ICAT Backend on"
-                    " DataGateway API%'",
-                },
+                {"title": "like '%Test data for Python ICAT on" " DataGateway API%'"},
                 "DISTINCT",
                 None,
                 ["title", "name"],
@@ -335,7 +307,7 @@ class TestICATQuery:
     ):
         test_query = ICATQuery(icat_client, "Investigation")
         test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
+            "title", "Test data for Python ICAT on DataGateway API", "like",
         )
         test_data_filter.apply_filter(test_query.query)
         query_data = test_query.execute_query(icat_client, True)
