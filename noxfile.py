@@ -75,118 +75,7 @@ def safety(session):
         # Ignore vulnerabilities as the patched versions of dependencies that they
         # relate to don't support Python 3.6 which is still required for production
         session.run(
-            "safety",
-            "check",
-            f"--file={requirements.name}",
-            "--full-report",
-            "--ignore",
-            "50916",
-            "--ignore",
-            "51457",
-            "--ignore",
-            "51668",
-            "--ignore",
-            "52322",
-            "--ignore",
-            "52518",
-            "--ignore",
-            "53325",
-            "--ignore",
-            "53326",
-            "--ignore",
-            "54456",
-            "--ignore",
-            "55261",
-            "--ignore",
-            "58910",
-            "--ignore",
-            "58755",
-            "--ignore",
-            "59062",
-            "--ignore",
-            "59473",
-            "--ignore",
-            "60223",
-            "--ignore",
-            "60224",
-            "--ignore",
-            "60225",
-            "--ignore",
-            "60350",
-            "--ignore",
-            "60789",
-            "--ignore",
-            "60841",
-            "--ignore",
-            "61416",
-            "--ignore",
-            "62019",
-            "--ignore",
-            "62151",
-            "--ignore",
-            "62451",
-            "--ignore",
-            "62452",
-            "--ignore",
-            "62556",
-            "--ignore",
-            "63687",
-            "--ignore",
-            "64121",
-            "--ignore",
-            "64227",
-            "--ignore",
-            "65212",
-            "--ignore",
-            "64484",
-            "--ignore",
-            "65278",
-            "--ignore",
-            "65510",
-            "--ignore",
-            "65647",
-            "--ignore",
-            "66704",
-            "--ignore",
-            "66777",
-            "--ignore",
-            "67892",
-            "--ignore",
-            "70612",
-            "--ignore",
-            "70624",
-            "--ignore",
-            "70790",
-            "--ignore",
-            "70982",
-            "--ignore",
-            "70993",
-            "--ignore",
-            "71064",
-            "--ignore",
-            "71083",
-            "--ignore",
-            "71219",
-            "--ignore",
-            "71590",
-            "--ignore",
-            "71591",
-            "--ignore",
-            "71594",
-            "--ignore",
-            "71595",
-            "--ignore",
-            "71680",
-            "--ignore",
-            "71681",
-            "--ignore",
-            "71684",
-            "--ignore",
-            "72132",
-            "--ignore",
-            "72731",
-            "--ignore",
-            "72981",
+            "safety", "check", f"--file={requirements.name}", "--full-report",
         )
 
         try:
@@ -197,7 +86,7 @@ def safety(session):
             session.log("Error: The temporary requirements file could not be closed")
 
 
-@nox.session(python=["3.6", "3.7", "3.8", "3.9", "3.10"], reuse_venv=True)
+@nox.session(python=["3.9", "3.10"], reuse_venv=True)
 def unit_tests(session):
     args = session.posargs
     # Explicitly installing/downgrading setuptools is done to fix poetry install on 3.8+
@@ -205,18 +94,18 @@ def unit_tests(session):
     # A cleaner fix would be to upgrade the packaging library to 22.0+ (as per
     # https://github.com/pypa/setuptools/issues/4483#issuecomment-2236339726) but this
     # cannot be done on this repo until support for Python 3.6 is dropped
-    if session.python in ["3.8", "3.9", "3.10"]:
-        session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
+
+    session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", "test/unit", *args)
 
 
-@nox.session(python=["3.6", "3.7", "3.8", "3.9", "3.10"], reuse_venv=True)
+@nox.session(python=["3.9", "3.10"], reuse_venv=True)
 def integration_tests(session):
     args = session.posargs
     # Explicit downgrade of setuptools also performed here. See explanation in
     # `unit_tests()`
-    if session.python in ["3.8", "3.9", "3.10"]:
-        session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
+
+    session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", "test/integration", *args)
