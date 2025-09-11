@@ -155,11 +155,11 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "click"
-version = "8.1.8"
+version = "8.2.2"
 description = "Composable command line interface toolkit"
 category = "main"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.10"
 
 [package.dependencies]
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
@@ -211,24 +211,24 @@ packaging = ">=20.4"
 
 [[package]]
 name = "cryptography"
-version = "43.0.3"
+version = "45.0.7"
 description = "cryptography is a package which provides cryptographic recipes and primitives to Python developers."
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = "!=3.9.0,!=3.9.1,>=3.7"
 
 [package.dependencies]
-cffi = {version = ">=1.12", markers = "platform_python_implementation != \"PyPy\""}
+cffi = {version = ">=1.14", markers = "platform_python_implementation != \"PyPy\""}
 
 [package.extras]
 ssh = ["bcrypt (>=3.1.5)"]
-nox = ["nox"]
-test = ["cryptography-vectors (==43.0.3)", "pytest (>=6.2.0)", "pytest-benchmark", "pytest-cov", "pytest-xdist", "pretend", "certifi"]
+nox = ["nox (>=2024.4.15)", "nox[uv] (>=2024.3.2)"]
+test = ["cryptography-vectors (==45.0.7)", "pytest (>=7.4.0)", "pytest-benchmark (>=4.0)", "pytest-cov (>=2.10.1)", "pytest-xdist (>=3.5.0)", "pretend (>=0.7)", "certifi (>=2024)"]
 test-randomorder = ["pytest-randomly"]
-docs = ["sphinx (>=5.3.0)", "sphinx-rtd-theme (>=1.1.1)"]
-docstest = ["pyenchant (>=1.6.11)", "readme-renderer", "sphinxcontrib-spelling (>=4.0.1)"]
-sdist = ["build"]
-pep8test = ["ruff", "mypy", "check-sdist", "click"]
+docs = ["sphinx (>=5.3.0)", "sphinx-rtd-theme (>=3.0.0)", "sphinx-inline-tabs"]
+docstest = ["pyenchant (>=3)", "readme-renderer (>=30.0)", "sphinxcontrib-spelling (>=7.3.1)"]
+sdist = ["build (>=1.0.0)"]
+pep8test = ["ruff (>=0.3.6)", "mypy (>=1.4)", "check-sdist", "click (>=8.0.1)"]
 
 [[package]]
 name = "docutils"
@@ -419,7 +419,6 @@ python-versions = ">=3.8"
 [package.dependencies]
 blinker = ">=1.6.2"
 click = ">=8.1.3"
-importlib-metadata = {version = ">=3.6.0", markers = "python_version < \"3.10\""}
 itsdangerous = ">=2.1.2"
 Jinja2 = ">=3.1.2"
 Werkzeug = ">=2.3.7"
@@ -500,7 +499,6 @@ python-versions = ">=3.7"
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
-typing-extensions = {version = ">=3.10.0.2", markers = "python_version < \"3.10\""}
 
 [package.extras]
 test = ["coverage", "ddt (>=1.1.1,!=1.4.3)", "mock", "mypy", "pre-commit", "pytest (>=7.3.1)", "pytest-cov", "pytest-instafail", "pytest-mock", "pytest-sugar", "typing-extensions"]
@@ -541,7 +539,7 @@ all = ["ruff (>=0.6.2)", "mypy (>=1.11.2)", "pytest (>=8.3.2)", "flake8 (>=7.1.1
 name = "importlib-metadata"
 version = "8.7.0"
 description = "Read metadata from Python packages"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 
@@ -684,24 +682,23 @@ completion = ["shtab (>=1.1.0)"]
 
 [[package]]
 name = "markdown-it-py"
-version = "3.0.0"
+version = "4.0.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
 category = "dev"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 
 [package.dependencies]
 mdurl = ">=0.1,<1.0"
 
 [package.extras]
 benchmarking = ["psutil", "pytest", "pytest-benchmark"]
-code_style = ["pre-commit (>=3.0,<4.0)"]
-compare = ["commonmark (>=0.9,<1.0)", "markdown (>=3.4,<4.0)", "mistletoe (>=1.0,<2.0)", "mistune (>=2.0,<3.0)", "panflute (>=2.3,<3.0)"]
+compare = ["commonmark (>=0.9,<1.0)", "markdown (>=3.4,<4.0)", "mistletoe (>=1.0,<2.0)", "mistune (>=3.0,<4.0)", "panflute (>=2.3,<3.0)", "markdown-it-pyrs"]
 linkify = ["linkify-it-py (>=1,<3)"]
-plugins = ["mdit-py-plugins"]
+plugins = ["mdit-py-plugins (>=0.5.0)"]
 profiling = ["gprof2dot"]
-rtd = ["mdit-py-plugins", "myst-parser", "pyyaml", "sphinx", "sphinx-copybutton", "sphinx-design", "sphinx-book-theme", "jupyter-sphinx"]
-testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
+rtd = ["mdit-py-plugins (>=0.5.0)", "myst-parser", "pyyaml", "sphinx", "sphinx-copybutton", "sphinx-design", "sphinx-book-theme (>=1.0,<2.0)", "jupyter-sphinx", "ipykernel"]
+testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions", "requests"]
 
 [[package]]
 name = "markupsafe"
@@ -1168,11 +1165,11 @@ gitlab = ["python-gitlab (>=1.3.0)"]
 
 [[package]]
 name = "secretstorage"
-version = "3.3.3"
+version = "3.4.0"
 description = "Python bindings to FreeDesktop.org Secret Service API"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.10"
 
 [package.dependencies]
 cryptography = ">=2.0"
@@ -1368,7 +1365,7 @@ watchdog = ["watchdog (>=2.3)"]
 name = "zipp"
 version = "3.23.0"
 description = "Backport of pathlib-compatible object wrapper for zip files"
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.9"
 
@@ -1382,8 +1379,8 @@ type = ["pytest-mypy"]
 
 [metadata]
 lock-version = "1.1"
-python-versions = ">=3.9.0,<4.0"
-content-hash = "21f56a7161751d016f3f73e900dcf36641fa06a5e3ddf931206db8cea8931c6a"
+python-versions = ">=3.10.0,<4.0"
+content-hash = "866d1fb43135c0f90d3c2fed1eb2c45bf44ee0fa758b660c07613eeeb0ff865c"
 
 [metadata.files]
 aniso8601 = []
