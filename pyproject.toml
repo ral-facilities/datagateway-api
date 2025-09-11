@@ -39,7 +39,7 @@ pydantic = "^1.8.2"
 [tool.poetry.dev-dependencies]
 pip-tools = "5.3.1"
 Faker = "8.5.1"
-black = "19.10b0"
+black = "^24.0"
 flake8 = "^3.8.4"
 flake8-bandit = "^2.1.2"
 flake8-bugbear = "^20.1.4"
