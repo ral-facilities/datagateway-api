@@ -35,7 +35,7 @@ def install_with_constraints(session, *args, **kwargs):
 def black(session):
     args = session.posargs or code_locations
 
-    install_with_constraints(session, "black")
+    install_with_constraints(session, "black", "click<8.1.0")
     session.run("black", *args, external=True)
 
 
