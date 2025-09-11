@@ -35,7 +35,7 @@ def install_with_constraints(session, *args, **kwargs):
 def black(session):
     args = session.posargs or code_locations
 
-    install_with_constraints(session, "black", "click<8.1.0")
+    install_with_constraints(session, "black")
     session.run("black", *args, external=True)
 
 
@@ -75,7 +75,10 @@ def safety(session):
         # Ignore vulnerabilities as the patched versions of dependencies that they
         # relate to don't support Python 3.6 which is still required for production
         session.run(
-            "safety", "check", f"--file={requirements.name}", "--full-report",
+            "safety",
+            "check",
+            f"--file={requirements.name}",
+            "--full-report",
         )
 
         try:
