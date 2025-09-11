@@ -86,7 +86,7 @@ def safety(session):
             session.log("Error: The temporary requirements file could not be closed")
 
 
-@nox.session(python=["3.9", "3.10"], reuse_venv=True)
+@nox.session(python=["3.10"], reuse_venv=True)
 def unit_tests(session):
     args = session.posargs
     # Explicitly installing/downgrading setuptools is done to fix poetry install on 3.8+
@@ -100,7 +100,7 @@ def unit_tests(session):
     session.run("pytest", "test/unit", *args)
 
 
-@nox.session(python=["3.9", "3.10"], reuse_venv=True)
+@nox.session(python=["3.10"], reuse_venv=True)
 def integration_tests(session):
     args = session.posargs
     # Explicit downgrade of setuptools also performed here. See explanation in
