@@ -113,7 +113,8 @@ class TestHelpers:
             expected_results_with_scores[i]["score"] = scores[i]
 
         actual_results_with_scores = SearchScoring.add_scores_to_results(
-            SEARCH_API_DOCUMENT_RESULTS, SEARCH_SCORING_API_SCORES_DATA["scores"],
+            SEARCH_API_DOCUMENT_RESULTS,
+            SEARCH_SCORING_API_SCORES_DATA["scores"],
         )
 
         assert actual_results_with_scores == expected_results_with_scores

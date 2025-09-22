@@ -11,7 +11,9 @@ class TestICATCreateData:
 
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_create_data(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         create_investigations_json = [
             {
@@ -42,14 +44,17 @@ class TestICATCreateData:
             investigation_request.pop("type")
 
         response_json = prepare_icat_data_for_assertion(
-            test_response.json, remove_id=True,
+            test_response.json,
+            remove_id=True,
         )
 
         assert create_investigations_json == response_json
 
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_boundary_create_data(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 
@@ -78,13 +83,16 @@ class TestICATCreateData:
         create_investigation_json.pop("type")
 
         response_json = prepare_icat_data_for_assertion(
-            test_response.json, remove_id=True,
+            test_response.json,
+            remove_id=True,
         )
 
         assert [create_investigation_json] == response_json
 
     def test_invalid_create_data(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         """An investigation requires a minimum of: name, visitId, facility, type"""
 
@@ -127,7 +135,9 @@ class TestICATCreateData:
         assert test_response.status_code == 400
 
     def test_valid_rollback_behaviour(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         request_body = [
             {

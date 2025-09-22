@@ -73,7 +73,8 @@ class ReaderQueryHandler:
         }
         try:
             ReaderQueryHandler.reader_client.login(
-                reader_config.reader_mechanism, login_credentals,
+                reader_config.reader_mechanism,
+                login_credentals,
             )
         except ICATSessionError:
             log.error("User credentials for reader account aren't valid")
@@ -115,7 +116,8 @@ class ReaderQueryHandler:
                 and query_filter.operation == "eq"
             ):
                 log.debug(
-                    "WHERE filter relevant for reader query checking: %s", query_filter,
+                    "WHERE filter relevant for reader query checking: %s",
+                    query_filter,
                 )
                 self.where_filter_entity_id = query_filter.value
                 return query_filter
@@ -137,7 +139,8 @@ class ReaderQueryHandler:
             self.where_filter_entity_id,
         )
         access_query = ICATQuery(
-            client, ReaderQueryHandler.parent_entity_lookup[self.entity_type],
+            client,
+            ReaderQueryHandler.parent_entity_lookup[self.entity_type],
         )
         id_check = PythonICATWhereFilter("id", self.where_filter_entity_id, "eq")
         access_filter_handler = FilterOrderHandler()

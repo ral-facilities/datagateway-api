@@ -76,7 +76,11 @@ class TestSearchAPICountEndpoint:
         ],
     )
     def test_valid_count_endpoint(
-        self, flask_test_app_search_api, endpoint_name, request_filter, expected_json,
+        self,
+        flask_test_app_search_api,
+        endpoint_name,
+        request_filter,
+        expected_json,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
@@ -120,7 +124,11 @@ class TestSearchAPICountEndpoint:
         ],
     )
     def test_valid_count_endpoint_is_public_field(
-        self, flask_test_app_search_api, endpoint_name, request_filter, expected_json,
+        self,
+        flask_test_app_search_api,
+        endpoint_name,
+        request_filter,
+        expected_json,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
@@ -141,7 +149,9 @@ class TestSearchAPICountEndpoint:
         ],
     )
     def test_invalid_count_endpoint(
-        self, flask_test_app_search_api, request_filter,
+        self,
+        flask_test_app_search_api,
+        request_filter,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/Datasets/count"

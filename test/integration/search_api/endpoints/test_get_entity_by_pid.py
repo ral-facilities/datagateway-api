@@ -503,13 +503,20 @@ class TestSearchAPIGetByPIDEndpoint:
             pytest.param("0-8401-1070-7", '{"limit": -1}', 400, id="Bad limit filter"),
             pytest.param("0-8401-1070-7", '{"skip": -100}', 400, id="Bad skip filter"),
             pytest.param(
-                "0-8401-1070-7", '{"include": ""}', 400, id="Bad include filter",
+                "0-8401-1070-7",
+                '{"include": ""}',
+                400,
+                id="Bad include filter",
             ),
             pytest.param("my 404 test pid", "{}", 404, id="Non-existent dataset pid"),
         ],
     )
     def test_invalid_get_by_pid_endpoint(
-        self, flask_test_app_search_api, pid, request_filter, expected_status_code,
+        self,
+        flask_test_app_search_api,
+        pid,
+        request_filter,
+        expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/Datasets/{pid}"

@@ -41,7 +41,7 @@ class TestUpdateMultipleEntities:
         valid_db_credentials_header,
         single_investigation_test_data_db,
     ):
-        """ Request body is a dictionary, not a list of dictionaries"""
+        """Request body is a dictionary, not a list of dictionaries"""
 
         expected_doi = "Test Data Identifier"
         expected_summary = "Test Summary"

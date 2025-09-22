@@ -121,7 +121,8 @@ def get_filters_from_query_string(api_type, entity_name=None):
             for value in request.args.getlist(arg):
                 filters.extend(
                     QueryFilterFactory.get_query_filter(
-                        {arg: json.loads(value)}, entity_name,
+                        {arg: json.loads(value)},
+                        entity_name,
                     ),
                 )
         return filters

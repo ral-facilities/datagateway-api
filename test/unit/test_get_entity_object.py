@@ -14,11 +14,15 @@ class TestGetEntityObject:
         "entity_name, expected_object_type",
         [
             pytest.param(
-                "investigation", type(INVESTIGATION), id="singular entity name",
+                "investigation",
+                type(INVESTIGATION),
+                id="singular entity name",
             ),
             pytest.param("jobs", type(JOB), id="plural entity name, 's' added"),
             pytest.param(
-                "facilities", type(FACILITY), id="plural entity name, 'y' to 'ies'",
+                "facilities",
+                type(FACILITY),
+                id="plural entity name, 'y' to 'ies'",
             ),
         ],
     )

@@ -64,7 +64,8 @@ class TestICATLimitFilter:
         invalid test case is required to cover when invalid arguments are given
         """
         with patch(
-            "icat.query.Query.setLimit", side_effect=TypeError("Mocked Exception"),
+            "icat.query.Query.setLimit",
+            side_effect=TypeError("Mocked Exception"),
         ):
             with pytest.raises(FilterError):
                 icat_set_limit(icat_query, 50, 50)

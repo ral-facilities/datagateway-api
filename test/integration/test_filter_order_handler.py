@@ -78,7 +78,12 @@ class TestFilterOrderHandler:
         "expected_num_of_python_include_filters, expected_icat_relations",
         [
             pytest.param(
-                "Dataset", [], 0, 0, [], id="Dataset without related entities",
+                "Dataset",
+                [],
+                0,
+                0,
+                [],
+                id="Dataset without related entities",
             ),
             pytest.param(
                 "Dataset",

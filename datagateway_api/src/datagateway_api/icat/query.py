@@ -15,7 +15,12 @@ log = logging.getLogger()
 
 class ICATQuery:
     def __init__(
-        self, client, entity_name, conditions=None, aggregate=None, includes=None,
+        self,
+        client,
+        entity_name,
+        conditions=None,
+        aggregate=None,
+        includes=None,
     ):
         """
         Create a Query object within Python ICAT

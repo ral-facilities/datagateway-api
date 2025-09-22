@@ -73,10 +73,12 @@ class NestedWhereFilters:
                 " NestedWhereFilters object (one per call)",
             )
             NestedWhereFilters.set_search_api_query(
-                query_filter.lhs, search_api_query,
+                query_filter.lhs,
+                search_api_query,
             )
             NestedWhereFilters.set_search_api_query(
-                query_filter.rhs, search_api_query,
+                query_filter.rhs,
+                search_api_query,
             )
         elif isinstance(query_filter, list):
             log.debug(
@@ -84,7 +86,8 @@ class NestedWhereFilters:
             )
             for where_filter in query_filter:
                 NestedWhereFilters.set_search_api_query(
-                    where_filter, search_api_query,
+                    where_filter,
+                    search_api_query,
                 )
 
     def __str__(self):

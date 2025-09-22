@@ -47,14 +47,19 @@ class TestICATDistinctFilter:
         "existing_aggregate, expected_instance_aggregate",
         [
             pytest.param(
-                "COUNT", "DISTINCT", id="Existing count aggregate (count endpoints)",
+                "COUNT",
+                "DISTINCT",
+                id="Existing count aggregate (count endpoints)",
             ),
             pytest.param("AVG", "AVG:DISTINCT", id="Existing avg aggregate"),
             pytest.param("SUM", "SUM:DISTINCT", id="Existing sum aggregate"),
         ],
     )
     def test_existing_aggregate_on_query(
-        self, icat_query, existing_aggregate, expected_instance_aggregate,
+        self,
+        icat_query,
+        existing_aggregate,
+        expected_instance_aggregate,
     ):
         icat_query.setAggregate(existing_aggregate)
 
