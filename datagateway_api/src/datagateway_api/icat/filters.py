@@ -29,7 +29,7 @@ class PythonICATWhereFilter(WhereFilter):
             raise FilterError(
                 "Something went wrong when adding WHERE filter to ICAT query:"
                 f" {e.args}",
-            )
+            ) from e
 
     def create_filter(self):
         """
@@ -111,7 +111,7 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(
                 self.field,
                 "between",
-                f"'{self.value[0]}' and '{self.value[1]}'",
+                f"`{self.value[0]}` and `{self.value[1]}`",
             )
         elif self.operation == "regexp":
             where_filter = self.create_condition(self.field, "regexp", self.value)
@@ -146,7 +146,7 @@ class PythonICATWhereFilter(WhereFilter):
             if operator in ("in", "not in", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
-            else f"'{value}'"
+            else f"`{value}`"
         )
 
         conditions[attribute_name] = f"{operator} {jpql_value}"
@@ -186,7 +186,7 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
             query.setAttributes(self.fields)
 
         except ValueError as e:
-            raise FilterError(e)
+            raise FilterError(e) from e
 
 
 class PythonICATOrderFilter(OrderFilter):
@@ -209,7 +209,7 @@ class PythonICATOrderFilter(OrderFilter):
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
             # Typically invalid attribute(s)
-            raise FilterError(e)
+            raise FilterError(e) from e
 
         split_fields = self.field.split(".")
         for field_pointer in range(len(split_fields)):
@@ -235,7 +235,7 @@ class PythonICATOrderFilter(OrderFilter):
                 try:
                     query.setJoinSpecs(PythonICATOrderFilter.join_specs)
                 except (TypeError, ValueError) as e:
-                    raise FilterError(e)
+                    raise FilterError(e) from e
 
                 break
 
@@ -286,7 +286,7 @@ def icat_set_limit(query, skip_number, limit_number):
         log.debug("Current limit/skip values assigned to query: %s", query.limit)
     except TypeError as e:
         # Not a two element tuple as managed by Python ICAT's setLimit()
-        raise FilterError(e)
+        raise FilterError(e) from e
 
 
 class PythonICATIncludeFilter(IncludeFilter):
@@ -381,4 +381,4 @@ class PythonICATIncludeFilter(IncludeFilter):
         try:
             query.addIncludes(self.included_filters)
         except ValueError as e:
-            raise FilterError(e)
+            raise FilterError(e) from e

@@ -12,9 +12,13 @@ log = logging.getLogger()
 class PaNOSCMappings:
     def __init__(
         self,
-        path=Path(__file__).parent.parent.parent / "search_api_mapping.json",
+        path=None,
     ):
         """Load contents of `search_api_mapping.json` into this class"""
+
+        if path is None:
+            path = Path(__file__).parent.parent.parent / "search_api_mapping.json"
+
         try:
             with open(path, encoding="utf-8") as target:
                 log.info("Loading PaNOSC to ICAT mappings from %s", path)
@@ -52,7 +56,7 @@ class PaNOSCMappings:
         try:
             icat_mapping = self.mappings[panosc_entity_name][field_name]
         except KeyError as e:
-            raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}")
+            raise FilterError(f"Bad PaNOSC to ICAT mapping: {e.args}") from e
 
         if isinstance(icat_mapping, str):
             # Field name
@@ -92,11 +96,11 @@ class PaNOSCMappings:
             panosc_related_entity_name = list(
                 self.mappings[panosc_entity_name][panosc_related_field_name].keys(),
             )[0]
-        except KeyError:
+        except KeyError as e:
             raise SearchAPIError(
                 f"Cannot find related entity name from: {panosc_entity_name}"
                 f", {panosc_related_field_name}",
-            )
+            ) from e
 
         return panosc_related_entity_name
 
@@ -113,10 +117,10 @@ class PaNOSCMappings:
         """
         try:
             entity_mappings = self.mappings[panosc_entity_name]
-        except KeyError:
+        except KeyError as e:
             raise FilterError(
                 f"Cannot find mappings for {[panosc_entity_name]} PaNOSC entity",
-            )
+            ) from e
 
         non_related_field_names = []
         for mapping_key, mapping_value in entity_mappings.items():

@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import datetime
 from decimal import Decimal
 import enum
@@ -44,21 +43,23 @@ class EnumAsInteger(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if isinstance(value, self.enum_type):
             return value.value
-        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")
+        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}") from None
 
     def process_result_value(self, value, dialect):
         try:
             # Strips the enum class name
             return f"{self.enum_type(value)}".replace(f"{self.enum_type.__name__}.", "")
-        except ValueError:
+        except ValueError as e:
             # This will force a 500 response
-            raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")
+            raise DatabaseError(
+                f"value {value} not in {self.enum_type.__name__}",
+            ) from e
 
     def copy(self, **kwargs):
         return EnumAsInteger(self.enum_type)
 
 
-class EntityHelper(ABC):
+class EntityHelper:
     """
     EntityHelper class that contains methods to be shared across all entities
     """
@@ -107,8 +108,8 @@ class EntityHelper(ABC):
                     self._nest_string_include(dictionary, include)
                 elif type(include) is dict:
                     self._nest_dictionary_include(dictionary, include)
-        except TypeError:
-            raise FilterError(f" Bad include relations provided: {includes}")
+        except TypeError as e:
+            raise FilterError(f" Bad include relations provided: {includes}") from e
         return dictionary
 
     def _nest_dictionary_include(self, dictionary, include):
@@ -169,8 +170,8 @@ class EntityHelper(ABC):
         """
         try:
             return getattr(self, entity if entity[-1] == "s" else entity.upper())
-        except AttributeError:
-            raise FilterError(f" No related entity: {entity}")
+        except AttributeError as e:
+            raise FilterError(f" No related entity: {entity}") from e
 
     def update_from_dict(self, dictionary):
         """

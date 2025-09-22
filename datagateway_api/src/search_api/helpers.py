@@ -43,17 +43,17 @@ def search_api_error_handling(method):
         except (ValidationError, ScoringAPIError) as e:
             log.exception(msg=e.args)
             assign_status_code(e, 500)
-            raise SearchAPIError(create_error_message(e))
+            raise SearchAPIError(create_error_message(e)) from e
         except (ValueError, TypeError, AttributeError, KeyError) as e:
             log.exception(msg=e.args)
             assign_status_code(e, 400)
-            raise BadRequestError(create_error_message(e))
+            raise BadRequestError(create_error_message(e)) from e
         except Exception as e:
             log.exception(msg=e.args)
             # Defensively assign a 500 if the exception doesn't already have a status
             # code
             assign_status_code(e, 500)
-            raise type(e)(create_error_message(e))
+            raise type(e)(create_error_message(e)) from e
 
     def assign_status_code(e, status_code):
         try:

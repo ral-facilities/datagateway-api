@@ -72,7 +72,7 @@ def requires_session_id(method):
             else:
                 return method(*args, **kwargs)
         except ICATSessionError as e:
-            raise AuthenticationError(e)
+            raise AuthenticationError(e) from e
 
     return wrapper_requires_session
 
@@ -168,19 +168,19 @@ def update_attributes(old_entity, new_entity):
             original_data_attribute = getattr(old_entity, key)
             if isinstance(original_data_attribute, datetime):
                 new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
-        except AttributeError:
+        except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot find attribute '{key}' within the"
+                f"Bad request made, cannot find attribute `{key}` within the"
                 f" {old_entity.BeanName} entity",
-            )
+            ) from e
 
         try:
             setattr(old_entity, key, new_entity[key])
-        except AttributeError:
+        except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot modify attribute '{key}' within the"
+                f"Bad request made, cannot modify attribute `{key}` within the"
                 f" {old_entity.BeanName} entity",
-            )
+            ) from e
 
     return old_entity
 
@@ -189,9 +189,9 @@ def push_data_updates_to_icat(entity):
     try:
         entity.update()
     except ICATInternalError as e:
-        raise PythonICATError(e)
+        raise PythonICATError(e) from e
     except ICATValidationError as e:
-        raise BadRequestError(e)
+        raise BadRequestError(e) from e
 
 
 def get_entity_by_id(
@@ -498,11 +498,11 @@ def update_entities(client, entity_type, data_to_update):
 
             updated_entity_data = update_attributes(entity_data, entity_request)
             updated_icat_data.append(updated_entity_data)
-        except KeyError:
+        except KeyError as e:
             raise BadRequestError(
                 "The new data in the request body must contain the ID (using the key:"
                 " 'id') of the entity you wish to update",
-            )
+            ) from e
 
     # This separates the local data updates from pushing these updates to icatdb
     for updated_icat_entity in updated_icat_data:
@@ -517,9 +517,9 @@ def update_entities(client, entity_type, data_to_update):
                 except (ICATValidationError, ICATInternalError) as e:
                     # If an error occurs while trying to restore backup data, just throw
                     # a 500 immediately
-                    raise PythonICATError(e)
+                    raise PythonICATError(e) from e
 
-            raise PythonICATError(e)
+            raise PythonICATError(e) from e
 
         updated_data.append(
             get_entity_by_id(client, entity_type, updated_icat_entity.id, True),
@@ -574,13 +574,13 @@ def create_entities(client, entity_type, data):
                     try:
                         related_object = client.get(entity_info.type, value)
                     except ICATNoObjectError as e:
-                        raise BadRequestError(e)
+                        raise BadRequestError(e) from e
                     if entity_info.relType.lower() == "many":
                         related_object = [related_object]
                     setattr(new_entity, attribute_name, related_object)
 
             except ValueError as e:
-                raise BadRequestError(e)
+                raise BadRequestError(e) from e
 
         created_icat_data.append(new_entity)
 
@@ -592,12 +592,12 @@ def create_entities(client, entity_type, data):
                 # Delete any data that has been pushed to ICAT before the exception
                 delete_entity_by_id(client, entity_type, entity_json["id"])
 
-            raise PythonICATError(e)
+            raise PythonICATError(e) from e
         except (ICATObjectExistsError, ICATParameterError, ICATValidationError) as e:
             for entity_json in created_data:
                 delete_entity_by_id(client, entity_type, entity_json["id"])
 
-            raise BadRequestError(e)
+            raise BadRequestError(e) from e
 
         created_data.append(get_entity_by_id(client, entity_type, entity.id, True))
 

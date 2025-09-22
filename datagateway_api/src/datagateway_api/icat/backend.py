@@ -41,7 +41,7 @@ class PythonICATBackend(Backend):
             entity_names = client.getEntityNames()
             log.debug("Entity names on ping: %s", entity_names)
         except ICATError as e:
-            raise PythonICATError(e)
+            raise PythonICATError(e) from e
 
         return Constants.PING_OK_RESPONSE
 
@@ -66,8 +66,8 @@ class PythonICATBackend(Backend):
             client.sessionId = None
 
             return session_id
-        except ICATSessionError:
-            raise AuthenticationError("User credentials are incorrect")
+        except ICATSessionError as e:
+            raise AuthenticationError("User credentials are incorrect") from e
 
     @requires_session_id
     def get_session_details(self, session_id, **kwargs):

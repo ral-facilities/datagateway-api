@@ -55,4 +55,4 @@ class SearchAPIICATQuery(ICATQuery):
         except ValueError as e:
             raise SearchAPIError(
                 f"An issue has occurred while creating a query for ICAT: {e}",
-            )
+            ) from e

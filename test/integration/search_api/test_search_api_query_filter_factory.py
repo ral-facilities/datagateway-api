@@ -1364,7 +1364,11 @@ class TestSearchAPIQueryFilterFactory:
 
         assert len(filters) == expected_length
 
-        for test_filter, included_entities in zip(filters, expected_included_entities):
+        for test_filter, included_entities in zip(
+            filters,
+            expected_included_entities,
+            strict=True,
+        ):
             if isinstance(test_filter, SearchAPIIncludeFilter):
                 assert test_filter.included_filters == included_entities
 
@@ -1845,15 +1849,12 @@ class TestSearchAPIQueryFilterFactory:
                 assert test_filter.panosc_entity_name == test_entity_name
                 for expected_include in expected_included_entities:
                     assert test_filter.included_filters == expected_include
-                    expected_included_entities.remove(expected_include)
             if isinstance(test_filter, NestedWhereFilters):
                 for expected_nested in expected_nested_wheres:
                     assert repr(test_filter) == repr(expected_nested)
-                    expected_nested_wheres.remove(expected_nested)
             if isinstance(test_filter, SearchAPIWhereFilter):
                 for expected_where in expected_where_filter_data:
                     assert repr(test_filter) == repr(expected_where)
-                    expected_where_filter_data.remove(expected_where)
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
@@ -1940,7 +1941,6 @@ class TestSearchAPIQueryFilterFactory:
             if isinstance(test_filter, SearchAPIIncludeFilter):
                 for expected_include in expected_included_entities:
                     assert test_filter.included_filters == expected_include
-                    expected_included_entities.remove(expected_include)
 
     @pytest.mark.parametrize(
         "test_request_filter, expected_limit_value",
@@ -2141,23 +2141,18 @@ class TestSearchAPIQueryFilterFactory:
             if isinstance(test_filter, SearchAPIIncludeFilter):
                 for expected_include in expected_included_entities:
                     assert test_filter.included_filters == expected_include
-                    expected_included_entities.remove(expected_include)
             if isinstance(test_filter, NestedWhereFilters):
                 for expected_nested in expected_nested_wheres:
                     assert repr(test_filter) == repr(expected_nested)
-                    expected_nested_wheres.remove(expected_nested)
             if isinstance(test_filter, SearchAPIWhereFilter):
                 for expected_where in expected_where_filter_data:
                     assert repr(test_filter) == repr(expected_where)
-                    expected_where_filter_data.remove(expected_where)
             if isinstance(test_filter, SearchAPILimitFilter):
                 for expected_limit in expected_limit_values:
                     assert test_filter.limit_value == expected_limit
-                    expected_limit_values.remove(expected_limit)
             if isinstance(test_filter, SearchAPISkipFilter):
                 for expected_skip in expected_skip_values:
                     assert test_filter.skip_value == expected_skip
-                    expected_skip_values.remove(expected_skip)
 
     @pytest.mark.parametrize(
         "test_request_filter",
@@ -2316,7 +2311,7 @@ class TestSearchAPIQueryFilterFactory:
         if not isinstance(test_filter, list):
             test_filter = [test_filter]
 
-        for filter_, field_name in zip(test_filter, expected_field_name):
+        for filter_, field_name in zip(test_filter, expected_field_name, strict=True):
             if isinstance(filter_, NestedWhereFilters):
                 assert filter_.lhs[0].field == expected_field_name[0]
                 assert filter_.rhs[0].field == expected_field_name[1]

@@ -171,7 +171,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 raise SearchAPIError(
                     f"No text operator fields have been defined for {entity_class_name}"
                     f", {e.args}",
-                )
+                ) from e
 
             or_conditional_filters = []
             field_names = entity_class._text_operator_fields
@@ -282,7 +282,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     )
                 except SearchAPIError as e:
                     # If the function call errors, it's a client issue at this point
-                    raise FilterError(e)
+                    raise FilterError(e) from e
                 scope_query_filters = SearchAPIQueryFilterFactory.get_query_filter(
                     {"filter": related_model["scope"]},
                     entity_name,
