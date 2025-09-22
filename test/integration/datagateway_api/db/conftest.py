@@ -149,7 +149,7 @@ def remove_test_created_investigation_data(
     created_test_data = flask_test_app_db.get(
         f"{Config.config.datagateway_api.extension}/investigations?where="
         '{"name":{"like":'
-        f'"{TestDBCreateData.investigation_name_prefix}"'
+        f"{TestDBCreateData.investigation_name_prefix}"
         "}}",
         headers=valid_db_credentials_header,
     )

@@ -81,7 +81,7 @@ def apply_common_parameter_attributes(entity, i, client):
             Query(
                 client,
                 "PermissibleStringValue",
-                conditions={"type.id": f"= '{entity.type.id}'"},
+                conditions={"type.id": f"= `{entity.type.id}`"},
             ),
         )[0].value
 

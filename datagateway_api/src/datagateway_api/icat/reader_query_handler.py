@@ -76,9 +76,11 @@ class ReaderQueryHandler:
                 reader_config.reader_mechanism,
                 login_credentals,
             )
-        except ICATSessionError:
+        except ICATSessionError as e:
             log.error("User credentials for reader account aren't valid")
-            raise PythonICATError("Internal error with reader account configuration")
+            raise PythonICATError(
+                "Internal error with reader account configuration",
+            ) from e
         return ReaderQueryHandler.reader_client
 
     def check_eligibility(self) -> bool:

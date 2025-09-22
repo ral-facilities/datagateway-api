@@ -54,11 +54,11 @@ class ICATQuery:
             )
             # Initialising flag for distinct filter on count endpoints
             self.query.manual_count = False
-        except ValueError:
+        except ValueError as e:
             raise PythonICATError(
                 "An issue has occurred while creating a Python ICAT Query object,"
                 " suggesting an invalid argument",
-            )
+            ) from e
 
     def execute_query(self, client, return_json_formattable=False):
         """
@@ -81,7 +81,7 @@ class ICATQuery:
             log.debug("Executing ICAT query: %s", self.query)
             query_result = client.search(self.query)
         except (ICATValidationError, ICATInternalError) as e:
-            raise PythonICATError(e)
+            raise PythonICATError(e) from e
 
         flat_query_includes = self.flatten_query_included_fields(self.query.includes)
 

@@ -142,8 +142,8 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
 
     def __repr__(self):
         return (
-            f"Field: '{self.field}', Value: '{self.value}', Operation:"
-            f" '{self.operation}'"
+            f"Field: `{self.field}`, Value: `{self.value}`, Operation:"
+            f" `{self.operation}`"
         )
 
 

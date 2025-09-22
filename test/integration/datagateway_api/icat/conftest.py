@@ -146,7 +146,7 @@ def remove_test_created_investigation_data(
     created_test_data = flask_test_app_icat.get(
         f"{Config.config.datagateway_api.extension}/investigations?where="
         '{"name":{"like":'
-        f'"{TestICATCreateData.investigation_name_prefix}"'
+        f"`{TestICATCreateData.investigation_name_prefix}`"
         "}}",
         headers=valid_icat_credentials_header,
     )
