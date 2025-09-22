@@ -121,9 +121,9 @@ def create_app_infrastructure(flask_app):
             backend_type = Config.config.datagateway_api.backend
 
         if backend_type == "db":
-            flask_app.config[
-                "SQLALCHEMY_DATABASE_URI"
-            ] = Config.config.datagateway_api.db_url
+            flask_app.config["SQLALCHEMY_DATABASE_URI"] = (
+                Config.config.datagateway_api.db_url
+            )
             flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
             db.init_app(flask_app)
 
@@ -146,7 +146,8 @@ def create_api_endpoints(flask_app, api, specs):
     # DataGateway API endpoints
     if Config.config.datagateway_api is not None:
         datagateway_api_spec = next(
-            (spec for spec in specs if spec.title == "DataGateway API"), None,
+            (spec for spec in specs if spec.title == "DataGateway API"),
+            None,
         )
         try:
             backend_type = flask_app.config["TEST_BACKEND"]
@@ -217,7 +218,8 @@ def create_api_endpoints(flask_app, api, specs):
 
         # Session endpoint
         session_endpoint_resource = session_endpoints(
-            backend, client_pool=icat_client_pool,
+            backend,
+            client_pool=icat_client_pool,
         )
         api.add_resource(
             session_endpoint_resource,
@@ -234,7 +236,8 @@ def create_api_endpoints(flask_app, api, specs):
     # Search API endpoints
     if Config.config.search_api is not None:
         search_api_spec = next(
-            (spec for spec in specs if spec.title == "Search API"), None,
+            (spec for spec in specs if spec.title == "Search API"),
+            None,
         )
         search_api_extension = Config.config.search_api.extension
         search_api_entity_endpoints = {

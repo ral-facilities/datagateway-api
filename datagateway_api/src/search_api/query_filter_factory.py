@@ -48,14 +48,18 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     log.info("where JSON object found")
                     query_filters.extend(
                         SearchAPIQueryFilterFactory.get_where_filter(
-                            filter_input, entity_name, related_entity_name,
+                            filter_input,
+                            entity_name,
+                            related_entity_name,
                         ),
                     )
                 elif filter_name == "include":
                     log.info("include JSON object found")
                     query_filters.extend(
                         SearchAPIQueryFilterFactory.get_include_filter(
-                            filter_input, entity_name, related_entity_name,
+                            filter_input,
+                            entity_name,
+                            related_entity_name,
                         ),
                     )
                 elif filter_name == "limit":
@@ -85,7 +89,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             log.info("where query param found, likely for count endpoint")
             query_filters.extend(
                 SearchAPIQueryFilterFactory.get_query_filter(
-                    {"filter": request_filter}, entity_name,
+                    {"filter": request_filter},
+                    entity_name,
                 ),
             )
         else:
@@ -140,7 +145,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 }
                 conditional_where_filters.extend(
                     SearchAPIQueryFilterFactory.get_query_filter(
-                        where_filter, entity_name,
+                        where_filter,
+                        entity_name,
                     ),
                 )
 
@@ -170,7 +176,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             or_conditional_filters = []
             field_names = entity_class._text_operator_fields
             log.debug(
-                "Text operators found for PaNOSC %s: %s", entity_name, field_names,
+                "Text operators found for PaNOSC %s: %s",
+                entity_name,
+                field_names,
             )
             if not field_names:
                 # No text operator fields present, simply log and move on, we should
@@ -193,7 +201,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 }
                 where_filters.extend(
                     SearchAPIQueryFilterFactory.get_query_filter(
-                        where_filter, entity_name,
+                        where_filter,
+                        entity_name,
                     ),
                 )
         else:
@@ -268,7 +277,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     )
                     # Get related field name in entity name format for recursive call
                     related_entity_name = mappings.get_panosc_related_entity_name(
-                        entity_class_name, included_entity,
+                        entity_class_name,
+                        included_entity,
                     )
                 except SearchAPIError as e:
                     # If the function call errors, it's a client issue at this point
@@ -281,10 +291,12 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
 
                 for scope_query_filter in scope_query_filters:
                     if isinstance(
-                        scope_query_filter, (NestedWhereFilters, SearchAPIWhereFilter),
+                        scope_query_filter,
+                        (NestedWhereFilters, SearchAPIWhereFilter),
                     ):
                         SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(  # noqa: B950
-                            scope_query_filter, included_entity,
+                            scope_query_filter,
+                            included_entity,
                         )
                     if isinstance(scope_query_filter, SearchAPIIncludeFilter):
                         for i, included_filter in enumerate(
@@ -292,9 +304,9 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                         ):
                             nested_include = True
                             scope_query_filter.panosc_entity_name = entity_name
-                            scope_query_filter.included_filters[
-                                i
-                            ] = f"{included_entity}.{included_filter}"
+                            scope_query_filter.included_filters[i] = (
+                                f"{included_entity}.{included_filter}"
+                            )
 
                 query_filters.extend(scope_query_filters)
                 # Flush related entity name so a bug doesn't occur with multiple related
@@ -373,7 +385,8 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 nested_where_filters = where_filter.lhs + where_filter.rhs
                 for nested_where_filter in nested_where_filters:
                     SearchAPIQueryFilterFactory.prefix_where_filter_field_with_entity_name(  # noqa: B950
-                        nested_where_filter, entity_name,
+                        nested_where_filter,
+                        entity_name,
                     )
             if isinstance(where_filter, SearchAPIWhereFilter):
                 where_filter.field = f"{entity_name}.{where_filter.field}"

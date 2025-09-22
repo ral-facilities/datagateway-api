@@ -200,7 +200,9 @@ def get_files(entity_name, pid, filters):
 
     log.info("Getting files of dataset (PID: %s), using request's filters", pid)
     log.debug(
-        "Entity Name: %s, Filters: %s", entity_name, filters,
+        "Entity Name: %s, Filters: %s",
+        entity_name,
+        filters,
     )
 
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))
@@ -222,10 +224,13 @@ def get_files_count(entity_name, filters, pid):
     """
 
     log.info(
-        "Getting number of files for dataset (PID: %s), using request's filters", pid,
+        "Getting number of files for dataset (PID: %s), using request's filters",
+        pid,
     )
     log.debug(
-        "Entity Name: %s, Filters: %s", entity_name, filters,
+        "Entity Name: %s, Filters: %s",
+        entity_name,
+        filters,
     )
 
     filters.append(SearchAPIWhereFilter("dataset.pid", pid, "eq"))

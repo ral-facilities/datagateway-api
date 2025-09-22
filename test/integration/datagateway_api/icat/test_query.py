@@ -307,7 +307,8 @@ class TestICATQuery:
         test_query.query.setAttributes(query_attributes)
         test_query.query.manual_count = manual_count
         query_data = test_query.execute_query(
-            icat_client, return_json_formattable=return_json_format_flag,
+            icat_client,
+            return_json_formattable=return_json_format_flag,
         )
 
         if (
@@ -315,7 +316,9 @@ class TestICATQuery:
             and test_query.query.aggregate != "DISTINCT"
         ):
             query_data = prepare_icat_data_for_assertion(
-                query_data, remove_id=True, remove_visit_id=True,
+                query_data,
+                remove_id=True,
+                remove_visit_id=True,
             )
         assert query_data[0] == expected_query_result[0]
 
@@ -331,11 +334,15 @@ class TestICATQuery:
             test_query.execute_query(icat_client)
 
     def test_json_format_execution_output(
-        self, icat_client, single_investigation_test_data,
+        self,
+        icat_client,
+        single_investigation_test_data,
     ):
         test_query = ICATQuery(icat_client, "Investigation")
         test_data_filter = PythonICATWhereFilter(
-            "title", "Test data for the Python ICAT Backend on DataGateway API", "like",
+            "title",
+            "Test data for the Python ICAT Backend on DataGateway API",
+            "like",
         )
         test_data_filter.apply_filter(test_query.query)
         query_data = test_query.execute_query(icat_client, True)

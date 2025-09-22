@@ -34,10 +34,22 @@ def create_investigation_test_data(client, num_entities=1):
             f"Test data for the Python ICAT Backend on DataGateway API {i}"
         )
         investigation.startDate = datetime(
-            year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=tzlocal(),
+            year=2020,
+            month=1,
+            day=4,
+            hour=1,
+            minute=1,
+            second=1,
+            tzinfo=tzlocal(),
         )
         investigation.endDate = datetime(
-            year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=tzlocal(),
+            year=2020,
+            month=1,
+            day=8,
+            hour=1,
+            minute=1,
+            second=1,
+            tzinfo=tzlocal(),
         )
         investigation.fileSize = 1073741824
         investigation.fileCount = 3
@@ -116,7 +128,8 @@ def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
 
 @pytest.fixture()
 def remove_test_created_investigation_data(
-    flask_test_app_icat, valid_icat_credentials_header,
+    flask_test_app_icat,
+    valid_icat_credentials_header,
 ):
     """
     This is used to delete the data created inside `test_valid` test functions in

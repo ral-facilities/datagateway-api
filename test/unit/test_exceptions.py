@@ -20,7 +20,9 @@ class TestExceptions:
         "exception_class, expected_message",
         [
             pytest.param(
-                AuthenticationError, "Authentication error", id="AuthenticationError",
+                AuthenticationError,
+                "Authentication error",
+                id="AuthenticationError",
             ),
             pytest.param(BadRequestError, "Bad request", id="BadRequestError"),
             pytest.param(DatabaseError, "Database error", id="DatabaseError"),
@@ -31,7 +33,9 @@ class TestExceptions:
                 id="MissingCredentialsError",
             ),
             pytest.param(
-                MissingRecordError, "No such record in table", id="MissingRecordError",
+                MissingRecordError,
+                "No such record in table",
+                id="MissingRecordError",
             ),
             pytest.param(
                 MultipleIncludeError,

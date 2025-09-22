@@ -147,7 +147,11 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         ],
     )
     def test_valid_get_dataset_files_endpoint(
-        self, flask_test_app_search_api, pid, request_filter, expected_json,
+        self,
+        flask_test_app_search_api,
+        pid,
+        request_filter,
+        expected_json,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/Datasets/{pid}/files"
@@ -169,7 +173,10 @@ class TestSearchAPIGetDatasetFilesEndpoint:
             pytest.param("0-8401-1070-7", '{"limit": -1}', 400, id="Bad limit filter"),
             pytest.param("0-8401-1070-7", '{"skip": -100}', 400, id="Bad skip filter"),
             pytest.param(
-                "0-8401-1070-7", '{"include": ""}', 400, id="Bad include filter",
+                "0-8401-1070-7",
+                '{"include": ""}',
+                400,
+                id="Bad include filter",
             ),
             pytest.param(
                 "my 404 test pid",
@@ -182,7 +189,11 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         ],
     )
     def test_invalid_get_dataset_files_endpoint(
-        self, flask_test_app_search_api, pid, request_filter, expected_status_code,
+        self,
+        flask_test_app_search_api,
+        pid,
+        request_filter,
+        expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/Datasets/{pid}/files"

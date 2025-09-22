@@ -29,10 +29,14 @@ class TestGetFiltersFromQueryString:
         "filter_input, filter_type",
         [
             pytest.param(
-                'distinct="id"', DatabaseDistinctFieldFilter, id="DB distinct filter",
+                'distinct="id"',
+                DatabaseDistinctFieldFilter,
+                id="DB distinct filter",
             ),
             pytest.param(
-                'include="TEST"', DatabaseIncludeFilter, id="DB include filter",
+                'include="TEST"',
+                DatabaseIncludeFilter,
+                id="DB include filter",
             ),
             pytest.param("limit=10", DatabaseLimitFilter, id="DB limit filter"),
             pytest.param('order="id DESC"', DatabaseOrderFilter, id="DB order filter"),

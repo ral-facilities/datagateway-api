@@ -231,7 +231,10 @@ def get_entity_by_id(
 
     includes_value = "1" if return_related_entities else None
     id_query = ICATQuery(
-        client, entity_type, conditions=id_condition, includes=includes_value,
+        client,
+        entity_type,
+        conditions=id_condition,
+        includes=includes_value,
     )
     entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
@@ -275,7 +278,11 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     log.info("Updating %s of ID %s", entity_type, id_)
 
     entity_id_data = get_entity_by_id(
-        client, entity_type, id_, False, return_related_entities=True,
+        client,
+        entity_type,
+        id_,
+        False,
+        return_related_entities=True,
     )
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
@@ -357,13 +364,19 @@ def get_data_with_filters(client, entity_type, filters, aggregate=None):
             log.info("Query to be executed as reader account")
             try:
                 results = execute_entity_query(
-                    reader_client, entity_type, filters, aggregate=aggregate,
+                    reader_client,
+                    entity_type,
+                    filters,
+                    aggregate=aggregate,
                 )
             except ICATSessionError:
                 # re-login as reader and try the query again
                 reader_client = reader_query.create_reader_client()
                 results = execute_entity_query(
-                    reader_client, entity_type, filters, aggregate=aggregate,
+                    reader_client,
+                    entity_type,
+                    filters,
+                    aggregate=aggregate,
                 )
             return results
         else:

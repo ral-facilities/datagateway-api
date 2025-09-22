@@ -40,10 +40,20 @@ def create_investigation_db_data(num_entities=1):
         investigation.name = f"Test Data for DataGateway API Testing (DB) {i}"
         investigation.title = f"Title for DataGateway API Testing (DB) {i}"
         investigation.startDate = datetime(
-            year=2020, month=1, day=4, hour=1, minute=1, second=1,
+            year=2020,
+            month=1,
+            day=4,
+            hour=1,
+            minute=1,
+            second=1,
         )
         investigation.endDate = datetime(
-            year=2020, month=1, day=8, hour=1, minute=1, second=1,
+            year=2020,
+            month=1,
+            day=8,
+            hour=1,
+            minute=1,
+            second=1,
         )
         investigation.visitId = str(uuid.uuid1())
         investigation.facilityID = 1
@@ -131,7 +141,8 @@ def final_facilitycycle_id(flask_test_app_db, valid_db_credentials_header):
 
 @pytest.fixture()
 def remove_test_created_investigation_data(
-    flask_test_app_db, valid_db_credentials_header,
+    flask_test_app_db,
+    valid_db_credentials_header,
 ):
     yield
 

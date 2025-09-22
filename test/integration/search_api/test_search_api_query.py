@@ -36,5 +36,7 @@ class TestSearchAPIQuery:
     def test_invalid_search_api_icat_query_init(self):
         with pytest.raises(SearchAPIError):
             SearchAPIICATQuery(
-                SessionHandler.client, "Investigation", includes="UnknownEntity",
+                SessionHandler.client,
+                "Investigation",
+                includes="UnknownEntity",
             )

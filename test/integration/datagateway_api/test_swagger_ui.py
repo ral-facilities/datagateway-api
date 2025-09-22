@@ -40,7 +40,8 @@ class TestSwaggerUI:
         # derived from the param IDs set above, used to assert the page title
         api_name = request.node.callspec.id.split("-")[1]
         with patch(
-            "datagateway_api.src.common.config.Config.config", test_config_swagger,
+            "datagateway_api.src.common.config.Config.config",
+            test_config_swagger,
         ):
             test_app = Flask(__name__)
             api, spec = create_app_infrastructure(test_app)

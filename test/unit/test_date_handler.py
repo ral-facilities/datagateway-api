@@ -29,13 +29,23 @@ class TestStrToDatetime:
     def test_valid_str(self):
         datetime_output = DateHandler.str_to_datetime_object("2008-10-15 12:05:09")
         assert datetime_output == datetime(
-            year=2008, month=10, day=15, hour=12, minute=5, second=9,
+            year=2008,
+            month=10,
+            day=15,
+            hour=12,
+            minute=5,
+            second=9,
         )
 
     def test_valid_boundary_str(self):
         datetime_output = DateHandler.str_to_datetime_object("2020-02-29 20:20:20")
         assert datetime_output == datetime(
-            year=2020, month=2, day=29, hour=20, minute=20, second=20,
+            year=2020,
+            month=2,
+            day=29,
+            hour=20,
+            minute=20,
+            second=20,
         )
 
     def test_invalid_boundary_str(self):
@@ -54,7 +64,12 @@ class TestStrToDatetime:
 class TestDatetimeToStr:
     def test_valid_datetime(self):
         example_date = datetime(
-            year=2008, month=10, day=15, hour=12, minute=5, second=9,
+            year=2008,
+            month=10,
+            day=15,
+            hour=12,
+            minute=5,
+            second=9,
         )
         str_date_output = DateHandler.datetime_object_to_str(example_date)
         assert str_date_output == "2008-10-15 12:05:09"
@@ -67,7 +82,12 @@ class TestDatetimeToStr:
     def test_valid_boundary_datetime(self):
         # Can't test invalid leap years as invalid datetime objects can't be created
         example_date = datetime(
-            year=2020, month=2, day=29, hour=23, minute=59, second=59,
+            year=2020,
+            month=2,
+            day=29,
+            hour=23,
+            minute=59,
+            second=59,
         )
         str_date_output = DateHandler.datetime_object_to_str(example_date)
         assert str_date_output == "2020-02-29 23:59:59"

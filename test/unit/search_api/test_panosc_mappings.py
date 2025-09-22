@@ -19,7 +19,10 @@ class TestPaNOSCMappings:
         ],
     )
     def test_invalid_load_mappings(
-        self, test_config, test_config_without_search_api, search_api_config_flag,
+        self,
+        test_config,
+        test_config_without_search_api,
+        search_api_config_flag,
     ):
         if search_api_config_flag:
             current_test_config = test_config
@@ -27,7 +30,8 @@ class TestPaNOSCMappings:
             current_test_config = test_config_without_search_api
 
         with patch(
-            "datagateway_api.src.common.config.Config.config", current_test_config,
+            "datagateway_api.src.common.config.Config.config",
+            current_test_config,
         ):
             if search_api_config_flag:
                 with pytest.raises(SystemExit):
@@ -66,7 +70,8 @@ class TestPaNOSCMappings:
         expected_icat_field_name,
     ):
         icat_mapping = test_panosc_mappings.get_icat_mapping(
-            panosc_entity_name, field_name,
+            panosc_entity_name,
+            field_name,
         )
 
         assert icat_mapping == (expected_panosc_entity_name, expected_icat_field_name)
@@ -80,7 +85,10 @@ class TestPaNOSCMappings:
         [
             pytest.param("Dataset", "files", "File", id="Dataset.files"),
             pytest.param(
-                "Document", "parameters", "Parameter", id="Document.parameters",
+                "Document",
+                "parameters",
+                "Parameter",
+                id="Document.parameters",
             ),
             pytest.param("Person", "members", "Member", id="Person.members"),
         ],
@@ -93,14 +101,16 @@ class TestPaNOSCMappings:
         expected_entity_name,
     ):
         test_related_name = test_panosc_mappings.get_panosc_related_entity_name(
-            test_panosc_entity_name, test_panosc_related_field_name,
+            test_panosc_entity_name,
+            test_panosc_related_field_name,
         )
         assert test_related_name == expected_entity_name
 
     def test_invalid_get_panosc_related_entity_name(self, test_panosc_mappings):
         with pytest.raises(SearchAPIError):
             test_panosc_mappings.get_panosc_related_entity_name(
-                "UnknownField", "unknownField",
+                "UnknownField",
+                "unknownField",
             )
 
     @pytest.mark.parametrize(
@@ -152,13 +162,16 @@ class TestPaNOSCMappings:
         test_panosc_entity_name,
         expected_non_related_field_names,
     ):
-        non_related_field_names = test_panosc_mappings.get_panosc_non_related_field_names(  # noqa: B950
-            test_panosc_entity_name,
+        non_related_field_names = (
+            test_panosc_mappings.get_panosc_non_related_field_names(  # noqa: B950
+                test_panosc_entity_name,
+            )
         )
         assert non_related_field_names == expected_non_related_field_names
 
     def test_invalid_get_panosc_non_related_field_names(
-        self, test_panosc_mappings,
+        self,
+        test_panosc_mappings,
     ):
         with pytest.raises(FilterError):
             test_panosc_mappings.get_panosc_non_related_field_names("UnknownEntity")
@@ -179,7 +192,10 @@ class TestPaNOSCMappings:
         ],
     )
     def test_get_icat_relations_for_panosc_non_related_fields(
-        self, test_panosc_mappings, test_panosc_entity_name, expected_icat_relations,
+        self,
+        test_panosc_mappings,
+        test_panosc_entity_name,
+        expected_icat_relations,
     ):
         icat_relations = test_panosc_mappings.get_icat_relations_for_panosc_non_related_fields(  # noqa: B950
             test_panosc_entity_name,
@@ -190,7 +206,10 @@ class TestPaNOSCMappings:
         "test_panosc_entity_name, test_entity_relation, expected_icat_relations",
         [
             pytest.param(
-                "Affiliation", "members", [], id="Affiliation members relation",
+                "Affiliation",
+                "members",
+                [],
+                id="Affiliation members relation",
             ),
             pytest.param(
                 "Affiliation",
@@ -241,6 +260,7 @@ class TestPaNOSCMappings:
         expected_icat_relations,
     ):
         icat_relations = test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
-            test_panosc_entity_name, test_entity_relation,
+            test_panosc_entity_name,
+            test_entity_relation,
         )
         assert icat_relations == expected_icat_relations
