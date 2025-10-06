@@ -92,13 +92,6 @@ def safety(session):
 @nox.session(python=["3.10"], reuse_venv=True)
 def unit_tests(session):
     args = session.posargs
-    # Explicitly installing/downgrading setuptools is done to fix poetry install on 3.8+
-    # as per https://github.com/pypa/setuptools/issues/4483#issuecomment-2236327987.
-    # A cleaner fix would be to upgrade the packaging library to 22.0+ (as per
-    # https://github.com/pypa/setuptools/issues/4483#issuecomment-2236339726) but this
-    # cannot be done on this repo until support for Python 3.6 is dropped
-
-    session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", "test/unit", *args)
 
@@ -106,9 +99,5 @@ def unit_tests(session):
 @nox.session(python=["3.10"], reuse_venv=True)
 def integration_tests(session):
     args = session.posargs
-    # Explicit downgrade of setuptools also performed here. See explanation in
-    # `unit_tests()`
-
-    session.run("pip", "install", "--upgrade", "setuptools==70.0.0")
     session.run("poetry", "install", external=True)
     session.run("pytest", "test/integration", *args)
