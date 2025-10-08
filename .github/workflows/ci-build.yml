@@ -36,20 +36,11 @@ jobs:
       - name: Install Nox
         run: pip install nox==2020.8.22
       - name: Install Poetry
-        run: pip install poetry==1.1.9
+        run: pip install poetry==1.8.0
       # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
       # We will not be facing this issue when we upgrade to a newer Poetry version.
       - name: Install Requests
         run: pip install 'requests<2.30'
-
-      # This command is a workaround for getting Poetry working with Python 3.10. An
-      # fix is made in Poetry 1.2.0a2 but there is currently no official release for
-      # Poetry 1.2 and am apprehensive to moving to a pre-release. Disabling the
-      # experimental installer is a workaround for Poetry 1.1.x
-      # See https://github.com/python-poetry/poetry/issues/4210 for more details
-      - name: Disable Poetry's experimental new installer
-        if: ${{ matrix.python-version == '3.10' }}
-        run: poetry config experimental.new-installer false
 
       # Prep for using the API for tests
       - name: Create log file
@@ -162,7 +153,7 @@ jobs:
       - name: Install Nox
         run: pip install nox==2020.8.22
       - name: Install Poetry
-        run: pip install poetry==1.1.9
+        run: pip install poetry==1.8.0
 
       - name: Run Nox lint session
         run: nox -s lint
@@ -182,7 +173,7 @@ jobs:
       - name: Install Nox
         run: pip install nox==2020.8.22
       - name: Install Poetry
-        run: pip install poetry==1.1.9
+        run: pip install poetry==1.8.0
 
       - name: Run Nox black session
         run: nox -s black
@@ -202,7 +193,7 @@ jobs:
       - name: Install Nox
         run: pip install nox==2020.8.22
       - name: Install Poetry
-        run: pip install poetry==1.1.9
+        run: pip install poetry==1.8.0
 
       - name: Run Nox safety session
         run: nox -s safety
@@ -272,7 +263,7 @@ jobs:
       - name: Create search_api_mapping.json
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
       - name: Install Poetry
-        run: pip install poetry==1.1.9
+        run: pip install poetry==1.8.0
       # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
       # We will not be facing this issue when we upgrade to a newer Poetry version.
       - name: Install Requests
