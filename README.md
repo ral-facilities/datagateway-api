@@ -108,7 +108,7 @@ Then run `source ~/.bashrc` or open a new terminal and check poetry works by run
 If you encounter this error when installing poetry:
 
 ```
-ERROR: No matching distribution found for poetry==1.2.0
+ERROR: No matching distribution found for poetry==1.8.0
 ```
 
 You can try running the installer with python 3.10 with the command below:
@@ -120,7 +120,7 @@ curl -sSL https://install.python-poetry.org | python3.10 -
 Or you can specify the version you want to install from the listed versions with the command below:
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 - --version 1.2.0
+curl -sSL https://install.python-poetry.org | python3 - --version 1.8.0
 ```
 
 The dependencies for this repo are stored in `pyproject.toml`, with a more detailed
