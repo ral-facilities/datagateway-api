@@ -81,7 +81,10 @@ def apply_common_parameter_attributes(entity, i, client):
             Query(
                 client,
                 "PermissibleStringValue",
-                conditions={"type.id": f"= '{entity.type.id}'"},
+                conditions={
+                    # Required quoting for SQL syntax compatibility
+                    "type.id": f"= '{entity.type.id}'",  # noqa: B907
+                },
             ),
         )[0].value
 
