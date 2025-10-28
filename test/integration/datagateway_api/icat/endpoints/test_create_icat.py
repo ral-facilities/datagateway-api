@@ -164,9 +164,9 @@ class TestICATCreateData:
         )
 
         get_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations?where="
+            f"{Config.config.datagateway_api.extension}/investigations?where="  # noqa: B907
             '{"title": {"eq": "'
-            f"`{request_body[0]['title']}`"
+            f'{request_body[0]["title"]}'
             '"}}',
             headers=valid_icat_credentials_header,
         )

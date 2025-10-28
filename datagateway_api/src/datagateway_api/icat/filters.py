@@ -111,7 +111,7 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(
                 self.field,
                 "between",
-                f"`{self.value[0]}` and `{self.value[1]}`",
+                f"'{self.value[0]}' and '{self.value[1]}'",  # noqa: B907
             )
         elif self.operation == "regexp":
             where_filter = self.create_condition(self.field, "regexp", self.value)
@@ -146,7 +146,7 @@ class PythonICATWhereFilter(WhereFilter):
             if operator in ("in", "not in", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
-            else f"`{value}`"
+            else f"'{value}'"  # noqa: B907
         )
 
         conditions[attribute_name] = f"{operator} {jpql_value}"

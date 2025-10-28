@@ -24,6 +24,6 @@ def create_backend(backend_type):
     elif backend_type == "python_icat":
         backend = PythonICATBackend()
     else:
-        sys.exit(f"Invalid config value `{backend_type}` for config option backend")
+        sys.exit(f"Invalid config value {backend_type!r} for config option backend")
 
     return backend
