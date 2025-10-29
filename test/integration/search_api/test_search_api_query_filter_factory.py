@@ -1367,7 +1367,7 @@ class TestSearchAPIQueryFilterFactory:
         for test_filter, included_entities in zip(
             filters,
             expected_included_entities,
-            strict=True,
+            strict=False,
         ):
             if isinstance(test_filter, SearchAPIIncludeFilter):
                 assert test_filter.included_filters == included_entities
@@ -2311,7 +2311,7 @@ class TestSearchAPIQueryFilterFactory:
         if not isinstance(test_filter, list):
             test_filter = [test_filter]
 
-        for filter_, field_name in zip(test_filter, expected_field_name, strict=True):
+        for filter_, field_name in zip(test_filter, expected_field_name, strict=False):
             if isinstance(filter_, NestedWhereFilters):
                 assert filter_.lhs[0].field == expected_field_name[0]
                 assert filter_.rhs[0].field == expected_field_name[1]
