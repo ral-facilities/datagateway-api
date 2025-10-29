@@ -189,7 +189,7 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         returned to the user
     """
     result_dict = {}
-    for attr_name, data in zip(distinct_attributes, query_result, strict=True):
+    for attr_name, data in zip(distinct_attributes, query_result, strict=False):
         # Splitting attribute names in case it's from a related entity
         split_attr_name = attr_name.split(".")
 
