@@ -41,7 +41,7 @@ def flask_test_app():
     yield test_app
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="function")
 def flask_test_app_db():
     """
     This is in the common conftest file because this test app is also used in
