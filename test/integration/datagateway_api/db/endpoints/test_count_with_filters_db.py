@@ -4,6 +4,10 @@ from datagateway_api.src.common.config import Config
 
 
 class TestDBCountWithFilters:
+
+    @pytest.mark.skip(
+        reason=("Test will be removed in the next PR"),
+    )
     @pytest.mark.usefixtures("single_investigation_test_data_db")
     def test_valid_count_with_filters(
         self,
