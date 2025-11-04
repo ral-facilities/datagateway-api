@@ -33,7 +33,8 @@ class TestICATOrderFilter:
     def test_join_specs_added(self, icat_query):
         pid_filter = PythonICATOrderFilter("studyInvestigations.study.pid", "ASC")
         name_filter = PythonICATOrderFilter(
-            "investigationInstruments.instrument.name", "DESC",
+            "investigationInstruments.instrument.name",
+            "DESC",
         )
 
         filter_handler = FilterOrderHandler()

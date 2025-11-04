@@ -74,7 +74,8 @@ class TestICATIncludeFilter:
         [
             pytest.param({2: "datasets"}, id="invalid dictionary key"),
             pytest.param(
-                {"datasets": {2: "datafiles"}}, id="invalid inner dictionary key",
+                {"datasets": {2: "datafiles"}},
+                id="invalid inner dictionary key",
             ),
             pytest.param(
                 {"datasets": {"datafiles", "sample"}},

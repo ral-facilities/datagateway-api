@@ -187,7 +187,10 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
         def get(self, id_):
             return (
                 python_icat.get_with_id(
-                    get_session_id_from_auth_header(), entity_type, id_, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    id_,
+                    **kwargs,
                 ),
                 200,
             )
@@ -224,7 +227,10 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
 
         def delete(self, id_):
             python_icat.delete_with_id(
-                get_session_id_from_auth_header(), entity_type, id_, **kwargs,
+                get_session_id_from_auth_header(),
+                entity_type,
+                id_,
+                **kwargs,
             )
             return "", 204
 
@@ -258,7 +264,11 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
         def patch(self, id_):
             session_id = get_session_id_from_auth_header()
             python_icat.update_with_id(
-                session_id, entity_type, id_, request.json, **kwargs,
+                session_id,
+                entity_type,
+                id_,
+                request.json,
+                **kwargs,
             )
             return python_icat.get_with_id(session_id, entity_type, id_, **kwargs), 200
 
@@ -324,7 +334,10 @@ def get_count_endpoint(name, entity_type, python_icat, **kwargs):
             filters = get_filters_from_query_string("datagateway_api")
             return (
                 python_icat.count_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    filters,
+                    **kwargs,
                 ),
                 200,
             )
@@ -383,7 +396,10 @@ def get_find_one_endpoint(name, entity_type, python_icat, **kwargs):
             filters = get_filters_from_query_string("datagateway_api")
             return (
                 python_icat.get_one_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    filters,
+                    **kwargs,
                 ),
                 200,
             )

@@ -103,7 +103,10 @@ class TestEndpointRules:
         ],
     )
     def test_non_entity_endpoints(
-        self, flask_test_app, endpoint_name, expected_methods,
+        self,
+        flask_test_app,
+        endpoint_name,
+        expected_methods,
     ):
         endpoint_found = False
 

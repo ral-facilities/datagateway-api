@@ -52,20 +52,25 @@ def get_start_date(i):
     :return:
     """
     return datetime.datetime(
-        2000 + i // 4, ((i + 1) * (i + 1)) % 11 + 1, ((i + 1) * (i + 2) % 28 + 1),
+        2000 + i // 4,
+        ((i + 1) * (i + 1)) % 11 + 1,
+        ((i + 1) * (i + 2) % 28 + 1),
     )
 
 
 def get_end_date(i):
     return datetime.datetime(
-        2000 + i // 4, (((i + 1) * (i + 2)) % 11) + 1, ((i + 1) ** 2) % 28 + 1,
+        2000 + i // 4,
+        (((i + 1) * (i + 2)) % 11) + 1,
+        ((i + 1) ** 2) % 28 + 1,
     )
 
 
 def apply_common_parameter_attributes(entity, i, client):
     if entity.type.valueType == "NUMERIC":
         entity.numericValue = faker.random_int(
-            entity.type.minimumNumericValue, entity.type.maximumNumericValue - 1,
+            entity.type.minimumNumericValue,
+            entity.type.maximumNumericValue - 1,
         )
 
     if entity.type.valueType == "DATE_AND_TIME":
@@ -76,7 +81,10 @@ def apply_common_parameter_attributes(entity, i, client):
             Query(
                 client,
                 "PermissibleStringValue",
-                conditions={"type.id": f"= '{entity.type.id}'"},
+                conditions={
+                    # Required quoting for SQL syntax compatibility
+                    "type.id": f"= '{entity.type.id}'",  # noqa: B907
+                },
             ),
         )[0].value
 
@@ -91,7 +99,8 @@ def icat_client():
         checkCert=Config.config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+        Config.config.test_mechanism,
+        Config.config.test_user_credentials.dict(),
     )
     return client
 
@@ -376,7 +385,8 @@ class InvestigationUserGenerator(Generator):
         investigation_user.role = ["PI", "CI"][faker.random_int(0, 1)]
         investigation_user.investigation = self.client.get("Investigation", i)
         investigation_user.user = self.client.get(
-            "User", faker.random_int(1, UserGenerator.amount - 1),
+            "User",
+            faker.random_int(1, UserGenerator.amount - 1),
         )
         investigation_user.create()
 
@@ -393,7 +403,8 @@ class InstrumentScientistGenerator(Generator):
         instrument_scientist = self.client.new("instrumentScientist")
         instrument_scientist.instrument = self.client.get("Instrument", i)
         instrument_scientist.user = self.client.get(
-            "User", faker.random_int(1, UserGenerator.amount - 1),
+            "User",
+            faker.random_int(1, UserGenerator.amount - 1),
         )
         instrument_scientist.create()
 
@@ -410,7 +421,8 @@ class InvestigationInstrumentGenerator(Generator):
         investigation_instrument = self.client.new("investigationInstrument")
         investigation_instrument.investigation = self.client.get("Investigation", i)
         investigation_instrument.instrument = self.client.get(
-            "Instrument", faker.random_int(1, InstrumentGenerator.amount - 1),
+            "Instrument",
+            faker.random_int(1, InstrumentGenerator.amount - 1),
         )
         investigation_instrument.create()
 
@@ -429,7 +441,8 @@ class SampleGenerator(Generator):
         sample.name = f"{tablename} {i}"
         sample.investigation = self.client.get("Investigation", i)
         sample.type = self.client.get(
-            "SampleType", faker.random_int(1, SampleTypeGenerator.amount - 1),
+            "SampleType",
+            faker.random_int(1, SampleTypeGenerator.amount - 1),
         )
         sample.create()
 
@@ -445,7 +458,8 @@ class UserGroupGenerator(Generator):
     def generate_user_groups(self, i):
         user_group = self.client.new("userGroup")
         user_group.grouping = self.client.get(
-            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
+            "Grouping",
+            faker.random_int(1, GroupingGenerator.amount - 1),
         )
         user_group.user = self.client.get("User", i)
         user_group.create()
@@ -486,7 +500,8 @@ class InvestigationGroupGenerator(Generator):
         investigation_group = self.client.new("investigationGroup")
         investigation_group.role = faker.text() + str(i)
         investigation_group.grouping = self.client.get(
-            "Grouping", faker.random_int(1, GroupingGenerator.amount - 1),
+            "Grouping",
+            faker.random_int(1, GroupingGenerator.amount - 1),
         )
         investigation_group.investigation = self.client.get("Investigation", i)
         investigation_group.create()
@@ -507,7 +522,8 @@ class KeywordGenerator(Generator):
         keyword = cls.client.new("keyword")
         keyword.name = faker.word() + str(i)
         keyword.investigation = cls.client.get(
-            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
+            "Investigation",
+            faker.random_int(1, InvestigationGenerator.amount - 1),
         )
         cls.keywords.append(keyword)
 
@@ -528,7 +544,8 @@ class PublicationGenerator(Generator):
         publication.repositoryId = faker.random_int(1, 23232234)
         publication.url = faker.url()
         publication.investigation = self.client.get(
-            "Investigation", i % (InvestigationGenerator.amount - 1) + 1,
+            "Investigation",
+            i % (InvestigationGenerator.amount - 1) + 1,
         )
         publication.create()
 
@@ -578,7 +595,8 @@ class InvestigationParameterGenerator(Generator):
     def generate_investigation_parameter(self, i):
         investigation_parameter = self.client.new("investigationParameter")
         investigation_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
+            "ParameterType",
+            faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
         apply_common_parameter_attributes(investigation_parameter, i, self.client)
         investigation_parameter.investigation = self.client.get("Investigation", i)
@@ -609,16 +627,19 @@ class DataCollectionInvestigationGenerator(Generator):
     def generate(self):
         for i in range(1, self.amount):
             DataCollectionInvestigationGenerator.generate_data_collection_investigation(
-                self, i,
+                self,
+                i,
             )
 
     def generate_data_collection_investigation(self, i):
         data_collection_investigation = self.client.new("dataCollectionInvestigation")
         data_collection_investigation.dataCollection = self.client.get(
-            "DataCollection", faker.random_int(1, DataCollectionGenerator.amount - 1),
+            "DataCollection",
+            faker.random_int(1, DataCollectionGenerator.amount - 1),
         )
         data_collection_investigation.investigation = self.client.get(
-            "Investigation", i,
+            "Investigation",
+            i,
         )
         data_collection_investigation.create()
 
@@ -630,13 +651,15 @@ class InvestigationFacilityCycleGenerator(Generator):
     def generate(self):
         for i in range(1, self.amount):
             InvestigationFacilityCycleGenerator.generate_investigation_facility_cycle(
-                self, i,
+                self,
+                i,
             )
 
     def generate_investigation_facility_cycle(self, i):
         investigation_facility_cycle = self.client.new("investigationFacilityCycle")
         investigation_facility_cycle.investigation = self.client.get(
-            "Investigation", faker.random_int(1, InvestigationGenerator.amount - 1),
+            "Investigation",
+            faker.random_int(1, InvestigationGenerator.amount - 1),
         )
         investigation_facility_cycle.facilityCycle = self.client.get("FacilityCycle", i)
         investigation_facility_cycle.create()
@@ -680,7 +703,8 @@ class DataPublicationGenerator(Generator):
         data_publication.subject = faker.words()
         data_publication.facility = self.client.get("Facility", 1)
         data_publication.content = self.client.get(
-            "DataCollection", faker.random_int(1, DataCollectionGenerator.amount - 1),
+            "DataCollection",
+            faker.random_int(1, DataCollectionGenerator.amount - 1),
         )
 
         data_publication.create()
@@ -764,7 +788,8 @@ class DataPublicationUserGenerator(Generator):
         data_publication_user = self.client.new("dataPublicationUser")
         data_publication_user.orderKey = str(faker.random_int(1, 9))
         data_publication_user.user = self.client.get(
-            "User", faker.random_int(1, UserGenerator.amount - 1),
+            "User",
+            faker.random_int(1, UserGenerator.amount - 1),
         )
         data_publication_user.givenName = data_publication_user.user.fullName.split()[0]
         data_publication_user.fullName = data_publication_user.user.fullName
@@ -832,7 +857,8 @@ class RelatedItemGenerator(Generator):
         related_item.title = faker.text()
         related_item.fullReference = faker.text()
         related_item.publication = self.client.get(
-            "DataPublication", i % (DataPublicationGenerator.amount - 1) + 1,
+            "DataPublication",
+            i % (DataPublicationGenerator.amount - 1) + 1,
         )
         related_item.create()
 
@@ -849,7 +875,8 @@ class StudyInvestigationGenerator(Generator):
         study_investigation = self.client.new("studyInvestigation")
         study_investigation.investigation = self.client.get("Investigation", i)
         study_investigation.study = self.client.get(
-            "Study", faker.random_int(1, StudyGenerator.amount - 1),
+            "Study",
+            faker.random_int(1, StudyGenerator.amount - 1),
         )
         study_investigation.create()
 
@@ -876,16 +903,20 @@ class DatasetGenerator(Generator):
         investigation_id = i % InvestigationGenerator.amount
         dataset.investigation = self.client.get(
             "Investigation",
-            investigation_id
-            if investigation_id != 0
-            else InvestigationGenerator.amount - 1,
+            (
+                investigation_id
+                if investigation_id != 0
+                else InvestigationGenerator.amount - 1
+            ),
         )
         sample_id = i % SampleGenerator.amount
         dataset.sample = self.client.get(
-            "Sample", sample_id if sample_id != 0 else SampleGenerator.amount - 1,
+            "Sample",
+            sample_id if sample_id != 0 else SampleGenerator.amount - 1,
         )
         dataset.type = self.client.get(
-            "DatasetType", faker.random_int(1, DatasetTypeGenerator.amount - 1),
+            "DatasetType",
+            faker.random_int(1, DatasetTypeGenerator.amount - 1),
         )
         dataset.create()
 
@@ -903,7 +934,8 @@ class DatasetParameterGenerator(Generator):
         dataset_param.type = self.client.get("ParameterType", i)
         apply_common_parameter_attributes(dataset_param, i, self.client)
         dataset_param.dataset = self.client.get(
-            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+            "Dataset",
+            faker.random_int(1, DatasetGenerator.amount - 1),
         )
         dataset_param.create()
 
@@ -919,7 +951,8 @@ class DatasetTechniqueGenerator(Generator):
     def generate_dataset_technique(self, i):
         dataset_technique = self.client.new("datasetTechnique")
         dataset_technique.dataset = self.client.get(
-            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+            "Dataset",
+            faker.random_int(1, DatasetGenerator.amount - 1),
         )
         dataset_technique.technique = self.client.get("Technique", i)
         dataset_technique.create()
@@ -936,7 +969,8 @@ class DatasetInstrumentGenerator(Generator):
     def generate_dataset_instrument(self, i):
         dataset_instrument = self.client.new("datasetInstrument")
         dataset_instrument.dataset = self.client.get(
-            "Dataset", faker.random_int(1, DatasetGenerator.amount - 1),
+            "Dataset",
+            faker.random_int(1, DatasetGenerator.amount - 1),
         )
         dataset_instrument.instrument = self.client.get("Instrument", i)
         dataset_instrument.create()
@@ -964,10 +998,12 @@ class DatafileGenerator(Generator):
         datafile.checksum = faker.md5()
         datafile.fileSize = faker.random_int(123, 213123121)
         datafile.datafileFormat = cls.client.get(
-            "DatafileFormat", faker.random_int(1, DatafileFormatGenerator.amount - 1),
+            "DatafileFormat",
+            faker.random_int(1, DatafileFormatGenerator.amount - 1),
         )
         datafile.dataset = cls.client.get(
-            "Dataset", i % (DatasetGenerator.amount - 1) + 1,
+            "Dataset",
+            i % (DatasetGenerator.amount - 1) + 1,
         )
         datafile.name = f"Datafile {i}"
         datafile.location = faker.file_path(depth=2, category="image")
@@ -1007,7 +1043,8 @@ class DataCollectionParameterGenerator(Generator):
     def generate_data_collection_parameter(self, i):
         datacollection_parameter = self.client.new("dataCollectionParameter")
         datacollection_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
+            "ParameterType",
+            faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
         apply_common_parameter_attributes(datacollection_parameter, i, self.client)
         datacollection_parameter.dataCollection = self.client.get("DataCollection", i)
@@ -1025,7 +1062,8 @@ class SampleParameterGenerator(Generator):
     def generate_sample_parameter(self, i):
         sample_parameter = self.client.new("sampleParameter")
         sample_parameter.type = self.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
+            "ParameterType",
+            faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
         apply_common_parameter_attributes(sample_parameter, i, self.client)
         sample_parameter.sample = self.client.get("Sample", i)
@@ -1061,7 +1099,8 @@ class DatafileParameterGenerator(Generator):
     def generate_datafile_parameter(cls, i):
         datafile_param = cls.client.new("datafileParameter")
         datafile_param.type = cls.client.get(
-            "ParameterType", faker.random_int(1, ParameterTypeGenerator.amount - 1),
+            "ParameterType",
+            faker.random_int(1, ParameterTypeGenerator.amount - 1),
         )
         apply_common_parameter_attributes(datafile_param, i, cls.client)
         datafile_param.datafile = cls.client.get("Datafile", i)

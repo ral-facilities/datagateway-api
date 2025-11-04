@@ -62,7 +62,8 @@ class FilterOrderHandler(object):
             query_filter.apply_filter(query)
 
     def add_icat_relations_for_non_related_fields_of_panosc_related_entities(
-        self, panosc_entity_name,
+        self,
+        panosc_entity_name,
     ):
         """
         When there are Search API included filters, get the ICAT relations (if any) for
@@ -87,7 +88,7 @@ class FilterOrderHandler(object):
         python_icat_include_filter = None
         icat_relations = []
         for filter_ in self.filters:
-            if type(filter_) == PythonICATIncludeFilter:
+            if type(filter_) is PythonICATIncludeFilter:
                 # Using `type` as `isinstance` would return `True` for any class that
                 # inherits `PythonICATIncludeFilter` e.g. `SearchAPIIncludeFilter`.`
                 python_icat_include_filter = filter_
@@ -96,7 +97,8 @@ class FilterOrderHandler(object):
                 for included_filter in included_filters:
                     icat_relations.extend(
                         mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
-                            panosc_entity_name, included_filter,
+                            panosc_entity_name,
+                            included_filter,
                         ),
                     )
 
@@ -114,7 +116,8 @@ class FilterOrderHandler(object):
                 self.filters.append(python_icat_include_filter)
 
     def add_icat_relations_for_panosc_non_related_fields(
-        self, panosc_entity_name,
+        self,
+        panosc_entity_name,
     ):
         """
         Retrieve ICAT relations and create a `PythonICATIncludeFilter` for these ICAT

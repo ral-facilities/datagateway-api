@@ -19,7 +19,8 @@ class TestAPIConfig:
                 APIConfig.load("test/path")
 
     def test_load_with_datagateway_api_python_icat_and_missing_icat_config_data(
-        self, test_config_data,
+        self,
+        test_config_data,
     ):
         del test_config_data["datagateway_api"]["icat_url"]
         with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
@@ -27,7 +28,8 @@ class TestAPIConfig:
                 APIConfig.load("test/path")
 
     def test_load_with_invalid_api_extension_does_not_start_with_slash(
-        self, test_config_data,
+        self,
+        test_config_data,
     ):
         test_config_data["datagateway_api"]["extension"] = "datagateway-api"
         with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
@@ -35,7 +37,8 @@ class TestAPIConfig:
                 APIConfig.load("test/path")
 
     def test_load_with_invalid_api_extension_ends_with_slash(
-        self, test_config_data,
+        self,
+        test_config_data,
     ):
         test_config_data["search_api"]["extension"] = "/search-api/"
         with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):

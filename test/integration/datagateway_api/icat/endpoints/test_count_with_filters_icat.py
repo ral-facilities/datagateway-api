@@ -38,7 +38,9 @@ class TestICATCountWithFilters:
         assert test_response.json == expected_result
 
     def test_valid_no_results_count_with_filters(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations/count?where="

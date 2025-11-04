@@ -22,7 +22,9 @@ class TestICATFindone:
         assert response_json == single_investigation_test_data
 
     def test_valid_no_results_findone_with_filters(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         test_response = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/investigations/findone?where="

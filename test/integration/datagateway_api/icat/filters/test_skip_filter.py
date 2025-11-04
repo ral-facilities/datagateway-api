@@ -8,7 +8,8 @@ from datagateway_api.src.datagateway_api.icat.filters import PythonICATSkipFilte
 
 class TestICATSkipFilter:
     @pytest.mark.parametrize(
-        "skip_value", [pytest.param(10, id="typical"), pytest.param(0, id="boundary")],
+        "skip_value",
+        [pytest.param(10, id="typical"), pytest.param(0, id="boundary")],
     )
     def test_valid_skip_value(self, icat_query, skip_value):
         test_filter = PythonICATSkipFilter(skip_value)

@@ -15,7 +15,9 @@ from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 class TestSessionHandling:
     def test_get_valid_session_details(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         session_details = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/sessions",
@@ -45,7 +47,9 @@ class TestSessionHandling:
         )
 
     def test_get_invalid_session_details(
-        self, bad_credentials_header, flask_test_app_icat,
+        self,
+        bad_credentials_header,
+        flask_test_app_icat,
     ):
         session_details = flask_test_app_icat.get(
             f"{Config.config.datagateway_api.extension}/sessions",
@@ -99,16 +103,23 @@ class TestSessionHandling:
         ],
     )
     def test_valid_login(
-        self, flask_test_app_icat, icat_client, icat_query, request_body,
+        self,
+        flask_test_app_icat,
+        icat_client,
+        icat_query,
+        request_body,
     ):
         login_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/sessions", json=request_body,
+            f"{Config.config.datagateway_api.extension}/sessions",
+            json=request_body,
         )
 
         icat_client.sessionId = login_response.json["sessionID"]
         icat_query.setAggregate("COUNT")
         title_filter = PythonICATWhereFilter(
-            "title", "Test data for Python ICAT on DataGateway API", "like",
+            "title",
+            "Test data for Python ICAT on DataGateway API",
+            "like",
         )
         title_filter.apply_filter(icat_query)
 
@@ -132,10 +143,14 @@ class TestSessionHandling:
         ],
     )
     def test_invalid_login(
-        self, flask_test_app_icat, request_body, expected_response_code,
+        self,
+        flask_test_app_icat,
+        request_body,
+        expected_response_code,
     ):
         login_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/sessions", json=request_body,
+            f"{Config.config.datagateway_api.extension}/sessions",
+            json=request_body,
         )
 
         assert login_response.status_code == expected_response_code
@@ -146,7 +161,8 @@ class TestSessionHandling:
         with patch("icat.client.Client.getRemainingMinutes", return_value=-1):
             with pytest.raises(AuthenticationError):
                 test_python_icat.get_session_details(
-                    "session id", client_pool=client_pool,
+                    "session id",
+                    client_pool=client_pool,
                 )
 
     def test_valid_logout(self, flask_test_app_icat):
@@ -155,12 +171,14 @@ class TestSessionHandling:
             checkCert=Config.config.datagateway_api.icat_check_cert,
         )
         client.login(
-            Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+            Config.config.test_mechanism,
+            Config.config.test_user_credentials.dict(),
         )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = flask_test_app_icat.delete(
-            f"{Config.config.datagateway_api.extension}/sessions", headers=creds_header,
+            f"{Config.config.datagateway_api.extension}/sessions",
+            headers=creds_header,
         )
 
         assert logout_response.status_code == 200

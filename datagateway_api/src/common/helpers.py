@@ -39,13 +39,13 @@ def queries_records(method):
             raise e
         except ValueError as e:
             log.exception(msg=e.args)
-            raise BadRequestError()
+            raise BadRequestError() from e
         except TypeError as e:
             log.exception(e.args)
-            raise BadRequestError()
+            raise BadRequestError() from e
         except IntegrityError as e:
             log.exception(e.args)
-            raise BadRequestError()
+            raise BadRequestError() from e
 
     return wrapper_gets_records
 
@@ -120,12 +120,13 @@ def get_filters_from_query_string(api_type, entity_name=None):
             for value in request.args.getlist(arg):
                 filters.extend(
                     QueryFilterFactory.get_query_filter(
-                        {arg: json.loads(value)}, entity_name,
+                        {arg: json.loads(value)},
+                        entity_name,
                     ),
                 )
         return filters
     except Exception as e:
-        raise FilterError(e)
+        raise FilterError(e) from e
 
 
 def get_entity_object_from_name(entity_name):
@@ -146,10 +147,10 @@ def get_entity_object_from_name(entity_name):
             entity_name = endpoints[entity_name]
 
         return getattr(models, entity_name.upper())
-    except KeyError:
+    except KeyError as e:
         raise ApiError(
             f"Entity class cannot be found, missing class for {entity_name}",
-        )
+        ) from e
 
 
 def get_icat_properties(icat_url, icat_check_cert):
@@ -185,7 +186,7 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         returned to the user
     """
     result_dict = {}
-    for attr_name, data in zip(distinct_attributes, query_result):
+    for attr_name, data in zip(distinct_attributes, query_result, strict=False):
         # Splitting attribute names in case it's from a related entity
         split_attr_name = attr_name.split(".")
 

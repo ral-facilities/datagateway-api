@@ -32,10 +32,22 @@ def create_investigation_test_data(client, num_entities=1):
         investigation.name = f"Test Data for DataGateway API Testing {i}"
         investigation.title = f"Test data for Python ICAT on DataGateway API {i}"
         investigation.startDate = datetime(
-            year=2020, month=1, day=4, hour=1, minute=1, second=1, tzinfo=tzlocal(),
+            year=2020,
+            month=1,
+            day=4,
+            hour=1,
+            minute=1,
+            second=1,
+            tzinfo=tzlocal(),
         )
         investigation.endDate = datetime(
-            year=2020, month=1, day=8, hour=1, minute=1, second=1, tzinfo=tzlocal(),
+            year=2020,
+            month=1,
+            day=8,
+            hour=1,
+            minute=1,
+            second=1,
+            tzinfo=tzlocal(),
         )
         investigation.fileSize = 1073741824
         investigation.fileCount = 3
@@ -113,7 +125,8 @@ def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
 
 @pytest.fixture()
 def remove_test_created_investigation_data(
-    flask_test_app_icat, valid_icat_credentials_header,
+    flask_test_app_icat,
+    valid_icat_credentials_header,
 ):
     """
     This is used to delete the data created inside `test_valid` test functions in
@@ -128,9 +141,9 @@ def remove_test_created_investigation_data(
     yield
 
     created_test_data = flask_test_app_icat.get(
-        f"{Config.config.datagateway_api.extension}/investigations?where="
+        f"{Config.config.datagateway_api.extension}/investigations?where="  # noqa: B907
         '{"name":{"like":'
-        f'"{TestICATCreateData.investigation_name_prefix}"'
+        f'"{TestICATCreateData.investigation_name_prefix}"'  # noqa: B907
         "}}",
         headers=valid_icat_credentials_header,
     )

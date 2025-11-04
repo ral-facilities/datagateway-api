@@ -167,7 +167,7 @@ class APIConfig(BaseModel):
         return getattr(self, item)
 
     @classmethod
-    def load(cls, path=Path(__file__).parent.parent.parent / "config.yaml"):
+    def load(cls, path=None):
         """
         Loads the config data from the JSON file and returns it as a APIConfig pydantic
         model. Exits the application if it fails to locate the JSON config file or
@@ -177,6 +177,9 @@ class APIConfig(BaseModel):
         :param path: path to the configuration file
         :return: APIConfig model object that contains the config data
         """
+        if path is None:
+            path = Path(__file__).parent.parent.parent / "config.yaml"
+
         try:
             with open(path, encoding="utf-8") as target:
                 data = yaml.safe_load(target)

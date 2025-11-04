@@ -58,7 +58,10 @@ class TestMapDistinctAttrs:
         ],
     )
     def test_valid_map_distinct_attributes_to_results(
-        self, distinct_attrs, result, expected_output,
+        self,
+        distinct_attrs,
+        result,
+        expected_output,
     ):
         test_output = map_distinct_attributes_to_results(distinct_attrs, result)
 

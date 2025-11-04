@@ -21,14 +21,20 @@ class TestGetFiltersFromQueryString:
         "filter_input, filter_type",
         [
             pytest.param(
-                'distinct="id"', PythonICATDistinctFieldFilter, id="DB distinct filter",
+                'distinct="id"',
+                PythonICATDistinctFieldFilter,
+                id="DB distinct filter",
             ),
             pytest.param(
-                'include="TEST"', PythonICATIncludeFilter, id="DB include filter",
+                'include="TEST"',
+                PythonICATIncludeFilter,
+                id="DB include filter",
             ),
             pytest.param("limit=10", PythonICATLimitFilter, id="DB limit filter"),
             pytest.param(
-                'order="id DESC"', PythonICATOrderFilter, id="DB order filter",
+                'order="id DESC"',
+                PythonICATOrderFilter,
+                id="DB order filter",
             ),
             pytest.param("skip=10", PythonICATSkipFilter, id="DB skip filter"),
         ],

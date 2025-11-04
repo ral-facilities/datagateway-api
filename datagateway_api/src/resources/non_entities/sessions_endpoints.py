@@ -138,7 +138,8 @@ def session_endpoints(python_icat, **kwargs):
             """
             return (
                 python_icat.get_session_details(
-                    get_session_id_from_auth_header(), **kwargs,
+                    get_session_id_from_auth_header(),
+                    **kwargs,
                 ),
                 200,
             )

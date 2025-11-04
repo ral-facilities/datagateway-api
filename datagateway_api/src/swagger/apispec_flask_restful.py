@@ -79,7 +79,8 @@ class RestfulPlugin(apispec.BasePlugin):
             return path
         except Exception as exc:
             logging.getLogger(__name__).exception(
-                "Exception parsing APISpec", exc_info=exc,
+                "Exception parsing APISpec",
+                exc_info=exc,
             )
             raise
 
@@ -91,6 +92,7 @@ class RestfulPlugin(apispec.BasePlugin):
             parse_operations(resource, operations)
         except Exception as exc:
             logging.getLogger(__name__).exception(
-                "Exception parsing APISpec", exc_info=exc,
+                "Exception parsing APISpec",
+                exc_info=exc,
             )
             raise
