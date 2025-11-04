@@ -1849,12 +1849,15 @@ class TestSearchAPIQueryFilterFactory:
                 assert test_filter.panosc_entity_name == test_entity_name
                 for expected_include in expected_included_entities:
                     assert test_filter.included_filters == expected_include
+                    expected_included_entities.remove(expected_include)  # noqa: B909
             if isinstance(test_filter, NestedWhereFilters):
                 for expected_nested in expected_nested_wheres:
                     assert repr(test_filter) == repr(expected_nested)
+                    expected_nested_wheres.remove(expected_nested)  # noqa: B909
             if isinstance(test_filter, SearchAPIWhereFilter):
                 for expected_where in expected_where_filter_data:
                     assert repr(test_filter) == repr(expected_where)
+                    expected_where_filter_data.remove(expected_where)  # noqa: B909
 
     @pytest.mark.parametrize(
         "test_request_filter, test_entity_name, expected_length"
