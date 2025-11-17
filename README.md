@@ -26,62 +26,6 @@ guide found online. It is assumed the commands shown in this part of the README 
 executed in the root directory of this repo once it has been cloned to your local
 machine.
 
-## Python Version Management (pyenv)
-
-To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
-this tool ([pyenv-win](https://github.com/pyenv-win/pyenv-win)), however this is
-currently untested on this repo. This is used to manage the various versions of Python
-that will be used to test/lint Python during development. Install by executing the
-following:
-
-```bash
-curl https://pyenv.run | bash
-```
-
-The following lines need to be added to `~/.bashrc` - either open a new terminal or
-execute `source ~/.bashrc` to make these changes apply:
-
-```bash
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-```
-
-Various Python build dependencies need to be installed next. These will vary dependent
-on the platform of your system (see the
-[common pyenv build problems](https://github.com/pyenv/pyenv/wiki/Common-build-problems)
-for the relevant command for your OS), but the following shows the bash command to
-install the requirements for a CentOS/RHEL machine:
-
-```bash
-sudo yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite \
-sqlite-devel openssl-devel xz xz-devel libffi-devel findutils
-```
-
-To make use of `pyenv`, let's install different versions of Python onto the system. In
-production, DataGateway API uses Python 3.10, so this should definitely be part a
-development environment for this repo. This stage might take some time as each Python
-version needs to be downloaded and built individually:
-
-```bash
-pyenv install 3.10.0
-```
-
-To verify the installation commands worked:
-
-```bash
-python3.10 --version
-```
-
-These Python versions need to be made available to local version of the repository. They
-will used during the Nox sessions, explained further down this file. Executing the
-following command will create a `.python-version` file inside the repo (this file is
-currently listed in `.gitignore`):
-
-```bash
-pyenv local 3.10.0
-```
-
 ## API Dependency Management (Poetry)
 
 To maintain records of the API's dependencies,
@@ -218,27 +162,14 @@ As a summary, these are the steps needed to create a dev environment for this re
 compressed into a single code block:
 
 ```bash
-# Install pyenv
-curl https://pyenv.run | bash
+# Install Python 3.10
 
-# Paste into ~/.bashrc
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# Download and install Python 3.10 from the official Python website or use your system’s package manager (e.g., apt for Linux, Homebrew for macOS, or the installer for Windows).
+# Make sure Python is added to your system PATH.
+# Verify the installation by checking the version.
 
-# Apply changes made in ~/.bashrc
-source ~/.bashrc
-
-# Install Python build tools
-sudo yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite \
-sqlite-devel openssl-devel xz xz-devel libffi-devel findutils
-
-# Install different versions of Python and verify they work
-pyenv install 3.10.0
-python3.10 --version
-
-# Make installed Python versions available to repo
-pyenv local 3.10.0
+# To verify the installation commands worked:
+python3 --version
 
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
