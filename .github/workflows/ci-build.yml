@@ -10,9 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-    name: Python ${{ matrix.python-version }} Build & Tests
+    name: Build & Tests
     steps:
       - name: Add apt repo
         run: sudo add-apt-repository universe
@@ -26,7 +24,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           architecture: x64
 
       - name: Checkout DataGateway API
@@ -58,7 +56,7 @@ jobs:
 
       # Run Unit tests
       - name: Run Nox unit tests session
-        run: nox -p ${{ matrix.python-version }} -s unit_tests -- --cov=datagateway_api --cov-report=xml
+        run: nox -s unit_tests -- --cov=datagateway_api --cov-report=xml
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -136,7 +134,7 @@ jobs:
       # Run Nox integration tests session, saves and uploads a coverage report to codecov
       - name: Run Nox Integration tests session
         if: success()
-        run: nox -p ${{ matrix.python-version }} -s integration_tests -- --cov=datagateway_api --cov-report=xml
+        run: nox -s integration_tests -- --cov=datagateway_api --cov-report=xml
 
   linting:
     runs-on: ubuntu-24.04
@@ -350,9 +348,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-    name: Pip Install ${{ matrix.python-version }} Test
+    name: Pip Install Test
     steps:
       # Checkout DataGateway API and setup Python
       - name: Check out repo
@@ -360,7 +356,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           architecture: x64
 
       # Create virtual environment and install DataGateway API
