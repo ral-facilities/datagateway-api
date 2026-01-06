@@ -1,30 +1,15 @@
+"""
+Module for setting up and configuring the logging system.
+"""
+
+import logging
 import logging.config
 from pathlib import Path
 
-from datagateway_api.src.common.config import Config
+LOGGING_CONFIG_FILE_PATH = Path(__file__).parent.parent / "logging.ini"
 
-LOG_FILE_NAME = Path(Config.config.log_location)
-logger_config = {
-    "version": 1,
-    "formatters": {
-        "default": {
-            "format": "[%(asctime)s] {%(module)s:%(filename)s:%(funcName)s:%(lineno)d}"
-            " %(levelname)s - %(message)s",
-        },
-    },
-    "handlers": {
-        "default": {
-            "level": Config.config.log_level,
-            "formatter": "default",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": LOG_FILE_NAME,
-            "maxBytes": 5000000,
-            "backupCount": 10,
-        },
-    },
-    "root": {"level": Config.config.log_level, "handlers": ["default"]},
-}
-
-
-def setup_logger():
-    logging.config.dictConfig(logger_config)
+def setup_logger() -> None:
+    """
+    Set up the logger using the configuration INI file.
+    """
+    logging.config.fileConfig(LOGGING_CONFIG_FILE_PATH)
