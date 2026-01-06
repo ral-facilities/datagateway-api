@@ -79,3 +79,6 @@ py-37-code = "sys_version_info > (3, 6)"
 
 [tool.coverage.report]
 show_missing = true
+
+[tool.black]
+line-length = 120
