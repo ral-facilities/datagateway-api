@@ -5,11 +5,11 @@ from typing import Optional
 
 from pydantic import (
     BaseModel,
+    field_validator,
     StrictBool,
     StrictInt,
     StrictStr,
     ValidationError,
-    validator,
 )
 import yaml
 
@@ -59,12 +59,14 @@ class DataGatewayAPI(BaseModel):
     icat_url: Optional[StrictStr]
     use_reader_for_performance: Optional[UseReaderForPerformance]
 
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+    _validate_extension = field_validator("extension", allow_reuse=True)(
+        validate_extension,
+    )
 
     def __getitem__(self, item):
         return getattr(self, item)
 
-    @validator(
+    @field_validator(
         "client_cache_size",
         "client_pool_init_size",
         "client_pool_max_size",
@@ -78,7 +80,7 @@ class DataGatewayAPI(BaseModel):
         are present and not None. If any of these config values are missing,
         an error is raised, causing the application to exit.
 
-        :param cls: :class:`DataGatewayAPI` pointer
+        :param self: :class:`DataGatewayAPI` pointer
         :param value: The value of the given config field
         """
         if value is None:
@@ -116,7 +118,9 @@ class SearchAPI(BaseModel):
     password: StrictStr
     search_scoring: SearchScoring
 
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+    _validate_extension = field_validator("extension", allow_reuse=True)(
+        validate_extension,
+    )
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -161,7 +165,9 @@ class APIConfig(BaseModel):
     test_user_credentials: Optional[TestUserCredentials]
     url_prefix: StrictStr
 
-    _validate_extension = validator("url_prefix", allow_reuse=True)(validate_extension)
+    _validate_extension = field_validator("url_prefix", allow_reuse=True)(
+        validate_extension,
+    )
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -194,14 +200,14 @@ class APIConfig(BaseModel):
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
-    @validator("search_api")
+    @field_validator("search_api")
     def validate_api_extensions(cls, value, values):  # noqa: B902, N805
         """
         Checks that the DataGateway API and Search API extensions are not the same. An
         error is raised, at which point the application exits, if the extensions are the
         same.
 
-        :param cls: :class:`APIConfig` pointer
+        :param self: :class:`APIConfig` pointer
         :param value: The value of the given config field
         :param values: The config field values loaded before the given config field
         """
