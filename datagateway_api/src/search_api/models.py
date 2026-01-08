@@ -81,7 +81,12 @@ def _get_icat_field_value(icat_field_name, icat_data):
 
 
 class PaNOSCAttribute(ABC, BaseModel):
-    _datetime_field_names = ["creationDate", "startDate", "endDate", "releaseDate"]
+    _datetime_field_names: ClassVar[List[str]] = [
+        "creationDate",
+        "startDate",
+        "endDate",
+        "releaseDate",
+    ]
 
     @classmethod
     @abstractmethod
