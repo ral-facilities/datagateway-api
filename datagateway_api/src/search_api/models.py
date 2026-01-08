@@ -5,12 +5,14 @@ from typing import Annotated, ClassVar, List, Optional, Union
 
 from pydantic import (
     BaseModel,
+    BeforeValidator,
     Field,
     field_validator,
     model_validator,
     PlainSerializer,
     ValidationError,
 )
+from pydantic_core import ErrorDetails
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
@@ -24,12 +26,30 @@ SearchAPIDatetime = Annotated[
     ),
 ]
 
+# The PaNOSC fields that map to id fields in ICAT were set to be of type StrictStr but
+# because they are integers in ICAT, the creation of the PaNOSC models was failing
+# because they were only accepting strings. To deal with this issue, the type of such
+# PaNOSC fields were changed to str instead as this casts integers to strings but still
+# throws a ValidationError if None is passed to it. To keep things consistent and less
+# confusing, the types of all the other fields were made non-strict.
+SearchAPIId = Annotated[
+    str,
+    BeforeValidator(lambda v: str(v) if isinstance(v, (int, float, bool)) else v),
+    Field(alias="id"),
+]
+
+SearchAPIIdOptional = Annotated[
+    Optional[str],
+    BeforeValidator(lambda v: str(v) if isinstance(v, (int, float, bool)) else v),
+    Field(None, alias="id"),
+]
+
 
 def _is_panosc_entity_field_of_type_list(entity_field):
-    entity_field_outer_type = entity_field.outer_type_
+    entity_field_annotation = entity_field.annotation
     if (
-        hasattr(entity_field_outer_type, "_name")
-        and entity_field_outer_type._name == "List"
+        hasattr(entity_field_annotation, "_name")
+        and entity_field_annotation._name == "List"
     ):
         is_list = True  # pragma: py-37-code
     # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
@@ -73,7 +93,8 @@ class PaNOSCAttribute(ABC, BaseModel):
             # Some fields have aliases so we must use them when creating a model
             # instance. If a field does not have an alias then the `alias` property
             # holds the name of the field
-            entity_field_alias = cls.model_fields[entity_field].alias
+            field_info = cls.model_fields[entity_field]
+            entity_field_alias = field_info.alias or entity_field
 
             entity_name, icat_field_name = mappings.get_icat_mapping(
                 cls.__name__,
@@ -168,17 +189,17 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # entity but the relevant ICAT data needed for its creation cannot be
                 # found in the provided ICAT response. Because of this, a
                 # `ValidationError` is raised.
-                exc = TypeError("field required")
-                raise ValidationError(
-                    errors=[
-                        {
-                            "type": "type_error",
-                            "loc": (required_related_field,),
-                            "msg": str(exc),  # -> "documents must be a non-empty list"
-                            "input": None,
-                        },
+
+                raise ValidationError.from_exception_data(
+                    cls.__name__,
+                    [
+                        ErrorDetails(
+                            type="missing",
+                            loc=(required_related_field,),
+                            msg="Field required",
+                            input=None,
+                        ),
                     ],
-                    model=cls,
                 )
 
         return cls(**entity_data)
@@ -191,7 +212,7 @@ class Affiliation(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = []
 
     name: Optional[str] = None
-    id_: Optional[str] = Field(None, alias="id")
+    id_: SearchAPIIdOptional
     address: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
@@ -229,15 +250,15 @@ class Dataset(PaNOSCAttribute):
     samples: Optional[List["Sample"]] = []
 
     @field_validator("pid", mode="before")
-    def set_pid(cls, info):  # noqa: B902, N805
-        return f"pid:{info.data}" if isinstance(info.data, int) else info.data
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @model_validator(mode="before")
-    def set_is_public(cls, info):  # noqa: B902, N805
+    def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
-        info.data["isPublic"] = True
-        return info.data
+        value["isPublic"] = True
+        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -269,15 +290,15 @@ class Document(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
 
     @field_validator("pid", mode="before")
-    def set_pid(cls, info):  # noqa: B902, N805
-        return f"pid:{info.data}" if isinstance(info.data, int) else info.data
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @model_validator(mode="before")
-    def set_is_public(cls, info):  # noqa: B902, N805
+    def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
-        info.data["isPublic"] = True
-        return info.data
+        value["isPublic"] = True
+        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -290,7 +311,7 @@ class File(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["dataset"]
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     name: str
     path: Optional[str] = None
     size: Optional[int] = None
@@ -315,8 +336,8 @@ class Instrument(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @field_validator("pid", mode="before")
-    def set_pid(cls, info):  # noqa: B902, N805
-        return f"pid:{info.data}" if isinstance(info.data, int) else info.data
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -329,7 +350,7 @@ class Member(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["document"]
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     role: Optional[str] = Field(None, alias="role")
 
     document: Document = None
@@ -350,7 +371,7 @@ class Parameter(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     name: str
     value: Union[float, int, str]
     unit: Optional[str] = None
@@ -391,7 +412,7 @@ class Person(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     full_name: str = Field(alias="fullName")
     orcid: Optional[str] = None
     researcher_id: Optional[str] = Field(None, alias="researcherId")
@@ -418,8 +439,8 @@ class Sample(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @field_validator("pid", mode="before")
-    def set_pid(cls, info):  # noqa: B902, N805
-        return f"pid:{info.data}" if isinstance(info.data, int) else info.data
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -438,8 +459,8 @@ class Technique(PaNOSCAttribute):
     datasets: Optional[List[Dataset]] = []
 
     @field_validator("pid", mode="before")
-    def set_pid(cls, info):  # noqa: B902, N805
-        return f"pid:{info.data}" if isinstance(info.data, int) else info.data
+    def set_pid(cls, value):  # noqa: B902, N805
+        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):

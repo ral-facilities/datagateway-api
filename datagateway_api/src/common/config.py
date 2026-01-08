@@ -5,6 +5,7 @@ from typing import Optional
 
 from pydantic import (
     BaseModel,
+    ConfigDict,
     field_validator,
     StrictBool,
     StrictInt,
@@ -51,49 +52,22 @@ class DataGatewayAPI(BaseModel):
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: Optional[StrictInt]
-    client_pool_init_size: Optional[StrictInt]
-    client_pool_max_size: Optional[StrictInt]
+    client_cache_size: StrictInt
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
     extension: StrictStr
-    icat_check_cert: Optional[StrictBool]
-    icat_url: Optional[StrictStr]
-    use_reader_for_performance: Optional[UseReaderForPerformance]
+    icat_check_cert: StrictBool
+    icat_url: StrictStr
+    use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
-    _validate_extension = field_validator("extension", allow_reuse=True)(
+    _validate_extension = field_validator("extension", mode="after")(
         validate_extension,
     )
 
     def __getitem__(self, item):
         return getattr(self, item)
 
-    @field_validator(
-        "client_cache_size",
-        "client_pool_init_size",
-        "client_pool_max_size",
-        "icat_check_cert",
-        "icat_url",
-        always=True,
-    )
-    def require_icat_config_value(cls, value):  # noqa: B902, N805
-        """
-        Validates that the required config fields for the `python_icat`
-        are present and not None. If any of these config values are missing,
-        an error is raised, causing the application to exit.
-
-        :param self: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        """
-        if value is None:
-            raise TypeError("Field required for `python_icat`.")
-        return value
-
-    class Config:
-        """
-        The behaviour of the BaseModel class can be controlled via this class.
-        """
-
-        # Enables assignment validation on the BaseModel fields. Useful for when the
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
 class SearchScoring(BaseModel):
@@ -118,7 +92,7 @@ class SearchAPI(BaseModel):
     password: StrictStr
     search_scoring: SearchScoring
 
-    _validate_extension = field_validator("extension", allow_reuse=True)(
+    _validate_extension = field_validator("extension", mode="after")(
         validate_extension,
     )
 
@@ -152,20 +126,20 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
-    datagateway_api: Optional[DataGatewayAPI]
-    debug_mode: Optional[StrictBool]
-    flask_reloader: Optional[StrictBool]
+    datagateway_api: Optional[DataGatewayAPI] = None
+    debug_mode: Optional[StrictBool] = None
+    flask_reloader: Optional[StrictBool] = None
     generate_swagger: StrictBool
-    host: Optional[StrictStr]
+    host: Optional[StrictStr] = None
     log_level: StrictStr
     log_location: StrictStr
-    port: Optional[StrictStr]
-    search_api: Optional[SearchAPI]
-    test_mechanism: Optional[StrictStr]
-    test_user_credentials: Optional[TestUserCredentials]
+    port: Optional[StrictStr] = None
+    search_api: Optional[SearchAPI] = None
+    test_mechanism: Optional[StrictStr] = None
     url_prefix: StrictStr
+    test_user_credentials: Optional[TestUserCredentials] = None
 
-    _validate_extension = field_validator("url_prefix", allow_reuse=True)(
+    _validate_extension = field_validator("url_prefix", mode="after")(
         validate_extension,
     )
 
@@ -201,7 +175,7 @@ class APIConfig(BaseModel):
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
     @field_validator("search_api")
-    def validate_api_extensions(cls, value, values):  # noqa: B902, N805
+    def validate_api_extensions(cls, value, info):  # noqa: B902, N805
         """
         Checks that the DataGateway API and Search API extensions are not the same. An
         error is raised, at which point the application exits, if the extensions are the
@@ -212,10 +186,10 @@ class APIConfig(BaseModel):
         :param values: The config field values loaded before the given config field
         """
         if (
-            "datagateway_api" in values
-            and values["datagateway_api"] is not None
+            "datagateway_api" in info.data
+            and info.data["datagateway_api"] is not None
             and value is not None
-            and values["datagateway_api"].extension == value.extension
+            and info.data["datagateway_api"].extension == value.extension
         ):
             raise ValueError(
                 "extension cannot be the same as datagateway_api extension",
