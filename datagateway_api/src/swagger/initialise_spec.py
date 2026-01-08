@@ -310,7 +310,7 @@ def initialise_search_api_spec(spec):
     ]
     for panosc_model in panosc_models:
         schema = panosc_model.schema(ref_template="#/components/schemas/{model}")[
-            "definitions"
+            "$defs"
         ][panosc_model.__name__]
 
         schema_name = panosc_model.__name__
