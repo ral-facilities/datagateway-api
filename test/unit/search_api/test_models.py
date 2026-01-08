@@ -1,9 +1,8 @@
 from pydantic import ValidationError
 import pytest
 
-from datagateway_api.src.common.date_handler import DateHandler
 import datagateway_api.src.search_api.models as models
-from test.unit.search_api.utlis import DateModel
+from test.unit.search_api.utlis import normalise_date
 
 
 AFFILIATION_ICAT_DATA = {
@@ -200,9 +199,7 @@ AFFILIATION_PANOSC_DATA = {
 DATASET_PANOSC_DATA = {
     "pid": DATASET_ICAT_DATA["doi"],
     "title": DATASET_ICAT_DATA["name"],
-    "creationDate": DateModel(
-        date=DateHandler.str_to_datetime_object(DATASET_ICAT_DATA["createTime"]),
-    ).model_dump(mode="json")["date"],
+    "creationDate": normalise_date(DATASET_ICAT_DATA["createTime"]),
     "isPublic": True,
     "size": None,
     "documents": [],
@@ -220,15 +217,9 @@ DOCUMENT_PANOSC_DATA = {
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],
     "doi": INVESTIGATION_ICAT_DATA["doi"],
-    "startDate": DateModel(
-        date=DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["startDate"]),
-    ).model_dump(mode="json")["date"],
-    "endDate": DateModel(
-        date=DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
-    ).model_dump(mode="json")["date"],
-    "releaseDate": DateModel(
-        date=DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["releaseDate"]),
-    ).model_dump(mode="json")["date"],
+    "startDate": normalise_date(INVESTIGATION_ICAT_DATA["startDate"]),
+    "endDate": normalise_date(INVESTIGATION_ICAT_DATA["endDate"]),
+    "releaseDate": normalise_date(INVESTIGATION_ICAT_DATA["releaseDate"]),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
     "datasets": [],
