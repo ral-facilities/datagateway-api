@@ -7,7 +7,6 @@ from pydantic import (
     BaseModel,
     BeforeValidator,
     Field,
-    field_validator,
     model_validator,
     PlainSerializer,
     ValidationError,
@@ -17,14 +16,21 @@ from pydantic_core import ErrorDetails
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
 
+def format_datetime(dt):
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+
 SearchAPIDatetime = Annotated[
     datetime,
-    PlainSerializer(
-        lambda dt: dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z",
-        return_type=str,
-        when_used="always",
-    ),
+    PlainSerializer(format_datetime, return_type=str, when_used="always"),
 ]
+
+
+def pid_prefix(value):
+    return f"pid:{value}" if isinstance(value, int) else value
+
+
+SearchAPIPid = Annotated[str, BeforeValidator(pid_prefix)]
 
 # The PaNOSC fields that map to id fields in ICAT were set to be of type StrictStr but
 # because they are integers in ICAT, the creation of the PaNOSC models was failing
@@ -32,15 +38,23 @@ SearchAPIDatetime = Annotated[
 # PaNOSC fields were changed to str instead as this casts integers to strings but still
 # throws a ValidationError if None is passed to it. To keep things consistent and less
 # confusing, the types of all the other fields were made non-strict.
+
+
+def normalize_id(value):
+    if isinstance(value, (int, float, bool)):
+        return str(value)
+    return value
+
+
 SearchAPIId = Annotated[
     str,
-    BeforeValidator(lambda v: str(v) if isinstance(v, (int, float, bool)) else v),
+    BeforeValidator(normalize_id),
     Field(alias="id"),
 ]
 
 SearchAPIIdOptional = Annotated[
     Optional[str],
-    BeforeValidator(lambda v: str(v) if isinstance(v, (int, float, bool)) else v),
+    BeforeValidator(normalize_id),
     Field(None, alias="id"),
 ]
 
@@ -241,7 +255,7 @@ class Dataset(PaNOSCAttribute):
     ]
     _text_operator_fields: ClassVar[List[str]] = ["title"]
 
-    pid: str
+    pid: SearchAPIPid
     title: str
     is_public: bool = Field(alias="isPublic")
     creation_date: SearchAPIDatetime = Field(alias="creationDate")
@@ -253,10 +267,6 @@ class Dataset(PaNOSCAttribute):
     files: Optional[List["File"]] = []
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
-
-    @field_validator("pid", mode="before")
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @model_validator(mode="before")
     def set_is_public(cls, value):  # noqa: B902, N805
@@ -278,7 +288,7 @@ class Document(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["datasets"]
     _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
-    pid: str
+    pid: SearchAPIPid
     is_public: bool = Field(alias="isPublic")
     type_: str = Field(alias="type")
     title: str
@@ -293,10 +303,6 @@ class Document(PaNOSCAttribute):
     datasets: List[Dataset] = []
     members: Optional[List["Member"]] = []
     parameters: Optional[List["Parameter"]] = []
-
-    @field_validator("pid", mode="before")
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @model_validator(mode="before")
     def set_is_public(cls, value):  # noqa: B902, N805
@@ -334,15 +340,11 @@ class Instrument(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
 
-    pid: str
+    pid: SearchAPIPid
     name: str
     facility: str
 
     datasets: Optional[List[Dataset]] = []
-
-    @field_validator("pid", mode="before")
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -438,14 +440,10 @@ class Sample(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
 
     name: str
-    pid: str
+    pid: SearchAPIPid
     description: Optional[str] = None
 
     datasets: Optional[List[Dataset]] = []
-
-    @field_validator("pid", mode="before")
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -458,14 +456,10 @@ class Technique(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    pid: str
+    pid: SearchAPIPid
     name: str
 
     datasets: Optional[List[Dataset]] = []
-
-    @field_validator("pid", mode="before")
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):

@@ -1,9 +1,10 @@
 import logging
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import Annotated, Optional
 
 from pydantic import (
+    AfterValidator,
     BaseModel,
     ConfigDict,
     field_validator,
@@ -39,6 +40,9 @@ def validate_extension(extension):
     return extension
 
 
+SearchAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
+
+
 class UseReaderForPerformance(BaseModel):
     enabled: StrictBool
     reader_mechanism: StrictStr
@@ -55,17 +59,10 @@ class DataGatewayAPI(BaseModel):
     client_cache_size: StrictInt
     client_pool_init_size: StrictInt
     client_pool_max_size: StrictInt
-    extension: StrictStr
+    extension: SearchAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     use_reader_for_performance: Optional[UseReaderForPerformance] = None
-
-    _validate_extension = field_validator("extension", mode="after")(
-        validate_extension,
-    )
-
-    def __getitem__(self, item):
-        return getattr(self, item)
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -84,20 +81,13 @@ class SearchAPI(BaseModel):
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    extension: StrictStr
+    extension: SearchAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
     search_scoring: SearchScoring
-
-    _validate_extension = field_validator("extension", mode="after")(
-        validate_extension,
-    )
-
-    def __getitem__(self, item):
-        return getattr(self, item)
 
 
 class TestUserCredentials(BaseModel):
@@ -136,15 +126,8 @@ class APIConfig(BaseModel):
     port: Optional[StrictStr] = None
     search_api: Optional[SearchAPI] = None
     test_mechanism: Optional[StrictStr] = None
-    url_prefix: StrictStr
+    url_prefix: SearchAPIExtension
     test_user_credentials: Optional[TestUserCredentials] = None
-
-    _validate_extension = field_validator("url_prefix", mode="after")(
-        validate_extension,
-    )
-
-    def __getitem__(self, item):
-        return getattr(self, item)
 
     @classmethod
     def load(cls, path=None):
@@ -183,7 +166,7 @@ class APIConfig(BaseModel):
 
         :param self: :class:`APIConfig` pointer
         :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
+        :param info: The config field values loaded before the given config field
         """
         if (
             "datagateway_api" in info.data
