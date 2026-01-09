@@ -17,7 +17,7 @@ class DateModel(BaseModel):
     date: SearchAPIDatetime
 
 
-def normalise_date(date_str: str) -> str:
+def normalise_date(date_str: str):
     """
     Convert a date string to the JSON-serializable 'date' field using DateModel.
     """
