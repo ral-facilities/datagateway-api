@@ -100,7 +100,7 @@ def icat_client():
     )
     client.login(
         Config.config.test_mechanism,
-        Config.config.test_user_credentials.dict(),
+        Config.config.test_user_credentials.model_dump(),
     )
     return client
 

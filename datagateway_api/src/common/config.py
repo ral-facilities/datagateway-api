@@ -1,15 +1,17 @@
 import logging
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import Annotated, Optional
 
 from pydantic import (
+    AfterValidator,
     BaseModel,
+    ConfigDict,
+    field_validator,
     StrictBool,
     StrictInt,
     StrictStr,
     ValidationError,
-    validator,
 )
 import yaml
 
@@ -38,6 +40,9 @@ def validate_extension(extension):
     return extension
 
 
+DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
+
+
 class UseReaderForPerformance(BaseModel):
     enabled: StrictBool
     reader_mechanism: StrictStr
@@ -51,47 +56,18 @@ class DataGatewayAPI(BaseModel):
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: Optional[StrictInt]
-    client_pool_init_size: Optional[StrictInt]
-    client_pool_max_size: Optional[StrictInt]
-    extension: StrictStr
-    icat_check_cert: Optional[StrictBool]
-    icat_url: Optional[StrictStr]
-    use_reader_for_performance: Optional[UseReaderForPerformance]
-
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+    client_cache_size: StrictInt
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
+    extension: DataGatewayAPIExtension
+    icat_check_cert: StrictBool
+    icat_url: StrictStr
+    use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
 
-    @validator(
-        "client_cache_size",
-        "client_pool_init_size",
-        "client_pool_max_size",
-        "icat_check_cert",
-        "icat_url",
-        always=True,
-    )
-    def require_icat_config_value(cls, value):  # noqa: B902, N805
-        """
-        Validates that the required config fields for the `python_icat`
-        are present and not None. If any of these config values are missing,
-        an error is raised, causing the application to exit.
-
-        :param cls: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        """
-        if value is None:
-            raise TypeError("Field required for `python_icat`.")
-        return value
-
-    class Config:
-        """
-        The behaviour of the BaseModel class can be controlled via this class.
-        """
-
-        # Enables assignment validation on the BaseModel fields. Useful for when the
-        validate_assignment = True
+    model_config = ConfigDict(validate_assignment=True)
 
 
 class SearchScoring(BaseModel):
@@ -108,15 +84,13 @@ class SearchAPI(BaseModel):
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    extension: StrictStr
+    extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
     search_scoring: SearchScoring
-
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -148,20 +122,18 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
-    datagateway_api: Optional[DataGatewayAPI]
-    debug_mode: Optional[StrictBool]
-    flask_reloader: Optional[StrictBool]
+    datagateway_api: Optional[DataGatewayAPI] = None
+    debug_mode: Optional[StrictBool] = None
+    flask_reloader: Optional[StrictBool] = None
     generate_swagger: StrictBool
-    host: Optional[StrictStr]
+    host: Optional[StrictStr] = None
     log_level: StrictStr
     log_location: StrictStr
-    port: Optional[StrictStr]
-    search_api: Optional[SearchAPI]
-    test_mechanism: Optional[StrictStr]
-    test_user_credentials: Optional[TestUserCredentials]
-    url_prefix: StrictStr
-
-    _validate_extension = validator("url_prefix", allow_reuse=True)(validate_extension)
+    port: Optional[StrictStr] = None
+    search_api: Optional[SearchAPI] = None
+    test_mechanism: Optional[StrictStr] = None
+    url_prefix: DataGatewayAPIExtension
+    test_user_credentials: Optional[TestUserCredentials] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -194,22 +166,22 @@ class APIConfig(BaseModel):
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
-    @validator("search_api")
-    def validate_api_extensions(cls, value, values):  # noqa: B902, N805
+    @field_validator("search_api")
+    def validate_api_extensions(cls, value, info):  # noqa: B902, N805
         """
         Checks that the DataGateway API and Search API extensions are not the same. An
         error is raised, at which point the application exits, if the extensions are the
         same.
 
-        :param cls: :class:`APIConfig` pointer
+        :param self: :class:`APIConfig` pointer
         :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
+        :param info: The config field values loaded before the given config field
         """
         if (
-            "datagateway_api" in values
-            and values["datagateway_api"] is not None
+            "datagateway_api" in info.data
+            and info.data["datagateway_api"] is not None
             and value is not None
-            and values["datagateway_api"].extension == value.extension
+            and info.data["datagateway_api"].extension == value.extension
         ):
             raise ValueError(
                 "extension cannot be the same as datagateway_api extension",
