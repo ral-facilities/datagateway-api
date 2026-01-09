@@ -40,7 +40,7 @@ def validate_extension(extension):
     return extension
 
 
-SearchAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
+DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
 
 
 class UseReaderForPerformance(BaseModel):
@@ -59,10 +59,13 @@ class DataGatewayAPI(BaseModel):
     client_cache_size: StrictInt
     client_pool_init_size: StrictInt
     client_pool_max_size: StrictInt
-    extension: SearchAPIExtension
+    extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     use_reader_for_performance: Optional[UseReaderForPerformance] = None
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -81,13 +84,16 @@ class SearchAPI(BaseModel):
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    extension: SearchAPIExtension
+    extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
     search_scoring: SearchScoring
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
 
 class TestUserCredentials(BaseModel):
@@ -126,8 +132,11 @@ class APIConfig(BaseModel):
     port: Optional[StrictStr] = None
     search_api: Optional[SearchAPI] = None
     test_mechanism: Optional[StrictStr] = None
-    url_prefix: SearchAPIExtension
+    url_prefix: DataGatewayAPIExtension
     test_user_credentials: Optional[TestUserCredentials] = None
+
+    def __getitem__(self, item):
+        return getattr(self, item)
 
     @classmethod
     def load(cls, path=None):
