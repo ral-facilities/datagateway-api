@@ -5,8 +5,9 @@ import logging
 
 from flask import request
 from flask_restful import reqparse
+from pydantic import ValidationError
 import requests
-from sqlalchemy.exc import IntegrityError
+
 
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
@@ -16,8 +17,6 @@ from datagateway_api.src.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.src.datagateway_api.icat import models
-from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
 
@@ -43,7 +42,7 @@ def queries_records(method):
         except TypeError as e:
             log.exception(e.args)
             raise BadRequestError() from e
-        except IntegrityError as e:
+        except ValidationError as e:
             log.exception(e.args)
             raise BadRequestError() from e
 
@@ -127,30 +126,6 @@ def get_filters_from_query_string(api_type, entity_name=None):
         return filters
     except Exception as e:
         raise FilterError(e) from e
-
-
-def get_entity_object_from_name(entity_name):
-    """
-    From an entity name, this function gets a Python version of that entity for the
-    Python ICAT
-
-    :param entity_name: Name of the entity to fetch a version from this model
-    :type entity_name: :class:`str`
-    :return: Object of the entity requested (e.g.
-        :class:`.datagateway_api.icat.models.INVESTIGATIONINSTRUMENT`)
-    :raises: KeyError: If an entity model cannot be found as a class in this model
-    """
-    try:
-        # If a plural is given, fetch the singular field name
-        if entity_name[-1] == "s":
-            entity_name = entity_name[0].upper() + entity_name[1:]
-            entity_name = endpoints[entity_name]
-
-        return getattr(models, entity_name.upper())
-    except KeyError as e:
-        raise ApiError(
-            f"Entity class cannot be found, missing class for {entity_name}",
-        ) from e
 
 
 def get_icat_properties(icat_url, icat_check_cert):

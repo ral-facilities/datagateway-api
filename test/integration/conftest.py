@@ -12,7 +12,7 @@ from datagateway_api.src.api_start_utils import (
     create_app_infrastructure,
 )
 from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.datagateway_api.icat.models import SESSION
+from datagateway_api.src.datagateway_api.icat.models import Session
 
 
 @pytest.fixture(scope="package")
@@ -23,7 +23,7 @@ def icat_client():
     )
     client.login(
         Config.config.test_mechanism,
-        Config.config.test_user_credentials.dict(),
+        Config.config.test_user_credentials.model_dump(),
     )
     return client
 
@@ -56,10 +56,11 @@ def flask_test_app_db():
 
 @pytest.fixture()
 def valid_db_credentials_header():
-    session = SESSION()
-    session.id = "Test"
-    session.expireDateTime = datetime.now() + timedelta(hours=1)
-    session.username = "Test User"
+    session = Session(
+        id="Test",
+        expireDateTime=datetime.now() + timedelta(hours=1),
+        username="Test User",
+    )
 
     # insert_row_into_table(SESSION, session)
 
