@@ -1,5 +1,17 @@
 from datagateway_api.src.datagateway_api.icat import models as datagateway_models
-from datagateway_api.src.search_api import models as search_api_models
+from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
+from datagateway_api.src.search_api.models import (
+    Affiliation,
+    Dataset,
+    Document,
+    File,
+    Instrument,
+    Member,
+    Parameter,
+    Person,
+    Sample,
+    Technique,
+)
 
 
 def initialise_datagateway_api_spec(spec):
@@ -12,68 +24,20 @@ def initialise_datagateway_api_spec(spec):
     """
 
     datagateway_model_list = [
-        datagateway_models.Application,
-        datagateway_models.Affiliation,
-        datagateway_models.Facility,
-        datagateway_models.DataCollection,
-        datagateway_models.DataCollectionDatafile,
-        datagateway_models.DataCollectionDataset,
-        datagateway_models.DataCollectionParameter,
-        datagateway_models.DataCollectionInvestigation,
-        datagateway_models.DataPublication,
-        datagateway_models.DataPublicationDate,
-        datagateway_models.DataPublicationFunding,
-        datagateway_models.DataPublicationType,
-        datagateway_models.DataPublicationUser,
-        datagateway_models.Datafile,
-        datagateway_models.DatafileFormat,
-        datagateway_models.DatafileParameter,
-        datagateway_models.Dataset,
-        datagateway_models.DatasetParameter,
-        datagateway_models.DatasetType,
-        datagateway_models.DatasetInstrument,
-        datagateway_models.DatasetTechnique,
-        datagateway_models.FacilityCycle,
-        datagateway_models.FundingReference,
-        datagateway_models.Grouping,
-        datagateway_models.Instrument,
-        datagateway_models.InstrumentScientist,
-        datagateway_models.Investigation,
-        datagateway_models.InvestigationFacilityCycle,
-        datagateway_models.InvestigationFunding,
-        datagateway_models.InvestigationGroup,
-        datagateway_models.InvestigationInstrument,
-        datagateway_models.InvestigationParameter,
-        datagateway_models.InvestigationType,
-        datagateway_models.InvestigationUser,
-        datagateway_models.Job,
-        datagateway_models.Keyword,
-        datagateway_models.ParameterType,
-        datagateway_models.PermissibleStringValue,
-        datagateway_models.Publication,
-        datagateway_models.PublicStep,
-        datagateway_models.RelatedDatafile,
-        datagateway_models.RelatedItem,
-        datagateway_models.Rule,
-        datagateway_models.Sample,
-        datagateway_models.SampleParameter,
-        datagateway_models.Shift,
-        datagateway_models.Technique,
-        datagateway_models.User,
-        datagateway_models.UserGroup,
-        datagateway_models.StudyInvestigation,
-        datagateway_models.Study,
-        datagateway_models.SampleType,
+        getattr(datagateway_models, entity_name) for entity_name in endpoints.values()
     ]
 
+    # Track schemas that have already been registered to avoid duplicates
     registered_schemas: set[str] = set()
 
     def register_schema(name: str, schema: dict):
+        # Register a schema only once to prevent overwriting or OpenAPI conflicts
         if name in registered_schemas:
             return
         registered_schemas.add(name)
         spec.components.schema(name, schema)
 
+    # Define the authentication mechanism used by the API
     spec.components.security_scheme(
         "session_id",
         {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
@@ -81,17 +45,21 @@ def initialise_datagateway_api_spec(spec):
 
     for datagateway_model in datagateway_model_list:
 
+        # Generate the full JSON Schema including referenced models in $defs
         full_schema = datagateway_model.model_json_schema(
             ref_template="#/components/schemas/{model}",
         )
 
+        # Extract and register all referenced schemas used by this model
         defs = full_schema.get("$defs", {})
         for def_name, def_schema in defs.items():
             register_schema(def_name, def_schema)
 
+        # Remove $defs so the root schema only describes this model
         root_schema = dict(full_schema)
         root_schema.pop("$defs", None)
 
+        # Register the root schema for the model itself
         register_schema(datagateway_model.__name__, root_schema)
 
     spec.components.parameter(
@@ -358,19 +326,19 @@ def initialise_search_api_spec(spec):
     :spec: ApiSpec: spec object to initialise
     :return: void
     """
-    panosc_model_list = [
-        search_api_models.Affiliation,
-        search_api_models.Dataset,
-        search_api_models.Document,
-        search_api_models.File,
-        search_api_models.Instrument,
-        search_api_models.Member,
-        search_api_models.Parameter,
-        search_api_models.Person,
-        search_api_models.Sample,
-        search_api_models.Technique,
+    panosc_models = [
+        Affiliation,
+        Dataset,
+        Document,
+        File,
+        Instrument,
+        Member,
+        Parameter,
+        Person,
+        Sample,
+        Technique,
     ]
-    for panosc_model in panosc_model_list:
+    for panosc_model in panosc_models:
         schema = panosc_model.model_json_schema(
             ref_template="#/components/schemas/{model}",
         )["$defs"][panosc_model.__name__]
