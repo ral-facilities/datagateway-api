@@ -14,15 +14,20 @@ from datagateway_api.src.datagateway_api.routers.ping import ping_endpoint
 from datagateway_api.src.datagateway_api.routers.sessions import sessions_endpoints
 
 
-app = FastAPI(title="Datagateway API", root_path=Config.config.url_prefix)
+datagateway_app = FastAPI(
+    title="Datagateway API",
+    docs_url=f"{Config.config.datagateway_api.extension}/docs",
+    root_path=Config.config.url_prefix,
+)
+
 
 setup_logger()
 logger = logging.getLogger()
-logger.info("Logging now setup")
+logger.info("Logging now setup : %s", Config.config.datagateway_api.extension)
 
 
 # Exception handler for all ApiError subclasses
-@app.exception_handler(ApiError)
+@datagateway_app.exception_handler(ApiError)
 async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
     """
     Handles all ApiError exceptions and subclasses.
@@ -37,7 +42,7 @@ async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
 
 
 # catch-all for unexpected exceptions
-@app.exception_handler(Exception)
+@datagateway_app.exception_handler(Exception)
 async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONResponse:
     """
     Handles all uncaught exceptions to prevent internal server errors from leaking.
@@ -49,7 +54,7 @@ async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONRe
     )
 
 
-app.add_middleware(
+datagateway_app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
@@ -61,7 +66,11 @@ python_icat = PythonICAT()
 
 # Create client pool
 icat_client_pool = create_client_pool()
-app.include_router(
+datagateway_app.include_router(
     ping_endpoint(python_icat, client_pool=icat_client_pool),
+    prefix=Config.config.datagateway_api.extension,
 )
-app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
+datagateway_app.include_router(
+    sessions_endpoints(python_icat, client_pool=icat_client_pool),
+    prefix=Config.config.datagateway_api.extension,
+)
