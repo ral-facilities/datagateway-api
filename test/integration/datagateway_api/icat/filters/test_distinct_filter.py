@@ -18,19 +18,13 @@ class TestICATDistinctFilter:
         test_filter = PythonICATDistinctFieldFilter(attribute_name)
         test_filter.apply_filter(icat_query)
 
-        assert (
-            icat_query.attributes == [attribute_name]
-            and icat_query.aggregate == "DISTINCT"
-        )
+        assert icat_query.attributes == [attribute_name] and icat_query.aggregate == "DISTINCT"
 
     def test_valid_list_fields_input(self, icat_query):
         test_filter = PythonICATDistinctFieldFilter(["doi", "name", "title"])
         test_filter.apply_filter(icat_query)
 
-        assert (
-            icat_query.attributes == ["doi", "name", "title"]
-            and icat_query.aggregate == "DISTINCT"
-        )
+        assert icat_query.attributes == ["doi", "name", "title"] and icat_query.aggregate == "DISTINCT"
 
     def test_invalid_field(self, icat_query):
         test_filter = PythonICATDistinctFieldFilter("my_new_field")

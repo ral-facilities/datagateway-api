@@ -59,8 +59,7 @@ class NestedWhereFilters:
         """
 
         log.debug(
-            "Setting SearchAPIQuery for NestedWhereFilters. Query filter: %s, Search"
-            " API query: %s",
+            "Setting SearchAPIQuery for NestedWhereFilters. Query filter: %s, Search" " API query: %s",
             repr(query_filter),
             search_api_query,
         )
@@ -69,8 +68,7 @@ class NestedWhereFilters:
             query_filter.search_api_query = search_api_query
         elif isinstance(query_filter, NestedWhereFilters):
             log.debug(
-                "Calling set_search_api_query(), with LHS and RHS from"
-                " NestedWhereFilters object (one per call)",
+                "Calling set_search_api_query(), with LHS and RHS from" " NestedWhereFilters object (one per call)",
             )
             NestedWhereFilters.set_search_api_query(
                 query_filter.lhs,
@@ -109,7 +107,4 @@ class NestedWhereFilters:
         return f"({operator.join(conditions)})"
 
     def __repr__(self):
-        return (
-            f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator:"
-            f" {repr(self.joining_operator)}"
-        )
+        return f"LHS: {repr(self.lhs)}, RHS: {repr(self.rhs)}, Operator:" f" {repr(self.joining_operator)}"

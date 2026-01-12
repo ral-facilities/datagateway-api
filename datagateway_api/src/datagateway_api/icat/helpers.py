@@ -117,9 +117,7 @@ def get_session_details_helper(client):
         body
     """
     session_time_remaining = client.getRemainingMinutes()
-    session_expiry_time = (
-        datetime.now(tzlocal()) + timedelta(minutes=session_time_remaining)
-    ).replace(microsecond=0)
+    session_expiry_time = (datetime.now(tzlocal()) + timedelta(minutes=session_time_remaining)).replace(microsecond=0)
     username = client.getUserName()
 
     return {
@@ -171,16 +169,14 @@ def update_attributes(old_entity, new_entity):
                 new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
         except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot find attribute `{key}` within the"
-                f" {old_entity.BeanName} entity",
+                f"Bad request made, cannot find attribute `{key}` within the" f" {old_entity.BeanName} entity",
             ) from e
 
         try:
             setattr(old_entity, key, new_entity[key])
         except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot modify attribute `{key}` within the"
-                f" {old_entity.BeanName} entity",
+                f"Bad request made, cannot modify attribute `{key}` within the" f" {old_entity.BeanName} entity",
             ) from e
 
     return old_entity

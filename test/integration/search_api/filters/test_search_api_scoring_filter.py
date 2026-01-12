@@ -10,10 +10,7 @@ class TestSearchAPIScoringFilter:
     def test_valid_apply_scoring_filter(self):
         filter_input = SearchAPIScoringFilter("My test query")
         entity_name = "Document"
-        expected_query = (
-            "SELECT o FROM Investigation o WHERE UPPER(o.summary) like UPPER('%My "
-            "test query%')"
-        )
+        expected_query = "SELECT o FROM Investigation o WHERE UPPER(o.summary) like UPPER('%My " "test query%')"
 
         filter_handler = FilterOrderHandler()
         filter_handler.add_filter(filter_input)

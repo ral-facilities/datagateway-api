@@ -113,8 +113,7 @@ class ReaderQueryHandler:
         for query_filter in self.filters:
             if (
                 isinstance(query_filter, PythonICATWhereFilter)
-                and query_filter.field
-                == ReaderQueryHandler.entity_filter_check[self.entity_type]
+                and query_filter.field == ReaderQueryHandler.entity_filter_check[self.entity_type]
                 and query_filter.operation == "eq"
             ):
                 log.debug(

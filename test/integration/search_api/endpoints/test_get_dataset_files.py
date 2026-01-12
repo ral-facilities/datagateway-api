@@ -154,8 +154,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files"
-            f"?filter={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files" f"?filter={request_filter}",
         )
 
         print(test_response)
@@ -196,8 +195,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files"
-            f"?filter={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files" f"?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code

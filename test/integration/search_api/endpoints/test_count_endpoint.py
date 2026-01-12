@@ -83,8 +83,7 @@ class TestSearchAPICountEndpoint:
         expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
-            f"{request_filter}",
+            f"{Config.config.search_api.extension}/{endpoint_name}/count?where=" f"{request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -131,8 +130,7 @@ class TestSearchAPICountEndpoint:
         expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
-            f"{request_filter}",
+            f"{Config.config.search_api.extension}/{endpoint_name}/count?where=" f"{request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -154,8 +152,7 @@ class TestSearchAPICountEndpoint:
         request_filter,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/count"
-            f"?where={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/count" f"?where={request_filter}",
         )
 
         assert test_response.status_code == 400

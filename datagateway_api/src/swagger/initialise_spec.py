@@ -23,9 +23,7 @@ def initialise_datagateway_api_spec(spec):
     :return: void
     """
 
-    datagateway_model_list = [
-        getattr(datagateway_models, entity_name) for entity_name in endpoints.values()
-    ]
+    datagateway_model_list = [getattr(datagateway_models, entity_name) for entity_name in endpoints.values()]
 
     # Track schemas that have already been registered to avoid duplicates
     registered_schemas: set[str] = set()
@@ -216,8 +214,7 @@ def initialise_datagateway_api_spec(spec):
         {
             "in": "query",
             "name": "limit",
-            "description": "Apply limit filter to the query. Limit the number of"
-            " entities returned.",
+            "description": "Apply limit filter to the query. Limit the number of" " entities returned.",
             "schema": {"type": "integer"},
         },
     )
@@ -228,8 +225,7 @@ def initialise_datagateway_api_spec(spec):
         {
             "in": "query",
             "name": "skip",
-            "description": "Apply skip filter to the query. Offset the returned"
-            " entities by a given number.",
+            "description": "Apply skip filter to the query. Offset the returned" " entities by a given number.",
             "schema": {"type": "integer"},
         },
     )
@@ -239,8 +235,7 @@ def initialise_datagateway_api_spec(spec):
         {
             "in": "query",
             "name": "distinct",
-            "description": "Apply distinct filter to the query. Return unique values"
-            " for the fields requested.",
+            "description": "Apply distinct filter to the query. Return unique values" " for the fields requested.",
             "schema": {"type": "array", "items": {"type": "string"}},
         },
     )
@@ -341,7 +336,9 @@ def initialise_search_api_spec(spec):
     for panosc_model in panosc_models:
         schema = panosc_model.model_json_schema(
             ref_template="#/components/schemas/{model}",
-        )["$defs"][panosc_model.__name__]
+        )[
+            "$defs"
+        ][panosc_model.__name__]
 
         schema_name = panosc_model.__name__
         spec.components.schema(schema_name, schema)

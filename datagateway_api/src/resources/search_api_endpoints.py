@@ -34,11 +34,7 @@ def get_search_endpoint(entity_name):
             filters = get_filters_from_query_string("search_api", entity_name)
             results = get_search(entity_name, filters)
             scoring_filter = next(
-                (
-                    filter_
-                    for filter_ in filters
-                    if isinstance(filter_, SearchAPIScoringFilter)
-                ),
+                (filter_ for filter_ in filters if isinstance(filter_, SearchAPIScoringFilter)),
                 None,
             )
             if scoring_filter:

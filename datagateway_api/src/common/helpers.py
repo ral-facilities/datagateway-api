@@ -58,9 +58,7 @@ def get_session_id_from_auth_header():
     parser = reqparse.RequestParser()
     parser.add_argument("Authorization", location="headers")
     args = parser.parse_args()
-    auth_header = (
-        args["Authorization"].split(" ") if args["Authorization"] is not None else ""
-    )
+    auth_header = args["Authorization"].split(" ") if args["Authorization"] is not None else ""
     if auth_header == "":
         raise MissingCredentialsError("No credentials provided in auth header")
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
@@ -109,8 +107,7 @@ def get_filters_from_query_string(api_type, entity_name=None):
         )
     else:
         raise ApiError(
-            "Incorrect api_type passed into `get_filter_from_query_string(): "
-            f"{api_type}",
+            "Incorrect api_type passed into `get_filter_from_query_string(): " f"{api_type}",
         )
     log.info(" Getting filters from query string")
     try:

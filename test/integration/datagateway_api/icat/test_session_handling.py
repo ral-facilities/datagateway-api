@@ -41,10 +41,7 @@ class TestSessionHandling:
         assert session_details.json["username"] == f"{test_mechanism}/{test_username}"
 
         # Check session ID matches the header from the request
-        assert (
-            session_details.json["id"]
-            == valid_icat_credentials_header["Authorization"].split()[1]
-        )
+        assert session_details.json["id"] == valid_icat_credentials_header["Authorization"].split()[1]
 
     def test_get_invalid_session_details(
         self,
@@ -76,10 +73,7 @@ class TestSessionHandling:
 
         assert refresh_session.status_code == 200
 
-        assert (
-            pre_refresh_session_details.json["expireDateTime"]
-            != post_refresh_session_details.json["expireDateTime"]
-        )
+        assert pre_refresh_session_details.json["expireDateTime"] != post_refresh_session_details.json["expireDateTime"]
 
     @pytest.mark.usefixtures("single_investigation_test_data")
     @pytest.mark.parametrize(

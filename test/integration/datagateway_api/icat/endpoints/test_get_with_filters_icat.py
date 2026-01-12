@@ -50,10 +50,7 @@ class TestICATGetWithFilters:
             headers=valid_icat_credentials_header,
         )
 
-        expected = [
-            {"title": f"Test data for Python ICAT on DataGateway API {i}"}
-            for i in range(5)
-        ]
+        expected = [{"title": f"Test data for Python ICAT on DataGateway API {i}"} for i in range(5)]
 
         for title in expected:
             assert title in test_response.json

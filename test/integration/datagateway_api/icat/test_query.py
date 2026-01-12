@@ -285,10 +285,7 @@ class TestICATQuery:
             return_json_formattable=return_json_format_flag,
         )
 
-        if (
-            test_query.query.aggregate != "COUNT"
-            and test_query.query.aggregate != "DISTINCT"
-        ):
+        if test_query.query.aggregate != "COUNT" and test_query.query.aggregate != "DISTINCT":
             query_data = prepare_icat_data_for_assertion(
                 query_data,
                 remove_id=True,

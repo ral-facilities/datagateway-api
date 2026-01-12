@@ -19,8 +19,7 @@ class TestUpdateByID:
         single_investigation_test_data[0].update(update_data_json)
 
         test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations"
-            f"/{single_investigation_test_data[0]['id']}",
+            f"{Config.config.datagateway_api.extension}/investigations" f"/{single_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
@@ -42,8 +41,7 @@ class TestUpdateByID:
         }
 
         test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations"
-            f"/{single_investigation_test_data[0]['id']}",
+            f"{Config.config.datagateway_api.extension}/investigations" f"/{single_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
             json=invalid_update_json,
         )

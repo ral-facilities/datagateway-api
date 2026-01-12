@@ -95,8 +95,7 @@ class TestEndpointRules:
                 id="Search API get dataset files",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files"
-                "/count",
+                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files" "/count",
                 ["GET"],
                 id="Search API dataset files count",
             ),

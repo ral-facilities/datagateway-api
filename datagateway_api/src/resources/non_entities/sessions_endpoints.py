@@ -64,11 +64,7 @@ def session_endpoints(python_icat, **kwargs):
               403:
                  description: Forbidden - User credentials were invalid
             """
-            if not (
-                request.data
-                and "username" in request.json
-                and "password" in request.json
-            ):
+            if not (request.data and "username" in request.json and "password" in request.json):
                 return "Bad request", 400
             # If no mechanism is present in request body, default to simple
             if not ("mechanism" in request.json):

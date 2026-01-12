@@ -13,17 +13,13 @@ class TestSearchAPIQuery:
         test_query = SearchAPIQuery(panosc_entity_name)
 
         assert test_query.panosc_entity_name == panosc_entity_name
-        assert (
-            test_query.icat_entity_name
-            == test_panosc_mappings.mappings[panosc_entity_name]["base_icat_entity"]
-        )
+        assert test_query.icat_entity_name == test_panosc_mappings.mappings[panosc_entity_name]["base_icat_entity"]
 
     def test_search_api_query_repr(self, test_panosc_mappings):
         panosc_entity_name = "Document"
         test_query = SearchAPIQuery(panosc_entity_name)
         assert (
-            repr(test_query)
-            == f"PaNOSC Entity Name: {panosc_entity_name}, ICAT Entity Name:"
+            repr(test_query) == f"PaNOSC Entity Name: {panosc_entity_name}, ICAT Entity Name:"
             f" {test_panosc_mappings.mappings[panosc_entity_name]['base_icat_entity']},"
             f" ICAT Query: {str(test_query.icat_query.query)}"
         )

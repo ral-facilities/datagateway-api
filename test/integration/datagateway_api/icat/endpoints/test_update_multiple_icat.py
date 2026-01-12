@@ -149,8 +149,7 @@ class TestUpdateMultipleEntities:
         # were rolled back when the ICATValidationError occurred for the second entity
         # in the request body
         get_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations"
-            f"/{multiple_investigation_test_data[0]['id']}",
+            f"{Config.config.datagateway_api.extension}/investigations" f"/{multiple_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
         )
         get_response_json = prepare_icat_data_for_assertion([get_response.json])

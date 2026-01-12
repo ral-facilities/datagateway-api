@@ -58,8 +58,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
     ):
 
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
-            f"?where={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count" f"?where={request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -83,8 +82,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
         request_filter,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
-            f"?where={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count" f"?where={request_filter}",
         )
 
         assert test_response.status_code == 400

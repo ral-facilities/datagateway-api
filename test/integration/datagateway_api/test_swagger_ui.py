@@ -17,12 +17,8 @@ from datagateway_api.src.common.config import APIConfig
 @pytest.fixture(params=["", "/url-prefix"], ids=["No URL prefix", "Given a URL prefix"])
 def test_config_swagger(test_config_data, request):
     test_config_data["url_prefix"] = request.param
-    test_config_data["datagateway_api"]["extension"] = (
-        "" if request.param == "" else "/datagateway-api"
-    )
-    test_config_data["search_api"]["extension"] = (
-        "/search-api" if request.param == "" else ""
-    )
+    test_config_data["datagateway_api"]["extension"] = "" if request.param == "" else "/datagateway-api"
+    test_config_data["search_api"]["extension"] = "/search-api" if request.param == "" else ""
 
     with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
         return APIConfig.load("test/path")

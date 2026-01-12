@@ -130,8 +130,7 @@ class TestSearchAPISearchEndpoint:
             ),
             pytest.param(
                 "Datasets",
-                '{"limit": 1, "where": {"creationDate": {"gt":'
-                ' "2007-06-30T08:30:58.000Z"}}}',
+                '{"limit": 1, "where": {"creationDate": {"gt":' ' "2007-06-30T08:30:58.000Z"}}}',
                 [
                     {
                         "pid": "0-449-78690-0",
@@ -288,8 +287,7 @@ class TestSearchAPISearchEndpoint:
             ),
             pytest.param(
                 "Datasets",
-                '{"include": [{"relation": "techniques", "scope": {"where": {"name":'
-                '"TODO"}}}]}',
+                '{"include": [{"relation": "techniques", "scope": {"where": {"name":' '"TODO"}}}]}',
                 [],
                 # Skipped because this test relies on ICAT 5 entities
                 # TODO - edit the WHERE filter when we know the techniques test data
@@ -340,8 +338,7 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Search datasets with parameters include and conditions (between"
-                " operator, A AND B AND C)",
+                id="Search datasets with parameters include and conditions (between" " operator, A AND B AND C)",
             ),
             pytest.param(
                 "Datasets",
@@ -379,8 +376,7 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Search datasets with parameters include and conditions (lt operator"
-                ", A AND B AND C)",
+                id="Search datasets with parameters include and conditions (lt operator" ", A AND B AND C)",
             ),
             pytest.param(
                 "Datasets",
@@ -418,13 +414,11 @@ class TestSearchAPISearchEndpoint:
                         "samples": [],
                     },
                 ],
-                id="Search datasets with parameters include and conditions ((A AND B)"
-                " OR (C AND D)",
+                id="Search datasets with parameters include and conditions ((A AND B)" " OR (C AND D)",
             ),
             pytest.param(
                 "Datasets",
-                '{"include": [{"relation": "files", "scope": {"where": {"text":'
-                ' "Datafile 25"}}}], "limit": 1}',
+                '{"include": [{"relation": "files", "scope": {"where": {"text":' ' "Datafile 25"}}}], "limit": 1}',
                 [
                     {
                         "pid": "0-87851-502-X",
@@ -653,8 +647,7 @@ class TestSearchAPISearchEndpoint:
                         ],
                     },
                 ],
-                id="Search documents with parameters include and conditions (between"
-                " operator, A AND B AND C)",
+                id="Search documents with parameters include and conditions (between" " operator, A AND B AND C)",
             ),
             pytest.param(
                 "Documents",
@@ -882,8 +875,7 @@ class TestSearchAPISearchEndpoint:
         expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}?filter="
-            f"{request_filter}",
+            f"{Config.config.search_api.extension}/{endpoint_name}?filter=" f"{request_filter}",
         )
 
         response_data = prepare_data_for_assertion(test_response.json)

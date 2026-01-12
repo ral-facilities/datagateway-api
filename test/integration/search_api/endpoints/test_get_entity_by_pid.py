@@ -401,8 +401,7 @@ class TestSearchAPIGetByPIDEndpoint:
             pytest.param(
                 "Documents",
                 "0-417-77631-4",
-                '{"include": [{"relation": "datasets"}, {"relation": "members"},'
-                ' {"relation": "parameters"}]}',
+                '{"include": [{"relation": "datasets"}, {"relation": "members"},' ' {"relation": "parameters"}]}',
                 {
                     "pid": "0-417-77631-4",
                     "isPublic": True,
@@ -487,8 +486,7 @@ class TestSearchAPIGetByPIDEndpoint:
         expected_json,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/{pid}?filter="
-            f"{request_filter}",
+            f"{Config.config.search_api.extension}/{endpoint_name}/{pid}?filter=" f"{request_filter}",
         )
 
         response_data = prepare_data_for_assertion(test_response.json)
@@ -519,8 +517,7 @@ class TestSearchAPIGetByPIDEndpoint:
         expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}"
-            f"?filter={request_filter}",
+            f"{Config.config.search_api.extension}/Datasets/{pid}" f"?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code
