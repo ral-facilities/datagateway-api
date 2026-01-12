@@ -1,14 +1,17 @@
 import logging
 
-from fastapi import FastAPI, Request, status
+
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from datagateway_api.src.common.config import Config
+from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.logger_setup import setup_logger
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.datagateway_api.routers.ping import ping_endpoint
+from datagateway_api.src.datagateway_api.routers.sessions import sessions_endpoints
 
 
 app = FastAPI(title="Datagateway API", root_path=Config.config.url_prefix)
@@ -18,20 +21,31 @@ logger = logging.getLogger()
 logger.info("Logging now setup")
 
 
+# Exception handler for all ApiError subclasses
+@app.exception_handler(ApiError)
+async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
+    """
+    Handles all ApiError exceptions and subclasses.
+    Logs the exception and returns JSON with the correct status code and message.
+    """
+    logger.exception(exc)
+
+    return JSONResponse(
+        status_code=getattr(exc, "status_code", ApiError.status_code),
+        content={"message": str(exc)},
+    )
+
+
+# catch-all for unexpected exceptions
 @app.exception_handler(Exception)
 async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONResponse:
     """
-    Custom exception handler for FastAPI to handle uncaught exceptions. It logs the error and returns an appropriate
-    response.
-
-    :param _: Unused
-    :param exc: The exception object that triggered this handler.
-    :return: A JSON response indicating that something went wrong.
+    Handles all uncaught exceptions to prevent internal server errors from leaking.
     """
     logger.exception(exc)
     return JSONResponse(
-        content={"detail": "Something went wrong"},
-        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        status_code=500,
+        content={"message": "Something went wrong"},
     )
 
 
@@ -50,3 +64,4 @@ icat_client_pool = create_client_pool()
 app.include_router(
     ping_endpoint(python_icat, client_pool=icat_client_pool),
 )
+app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
