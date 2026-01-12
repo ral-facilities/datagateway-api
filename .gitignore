@@ -10,3 +10,5 @@ search_api_mapping.json*
 .python-version
 .coverage
 coverage.xml
+
+datagateway_api/src/logging.ini
