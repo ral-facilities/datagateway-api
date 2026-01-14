@@ -1,5 +1,5 @@
-from datagateway_api.src.datagateway_api.icat import models as datagateway_models
 from datagateway_api.src.common.entity_endpoint_dict import endpoints
+from datagateway_api.src.datagateway_api.icat import models as datagateway_models
 from datagateway_api.src.search_api.models import (
     Affiliation,
     Dataset,

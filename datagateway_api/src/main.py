@@ -7,14 +7,16 @@ from fastapi.responses import JSONResponse
 
 from datagateway_api.src.auth.session_bearer import SessionBearer
 from datagateway_api.src.common.config import Config
+from datagateway_api.src.common.entity_endpoint_dict import endpoints
 from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.logger_setup import setup_logger
+from datagateway_api.src.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.datagateway_api.routers.entity import create_collection_router
 from datagateway_api.src.datagateway_api.routers.ping import ping_endpoint
 from datagateway_api.src.datagateway_api.routers.sessions import sessions_endpoints
-from datagateway_api.src.common.entity_endpoint_dict import endpoints
+from datagateway_api.src.search_api.routers.entity import create_search_collection_router
 
 datagateway_app = FastAPI(
     title="Datagateway API",
@@ -23,6 +25,14 @@ datagateway_app = FastAPI(
     separate_input_output_schemas=False,
 )
 
+
+search_api_app = FastAPI(
+    title="Search API",
+    root_path=Config.config.url_prefix,
+    separate_input_output_schemas=False,
+)
+
+datagateway_app.mount("/search-api", search_api_app)
 
 setup_logger()
 logger = logging.getLogger()
@@ -93,3 +103,15 @@ datagateway_app.include_router(
     sessions_endpoints(python_icat, client_pool=icat_client_pool),
     prefix=Config.config.datagateway_api.extension,
 )
+
+for endpoint_name, entity_name in search_api_entity_endpoints.items():
+    router = create_search_collection_router(
+        entity_name,
+        endpoint_name,
+        add_file_endpoints=(entity_name == "Dataset"),
+    )
+
+    search_api_app.include_router(
+        router,
+        prefix=f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}",
+    )
