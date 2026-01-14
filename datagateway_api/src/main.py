@@ -14,7 +14,7 @@ from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.datagateway_api.routers.entity import create_collection_router
 from datagateway_api.src.datagateway_api.routers.ping import ping_endpoint
 from datagateway_api.src.datagateway_api.routers.sessions import sessions_endpoints
-from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
+from datagateway_api.src.common.entity_endpoint_dict import endpoints
 
 datagateway_app = FastAPI(
     title="Datagateway API",
