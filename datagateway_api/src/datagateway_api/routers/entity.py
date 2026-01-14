@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Annotated, Any, List
 
 from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
@@ -305,6 +305,7 @@ def get_endpoint(
             **kwargs,
         )
 
+
 def get_id_endpoint(
     router: APIRouter,
     name: str,
@@ -341,7 +342,7 @@ def get_id_endpoint(
     )
     def get(
         request: Request,
-        id_: int = Path(..., description="The id of the entity to retrieve"),
+        id_: Annotated[int, Path(description="The id of the entity to retrieve")],
     ):
         return python_icat.get_with_id(
             get_session_id_from_auth_header(request),
@@ -365,7 +366,7 @@ def get_id_endpoint(
     )
     def delete(
         request: Request,
-        id_: int = Path(..., description="The id of the entity to delete"),
+        id_: Annotated[int, Path(description="The id of the entity to delete")],
     ):
         python_icat.delete_with_id(
             get_session_id_from_auth_header(request),
@@ -390,7 +391,7 @@ def get_id_endpoint(
     def patch(
         body: model,
         request: Request,
-        id_: int = Path(..., description="The id of the entity to update"),
+        id_: Annotated[int, Path(description="The id of the entity to update")],
     ):
         session_id = get_session_id_from_auth_header(request)
 
@@ -408,6 +409,7 @@ def get_id_endpoint(
             id_,
             **kwargs,
         )
+
 
 def get_count_endpoint(
     router: APIRouter,
@@ -433,8 +435,7 @@ def get_count_endpoint(
         "/count",
         summary=f"Count {name}",
         description=(
-            f"Return the count of the {entity_type} objects that would be "
-            "retrieved given the filters provided"
+            f"Return the count of the {entity_type} objects that would be " "retrieved given the filters provided"
         ),
         response_model=int,
         responses={
@@ -459,7 +460,54 @@ def get_count_endpoint(
             filters,
             **kwargs,
         )
-    
+
+
+def get_find_one_endpoint(
+    router: APIRouter,
+    entity_type: str,
+    model: BaseModel,
+    python_icat,
+    **kwargs,
+) -> None:
+    """
+    Given an entity name, register a find-one FastAPI endpoint on the
+    provided APIRouter.
+
+    It registers a GET handler that returns the first entity matching
+    the provided filters.
+    """
+
+    @router.get(
+        "/findone",
+        summary=f"Get single {entity_type}",
+        description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
+        response_model=model,
+        responses={
+            200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def get(
+        request: Request,
+        where: List[Json] = WhereQuery,
+        order: List[str] = OrderQuery,
+        limit: int = LimitQuery,
+        skip: int = SkipQuery,
+        distinct: int = DistinctQuery,
+        include: Any = IncludeQuery,
+    ):
+        filters = get_filters_from_query_string(request, "datagateway_api")
+
+        return python_icat.get_one_with_filters(
+            get_session_id_from_auth_header(request),
+            entity_type,
+            filters,
+            **kwargs,
+        )
+
 
 def create_collection_router(
     name: str,
@@ -486,5 +534,6 @@ def create_collection_router(
     get_endpoint(router, name, entity_type, model, python_icat, **kwargs)
     get_id_endpoint(router, name, entity_type, model, python_icat, **kwargs)
     get_count_endpoint(router, name, entity_type, python_icat, **kwargs)
+    get_find_one_endpoint(router, entity_type, model, python_icat, **kwargs)
 
     return router
