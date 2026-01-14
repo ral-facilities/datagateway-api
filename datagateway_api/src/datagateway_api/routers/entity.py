@@ -1,6 +1,6 @@
 from typing import Any, List
 
-from fastapi import APIRouter, Query, Request
+from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string, get_session_id_from_auth_header
@@ -305,7 +305,109 @@ def get_endpoint(
             **kwargs,
         )
 
+def get_id_endpoint(
+    router: APIRouter,
+    name: str,
+    entity_type: str,
+    model: BaseModel,
+    python_icat,
+    **kwargs,
+) -> None:
+    """
+    Given an entity name, register ID-level FastAPI endpoints on the
+    provided APIRouter.
 
+    It registers GET, DELETE, and PATCH handlers for single-entity access.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param name: The name of the entity
+    :param entity_type: The entity the endpoint will use in queries
+    :param model: Pydantic model representing the entity
+    :param python_icat: The python ICAT instance used for processing requests
+    """
+
+    @router.get(
+        "/{id_}",
+        summary=f"Find the {entity_type} matching the given ID",
+        description=f"Retrieves a single {entity_type} object",
+        response_model=model,
+        responses={
+            200: {"description": f"Success - the matching {entity_type}"},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def get(
+        request: Request,
+        id_: int = Path(..., description="The id of the entity to retrieve"),
+    ):
+        return python_icat.get_with_id(
+            get_session_id_from_auth_header(request),
+            entity_type,
+            id_,
+            **kwargs,
+        )
+
+    @router.delete(
+        "/{id_}",
+        summary=f"Delete {name} by id",
+        description=f"Deletes the {entity_type} with the specified ID",
+        status_code=204,
+        responses={
+            204: {"description": "No Content - Object was successfully deleted"},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def delete(
+        request: Request,
+        id_: int = Path(..., description="The id of the entity to delete"),
+    ):
+        python_icat.delete_with_id(
+            get_session_id_from_auth_header(request),
+            entity_type,
+            id_,
+            **kwargs,
+        )
+
+    @router.patch(
+        "/{id_}",
+        summary=f"Update {name} by id",
+        description=f"Updates the {entity_type} with the specified ID",
+        response_model=model,
+        responses={
+            200: {"description": "Success - returns the updated object"},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def patch(
+        body: model,
+        request: Request,
+        id_: int = Path(..., description="The id of the entity to update"),
+    ):
+        session_id = get_session_id_from_auth_header(request)
+
+        python_icat.update_with_id(
+            session_id,
+            entity_type,
+            id_,
+            body.model_dump_json(),
+            **kwargs,
+        )
+
+        return python_icat.get_with_id(
+            session_id,
+            entity_type,
+            id_,
+            **kwargs,
+        )
 def create_collection_router(
     name: str,
     entity_type: str,
@@ -329,5 +431,6 @@ def create_collection_router(
     model = get_model_for_entity(entity_type)
 
     get_endpoint(router, name, entity_type, model, python_icat, **kwargs)
+    get_id_endpoint(router, name, entity_type, model, python_icat, **kwargs)
 
     return router
