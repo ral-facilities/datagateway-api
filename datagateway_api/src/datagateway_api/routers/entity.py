@@ -408,6 +408,59 @@ def get_id_endpoint(
             id_,
             **kwargs,
         )
+
+def get_count_endpoint(
+    router: APIRouter,
+    name: str,
+    entity_type: str,
+    python_icat,
+    **kwargs,
+) -> None:
+    """
+    Given an entity name, register a count-level FastAPI endpoint on the
+    provided APIRouter.
+
+    It registers a GET handler that returns the count of entities matching
+    the provided filters.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param name: The name of the entity
+    :param entity_type: The entity the endpoint will use in queries
+    :param python_icat: The python ICAT instance used for processing requests
+    """
+
+    @router.get(
+        "/count",
+        summary=f"Count {name}",
+        description=(
+            f"Return the count of the {entity_type} objects that would be "
+            "retrieved given the filters provided"
+        ),
+        response_model=int,
+        responses={
+            200: {"description": f"Success - The count of the {entity_type} objects"},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def get(
+        request: Request,
+        where: List[Json] = WhereQuery,
+        distinct: int = DistinctQuery,
+        include: Any = IncludeQuery,
+    ):
+        filters = get_filters_from_query_string(request, "datagateway_api")
+
+        return python_icat.count_with_filters(
+            get_session_id_from_auth_header(request),
+            entity_type,
+            filters,
+            **kwargs,
+        )
+    
+
 def create_collection_router(
     name: str,
     entity_type: str,
@@ -432,5 +485,6 @@ def create_collection_router(
 
     get_endpoint(router, name, entity_type, model, python_icat, **kwargs)
     get_id_endpoint(router, name, entity_type, model, python_icat, **kwargs)
+    get_count_endpoint(router, name, entity_type, python_icat, **kwargs)
 
     return router
