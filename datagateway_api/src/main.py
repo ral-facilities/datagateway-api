@@ -11,6 +11,9 @@ from datagateway_api.src.api_start_utils import (
 )
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.logger_setup import setup_logger
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 setup_logger()
@@ -18,8 +21,13 @@ log = logging.getLogger()
 log.info("Logging now setup")
 
 app = Flask(__name__)
-api, specs = create_app_infrastructure(app)
-create_api_endpoints(app, api, specs)
+
+python_icat = PythonICAT()
+# Create client pool
+icat_client_pool = create_client_pool()
+dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+api, specs = create_app_infrastructure(app, dg_models.values())
+create_api_endpoints(app, api, specs, python_icat, icat_client_pool)
 create_openapi_endpoints(app, specs)
 app.config["APPLICATION_ROOT"] = Config.config.url_prefix
 

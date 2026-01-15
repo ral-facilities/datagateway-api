@@ -1,5 +1,3 @@
-from datagateway_api.src.datagateway_api.icat import models as datagateway_models
-from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 from datagateway_api.src.search_api.models import (
     Affiliation,
     Dataset,
@@ -14,7 +12,7 @@ from datagateway_api.src.search_api.models import (
 )
 
 
-def initialise_datagateway_api_spec(spec):
+def initialise_datagateway_api_spec(spec, datagateway_model_list):
     """
     Given a apispec spec object, will initialise it with the security scheme, models and
     parameters we use
@@ -22,10 +20,6 @@ def initialise_datagateway_api_spec(spec):
     :spec: ApiSpec: spec object to initialise
     :return: void
     """
-
-    datagateway_model_list = [
-        getattr(datagateway_models, entity_name) for entity_name in endpoints.values()
-    ]
 
     # Track schemas that have already been registered to avoid duplicates
     registered_schemas: set[str] = set()

@@ -12,6 +12,9 @@ from datagateway_api.src.api_start_utils import (
     create_openapi_endpoints,
 )
 from datagateway_api.src.common.config import APIConfig
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 @pytest.fixture(params=["", "/url-prefix"], ids=["No URL prefix", "Given a URL prefix"])
@@ -44,8 +47,12 @@ class TestSwaggerUI:
             test_config_swagger,
         ):
             test_app = Flask(__name__)
-            api, spec = create_app_infrastructure(test_app)
-            create_api_endpoints(test_app, api, spec)
+            python_icat = PythonICAT()
+            # Create client pool
+            icat_client_pool = create_client_pool()
+            dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+            api, spec = create_app_infrastructure(test_app, dg_models.values())
+            create_api_endpoints(test_app, api, spec, python_icat, icat_client_pool)
             create_openapi_endpoints(test_app, spec)
             test_app.wsgi_app = DispatcherMiddleware(
                 Response("Not Found", status=404),

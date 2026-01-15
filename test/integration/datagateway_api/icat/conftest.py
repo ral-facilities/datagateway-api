@@ -11,6 +11,9 @@ from datagateway_api.src.api_start_utils import (
     create_app_infrastructure,
 )
 from datagateway_api.src.common.config import Config
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from test.integration.datagateway_api.icat.endpoints.test_create_icat import (
     TestICATCreateData,
 )
@@ -97,8 +100,12 @@ def flask_test_app_icat(flask_test_app):
     icat_app = Flask(__name__)
     icat_app.config["TESTING"] = True
 
-    api, spec = create_app_infrastructure(icat_app)
-    create_api_endpoints(icat_app, api, spec)
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(icat_app, dg_models.values())
+    create_api_endpoints(icat_app, api, spec, python_icat, icat_client_pool)
 
     yield icat_app.test_client()
 

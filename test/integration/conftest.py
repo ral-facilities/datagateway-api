@@ -12,7 +12,10 @@ from datagateway_api.src.api_start_utils import (
     create_app_infrastructure,
 )
 from datagateway_api.src.common.config import APIConfig, Config
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.datagateway_api.icat.models import Session
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 @pytest.fixture(scope="package")
@@ -32,8 +35,13 @@ def icat_client():
 def flask_test_app():
     """This is used to check the endpoints exist and have the correct HTTP methods"""
     test_app = Flask(__name__)
-    api, spec = create_app_infrastructure(test_app)
-    create_api_endpoints(test_app, api, spec)
+
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(test_app, dg_models.values())
+    create_api_endpoints(test_app, api, spec, python_icat, icat_client_pool)
 
     yield test_app
 
@@ -47,8 +55,12 @@ def flask_test_app_db():
     db_app = Flask(__name__)
     db_app.config["TESTING"] = True
 
-    api, spec = create_app_infrastructure(db_app)
-    create_api_endpoints(db_app, api, spec)
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(db_app, dg_models.values())
+    create_api_endpoints(db_app, api, spec, python_icat, icat_client_pool)
     db_app.app_context().push()
 
     yield db_app.test_client()
