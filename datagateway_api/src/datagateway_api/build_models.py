@@ -144,8 +144,8 @@ def build_datagateway_api_model(**kwargs):
                     post_type = ICATId
 
                 patch_type = Optional[post_type]
+                rel_type_str = f"Optional[{rel_type_str}]"
                 if not field.notNullable:
-                    rel_type_str = f"Optional[{rel_type_str}]"
                     post_type = Optional[post_type]
 
                 description = getattr(field, "comment", None)
@@ -153,9 +153,7 @@ def build_datagateway_api_model(**kwargs):
                 annotated_type = Annotated[rel_type_str, field_metadata]
                 post_annotated_type = Annotated[post_type, field_metadata]
                 patch_annotated_type = Annotated[patch_type, field_metadata]
-                fields[field.name] = (
-                    (annotated_type, None) if not field.notNullable else annotated_type
-                )
+                fields[field.name] = (annotated_type, None)
                 post_fields[field.name] = (
                     (post_annotated_type, None)
                     if not field.notNullable
@@ -165,7 +163,7 @@ def build_datagateway_api_model(**kwargs):
 
         model = create_model(name, __base__=ICATBaseEntity, **fields)
         post_model = create_model(post_name, **post_fields)
-        patch_model = create_model(patch_name, **patch_fields)
+        patch_model = create_model(patch_name, __base__=ICATId, **patch_fields)
         datagateway_api_models[name] = model
         datagateway_api_models[post_name] = post_model
         datagateway_api_models[patch_name] = patch_model

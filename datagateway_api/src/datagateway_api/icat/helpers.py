@@ -573,7 +573,24 @@ def create_entities(client, entity_type, data):
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-                        related_object = client.get(entity_info.type, value)
+                        # TODO:
+                        # The field "value" can be either List[{"id": 1}] or {"id": 1},
+                        # but only the single-object case works correctly.
+                        #
+                        # When a field requires a list of objects, the API fails
+                        # because the list type is not handled during creation.
+                        #
+                        # Even when forcing it to work by using the wrong type, the
+                        # GET request still does not return the one-to-one related
+                        # values (e.g. "Facility f INCLUDE f.parameterTypes").
+                        #
+                        # After attempting to fix the GET behaviour, the create
+                        # operation now throws a duplicate reference error when
+                        # saving related entities.
+                        #
+                        # Fix list handling, one-to-one include behaviour, and
+                        # duplicate reference errors.
+                        related_object = client.get(entity_info.type, value["id"])
                     except ICATNoObjectError as e:
                         raise BadRequestError(e) from e
                     if entity_info.relType.lower() == "many":
