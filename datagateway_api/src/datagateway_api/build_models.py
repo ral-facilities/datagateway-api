@@ -41,10 +41,56 @@ class ICATBaseEntity(ICATId):
 
 def build_datagateway_api_model(**kwargs):
     """
-    Build the datagateway models using the SQL scheme given by the ICAT server
+    Dynamically construct Pydantic models for all ICAT entities exposed by the
+    connected ICAT server.
 
-    :returns dict of name and pydantic model key value pair
+    This function queries the ICAT server for its schema (entity names, fields,
+    types, relationships, and nullability) and generates a set of Pydantic
+    models representing:
+
+    - The base entity model for each ICAT entity (e.g. `Investigation`)
+    - A corresponding POST model for creation (e.g. `InvestigationPost`)
+    - A corresponding PATCH model for partial updates (e.g. `InvestigationPatch`)
+
+    Relationship fields (ONE or MANY) are converted into model references or
+    lists of ICAT IDs. Attribute fields are mapped to Python/Pydantic primitive
+    types according to the `TYPE_MAP`. Optionality and nullability are respected
+    for all generated fields. Field descriptions from ICAT (if present) are
+    carried forward into the model metadata.
+
+    All generated models are finally rebuilt (`model_rebuild`) using the full
+    model namespace so that forward references between models resolve correctly.
+
+    Parameters
+    ----------
+    **kwargs :
+        Optional configuration parameters. Expected keys:
+        - `client_pool`: A pool or cache of ICAT clients, passed into
+          `get_cached_client`.
+
+    Returns
+    -------
+    dict
+        A dictionary mapping model names (e.g. `"Investigation"`,
+        `"InvestigationPost"`, `"InvestigationPatch"`) to their corresponding
+        dynamically generated Pydantic model classes.
+
+    Raises
+    ------
+    PythonICATError
+        If the ICAT server reports an error while fetching entity names or
+        entity schema information.
+
+    Notes
+    -----
+    - Models include metadata (via `Annotated[... , Field(...)]`) for descriptions.
+    - SYSTEM_FIELDS are always excluded from the generated models.
+    - Relationship fields use forward references and are resolved at the end of
+      generation.
+    - The POST and PATCH models differ by optionality and update semantics.
+
     """
+
     log.info("Building datagateway models")
 
     datagateway_api_models = {}
