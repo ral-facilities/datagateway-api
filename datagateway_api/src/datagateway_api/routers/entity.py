@@ -1,10 +1,9 @@
-from typing import Annotated, Any, List
+from typing import Annotated, Any, List, Type
 
 from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string, get_session_id_from_auth_header
-from datagateway_api.src.datagateway_api.icat import models as datagateway_models
 
 WhereQuery = Query(
     default=None,
@@ -198,25 +197,11 @@ IncludeQuery = Query(
 )
 
 
-def get_model_for_entity(entity_name: str) -> BaseModel:
-    """
-    Dynamically get the Pydantic model for the given entity name.
-
-    :param entity_name: The name of the entity (string)
-    :return: Pydantic BaseModel class
-    :raises AttributeError: If model does not exist
-    """
-    try:
-        return getattr(datagateway_models, entity_name)
-    except AttributeError as exc:
-        raise ValueError(f"No model found for entity {entity_name!r}") from exc
-
-
 def get_endpoint(
     router: APIRouter,
     name: str,
     entity_type: str,
-    model: BaseModel,
+    dg_models: dict[str, Type[BaseModel]],
     python_icat,
     **kwargs,
 ) -> None:
@@ -238,7 +223,7 @@ def get_endpoint(
         "",
         summary=f"Get {name}",
         description=f"Retrieves a list of {entity_type} objects",
-        response_model=List[model],
+        response_model=List[dg_models[entity_type]],
         responses={
             200: {"description": f"Success - returns {entity_type} that satisfy the filters"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -267,7 +252,7 @@ def get_endpoint(
         "",
         summary=f"Create new {name}",
         description=(f"Creates new {entity_type} object(s) with details provided " "in the request body"),
-        response_model=List[model],
+        response_model=List[dg_models[entity_type]],
         responses={
             200: {"description": "Success - returns the created object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -276,11 +261,11 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def post(body: model, request: Request):
+    def post(body: dg_models[f"{entity_type}Post"], request: Request):
         return python_icat.create(
             get_session_id_from_auth_header(request),
             entity_type,
-            body.model_dump_json(),
+            body.model_dump(by_alias=True),
             **kwargs,
         )
 
@@ -288,7 +273,7 @@ def get_endpoint(
         "",
         summary=f"Update {name}",
         description=(f"Updates {entity_type} object(s) with details provided " "in the request body"),
-        response_model=List[model],
+        response_model=List[dg_models[entity_type]],
         responses={
             200: {"description": "Success - returns the updated object(s)"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -297,11 +282,11 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def patch(body: model, request: Request):
+    def patch(body: dg_models[f"{entity_type}Patch"], request: Request):
         return python_icat.update(
             get_session_id_from_auth_header(request),
             entity_type,
-            body.model_dump_json(),
+            body.model_dump(),
             **kwargs,
         )
 
@@ -310,7 +295,7 @@ def get_id_endpoint(
     router: APIRouter,
     name: str,
     entity_type: str,
-    model: BaseModel,
+    dg_models: dict[str, Type[BaseModel]],
     python_icat,
     **kwargs,
 ) -> None:
@@ -331,7 +316,7 @@ def get_id_endpoint(
         "/{id_}",
         summary=f"Find the {entity_type} matching the given ID",
         description=f"Retrieves a single {entity_type} object",
-        response_model=model,
+        response_model=dg_models[f"{entity_type}Post"],
         responses={
             200: {"description": f"Success - the matching {entity_type}"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -379,7 +364,7 @@ def get_id_endpoint(
         "/{id_}",
         summary=f"Update {name} by id",
         description=f"Updates the {entity_type} with the specified ID",
-        response_model=model,
+        response_model=dg_models[entity_type],
         responses={
             200: {"description": "Success - returns the updated object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -389,7 +374,7 @@ def get_id_endpoint(
         },
     )
     def patch(
-        body: model,
+        body: dg_models[f"{entity_type}Patch"],
         request: Request,
         id_: Annotated[int, Path(description="The id of the entity to update")],
     ):
@@ -465,7 +450,7 @@ def get_count_endpoint(
 def get_find_one_endpoint(
     router: APIRouter,
     entity_type: str,
-    model: BaseModel,
+    dg_models: dict[str, Type[BaseModel]],
     python_icat,
     **kwargs,
 ) -> None:
@@ -481,7 +466,7 @@ def get_find_one_endpoint(
         "/findone",
         summary=f"Get single {entity_type}",
         description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
-        response_model=model,
+        response_model=dg_models[entity_type],
         responses={
             200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -513,6 +498,7 @@ def create_collection_router(
     name: str,
     entity_type: str,
     python_icat,
+    dg_models: dict[str, Type[BaseModel]],
     **kwargs,
 ) -> APIRouter:
     """
@@ -529,11 +515,10 @@ def create_collection_router(
     helper functions.
     """
     router = APIRouter(prefix=f"/{name.lower()}", tags=[name])
-    model = get_model_for_entity(entity_type)
 
-    get_endpoint(router, name, entity_type, model, python_icat, **kwargs)
-    get_id_endpoint(router, name, entity_type, model, python_icat, **kwargs)
+    get_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
+    get_id_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
     get_count_endpoint(router, name, entity_type, python_icat, **kwargs)
-    get_find_one_endpoint(router, entity_type, model, python_icat, **kwargs)
+    get_find_one_endpoint(router, entity_type, dg_models, python_icat, **kwargs)
 
     return router

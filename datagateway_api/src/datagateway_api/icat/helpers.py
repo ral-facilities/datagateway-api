@@ -553,9 +553,13 @@ def create_entities(client, entity_type, data):
         data = [data]
 
     for result in data:
+
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
+            if value == None:
+                continue
+
             log.debug("Preparing data for %s", attribute_name)
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
@@ -569,11 +573,35 @@ def create_entities(client, entity_type, data):
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-                        related_object = client.get(entity_info.type, value)
+                        # TODO:
+                        # The field "value" can be either List[{"id": 1}] or {"id": 1},
+                        # but only the single-object case works correctly.
+                        #
+                        # When a field requires a list of objects, the API fails
+                        # because the list type is not handled during creation.
+                        #
+                        # Even when forcing it to work by using the wrong type, the
+                        # GET request still does not return the one-to-one related
+                        # values (e.g. "Facility f INCLUDE f.parameterTypes").
+                        #
+                        # After attempting to fix the GET behaviour, the create
+                        # operation now throws a duplicate reference error when
+                        # saving related entities.
+                        #
+                        # Fix list handling, one-to-one include behaviour, and
+                        # duplicate reference errors.
+
+                        
+                        related_object = [] 
+                        if entity_info.relType.lower() == "many":
+                            for val in value:
+                                obj = client.get(entity_info.type, val["id"])
+                                related_object.append(obj)
+                        else:
+                            related_object = client.get(entity_info.type, value["id"])
+
                     except ICATNoObjectError as e:
                         raise BadRequestError(e) from e
-                    if entity_info.relType.lower() == "many":
-                        related_object = [related_object]
                     setattr(new_entity, attribute_name, related_object)
 
             except ValueError as e:
@@ -583,6 +611,7 @@ def create_entities(client, entity_type, data):
 
     for entity in created_icat_data:
         try:
+            print(entity)
             entity.create()
         except ICATInternalError as e:
             for entity_json in created_data:

@@ -25,8 +25,8 @@ class TestICATCreateData:
                 "endDate": "2020-02-03 10:00:10+00:00",
                 "visitId": "Data Creation Visit",
                 "doi": "DataGateway API Test DOI",
-                "facility": 1,
-                "type": 1,
+                "facility": {"id": 1},
+                "type": {"id": 1},
                 "fileCount": 1,
                 "fileSize": 6,
             }
@@ -67,8 +67,8 @@ class TestICATCreateData:
             "endDate": "2020-02-03 10:00:10+00:00",
             "visitId": "Data Creation Visit",
             "doi": "DataGateway API Test DOI",
-            "facility": 1,
-            "type": 1,
+            "facility": {"id": 1},
+            "type": {"id": 1},
             "fileCount": 3,
             "fileSize": 2,
         }

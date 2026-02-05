@@ -8,6 +8,9 @@ from datagateway_api.src.api_start_utils import (
     create_api_endpoints,
     create_app_infrastructure,
 )
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
@@ -142,7 +145,11 @@ def flask_test_app_search_api(flask_test_app):
     search_api_app = Flask(__name__)
     search_api_app.config["TESTING"] = True
 
-    api, spec = create_app_infrastructure(search_api_app)
-    create_api_endpoints(search_api_app, api, spec)
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(search_api_app, dg_models.values())
+    create_api_endpoints(search_api_app, api, spec, python_icat, icat_client_pool)
 
     yield search_api_app.test_client()

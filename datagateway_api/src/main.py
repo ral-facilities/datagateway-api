@@ -11,6 +11,7 @@ from datagateway_api.src.common.entity_endpoint_dict import endpoints
 from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.logger_setup import setup_logger
 from datagateway_api.src.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.datagateway_api.routers.entity import create_collection_router
@@ -76,9 +77,9 @@ datagateway_app.add_middleware(
 )
 
 python_icat = PythonICAT()
-
 # Create client pool
 icat_client_pool = create_client_pool()
+dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
 
 
 for entity_name in endpoints:
@@ -86,6 +87,7 @@ for entity_name in endpoints:
         entity_name,
         endpoints[entity_name],
         python_icat,
+        dg_models,
         client_pool=icat_client_pool,
     )
 
