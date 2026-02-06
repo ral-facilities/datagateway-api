@@ -147,7 +147,7 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def update_attributes(old_entity, new_entity):
+def update_attributes(client, old_entity, new_entity):
     """
     Updates the attribute(s) of a given object which is a record of an entity from
     Python ICAT
@@ -161,24 +161,37 @@ def update_attributes(old_entity, new_entity):
         - typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId &
         modTime)
     """
-    log.debug("Updating entity attributes: %s", list(new_entity.keys()))
-    for key in new_entity:
-        try:
-            original_data_attribute = getattr(old_entity, key)
-            if isinstance(original_data_attribute, datetime):
-                new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
-        except AttributeError as e:
-            raise BadRequestError(
-                f"Bad request made, cannot find attribute `{key}` within the" f" {old_entity.BeanName} entity",
-            ) from e
+    log.debug("Updating entity attributes: %s", [k for k, v in new_entity.items() if v is not None])
+    for key, value in new_entity.items():
+        if value is not None:
+            try:
+                original_data_attribute = getattr(old_entity, key)
+                if isinstance(original_data_attribute, datetime):
+                    new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
+            except AttributeError as e:
+                raise BadRequestError(
+                    f"Bad request made, cannot find attribute `{key}` within the" f" {old_entity.BeanName} entity",
+                ) from e
 
-        try:
-            setattr(old_entity, key, new_entity[key])
-        except AttributeError as e:
-            raise BadRequestError(
-                f"Bad request made, cannot modify attribute `{key}` within the" f" {old_entity.BeanName} entity",
-            ) from e
+            try:
 
+                related_object = new_entity[key]
+                if key != "id":
+                    entity_info = old_entity.getAttrInfo(client, key)
+                    if entity_info.relType.lower() == "many":
+                        related_object = build_related_entities(
+                            client,
+                            entity_info.type,
+                            value,
+                            parent_entity_type=old_entity.BeanName,
+                        )
+                    elif entity_info.relType.lower() == "one":
+                        related_object = client.get(entity_info.type, value)
+                setattr(old_entity, key, related_object)
+            except AttributeError as e:
+                raise BadRequestError(
+                    f"Bad request made, cannot modify attribute `{key}` within the" f" {old_entity.BeanName} entity",
+                ) from e
     return old_entity
 
 
@@ -284,7 +297,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
     # get_entity_by_id()
-    updated_icat_entity = update_attributes(entity_id_data, new_data)
+    updated_icat_entity = update_attributes(client, entity_id_data, new_data)
     push_data_updates_to_icat(updated_icat_entity)
 
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to
@@ -493,7 +506,7 @@ def update_entities(client, entity_type, data_to_update):
             )
             icat_data_backup.append(entity_data.copy())
 
-            updated_entity_data = update_attributes(entity_data, entity_request)
+            updated_entity_data = update_attributes(client, entity_data, entity_request)
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(
@@ -525,7 +538,7 @@ def update_entities(client, entity_type, data_to_update):
     return updated_data
 
 
-def create_entities(client, entity_type, data):
+def create_entities(client, entity_type, data):  # noqa: C901
     """
     Add one or more results for the given entity using the JSON provided in `data`
 
@@ -557,7 +570,7 @@ def create_entities(client, entity_type, data):
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
-            if value == None:
+            if value is None:
                 continue
 
             log.debug("Preparing data for %s", attribute_name)
@@ -573,32 +586,17 @@ def create_entities(client, entity_type, data):
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-                        # TODO:
-                        # The field "value" can be either List[{"id": 1}] or {"id": 1},
-                        # but only the single-object case works correctly.
-                        #
-                        # When a field requires a list of objects, the API fails
-                        # because the list type is not handled during creation.
-                        #
-                        # Even when forcing it to work by using the wrong type, the
-                        # GET request still does not return the one-to-one related
-                        # values (e.g. "Facility f INCLUDE f.parameterTypes").
-                        #
-                        # After attempting to fix the GET behaviour, the create
-                        # operation now throws a duplicate reference error when
-                        # saving related entities.
-                        #
-                        # Fix list handling, one-to-one include behaviour, and
-                        # duplicate reference errors.
 
-                        
-                        related_object = [] 
+                        related_object = []
                         if entity_info.relType.lower() == "many":
-                            for val in value:
-                                obj = client.get(entity_info.type, val["id"])
-                                related_object.append(obj)
+                            related_object = build_related_entities(
+                                client,
+                                entity_info.type,
+                                value,
+                                parent_entity_type=entity_type,
+                            )
                         else:
-                            related_object = client.get(entity_info.type, value["id"])
+                            related_object = client.get(entity_info.type, value)
 
                     except ICATNoObjectError as e:
                         raise BadRequestError(e) from e
@@ -611,7 +609,6 @@ def create_entities(client, entity_type, data):
 
     for entity in created_icat_data:
         try:
-            print(entity)
             entity.create()
         except ICATInternalError as e:
             for entity_json in created_data:
@@ -628,3 +625,65 @@ def create_entities(client, entity_type, data):
         created_data.append(get_entity_by_id(client, entity_type, entity.id, True))
 
     return created_data
+
+
+def initobj(obj, attrs):
+    """Initialize an entity object from a dict of attributes."""
+    for a in attrs:
+        if a != "id" and a in attrs:
+            setattr(obj, a, attrs[a])
+
+
+def build_related_entities(
+    client,
+    entity_type: str,
+    value: list | None,
+    parent_entity_type: str | None = None,
+):
+    """
+    Build related ICAT entities recursively, preserving cascade logic.
+    """
+
+    if not value:
+        return []
+    related_objects = []
+
+    entity_info = client.getEntityInfo(entity_type)
+    for val in value:
+        new_entity = client.new(entity_type)
+
+        for field in entity_info.fields:
+            if field.name not in val:
+                continue
+
+            field_value = val[field.name]
+
+            # ---- ATTRIBUTE ----
+            if field.relType.lower() == "attribute":
+                setattr(new_entity, field.name, field_value)
+
+            # ---- ONE (STOP) ----
+            elif field.relType.lower() == "one":
+                if parent_entity_type and field.type.lower() == parent_entity_type.lower():
+                    # SQL cascade case
+                    del val[field.name]
+                else:
+                    setattr(
+                        new_entity,
+                        field.name,
+                        client.get(field.type, field_value),
+                    )
+
+            # ---- MANY (RECURSE) ----
+            elif field.relType.lower() == "many":
+                nested = build_related_entities(
+                    client,
+                    field.type,
+                    field_value,
+                    parent_entity_type=entity_type,
+                )
+                setattr(new_entity, field.name, nested)
+
+        related_objects.append(new_entity)
+
+    return related_objects

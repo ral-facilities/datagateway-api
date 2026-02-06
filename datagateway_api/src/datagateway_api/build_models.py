@@ -1,6 +1,6 @@
 from datetime import datetime
 import logging
-from typing import Annotated, List, Optional
+from typing import Annotated, Optional
 
 from icat.exception import ICATError
 from pydantic import BaseModel, create_model, Field
@@ -29,14 +29,14 @@ SYSTEM_FIELDS = {
 
 
 class ICATId(BaseModel):
-    id_: int = Field(alias="id")
+    id_: Annotated[int, Field(alias="id")]
 
 
 class ICATBaseEntity(ICATId):
-    create_id: str = Field(alias="createId")
-    create_time: datetime = Field(alias="createTime")
-    mod_id: str = Field(alias="modId")
-    mod_time: datetime = Field(alias="modTime")
+    create_id: Annotated[str, Field(alias="createId")]
+    create_time: Annotated[datetime, Field(alias="createTime")]
+    mod_id: Annotated[str, Field(alias="modId")]
+    mod_time: Annotated[datetime, Field(alias="modTime")]
 
 
 def build_datagateway_api_model(**kwargs):
@@ -136,10 +136,10 @@ def build_datagateway_api_model(**kwargs):
                 post_type = None
                 if field.relType == "MANY":
                     rel_type_str = f"List['{rel_model_name}']"  # noqa: B907
-                    post_type = List[ICATId]
+                    post_type = f"List['{rel_model_name}Post']"  # noqa: B907
                 else:
                     rel_type_str = f"'{rel_model_name}'"  # noqa: B907
-                    post_type = ICATId
+                    post_type = int
 
                 patch_type = Optional[post_type]
                 rel_type_str = f"Optional[{rel_type_str}]"

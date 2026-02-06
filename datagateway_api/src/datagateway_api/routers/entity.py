@@ -261,11 +261,11 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def post(body: dg_models[f"{entity_type}Post"], request: Request):
+    def post(body: List[dg_models[f"{entity_type}Post"]], request: Request):  # noqa: F821
         return python_icat.create(
             get_session_id_from_auth_header(request),
             entity_type,
-            body.model_dump(by_alias=True),
+            [result.model_dump(by_alias=True) for result in body],
             **kwargs,
         )
 
@@ -282,11 +282,11 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def patch(body: dg_models[f"{entity_type}Patch"], request: Request):
+    def patch(body: List[dg_models[f"{entity_type}Patch"]], request: Request):  # noqa: F821
         return python_icat.update(
             get_session_id_from_auth_header(request),
             entity_type,
-            body.model_dump(),
+            [result.model_dump(by_alias=True) for result in body],
             **kwargs,
         )
 
@@ -316,7 +316,7 @@ def get_id_endpoint(
         "/{id_}",
         summary=f"Find the {entity_type} matching the given ID",
         description=f"Retrieves a single {entity_type} object",
-        response_model=dg_models[f"{entity_type}Post"],
+        response_model=dg_models[f"{entity_type}"],
         responses={
             200: {"description": f"Success - the matching {entity_type}"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -374,7 +374,7 @@ def get_id_endpoint(
         },
     )
     def patch(
-        body: dg_models[f"{entity_type}Patch"],
+        body: dg_models[f"{entity_type}Patch"],  # noqa: F821
         request: Request,
         id_: Annotated[int, Path(description="The id of the entity to update")],
     ):
@@ -384,7 +384,7 @@ def get_id_endpoint(
             session_id,
             entity_type,
             id_,
-            body.model_dump_json(),
+            body.model_dump(by_alias=True),
             **kwargs,
         )
 

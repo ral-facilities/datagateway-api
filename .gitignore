@@ -11,4 +11,4 @@ search_api_mapping.json*
 .coverage
 coverage.xml
 
-datagateway_api/src/logging.ini
+datagateway_api/logging.ini
