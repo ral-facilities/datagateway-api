@@ -1,7 +1,6 @@
 from fastapi.routing import APIRoute, Mount
 import pytest
 
-from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.entity_endpoint_dict import endpoints
 
 
@@ -36,7 +35,7 @@ class TestEndpointRules:
         routes = [r for r in test_client.app.routes if isinstance(r, APIRoute)]
 
         for endpoint_entity in endpoints.keys():
-            expected_path = f"{Config.config.datagateway_api.extension}/{endpoint_entity.lower()}{endpoint_ending}"
+            expected_path = f"/{endpoint_entity.lower()}{endpoint_ending}"
 
             matching_routes = [r for r in routes if r.path == expected_path]
 
@@ -53,62 +52,62 @@ class TestEndpointRules:
         "endpoint_name, expected_methods",
         [
             pytest.param(
-                f"{Config.config.datagateway_api.extension}/sessions",
+                "/sessions",
                 {"DELETE", "GET", "POST", "PUT"},
                 id="sessions",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets",
+                "/Datasets",
                 {"GET"},
                 id="search-datasets",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents",
+                "/Documents",
                 {"GET"},
                 id="search-documents",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments",
+                "/Instruments",
                 {"GET"},
                 id="search-instruments",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}",
+                "/Datasets/{pid}",
                 {"GET"},
                 id="search-single-dataset",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents/{{pid}}",
+                "/Documents/{pid}",
                 {"GET"},
                 id="search-single-document",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments/{{pid}}",
+                "/Instruments/{pid}",
                 {"GET"},
                 id="search-single-instrument",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/count",
+                "/Datasets/count",
                 {"GET"},
                 id="search-dataset-count",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents/count",
+                "/Documents/count",
                 {"GET"},
                 id="search-document-count",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments/count",
+                "/Instruments/count",
                 {"GET"},
                 id="search-instrument-count",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}/files",
+                "/Datasets/{pid}/files",
                 {"GET"},
                 id="search-dataset-files",
             ),
             pytest.param(
-                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}/files/count",
+                "/Datasets/{pid}/files/count",
                 {"GET"},
                 id="search-dataset-files-count",
             ),

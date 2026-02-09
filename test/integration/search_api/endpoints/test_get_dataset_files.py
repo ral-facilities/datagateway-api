@@ -2,8 +2,6 @@ from contextlib import suppress
 
 import pytest
 
-from datagateway_api.src.common.config import Config
-
 
 def prepare_data_for_assertion(response):
     """
@@ -148,19 +146,18 @@ class TestSearchAPIGetDatasetFilesEndpoint:
     )
     def test_valid_get_dataset_files_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         pid,
         request_filter,
         expected_json,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files" f"?filter={request_filter}",
+
+        test_response = test_search_api_client.get(
+            f"/Datasets/{pid}/files" f"?filter={request_filter}",
         )
 
-        print(test_response)
-        print(test_response.json)
-
-        response_data = prepare_data_for_assertion(test_response.json)
+        response_data = prepare_data_for_assertion(test_response.json())
+        print(response_data)
 
         assert test_response.status_code == 200
         assert response_data == expected_json
@@ -189,13 +186,13 @@ class TestSearchAPIGetDatasetFilesEndpoint:
     )
     def test_invalid_get_dataset_files_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         pid,
         request_filter,
         expected_status_code,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files" f"?filter={request_filter}",
+        test_response = test_search_api_client.get(
+            f"/Datasets/{pid}/files" f"?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code

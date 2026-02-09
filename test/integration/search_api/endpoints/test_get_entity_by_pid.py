@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
+
 from test.integration.search_api.endpoints.test_get_dataset_files import (
     prepare_data_for_assertion,
 )
@@ -479,17 +479,17 @@ class TestSearchAPIGetByPIDEndpoint:
     )
     def test_valid_get_by_pid_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         endpoint_name,
         pid,
         request_filter,
         expected_json,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/{pid}?filter=" f"{request_filter}",
+        test_response = test_search_api_client.get(
+            f"/{endpoint_name}/{pid}?filter=" f"{request_filter}",
         )
 
-        response_data = prepare_data_for_assertion(test_response.json)
+        response_data = prepare_data_for_assertion(test_response.json())
 
         assert test_response.status_code == 200
         assert response_data == expected_json
@@ -511,13 +511,13 @@ class TestSearchAPIGetByPIDEndpoint:
     )
     def test_invalid_get_by_pid_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         pid,
         request_filter,
         expected_status_code,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}" f"?filter={request_filter}",
+        test_response = test_search_api_client.get(
+            f"/Datasets/{pid}" f"?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code
