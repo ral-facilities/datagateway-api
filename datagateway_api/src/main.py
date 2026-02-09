@@ -21,19 +21,18 @@ from datagateway_api.src.search_api.routers.entity import create_search_collecti
 
 datagateway_app = FastAPI(
     title="Datagateway API",
-    docs_url=f"{Config.config.datagateway_api.extension}/docs",
-    root_path=Config.config.url_prefix,
+    root_path=Config.config.datagateway_api.extension,
     separate_input_output_schemas=False,
 )
 
 
 search_api_app = FastAPI(
     title="Search API",
-    root_path=Config.config.url_prefix,
+    docs_url=f"{Config.config.search_api.extension}/docs",
     separate_input_output_schemas=False,
 )
 
-datagateway_app.mount("/search-api", search_api_app)
+datagateway_app.mount(Config.config.search_api.extension, search_api_app)
 
 setup_logger()
 logger = logging.getLogger()
@@ -41,7 +40,6 @@ logger.info("Logging now setup : %s", Config.config.datagateway_api.extension)
 
 
 # Exception handler for all ApiError subclasses
-@datagateway_app.exception_handler(ApiError)
 async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
     """
     Handles all ApiError exceptions and subclasses.
@@ -56,7 +54,6 @@ async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
 
 
 # catch-all for unexpected exceptions
-@datagateway_app.exception_handler(Exception)
 async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONResponse:
     """
     Handles all uncaught exceptions to prevent internal server errors from leaking.
@@ -66,6 +63,15 @@ async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONRe
         status_code=500,
         content={"message": "Something went wrong"},
     )
+
+
+def register_common_handlers(app: FastAPI) -> None:
+    app.add_exception_handler(ApiError, custom_api_error_handler)
+    app.add_exception_handler(Exception, custom_general_exception_handler)
+
+
+register_common_handlers(datagateway_app)
+register_common_handlers(search_api_app)
 
 
 datagateway_app.add_middleware(
@@ -93,17 +99,14 @@ for entity_name in endpoints:
 
     datagateway_app.include_router(
         router,
-        prefix=Config.config.datagateway_api.extension,
         dependencies=[Depends(SessionBearer())],
     )
 
 datagateway_app.include_router(
     ping_endpoint(python_icat, client_pool=icat_client_pool),
-    prefix=Config.config.datagateway_api.extension,
 )
 datagateway_app.include_router(
     sessions_endpoints(python_icat, client_pool=icat_client_pool),
-    prefix=Config.config.datagateway_api.extension,
 )
 
 for endpoint_name, entity_name in search_api_entity_endpoints.items():
@@ -115,5 +118,4 @@ for endpoint_name, entity_name in search_api_entity_endpoints.items():
 
     search_api_app.include_router(
         router,
-        prefix=f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}",
     )
