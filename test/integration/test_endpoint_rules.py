@@ -1,119 +1,130 @@
+from fastapi.routing import APIRoute, Mount
 import pytest
 
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.entity_endpoint_dict import endpoints
 
 
-class TestEndpointRules:
+def collect_routes(app):
     """
-    Test class to ensure all endpoints on the API exist & have the correct HTTP methods
+    Recursively collect all APIRoute paths and their methods from a FastAPI app,
+    including any mounted sub-apps.
     """
+    routes = []
 
+    for route in app.routes:
+        if isinstance(route, APIRoute):
+            routes.append((route.path, route.methods))
+        elif isinstance(route, Mount):
+            sub_app = route.app
+            routes.extend(collect_routes(sub_app))
+
+    return routes
+
+
+class TestEndpointRules:
     @pytest.mark.parametrize(
         "endpoint_ending, expected_methods",
         [
-            pytest.param("/findone", ["GET"], id="findone"),
-            pytest.param("/count", ["GET"], id="count"),
-            pytest.param("/<int:id_>", ["DELETE", "GET", "PATCH"], id="id"),
-            pytest.param("", ["GET", "PATCH", "POST"], id="typical endpoints"),
+            pytest.param("/findone", {"GET"}, id="findone"),
+            pytest.param("/count", {"GET"}, id="count"),
+            pytest.param("/{id_}", {"DELETE", "GET", "PATCH"}, id="id"),
+            pytest.param("", {"GET", "PATCH", "POST"}, id="typical endpoints"),
         ],
     )
-    def test_entity_endpoints(self, flask_test_app, endpoint_ending, expected_methods):
+    def test_entity_endpoints(self, test_client, endpoint_ending, expected_methods):
+        routes = [r for r in test_client.app.routes if isinstance(r, APIRoute)]
+
         for endpoint_entity in endpoints.keys():
-            endpoint_found = False
+            expected_path = f"{Config.config.datagateway_api.extension}/{endpoint_entity.lower()}{endpoint_ending}"
 
-            for rule in flask_test_app.url_map.iter_rules():
-                if (
-                    f"{Config.config.datagateway_api.extension}"
-                    f"/{endpoint_entity.lower()}{endpoint_ending}" == rule.rule
-                ):
-                    endpoint_found = True
+            matching_routes = [r for r in routes if r.path == expected_path]
 
-                    for method_name in expected_methods:
-                        # Can't do a simple equality check as .methods contains other
-                        # methods not added by the API which aren't utilised
-                        assert method_name in rule.methods
+            assert matching_routes, f"Endpoint not found: {expected_path}"
 
-            assert endpoint_found
+            actual_methods = set()
+            for route in matching_routes:
+                actual_methods |= route.methods
+
+            for method in expected_methods:
+                assert method in actual_methods
 
     @pytest.mark.parametrize(
         "endpoint_name, expected_methods",
         [
             pytest.param(
                 f"{Config.config.datagateway_api.extension}/sessions",
-                ["DELETE", "GET", "POST", "PUT"],
+                {"DELETE", "GET", "POST", "PUT"},
                 id="sessions",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets",
-                ["GET"],
-                id="Search API search datasets",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets",
+                {"GET"},
+                id="search-datasets",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Documents",
-                ["GET"],
-                id="Search API search documents",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents",
+                {"GET"},
+                id="search-documents",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Instruments",
-                ["GET"],
-                id="Search API search instruments",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments",
+                {"GET"},
+                id="search-instruments",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets/<string:pid>",
-                ["GET"],
-                id="Search API get single dataset",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}",
+                {"GET"},
+                id="search-single-dataset",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Documents/<string:pid>",
-                ["GET"],
-                id="Search API get single document",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents/{{pid}}",
+                {"GET"},
+                id="search-single-document",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Instruments/<string:pid>",
-                ["GET"],
-                id="Search API get single instrument",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments/{{pid}}",
+                {"GET"},
+                id="search-single-instrument",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets/count",
-                ["GET"],
-                id="Search API dataset count",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/count",
+                {"GET"},
+                id="search-dataset-count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Documents/count",
-                ["GET"],
-                id="Search API document count",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Documents/count",
+                {"GET"},
+                id="search-document-count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Instruments/count",
-                ["GET"],
-                id="Search API instrument count",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Instruments/count",
+                {"GET"},
+                id="search-instrument-count",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files",
-                ["GET"],
-                id="Search API get dataset files",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}/files",
+                {"GET"},
+                id="search-dataset-files",
             ),
             pytest.param(
-                f"{Config.config.search_api.extension}/Datasets/<string:pid>/files" "/count",
-                ["GET"],
-                id="Search API dataset files count",
+                f"{Config.config.datagateway_api.extension}{Config.config.search_api.extension}/Datasets/{{pid}}/files/count",
+                {"GET"},
+                id="search-dataset-files-count",
             ),
         ],
     )
-    def test_non_entity_endpoints(
-        self,
-        flask_test_app,
-        endpoint_name,
-        expected_methods,
-    ):
-        endpoint_found = False
+    def test_non_entity_endpoints(self, test_client, endpoint_name, expected_methods):
+        all_routes = collect_routes(test_client.app)
 
-        for rule in flask_test_app.url_map.iter_rules():
-            if endpoint_name == rule.rule:
-                endpoint_found = True
+        print(all_routes)
 
-                for method_name in expected_methods:
-                    assert method_name in rule.methods
+        matching_routes = [methods for path, methods in all_routes if path == endpoint_name]
 
-        assert endpoint_found
+        assert matching_routes, f"Endpoint not found: {endpoint_name}"
+
+        actual_methods = set()
+        for methods in matching_routes:
+            actual_methods |= methods
+
+        assert expected_methods <= actual_methods, f"{endpoint_name}: expected {expected_methods}, got {actual_methods}"

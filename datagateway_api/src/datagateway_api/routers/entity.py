@@ -234,12 +234,12 @@ def get_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,
-        order: List[str] = OrderQuery,
-        limit: int = LimitQuery,
-        skip: int = SkipQuery,
-        distinct: int = DistinctQuery,
-        include: Any = IncludeQuery,
+        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
+        order: List[str] = OrderQuery,  # pylint:disable=unused-argument
+        limit: int = LimitQuery,  # pylint:disable=unused-argument
+        skip: int = SkipQuery,  # pylint:disable=unused-argument
+        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         return python_icat.get_with_filters(
             get_session_id_from_auth_header(request),
@@ -433,9 +433,9 @@ def get_count_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,
-        distinct: int = DistinctQuery,
-        include: Any = IncludeQuery,
+        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
+        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 
@@ -477,12 +477,12 @@ def get_find_one_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,
-        order: List[str] = OrderQuery,
-        limit: int = LimitQuery,
-        skip: int = SkipQuery,
-        distinct: int = DistinctQuery,
-        include: Any = IncludeQuery,
+        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
+        order: List[str] = OrderQuery,  # pylint:disable=unused-argument
+        limit: int = LimitQuery,  # pylint:disable=unused-argument
+        skip: int = SkipQuery,  # pylint:disable=unused-argument
+        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 
