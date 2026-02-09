@@ -1,6 +1,6 @@
 from datetime import datetime
 import logging
-from typing import Annotated, Optional
+from typing import Annotated, List, Optional, Union
 
 from icat.exception import ICATError
 from pydantic import BaseModel, create_model, Field
@@ -163,7 +163,14 @@ def build_datagateway_api_model(**kwargs):
         datagateway_api_models[patch_name] = patch_model
 
     for model in datagateway_api_models.values():
-        model.model_rebuild(_types_namespace=datagateway_api_models)
+        types_namespace = {
+            **datagateway_api_models,
+            "List": List,
+            "Optional": Optional,
+            "Union": Union,
+        }
+
+        model.model_rebuild(_types_namespace=types_namespace)
 
     log.info("Finished building all datagateway models")
     return datagateway_api_models
