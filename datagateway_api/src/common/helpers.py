@@ -116,13 +116,14 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
 
     try:
         filters = []
-        for arg, value in request.query_params.multi_items():
-            filters.extend(
-                QueryFilterFactory.get_query_filter(
-                    {arg: json.loads(value)},
-                    entity_name,
-                ),
-            )
+        for arg in request.query_params:
+            for value in request.query_params.getlist(arg):
+                filters.extend(
+                    QueryFilterFactory.get_query_filter(
+                        {arg: value},
+                        entity_name,
+                    ),
+                )
         return filters
     except Exception as e:
         raise FilterError(e) from e
