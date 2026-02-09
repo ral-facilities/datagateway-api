@@ -120,7 +120,7 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
             for value in request.query_params.getlist(arg):
                 filters.extend(
                     QueryFilterFactory.get_query_filter(
-                        {arg: value},
+                        {arg: json.loads(value)},
                         entity_name,
                     ),
                 )

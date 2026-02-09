@@ -1,8 +1,8 @@
 import logging
-from typing import Annotated, List
+from typing import Annotated, Any, List
 
 from fastapi import APIRouter, Path, Query, Request
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string
 from datagateway_api.src.search_api import models as search_api_models
@@ -213,7 +213,7 @@ def get_number_count_endpoint(
         description=(
             f"Return the count of the {entity_name} objects that would be " "retrieved given the filters provided"
         ),
-        response_model=int,
+        response_model=search_api_models.CountResponse,
         responses={
             200: {"description": f"The count of the {entity_name} objects"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -223,7 +223,7 @@ def get_number_count_endpoint(
     @search_api_error_handling
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
+        where: Any = WhereQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(
             request,
@@ -235,11 +235,7 @@ def get_number_count_endpoint(
         return get_count(entity_name, filters)
 
 
-def get_files_endpoint(
-    router: APIRouter,
-    entity_name: str,
-    model: BaseModel,
-) -> None:
+def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
     """
     Register a files endpoint for a Dataset PID.
     """
@@ -248,7 +244,7 @@ def get_files_endpoint(
         "/{pid}/files",
         summary=f"Get {entity_name}s for the given Dataset",
         description=(f"Retrieves a list of {entity_name} objects for a given Dataset object"),
-        response_model=List[model],
+        response_model=List[search_api_models.File],
         responses={
             200: {"description": (f"Success - returns {entity_name}s for the given Dataset")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -286,7 +282,7 @@ def get_number_count_files_endpoint(
             f"Return the count of {entity_name} objects for the given Dataset "
             "object that would be retrieved given the filters provided"
         ),
-        response_model=int,
+        response_model=search_api_models.CountResponse,
         responses={
             200: {"description": (f"The count of {entity_name} objects for the given Dataset")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -297,7 +293,7 @@ def get_number_count_files_endpoint(
     def get(
         request: Request,
         pid: Annotated[str, Path(description="The pid of the entity to retrieve")],
-        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
+        where: Any = WhereQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(
             request,
@@ -331,10 +327,10 @@ def create_search_collection_router(
     model = get_model_for_entity(entity_name)
 
     get_search_endpoint(router, entity_name, model)
-    get_single_endpoint(router, entity_name, model)
     get_number_count_endpoint(router, entity_name)
+    get_single_endpoint(router, entity_name, model)
     if add_file_endpoints:
-        get_files_endpoint(router, "File", model)
+        get_files_endpoint(router, "File")
         get_number_count_files_endpoint(router, "File")
 
     return router

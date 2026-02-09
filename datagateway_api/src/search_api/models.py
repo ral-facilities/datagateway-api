@@ -259,7 +259,8 @@ class Dataset(PaNOSCAttribute):
     def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
-        value["isPublic"] = True
+        if value is not None:
+            value["isPublic"] = True
         return value
 
     @classmethod
@@ -295,7 +296,8 @@ class Document(PaNOSCAttribute):
     def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
-        value["isPublic"] = True
+        if value is not None:
+            value["isPublic"] = True
         return value
 
     @classmethod
@@ -314,7 +316,7 @@ class File(PaNOSCAttribute):
     path: Optional[str] = None
     size: Optional[int] = None
 
-    dataset: Dataset = None
+    dataset: Optional[Dataset] = None
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -347,7 +349,7 @@ class Member(PaNOSCAttribute):
     id_: SearchAPIId
     role: Optional[str] = Field(None, alias="role")
 
-    document: Document = None
+    document: Optional[Document] = None
     person: Optional["Person"] = None
     affiliation: Optional[Affiliation] = None
 
@@ -451,6 +453,10 @@ class Technique(PaNOSCAttribute):
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Technique, cls).from_icat(icat_data, required_related_fields)
+
+
+class CountResponse(BaseModel):
+    count: int
 
 
 # The below models reference other models that may not be defined during their
