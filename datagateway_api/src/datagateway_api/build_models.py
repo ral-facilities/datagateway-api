@@ -158,7 +158,6 @@ def build_datagateway_api_model(**kwargs):
         model = create_model(name, __base__=ICATBaseEntity, **fields)
         post_model = create_model(post_name, **post_fields)
         patch_model = create_model(patch_name, __base__=ICATId, **patch_fields)
-
         datagateway_api_models[name] = model
         datagateway_api_models[post_name] = post_model
         datagateway_api_models[patch_name] = patch_model
