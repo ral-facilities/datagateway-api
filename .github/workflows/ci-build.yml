@@ -24,7 +24,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
           architecture: x64
 
       - name: Checkout DataGateway API
@@ -53,7 +53,8 @@ jobs:
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-
+      - name: Create logging.ini
+        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       # Run Unit tests
       - name: Run Nox unit tests session
         run: nox -s unit_tests -- --cov=datagateway_api --cov-report=xml
@@ -123,6 +124,8 @@ jobs:
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      - name: Create logging.ini
+        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
 
       - name: Install dependencies
         run: poetry install
@@ -143,7 +146,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10.4"
+          python-version: "3.11.13"
           architecture: x64
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
@@ -163,7 +166,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10.4"
+          python-version: "3.11.13"
           architecture: x64
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
@@ -183,7 +186,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10.4"
+          python-version: "3.11.13"
           architecture: x64
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
@@ -213,7 +216,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10.4"
+          python-version: "3.11.13"
           architecture: x64
 
       # ICAT Ansible clone and install dependencies
@@ -260,6 +263,8 @@ jobs:
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      - name: Create logging.ini
+        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       - name: Install Poetry
         run: pip install poetry==1.8.0
       # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
@@ -321,7 +326,8 @@ jobs:
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-
+      - name: Create logging.ini
+        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       - name: Install dependencies
         run: poetry install
 
@@ -353,19 +359,21 @@ jobs:
       # Checkout DataGateway API and setup Python
       - name: Check out repo
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v3.5.3
+      - name: Add apt repo
+        run: sudo add-apt-repository universe
       # Setup Java & Python
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
-          python-version: "3.10"
+          python-version: "3.11"
           architecture: x64
       - name: Setup Java
         uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.4.0
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: 8
 
-       # ICAT Ansible clone and install dependencies
+        # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
         if: success()
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
@@ -375,7 +383,7 @@ jobs:
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
-     # Prep for running the playbook
+      # Prep for running the playbook
       - name: Create hosts file
         run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
       - name: Prepare vault pass
@@ -434,6 +442,8 @@ jobs:
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      - name: Create logging.ini
+        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
 
       # Launch API to see if it starts correctly or has a startup issue
       # Code logic used from https://stackoverflow.com/a/63643845
