@@ -124,7 +124,6 @@ class APIConfig(BaseModel):
 
     datagateway_api: Optional[DataGatewayAPI] = None
     debug_mode: Optional[StrictBool] = None
-    flask_reloader: Optional[StrictBool] = None
     generate_swagger: StrictBool
     host: Optional[StrictStr] = None
     log_level: StrictStr

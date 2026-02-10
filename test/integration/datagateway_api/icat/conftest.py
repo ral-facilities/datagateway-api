@@ -2,18 +2,9 @@ from datetime import datetime
 import uuid
 
 from dateutil.tz import tzlocal
-from flask import Flask
 from icat.exception import ICATNoObjectError
 import pytest
 
-from datagateway_api.src.api_start_utils import (
-    create_api_endpoints,
-    create_app_infrastructure,
-)
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from test.integration.datagateway_api.icat.endpoints.test_create_icat import (
     TestICATCreateData,
 )
@@ -95,34 +86,19 @@ def multiple_investigation_test_data(icat_client):
         icat_client.delete(investigation)
 
 
-@pytest.fixture(scope="package")
-def flask_test_app_icat(flask_test_app):
-    icat_app = Flask(__name__)
-    icat_app.config["TESTING"] = True
-
-    python_icat = PythonICAT()
-    # Create client pool
-    icat_client_pool = create_client_pool()
-    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-    api, spec = create_app_infrastructure(icat_app, dg_models.values())
-    create_api_endpoints(icat_app, api, spec, python_icat, icat_client_pool)
-
-    yield icat_app.test_client()
-
-
 @pytest.fixture()
-def final_instrument_id(flask_test_app_icat, valid_icat_credentials_header):
-    final_instrument_result = flask_test_app_icat.get(
-        f"{Config.config.datagateway_api.extension}/instruments/findone" '?order="id DESC"',
+def final_instrument_id(test_client, valid_icat_credentials_header):
+    final_instrument_result = test_client.get(
+        "/instruments/findone" '?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_instrument_result.json["id"]
 
 
 @pytest.fixture()
-def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
-    final_facilitycycle_result = flask_test_app_icat.get(
-        f"{Config.config.datagateway_api.extension}/facilitycycles/findone" '?order="id DESC"',
+def final_facilitycycle_id(test_client, valid_icat_credentials_header):
+    final_facilitycycle_result = test_client.get(
+        "/facilitycycles/findone" '?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
@@ -130,7 +106,7 @@ def final_facilitycycle_id(flask_test_app_icat, valid_icat_credentials_header):
 
 @pytest.fixture()
 def remove_test_created_investigation_data(
-    flask_test_app_icat,
+    test_client,
     valid_icat_credentials_header,
 ):
     """
@@ -145,8 +121,8 @@ def remove_test_created_investigation_data(
 
     yield
 
-    created_test_data = flask_test_app_icat.get(
-        f"{Config.config.datagateway_api.extension}/investigations?where="  # noqa: B907
+    created_test_data = test_client.get(
+        "/investigations?where="  # noqa: B907
         '{"name":{"like":'
         f'"{TestICATCreateData.investigation_name_prefix}"'  # noqa: B907
         "}}",
@@ -157,7 +133,7 @@ def remove_test_created_investigation_data(
         investigation_ids.append(investigation["id"])
 
     for investigation_id in investigation_ids:
-        flask_test_app_icat.delete(
-            f"{Config.config.datagateway_api.extension}/investigations" f"/{investigation_id}",
+        test_client.delete(
+            "/investigations" f"/{investigation_id}",
             headers=valid_icat_credentials_header,
         )

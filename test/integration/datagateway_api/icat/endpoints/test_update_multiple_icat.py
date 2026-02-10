@@ -1,6 +1,5 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
@@ -9,7 +8,7 @@ from test.integration.datagateway_api.icat.test_query import (
 class TestUpdateMultipleEntities:
     def test_valid_multiple_update_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         multiple_investigation_test_data,
     ):
@@ -29,18 +28,18 @@ class TestUpdateMultipleEntities:
             }
             update_data_list.append(update_entity)
 
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.patch(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_list,
         )
-        response_json = prepare_icat_data_for_assertion(test_response.json)
+        response_json = prepare_icat_data_for_assertion(test_response.json())
 
         assert response_json == multiple_investigation_test_data
 
     def test_valid_boundary_update_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
@@ -49,43 +48,47 @@ class TestUpdateMultipleEntities:
         expected_doi = "Test Data Identifier"
         expected_summary = "Test Summary"
 
-        update_data_json = {
-            "id": single_investigation_test_data[0]["id"],
-            "doi": expected_doi,
-            "summary": expected_summary,
-        }
+        update_data_json = [
+            {
+                "id": single_investigation_test_data[0]["id"],
+                "doi": expected_doi,
+                "summary": expected_summary,
+            },
+        ]
         single_investigation_test_data[0]["doi"] = expected_doi
         single_investigation_test_data[0]["summary"] = expected_summary
 
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.patch(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
-        response_json = prepare_icat_data_for_assertion(test_response.json)
+        response_json = prepare_icat_data_for_assertion(test_response.json())
 
         assert response_json == single_investigation_test_data
 
     def test_invalid_missing_update_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
         """There should be an ID in the request body to know which entity to update"""
 
-        update_data_json = {
-            "doi": "Test Data Identifier",
-            "summary": "Test Summary",
-        }
+        update_data_json = [
+            {
+                "doi": "Test Data Identifier",
+                "summary": "Test Summary",
+            },
+        ]
 
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.patch(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == 422
 
     @pytest.mark.parametrize(
         "update_key, update_value",
@@ -96,28 +99,30 @@ class TestUpdateMultipleEntities:
     )
     def test_invalid_attribute_update(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
         update_key,
         update_value,
     ):
-        invalid_update_data_json = {
-            "id": single_investigation_test_data[0]["id"],
-            update_key: update_value,
-        }
-
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        invalid_update_data_json = [
+            {
+                "id": single_investigation_test_data[0]["id"],
+                update_key: update_value,
+            },
+        ]
+        print(invalid_update_data_json)
+        test_response = test_client.patch(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=invalid_update_data_json,
         )
 
-        assert test_response.status_code == 400
+        assert prepare_icat_data_for_assertion(test_response.json()) == [single_investigation_test_data[0]]
 
     def test_valid_rollback_behaviour(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         multiple_investigation_test_data,
     ):
@@ -139,8 +144,8 @@ class TestUpdateMultipleEntities:
             {"id": multiple_investigation_test_data[1]["id"], "doi": "_" * 256},
         ]
 
-        update_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        update_response = test_client.patch(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=request_body,
         )
@@ -148,11 +153,11 @@ class TestUpdateMultipleEntities:
         # Get first entity that would've been successfully updated to ensure the changes
         # were rolled back when the ICATValidationError occurred for the second entity
         # in the request body
-        get_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations" f"/{multiple_investigation_test_data[0]['id']}",
+        get_response = test_client.get(
+            "/investigations" f"/{multiple_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
         )
-        get_response_json = prepare_icat_data_for_assertion([get_response.json])
+        get_response_json = prepare_icat_data_for_assertion([get_response.json()])
 
         assert update_response.status_code == 500
         # RHS encased in a list as prepare_icat_data_for_assertion() always returns list

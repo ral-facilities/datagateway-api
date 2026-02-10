@@ -44,6 +44,9 @@ def prepare_icat_data_for_assertion(
             if isinstance(entity[attr], datetime):
                 entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
 
+        # REMOVE None values
+        entity = {k: v for k, v in entity.items() if v is not None}
+
         # meta_attributes is immutable
         if remove_id:
             entity.pop("id")

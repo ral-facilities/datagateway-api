@@ -1,6 +1,5 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
@@ -12,7 +11,7 @@ class TestICATCreateData:
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_create_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
         create_investigations_json = [
@@ -25,16 +24,16 @@ class TestICATCreateData:
                 "endDate": "2020-02-03 10:00:10+00:00",
                 "visitId": "Data Creation Visit",
                 "doi": "DataGateway API Test DOI",
-                "facility": {"id": 1},
-                "type": {"id": 1},
+                "facility": 1,
+                "type": 1,
                 "fileCount": 1,
                 "fileSize": 6,
             }
             for i in range(2)
         ]
 
-        test_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.post(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigations_json,
         )
@@ -42,9 +41,9 @@ class TestICATCreateData:
         for investigation_request in create_investigations_json:
             investigation_request.pop("facility")
             investigation_request.pop("type")
-
+        print(test_response.json())
         response_json = prepare_icat_data_for_assertion(
-            test_response.json,
+            test_response.json(),
             remove_id=True,
         )
 
@@ -53,28 +52,30 @@ class TestICATCreateData:
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_boundary_create_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 
-        create_investigation_json = {
-            "name": f"{self.investigation_name_prefix} 0",
-            "title": "Test data for Python ICAT on the API",
-            "summary": "Test data for DataGateway API testing",
-            "releaseDate": "2020-03-03 08:00:08+00:00",
-            "startDate": "2020-02-02 09:00:09+00:00",
-            "endDate": "2020-02-03 10:00:10+00:00",
-            "visitId": "Data Creation Visit",
-            "doi": "DataGateway API Test DOI",
-            "facility": {"id": 1},
-            "type": {"id": 1},
-            "fileCount": 3,
-            "fileSize": 2,
-        }
+        create_investigation_json = [
+            {
+                "name": f"{self.investigation_name_prefix} 0",
+                "title": "Test data for Python ICAT on the API",
+                "summary": "Test data for DataGateway API testing",
+                "releaseDate": "2020-03-03 08:00:08+00:00",
+                "startDate": "2020-02-02 09:00:09+00:00",
+                "endDate": "2020-02-03 10:00:10+00:00",
+                "visitId": "Data Creation Visit",
+                "doi": "DataGateway API Test DOI",
+                "facility": 1,
+                "type": 1,
+                "fileCount": 3,
+                "fileSize": 2,
+            },
+        ]
 
-        test_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.post(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
@@ -83,7 +84,7 @@ class TestICATCreateData:
         create_investigation_json.pop("type")
 
         response_json = prepare_icat_data_for_assertion(
-            test_response.json,
+            test_response.json(),
             remove_id=True,
         )
 
@@ -91,26 +92,28 @@ class TestICATCreateData:
 
     def test_invalid_create_data(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
         """An investigation requires a minimum of: name, visitId, facility, type"""
 
-        invalid_request_body = {
-            "title": "Test Title for DataGateway API Python ICAT testing",
-        }
+        invalid_request_body = [
+            {
+                "title": "Test Title for DataGateway API Python ICAT testing",
+            },
+        ]
 
-        test_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.post(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=invalid_request_body,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == 422
 
     def test_invalid_existing_data_create(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
@@ -118,16 +121,18 @@ class TestICATCreateData:
 
         # entity.as_dict() removes details about facility and type, hence they're
         # hardcoded here instead of using sinle_investigation_test_data
-        existing_object_json = {
-            "name": single_investigation_test_data[0]["name"],
-            "title": single_investigation_test_data[0]["title"],
-            "visitId": single_investigation_test_data[0]["visitId"],
-            "facility": 1,
-            "type": 1,
-        }
+        existing_object_json = [
+            {
+                "name": single_investigation_test_data[0]["name"],
+                "title": single_investigation_test_data[0]["title"],
+                "visitId": single_investigation_test_data[0]["visitId"],
+                "facility": 1,
+                "type": 1,
+            },
+        ]
 
-        test_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        test_response = test_client.post(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=existing_object_json,
         )
@@ -136,7 +141,7 @@ class TestICATCreateData:
 
     def test_valid_rollback_behaviour(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
         request_body = [
@@ -157,20 +162,20 @@ class TestICATCreateData:
             },
         ]
 
-        create_response = flask_test_app_icat.post(
-            f"{Config.config.datagateway_api.extension}/investigations",
+        create_response = test_client.post(
+            "/investigations",
             headers=valid_icat_credentials_header,
             json=request_body,
         )
 
-        get_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations?where="  # noqa: B907
+        get_response = test_client.get(
+            "/investigations?where="  # noqa: B907
             '{"title": {"eq": "'
             f'{request_body[0]["title"]}'
             '"}}',
             headers=valid_icat_credentials_header,
         )
-        get_response_json = prepare_icat_data_for_assertion(get_response.json)
+        get_response_json = prepare_icat_data_for_assertion(get_response.json())
 
         assert create_response.status_code == 400
         assert get_response_json == []

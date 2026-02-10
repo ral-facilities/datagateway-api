@@ -1,7 +1,5 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
-
 
 class TestICATCountWithFilters:
     @pytest.mark.parametrize(
@@ -22,28 +20,28 @@ class TestICATCountWithFilters:
     @pytest.mark.usefixtures("multiple_investigation_test_data")
     def test_valid_count_with_filters(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         query_params,
         expected_result,
     ):
-        test_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations" f"/count{query_params}",
+        test_response = test_client.get(
+            "/investigations" f"/count{query_params}",
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.json == expected_result
+        assert test_response.json() == expected_result
 
     def test_valid_no_results_count_with_filters(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
-        test_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations/count?where="
+        test_response = test_client.get(
+            "/investigations/count?where="
             '{"title": {"like": "This filter should cause 0results to be found '
             'for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.json == 0
+        assert test_response.json() == 0

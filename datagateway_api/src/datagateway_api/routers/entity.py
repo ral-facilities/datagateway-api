@@ -4,6 +4,7 @@ from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string, get_session_id_from_auth_header
+from datagateway_api.src.common.utlis import make_fields_optional
 
 WhereQuery = Query(
     default=None,
@@ -223,7 +224,8 @@ def get_endpoint(
         "",
         summary=f"Get {name}",
         description=f"Retrieves a list of {entity_type} objects",
-        response_model=List[dg_models[entity_type]],
+        response_model=List[make_fields_optional(dg_models[entity_type])],
+        response_model_exclude_none=True,
         responses={
             200: {"description": f"Success - returns {entity_type} that satisfy the filters"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -238,7 +240,7 @@ def get_endpoint(
         order: List[str] = OrderQuery,  # pylint:disable=unused-argument
         limit: int = LimitQuery,  # pylint:disable=unused-argument
         skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
         include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         return python_icat.get_with_filters(
@@ -253,6 +255,7 @@ def get_endpoint(
         summary=f"Create new {name}",
         description=(f"Creates new {entity_type} object(s) with details provided " "in the request body"),
         response_model=List[dg_models[entity_type]],
+        response_model_exclude_none=True,
         responses={
             200: {"description": "Success - returns the created object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -274,6 +277,7 @@ def get_endpoint(
         summary=f"Update {name}",
         description=(f"Updates {entity_type} object(s) with details provided " "in the request body"),
         response_model=List[dg_models[entity_type]],
+        response_model_exclude_none=True,
         responses={
             200: {"description": "Success - returns the updated object(s)"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -286,7 +290,7 @@ def get_endpoint(
         return python_icat.update(
             get_session_id_from_auth_header(request),
             entity_type,
-            [result.model_dump(by_alias=True) for result in body],
+            [result.model_dump(by_alias=True, exclude_none=True) for result in body],
             **kwargs,
         )
 
@@ -317,6 +321,7 @@ def get_id_endpoint(
         summary=f"Find the {entity_type} matching the given ID",
         description=f"Retrieves a single {entity_type} object",
         response_model=dg_models[f"{entity_type}"],
+        response_model_exclude_none=True,
         responses={
             200: {"description": f"Success - the matching {entity_type}"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -365,6 +370,7 @@ def get_id_endpoint(
         summary=f"Update {name} by id",
         description=f"Updates the {entity_type} with the specified ID",
         response_model=dg_models[entity_type],
+        response_model_exclude_none=True,
         responses={
             200: {"description": "Success - returns the updated object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -434,7 +440,7 @@ def get_count_endpoint(
     def get(
         request: Request,
         where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
-        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
         include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
@@ -466,7 +472,8 @@ def get_find_one_endpoint(
         "/findone",
         summary=f"Get single {entity_type}",
         description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
-        response_model=dg_models[entity_type],
+        response_model=make_fields_optional(dg_models[entity_type]),
+        response_model_exclude_none=True,
         responses={
             200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -481,7 +488,7 @@ def get_find_one_endpoint(
         order: List[str] = OrderQuery,  # pylint:disable=unused-argument
         limit: int = LimitQuery,  # pylint:disable=unused-argument
         skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: int = DistinctQuery,  # pylint:disable=unused-argument
+        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
         include: Any = IncludeQuery,  # pylint:disable=unused-argument
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
@@ -517,8 +524,8 @@ def create_collection_router(
     router = APIRouter(prefix=f"/{name.lower()}", tags=[name])
 
     get_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
-    get_id_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
     get_count_endpoint(router, name, entity_type, python_icat, **kwargs)
     get_find_one_endpoint(router, entity_type, dg_models, python_icat, **kwargs)
+    get_id_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
 
     return router

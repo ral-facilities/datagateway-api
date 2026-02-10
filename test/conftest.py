@@ -48,7 +48,6 @@ def test_config_data():
                 "limit": 1000,
             },
         },
-        "flask_reloader": False,
         "log_level": "WARN",
         "log_location": "/home/runner/work/datagateway-api/datagateway-api/logs.log",
         "debug_mode": False,
