@@ -129,7 +129,7 @@ def remove_test_created_investigation_data(
         headers=valid_icat_credentials_header,
     )
     investigation_ids = []
-    for investigation in created_test_data.json:
+    for investigation in created_test_data.json():
         investigation_ids.append(investigation["id"])
 
     for investigation_id in investigation_ids:

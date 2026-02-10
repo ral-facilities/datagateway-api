@@ -24,7 +24,7 @@ class TestICATCreateData:
                 "endDate": "2020-02-03 10:00:10+00:00",
                 "visitId": "Data Creation Visit",
                 "doi": "DataGateway API Test DOI",
-                "facility": {"id": 1},
+                "facility": 1,
                 "type": 1,
                 "fileCount": 1,
                 "fileSize": 6,
@@ -79,16 +79,16 @@ class TestICATCreateData:
             headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
-
-        create_investigation_json.pop("facility")
-        create_investigation_json.pop("type")
+        print(create_investigation_json)
+        create_investigation_json[0].pop("facility")
+        create_investigation_json[0].pop("type")
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),
             remove_id=True,
         )
 
-        assert [create_investigation_json] == response_json
+        assert create_investigation_json == response_json
 
     def test_invalid_create_data(
         self,

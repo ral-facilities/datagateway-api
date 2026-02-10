@@ -140,14 +140,11 @@ class TestICATQuery:
                 True,
                 [
                     {
-                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
-                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
-                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],
@@ -162,12 +159,9 @@ class TestICATQuery:
                 True,
                 [
                     {
-                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "name": "Test Data for DataGateway API Testing 0",
-                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
-                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                         "fileCount": 3,
                         "fileSize": 1073741824,
@@ -202,14 +196,11 @@ class TestICATQuery:
                 False,
                 [
                     {
-                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
-                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
-                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],

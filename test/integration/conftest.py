@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 import json
 from unittest.mock import mock_open, patch
 
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from icat.client import Client
 import pytest
@@ -9,7 +10,7 @@ import pytest
 
 from datagateway_api.src.common.config import APIConfig, Config
 from datagateway_api.src.datagateway_api.icat.models import Session
-from datagateway_api.src.main import datagateway_app
+from datagateway_api.src.main import datagateway_app, register_common_handlers
 
 
 @pytest.fixture(scope="package")
@@ -33,6 +34,17 @@ def fixture_test_client() -> TestClient:
     :return: The test client.
     """
     return TestClient(datagateway_app)
+
+
+@pytest.fixture(name="local_auth_client")
+def fixture_auth_test_client() -> TestClient:
+    """
+    Isolated TestClient for auth tests.
+    """
+
+    app = FastAPI()
+    register_common_handlers(app)
+    return TestClient(app)
 
 
 @pytest.fixture()
