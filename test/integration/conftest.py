@@ -61,11 +61,7 @@ def valid_db_credentials_header():
     session.expireDateTime = datetime.now() + timedelta(hours=1)
     session.username = "Test User"
 
-    # insert_row_into_table(SESSION, session)
-
     yield {"Authorization": f"Bearer {session.id}"}
-
-    # delete_row_by_id(SESSION, "Test")
 
 
 @pytest.fixture()

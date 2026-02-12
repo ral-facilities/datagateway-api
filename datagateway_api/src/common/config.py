@@ -51,39 +51,18 @@ class DataGatewayAPI(BaseModel):
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: Optional[StrictInt]
-    client_pool_init_size: Optional[StrictInt]
-    client_pool_max_size: Optional[StrictInt]
+    client_cache_size: StrictInt
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
     extension: StrictStr
-    icat_check_cert: Optional[StrictBool]
-    icat_url: Optional[StrictStr]
+    icat_check_cert: StrictBool
+    icat_url: StrictStr
     use_reader_for_performance: Optional[UseReaderForPerformance]
 
     _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 
     def __getitem__(self, item):
         return getattr(self, item)
-
-    @validator(
-        "client_cache_size",
-        "client_pool_init_size",
-        "client_pool_max_size",
-        "icat_check_cert",
-        "icat_url",
-        always=True,
-    )
-    def require_icat_config_value(cls, value):  # noqa: B902, N805
-        """
-        Validates that the required config fields for the `python_icat`
-        are present and not None. If any of these config values are missing,
-        an error is raised, causing the application to exit.
-
-        :param cls: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        """
-        if value is None:
-            raise TypeError("Field required for `python_icat`.")
-        return value
 
     class Config:
         """
