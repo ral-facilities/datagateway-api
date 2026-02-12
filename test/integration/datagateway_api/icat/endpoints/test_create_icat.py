@@ -41,7 +41,7 @@ class TestICATCreateData:
         for investigation_request in create_investigations_json:
             investigation_request.pop("facility")
             investigation_request.pop("type")
-        print(test_response.json())
+
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),
             remove_id=True,
@@ -79,7 +79,7 @@ class TestICATCreateData:
             headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
-        print(create_investigation_json)
+
         create_investigation_json[0].pop("facility")
         create_investigation_json[0].pop("type")
 

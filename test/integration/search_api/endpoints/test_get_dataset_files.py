@@ -157,7 +157,6 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         )
 
         response_data = prepare_data_for_assertion(test_response.json())
-        print(response_data)
 
         assert test_response.status_code == 200
         assert response_data == expected_json

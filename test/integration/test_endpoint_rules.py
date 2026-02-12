@@ -116,8 +116,6 @@ class TestEndpointRules:
     def test_non_entity_endpoints(self, test_client, endpoint_name, expected_methods):
         all_routes = collect_routes(test_client.app)
 
-        print(all_routes)
-
         matching_routes = [methods for path, methods in all_routes if path == endpoint_name]
 
         assert matching_routes, f"Endpoint not found: {endpoint_name}"

@@ -88,7 +88,7 @@ class TestUpdateMultipleEntities:
             json=update_data_json,
         )
 
-        assert test_response.status_code == 422
+        assert test_response.status_code == 400
 
     @pytest.mark.parametrize(
         "update_key, update_value",
@@ -111,7 +111,7 @@ class TestUpdateMultipleEntities:
                 update_key: update_value,
             },
         ]
-        print(invalid_update_data_json)
+
         test_response = test_client.patch(
             "/investigations",
             headers=valid_icat_credentials_header,

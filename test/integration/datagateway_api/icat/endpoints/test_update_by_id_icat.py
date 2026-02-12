@@ -11,7 +11,6 @@ class TestUpdateByID:
         single_investigation_test_data,
     ):
         update_data_json = {
-            "id": single_investigation_test_data[0]["id"],
             "doi": "Test Data Identifier",
             "summary": "Test Summary",
             "startDate": "2019-01-04 01:01:01+00:00",
@@ -47,4 +46,4 @@ class TestUpdateByID:
             json=invalid_update_json,
         )
 
-        assert test_response.status_code == 422
+        assert test_response.status_code == 400

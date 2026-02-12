@@ -29,7 +29,7 @@ SYSTEM_FIELDS = {
 
 
 class ICATId(BaseModel):
-    id_: Annotated[int, Field(alias="id")]
+    id_: Annotated[Optional[int], Field(None, alias="id")]
 
 
 class ICATBaseEntity(ICATId):
@@ -139,12 +139,11 @@ def build_datagateway_api_model(**kwargs):
                     post_type = f"List['{rel_model_name}Post']"  # noqa: B907
                 else:
                     rel_type_str = f"'{rel_model_name}'"  # noqa: B907
-                    post_type = int
+                    post_type = Optional[int]
 
                 patch_type = Optional[post_type]
                 rel_type_str = f"Optional[{rel_type_str}]"
-                if not field.notNullable:
-                    post_type = Optional[post_type]
+                post_type = Optional[post_type]
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
@@ -152,7 +151,7 @@ def build_datagateway_api_model(**kwargs):
                 post_annotated_type = Annotated[post_type, field_metadata]
                 patch_annotated_type = Annotated[patch_type, field_metadata]
                 fields[field.name] = (annotated_type, None)
-                post_fields[field.name] = (post_annotated_type, None) if not field.notNullable else post_annotated_type
+                post_fields[field.name] = (post_annotated_type, None)
                 patch_fields[field.name] = (post_annotated_type, None)
 
         model = create_model(name, __base__=ICATBaseEntity, **fields)
