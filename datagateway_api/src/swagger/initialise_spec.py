@@ -23,12 +23,13 @@ def initialise_datagateway_api_spec(spec):
     """
 
     spec.components.security_scheme(
-        "session_id", {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
+        "session_id",
+        {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
     )
 
     entity_schemas = create_entity_models()
 
-    for (schema_name, schema) in entity_schemas.items():
+    for schema_name, schema in entity_schemas.items():
         spec.components.schema(schema_name, schema)
 
     spec.components.parameter(

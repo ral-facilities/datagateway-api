@@ -21,7 +21,9 @@ class TestDBGetWithFilters:
         assert test_response.json == [single_investigation_test_data_db.to_dict()]
 
     def test_valid_no_results_get_with_filters(
-        self, flask_test_app_db, valid_db_credentials_header,
+        self,
+        flask_test_app_db,
+        valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
             f"{Config.config.datagateway_api.extension}/investigations?where="
@@ -34,7 +36,9 @@ class TestDBGetWithFilters:
 
     @pytest.mark.usefixtures("multiple_investigation_test_data_db")
     def test_valid_get_with_filters_multiple_distinct(
-        self, flask_test_app_db, valid_db_credentials_header,
+        self,
+        flask_test_app_db,
+        valid_db_credentials_header,
     ):
         test_response = flask_test_app_db.get(
             f"{Config.config.datagateway_api.extension}/investigations?where="

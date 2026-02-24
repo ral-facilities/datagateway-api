@@ -187,7 +187,10 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
         def get(self, id_):
             return (
                 backend.get_with_id(
-                    get_session_id_from_auth_header(), entity_type, id_, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    id_,
+                    **kwargs,
                 ),
                 200,
             )
@@ -224,7 +227,10 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
 
         def delete(self, id_):
             backend.delete_with_id(
-                get_session_id_from_auth_header(), entity_type, id_, **kwargs,
+                get_session_id_from_auth_header(),
+                entity_type,
+                id_,
+                **kwargs,
             )
             return "", 204
 
@@ -258,7 +264,11 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
         def patch(self, id_):
             session_id = get_session_id_from_auth_header()
             backend.update_with_id(
-                session_id, entity_type, id_, request.json, **kwargs,
+                session_id,
+                entity_type,
+                id_,
+                request.json,
+                **kwargs,
             )
             return backend.get_with_id(session_id, entity_type, id_, **kwargs), 200
 
@@ -324,7 +334,10 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
             filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.count_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    filters,
+                    **kwargs,
                 ),
                 200,
             )
@@ -383,7 +396,10 @@ def get_find_one_endpoint(name, entity_type, backend, **kwargs):
             filters = get_filters_from_query_string("datagateway_api")
             return (
                 backend.get_one_with_filters(
-                    get_session_id_from_auth_header(), entity_type, filters, **kwargs,
+                    get_session_id_from_auth_header(),
+                    entity_type,
+                    filters,
+                    **kwargs,
                 ),
                 200,
             )

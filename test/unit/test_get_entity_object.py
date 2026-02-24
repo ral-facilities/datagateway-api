@@ -14,18 +14,22 @@ class TestGetEntityObject:
         "entity_name, expected_object_type",
         [
             pytest.param(
-                "investigation", type(INVESTIGATION), id="singular entity name",
+                "investigation",
+                type(INVESTIGATION),
+                id="singular entity name",
             ),
             pytest.param("jobs", type(JOB), id="plural entity name, 's' added"),
             pytest.param(
-                "facilities", type(FACILITY), id="plural entity name, 'y' to 'ies'",
+                "facilities",
+                type(FACILITY),
+                id="plural entity name, 'y' to 'ies'",
             ),
         ],
     )
     def test_valid_get_entity_object_from_name(self, entity_name, expected_object_type):
         database_entity = get_entity_object_from_name(entity_name)
 
-        assert type(database_entity) == expected_object_type
+        assert type(database_entity) is expected_object_type
 
     def test_invalid_get_entity_object_from_name(self):
         with pytest.raises(ApiError):

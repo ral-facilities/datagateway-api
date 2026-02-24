@@ -56,12 +56,15 @@ class TestDatabaseFilterUtilities:
             pytest.param("name", id="No related fields"),
             pytest.param("facility.daysUntilRelease", id="Related field"),
             pytest.param(
-                "investigationUsers.user.fullName", id="Related related field",
+                "investigationUsers.user.fullName",
+                id="Related related field",
             ),
         ],
     )
     def test_valid_add_query_join(
-        self, flask_test_app_db, input_field,
+        self,
+        flask_test_app_db,
+        input_field,
     ):
         table = get_entity_object_from_name("Investigation")
 
@@ -96,7 +99,8 @@ class TestDatabaseFilterUtilities:
             pytest.param("name", id="No related fields"),
             pytest.param("facility.daysUntilRelease", id="Related field"),
             pytest.param(
-                "investigationUsers.user.fullName", id="Related related field",
+                "investigationUsers.user.fullName",
+                id="Related related field",
             ),
         ],
     )

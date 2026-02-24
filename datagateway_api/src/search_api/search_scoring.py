@@ -32,8 +32,10 @@ class SearchScoring:
             )
             response.raise_for_status()
             return response.json()["scores"]
-        except RequestException:
-            raise ScoringAPIError("An error occurred while trying to score the results")
+        except RequestException as e:
+            raise ScoringAPIError(
+                "An error occurred while trying to score the results",
+            ) from e
 
     @staticmethod
     def add_scores_to_results(results, scores):

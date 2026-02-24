@@ -25,7 +25,8 @@ app.config["APPLICATION_ROOT"] = Config.config.url_prefix
 
 if __name__ == "__main__":
     app.wsgi_app = DispatcherMiddleware(
-        Response("Not Found", status=404), {Config.config.url_prefix: app.wsgi_app},
+        Response("Not Found", status=404),
+        {Config.config.url_prefix: app.wsgi_app},
     )
     app.run(
         host=Config.config.host,

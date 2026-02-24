@@ -44,7 +44,7 @@ class DatabaseBackend(Backend):
             tables = inspector.get_table_names()
             log.debug("Tables on ping: %s", tables)
         except SQLAlchemyError as e:
-            raise DatabaseError(e)
+            raise DatabaseError(e) from e
 
         return Constants.PING_OK_RESPONSE
 
@@ -61,7 +61,7 @@ class DatabaseBackend(Backend):
             )
             return session_id
         else:
-            raise AuthenticationError("Username and password are incorrect")
+            raise AuthenticationError("Username and password are incorrect") from None
 
     @requires_session_id
     def get_session_details(self, session_id, **kwargs):

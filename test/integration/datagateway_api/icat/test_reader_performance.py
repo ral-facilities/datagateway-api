@@ -64,7 +64,11 @@ class TestReaderPerformance:
         return_value=True,
     )
     def test_eligbility(
-        self, _, test_entity_type, test_query_filters, expected_eligbility,
+        self,
+        _,
+        test_entity_type,
+        test_query_filters,
+        expected_eligbility,
     ):
         reader_performance_enabled = is_use_reader_for_performance_enabled()
         assert reader_performance_enabled
@@ -103,7 +107,11 @@ class TestReaderPerformance:
         ],
     )
     def test_is_user_authorised(
-        self, icat_client, test_entity_type, test_query_filters, expected_authorisation,
+        self,
+        icat_client,
+        test_entity_type,
+        test_query_filters,
+        expected_authorisation,
     ):
         test_handler = ReaderQueryHandler(test_entity_type, test_query_filters)
         is_authorised = test_handler.is_user_authorised_to_see_entity_id(icat_client)
@@ -117,7 +125,9 @@ class TestReaderPerformance:
     )
     def test_execute_query_as_reader(self, _, mock_execute_entity_query, icat_client):
         get_data_with_filters(
-            icat_client, "Datafile", [PythonICATWhereFilter("dataset.id", 3, "eq")],
+            icat_client,
+            "Datafile",
+            [PythonICATWhereFilter("dataset.id", 3, "eq")],
         )
         assert mock_execute_entity_query.call_count == 1
 

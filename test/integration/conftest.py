@@ -25,7 +25,8 @@ def icat_client():
         checkCert=Config.config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism, Config.config.test_user_credentials.dict(),
+        Config.config.test_mechanism,
+        Config.config.test_user_credentials.dict(),
     )
     return client
 
@@ -40,7 +41,7 @@ def flask_test_app():
     yield test_app
 
 
-@pytest.fixture(scope="package")
+@pytest.fixture(scope="function")
 def flask_test_app_db():
     """
     This is in the common conftest file because this test app is also used in

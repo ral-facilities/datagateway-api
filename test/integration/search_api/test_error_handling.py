@@ -19,7 +19,10 @@ class TestErrorHandling:
             pytest.param(BadRequestError, BadRequestError, 400, id="Bad request error"),
             pytest.param(FilterError, FilterError, 400, id="Invalid filter"),
             pytest.param(
-                MissingRecordError, MissingRecordError, 404, id="Missing record",
+                MissingRecordError,
+                MissingRecordError,
+                404,
+                id="Missing record",
             ),
             pytest.param(ScoringAPIError, SearchAPIError, 500, id="Scoring API error"),
             pytest.param(SearchAPIError, SearchAPIError, 500, id="Search API error"),
@@ -31,7 +34,10 @@ class TestErrorHandling:
         ],
     )
     def test_valid_error_raised(
-        self, raised_exception, expected_exception, status_code,
+        self,
+        raised_exception,
+        expected_exception,
+        status_code,
     ):
         @search_api_error_handling
         def raise_exception():

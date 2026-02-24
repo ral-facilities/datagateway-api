@@ -110,6 +110,7 @@ def test_search_api_mappings_data():
 @pytest.fixture()
 def test_panosc_mappings(test_search_api_mappings_data):
     with patch(
-        "builtins.open", mock_open(read_data=json.dumps(test_search_api_mappings_data)),
+        "builtins.open",
+        mock_open(read_data=json.dumps(test_search_api_mappings_data)),
     ):
         return PaNOSCMappings("test/path")
