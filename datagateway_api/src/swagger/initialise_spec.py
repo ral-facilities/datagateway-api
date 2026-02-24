@@ -162,8 +162,7 @@ def initialise_datagateway_api_spec(spec):
             "examples": {
                 "eq": {"value": [{"id": {"eq": 1}}]},
                 "ne": {"value": [{"id": {"ne": 1}}]},
-                "is": {"value": [{"publicationDate": {"is": "NULL"}}]},
-                "nis": {"value": [{"complete": {"nis": True}}]},
+                "isnull": {"value": [{"publicationDate": {"isnull": True}}]},
                 "like": {"value": [{"name": {"like": "dog"}}]},
                 "lt": {"value": [{"id": {"lt": 10}}]},
                 "lte": {"value": [{"id": {"lte": 50}}]},
