@@ -1,6 +1,6 @@
 from datetime import datetime
 import logging
-from typing import Annotated, List, Optional
+from typing import Annotated, List, Optional, Union
 
 from icat.exception import ICATError
 from pydantic import BaseModel, create_model, Field
@@ -14,7 +14,7 @@ log = logging.getLogger()
 TYPE_MAP = {
     "String": str,
     "Long": int,
-    "Date": datetime,
+    "Date": str,
     "Boolean": bool,
     "Double": float,
 }
@@ -29,14 +29,14 @@ SYSTEM_FIELDS = {
 
 
 class ICATId(BaseModel):
-    id_: int = Field(alias="id")
+    id_: Annotated[Optional[int], Field(None, alias="id")]
 
 
 class ICATBaseEntity(ICATId):
-    create_id: str = Field(alias="createId")
-    create_time: datetime = Field(alias="createdTime")
-    mod_id: str = Field(alias="modId")
-    mod_time: datetime = Field(alias="modTime")
+    create_id: Annotated[str, Field(alias="createId")]
+    create_time: Annotated[datetime, Field(alias="createTime")]
+    mod_id: Annotated[str, Field(alias="modId")]
+    mod_time: Annotated[datetime, Field(alias="modTime")]
 
 
 def build_datagateway_api_model(**kwargs):
@@ -138,28 +138,21 @@ def build_datagateway_api_model(**kwargs):
                 post_type = None
                 if field.relType == "MANY":
                     rel_type_str = f"List['{rel_model_name}']"  # noqa: B907
-                    post_type = List[ICATId]
+                    post_type = f"List['{rel_model_name}Post']"  # noqa: B907
                 else:
                     rel_type_str = f"'{rel_model_name}'"  # noqa: B907
-                    post_type = ICATId
+                    post_type = Optional[int]
 
-                patch_type = Optional[post_type]
+                optional_type = Optional[post_type]
                 rel_type_str = f"Optional[{rel_type_str}]"
-                if not field.notNullable:
-                    post_type = Optional[post_type]
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
                 annotated_type = Annotated[rel_type_str, field_metadata]
-                post_annotated_type = Annotated[post_type, field_metadata]
-                patch_annotated_type = Annotated[patch_type, field_metadata]
+                optional_annotated_type = Annotated[optional_type, field_metadata]
                 fields[field.name] = (annotated_type, None)
-                post_fields[field.name] = (
-                    (post_annotated_type, None)
-                    if not field.notNullable
-                    else post_annotated_type
-                )
-                patch_fields[field.name] = (post_annotated_type, None)
+                post_fields[field.name] = (optional_annotated_type, None)
+                patch_fields[field.name] = (optional_annotated_type, None)
 
         model = create_model(name, __base__=ICATBaseEntity, **fields)
         post_model = create_model(post_name, **post_fields)
@@ -169,7 +162,13 @@ def build_datagateway_api_model(**kwargs):
         datagateway_api_models[patch_name] = patch_model
 
     for model in datagateway_api_models.values():
-        model.model_rebuild(_types_namespace=datagateway_api_models)
+        types_namespace = {
+            **datagateway_api_models,
+            "List": List,
+            "Optional": Optional,
+            "Union": Union,
+        }
+        model.model_rebuild(_types_namespace=types_namespace)
 
     log.info("Finished building all datagateway models")
     return datagateway_api_models
