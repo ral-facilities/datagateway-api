@@ -109,7 +109,7 @@ class TestICATCreateData:
             json=invalid_request_body,
         )
 
-        assert test_response.status_code == 422
+        assert test_response.status_code == 400
 
     def test_invalid_existing_data_create(
         self,
