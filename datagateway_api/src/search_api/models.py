@@ -269,6 +269,7 @@ class Dataset(PaNOSCAttribute):
     samples: Optional[List["Sample"]] = []
 
     @model_validator(mode="before")
+    @classmethod
     def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
@@ -305,6 +306,7 @@ class Document(PaNOSCAttribute):
     parameters: Optional[List["Parameter"]] = []
 
     @model_validator(mode="before")
+    @classmethod
     def set_is_public(cls, value):  # noqa: B902, N805
         # Hardcoding this to True because anon user is used for querying so all data
         # returned by it is public
