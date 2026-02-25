@@ -33,10 +33,10 @@ class ICATId(BaseModel):
 
 
 class ICATBaseEntity(ICATId):
-    create_id: Annotated[str, Field(alias="createId")]
-    create_time: Annotated[datetime, Field(alias="createTime")]
-    mod_id: Annotated[str, Field(alias="modId")]
-    mod_time: Annotated[datetime, Field(alias="modTime")]
+    create_id: Annotated[Optional[str], Field(None, alias="createId")]
+    create_time: Annotated[Optional[datetime], Field(None, alias="createTime")]
+    mod_id: Annotated[Optional[str], Field(None, alias="modId")]
+    mod_time: Annotated[Optional[datetime], Field(None, alias="modTime")]
 
 
 def build_datagateway_api_model(**kwargs):
@@ -52,11 +52,12 @@ def build_datagateway_api_model(**kwargs):
     - A corresponding POST model for creation (e.g. `InvestigationPost`)
     - A corresponding PATCH model for partial updates (e.g. `InvestigationPatch`)
 
-    Relationship fields (ONE or MANY) are converted into model references or
-    lists of ICAT IDs. Attribute fields are mapped to Python/Pydantic primitive
-    types according to the `TYPE_MAP`. Optionality and nullability are respected
-    for all generated fields. Field descriptions from ICAT (if present) are
-    carried forward into the model metadata.
+    Relationship fields (ONE or MANY) are converted into either model references 
+    or lists of ICAT IDs. Attribute fields are mapped to Python/Pydantic primitive
+    types according to the TYPE_MAP. Optionality and nullability are not strictly
+    preserved for all generated fields, as values support the distinct filter 
+    operator, which may request one or many values from a given object. Field 
+    descriptions from ICAT, when available, are carried over into the model metadata.
 
     All generated models are finally rebuilt (`model_rebuild`) using the full
     model namespace so that forward references between models resolve correctly.
@@ -107,7 +108,6 @@ def build_datagateway_api_model(**kwargs):
         info = client.getEntityInfo(name)
         fields = {}
         post_fields = {}
-        patch_fields = {}
         for field in info.fields:
             post_name = f"{name}Post"
             patch_name = f"{name}Patch"
@@ -116,20 +116,14 @@ def build_datagateway_api_model(**kwargs):
 
             if field.relType == "ATTRIBUTE":
                 field_type = TYPE_MAP.get(field.type, str)
-                patch_field_type = Optional[field_type]
-                if field.notNullable is False:
-                    field_type = Optional[field_type]
+                optional_field_type = Optional[field_type]
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
-                annotated_type = Annotated[field_type, field_metadata]
-                patch_annotated_type = Annotated[patch_field_type, field_metadata]
+                optional_annotated_type = Annotated[optional_field_type , field_metadata]
 
-                field_annotated_type = (annotated_type, None) if not field.notNullable else annotated_type
-
-                fields[field.name] = field_annotated_type
-                post_fields[field.name] = field_annotated_type
-                patch_fields[field.name] = (patch_annotated_type, None)
+                fields[field.name] = (optional_annotated_type, None)
+                post_fields[field.name] = (optional_annotated_type, None)
 
             else:
                 rel_model_name = field.type
@@ -150,11 +144,10 @@ def build_datagateway_api_model(**kwargs):
                 optional_annotated_type = Annotated[optional_type, field_metadata]
                 fields[field.name] = (annotated_type, None)
                 post_fields[field.name] = (optional_annotated_type, None)
-                patch_fields[field.name] = (optional_annotated_type, None)
 
         model = create_model(name, __base__=ICATBaseEntity, **fields)
         post_model = create_model(post_name, **post_fields)
-        patch_model = create_model(patch_name, __base__=ICATId, **patch_fields)
+        patch_model = create_model(patch_name, __base__=ICATId, **post_fields)
         datagateway_api_models[name] = model
         datagateway_api_models[post_name] = post_model
         datagateway_api_models[patch_name] = patch_model

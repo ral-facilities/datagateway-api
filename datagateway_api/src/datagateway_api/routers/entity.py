@@ -379,7 +379,7 @@ def get_id_endpoint(
         },
     )
     def patch(
-        body: dg_models[f"{entity_type}Patch"],  # noqa: F821
+        body: dg_models[f"{entity_type}Post"],  # noqa: F821
         request: Request,
         id_: Annotated[int, Path(description="The id of the entity to update")],
     ):
