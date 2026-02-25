@@ -165,13 +165,14 @@ class APIConfig(BaseModel):
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
     @field_validator("search_api")
+    @classmethod
     def validate_api_extensions(cls, value, info):  # noqa: B902, N805
         """
         Checks that the DataGateway API and Search API extensions are not the same. An
         error is raised, at which point the application exits, if the extensions are the
         same.
 
-        :param self: :class:`APIConfig` pointer
+        :param cls: :class:`APIConfig` pointer
         :param value: The value of the given config field
         :param info: The config field values loaded before the given config field
         """

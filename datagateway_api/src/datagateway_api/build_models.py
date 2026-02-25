@@ -141,18 +141,16 @@ def build_datagateway_api_model(**kwargs):
                     rel_type_str = f"'{rel_model_name}'"  # noqa: B907
                     post_type = Optional[int]
 
-                patch_type = Optional[post_type]
+                optional_type = Optional[post_type]
                 rel_type_str = f"Optional[{rel_type_str}]"
-                post_type = Optional[post_type]
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
                 annotated_type = Annotated[rel_type_str, field_metadata]
-                post_annotated_type = Annotated[post_type, field_metadata]
-                patch_annotated_type = Annotated[patch_type, field_metadata]
+                optional_annotated_type = Annotated[optional_type, field_metadata]
                 fields[field.name] = (annotated_type, None)
-                post_fields[field.name] = (post_annotated_type, None)
-                patch_fields[field.name] = (post_annotated_type, None)
+                post_fields[field.name] = (optional_annotated_type, None)
+                patch_fields[field.name] = (optional_annotated_type, None)
 
         model = create_model(name, __base__=ICATBaseEntity, **fields)
         post_model = create_model(post_name, **post_fields)
@@ -168,7 +166,6 @@ def build_datagateway_api_model(**kwargs):
             "Optional": Optional,
             "Union": Union,
         }
-
         model.model_rebuild(_types_namespace=types_namespace)
 
     log.info("Finished building all datagateway models")
