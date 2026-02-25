@@ -52,11 +52,11 @@ def build_datagateway_api_model(**kwargs):
     - A corresponding POST model for creation (e.g. `InvestigationPost`)
     - A corresponding PATCH model for partial updates (e.g. `InvestigationPatch`)
 
-    Relationship fields (ONE or MANY) are converted into either model references 
+    Relationship fields (ONE or MANY) are converted into either model references
     or lists of ICAT IDs. Attribute fields are mapped to Python/Pydantic primitive
     types according to the TYPE_MAP. Optionality and nullability are not strictly
-    preserved for all generated fields, as values support the distinct filter 
-    operator, which may request one or many values from a given object. Field 
+    preserved for all generated fields, as values support the distinct filter
+    operator, which may request one or many values from a given object. Field
     descriptions from ICAT, when available, are carried over into the model metadata.
 
     All generated models are finally rebuilt (`model_rebuild`) using the full
@@ -120,7 +120,7 @@ def build_datagateway_api_model(**kwargs):
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
-                optional_annotated_type = Annotated[optional_field_type , field_metadata]
+                optional_annotated_type = Annotated[optional_field_type, field_metadata]
 
                 fields[field.name] = (optional_annotated_type, None)
                 post_fields[field.name] = (optional_annotated_type, None)

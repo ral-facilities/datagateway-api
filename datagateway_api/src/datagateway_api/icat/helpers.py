@@ -574,7 +574,7 @@ def create_entities(client, entity_type, data):
                     # This means the attribute has a relationship with another object
                     try:
                         # TODO:
-                        # The field "value" can be either List[{"id": 1}] or {"id": 1},
+                        # The field "value" can be either List[TYPE] or int,
                         # but only the single-object case works correctly.
                         #
                         # When a field requires a list of objects, the API fails
