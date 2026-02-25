@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 import sys
-from typing import Annotated, ClassVar, List, Optional, Union
+from typing import Annotated, ClassVar, List, Literal, Optional, Union
 
 from pydantic import (
     BaseModel,
     BeforeValidator,
+    ConfigDict,
     Field,
-    model_validator,
     PlainSerializer,
     ValidationError,
 )
@@ -40,22 +40,9 @@ SearchAPIPid = Annotated[str, BeforeValidator(pid_prefix)]
 # confusing, the types of all the other fields were made non-strict.
 
 
-def normalize_id(value):
-    if isinstance(value, (int, float, bool)):
-        return str(value)
-    return value
-
-
 SearchAPIId = Annotated[
     str,
-    BeforeValidator(normalize_id),
     Field(alias="id"),
-]
-
-SearchAPIIdOptional = Annotated[
-    Optional[str],
-    BeforeValidator(normalize_id),
-    Field(None, alias="id"),
 ]
 
 
@@ -101,6 +88,8 @@ class PaNOSCAttribute(ABC, BaseModel):
         "endDate",
         "releaseDate",
     ]
+
+    model_config = ConfigDict(coerce_numbers_to_str=True)
 
     @classmethod
     @abstractmethod
@@ -231,7 +220,7 @@ class Affiliation(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = []
 
     name: Optional[str] = None
-    id_: SearchAPIIdOptional
+    id_: Annotated[Optional[str], Field(alias="id")]
     address: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
@@ -257,7 +246,9 @@ class Dataset(PaNOSCAttribute):
 
     pid: SearchAPIPid
     title: str
-    is_public: bool = Field(alias="isPublic")
+    # Hardcoding this to True because anon user is used for querying so all data
+    # returned by it is public
+    is_public: Literal[True] = Field(True, alias="isPublic")
     creation_date: SearchAPIDatetime = Field(alias="creationDate")
     size: Optional[int] = None
 
@@ -267,14 +258,6 @@ class Dataset(PaNOSCAttribute):
     files: Optional[List["File"]] = []
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
-
-    @model_validator(mode="before")
-    @classmethod
-    def set_is_public(cls, value):  # noqa: B902, N805
-        # Hardcoding this to True because anon user is used for querying so all data
-        # returned by it is public
-        value["isPublic"] = True
-        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -290,7 +273,9 @@ class Document(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
     pid: SearchAPIPid
-    is_public: bool = Field(alias="isPublic")
+    # Hardcoding this to True because anon user is used for querying so all data
+    # returned by it is public
+    is_public: Literal[True] = Field(True, alias="isPublic")
     type_: str = Field(alias="type")
     title: str
     summary: Optional[str] = None
@@ -304,14 +289,6 @@ class Document(PaNOSCAttribute):
     datasets: List[Dataset] = []
     members: Optional[List["Member"]] = []
     parameters: Optional[List["Parameter"]] = []
-
-    @model_validator(mode="before")
-    @classmethod
-    def set_is_public(cls, value):  # noqa: B902, N805
-        # Hardcoding this to True because anon user is used for querying so all data
-        # returned by it is public
-        value["isPublic"] = True
-        return value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
