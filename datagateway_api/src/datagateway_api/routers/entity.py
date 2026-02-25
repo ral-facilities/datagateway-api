@@ -4,7 +4,6 @@ from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string, get_session_id_from_auth_header
-from datagateway_api.src.common.utlis import make_fields_optional
 
 WhereQuery = Query(
     default=None,
@@ -224,7 +223,7 @@ def get_endpoint(
         "",
         summary=f"Get {name}",
         description=f"Retrieves a list of {entity_type} objects",
-        response_model=List[make_fields_optional(dg_models[entity_type])],
+        response_model=List[dg_models[entity_type]],
         response_model_exclude_none=True,
         responses={
             200: {"description": f"Success - returns {entity_type} that satisfy the filters"},
@@ -472,7 +471,7 @@ def get_find_one_endpoint(
         "/findone",
         summary=f"Get single {entity_type}",
         description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
-        response_model=make_fields_optional(dg_models[entity_type]),
+        response_model=dg_models[entity_type],
         response_model_exclude_none=True,
         responses={
             200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
