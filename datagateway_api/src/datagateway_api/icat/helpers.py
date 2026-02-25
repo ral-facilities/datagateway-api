@@ -590,7 +590,7 @@ def create_entities(client, entity_type, data):
                         #
                         # Fix list handling, one-to-one include behaviour, and
                         # duplicate reference errors.
-                        related_object = client.get(entity_info.type, value["id"])
+                        related_object = client.get(entity_info.type, value)
                     except ICATNoObjectError as e:
                         raise BadRequestError(e) from e
                     if entity_info.relType.lower() == "many":
