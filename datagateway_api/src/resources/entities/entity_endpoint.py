@@ -292,7 +292,7 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/{entity_schema_name}Patch'
+                    $ref: '#/components/schemas/{entity_schema_name}Post'
             responses:
                 200:
                     description: Success - returns the updated object
