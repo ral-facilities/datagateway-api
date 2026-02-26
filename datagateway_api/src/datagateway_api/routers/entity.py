@@ -224,7 +224,7 @@ def get_endpoint(
         summary=f"Get {name}",
         description=f"Retrieves a list of {entity_type} objects",
         response_model=List[dg_models[entity_type]],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": f"Success - returns {entity_type} that satisfy the filters"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -254,7 +254,7 @@ def get_endpoint(
         summary=f"Create new {name}",
         description=(f"Creates new {entity_type} object(s) with details provided " "in the request body"),
         response_model=List[dg_models[entity_type]],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the created object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -276,7 +276,7 @@ def get_endpoint(
         summary=f"Update {name}",
         description=(f"Updates {entity_type} object(s) with details provided " "in the request body"),
         response_model=List[dg_models[entity_type]],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the updated object(s)"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -320,7 +320,7 @@ def get_id_endpoint(
         summary=f"Find the {entity_type} matching the given ID",
         description=f"Retrieves a single {entity_type} object",
         response_model=dg_models[f"{entity_type}"],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": f"Success - the matching {entity_type}"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -369,7 +369,7 @@ def get_id_endpoint(
         summary=f"Update {name} by id",
         description=f"Updates the {entity_type} with the specified ID",
         response_model=dg_models[entity_type],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the updated object"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -472,7 +472,7 @@ def get_find_one_endpoint(
         summary=f"Get single {entity_type}",
         description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
         response_model=dg_models[entity_type],
-        response_model_exclude_none=True,
+        response_model_exclude_unset=True,
         responses={
             200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
             400: {"description": "Bad request - Something was wrong with the request"},

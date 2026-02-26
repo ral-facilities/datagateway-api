@@ -44,9 +44,6 @@ def prepare_icat_data_for_assertion(
             if isinstance(entity[attr], datetime):
                 entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
 
-        # REMOVE None values
-        entity = {k: v for k, v in entity.items() if v is not None}
-
         # meta_attributes is immutable
         if remove_id:
             entity.pop("id")
@@ -140,11 +137,14 @@ class TestICATQuery:
                 True,
                 [
                     {
+                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],
@@ -159,9 +159,12 @@ class TestICATQuery:
                 True,
                 [
                     {
+                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                         "fileCount": 3,
                         "fileSize": 1073741824,
@@ -196,11 +199,14 @@ class TestICATQuery:
                 False,
                 [
                     {
+                        "doi": None,
                         "endDate": "2020-01-08 01:01:01+00:00",
                         "fileCount": 3,
                         "fileSize": 1073741824,
                         "name": "Test Data for DataGateway API Testing 0",
+                        "releaseDate": None,
                         "startDate": "2020-01-04 01:01:01+00:00",
+                        "summary": None,
                         "title": "Test data for Python ICAT on DataGateway" " API 0",
                     },
                 ],

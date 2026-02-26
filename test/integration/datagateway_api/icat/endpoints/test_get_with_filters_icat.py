@@ -46,8 +46,9 @@ class TestICATGetWithFilters:
         )
 
         expected = [{"title": f"Test data for Python ICAT on DataGateway API {i}"} for i in range(5)]
+
         for title in expected:
-            assert title["title"] in [data["title"] for data in test_response.json()]
+            assert title in test_response.json()
 
     def test_limit_skip_merge_get_with_filters(
         self,
