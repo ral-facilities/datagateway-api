@@ -69,9 +69,6 @@ class DataGatewayAPI(BaseModel):
         The behaviour of the BaseModel class can be controlled via this class.
         """
 
-        # Enables assignment validation on the BaseModel fields. Useful for when the
-        validate_assignment = True
-
 
 class SearchScoring(BaseModel):
     enabled: StrictBool
