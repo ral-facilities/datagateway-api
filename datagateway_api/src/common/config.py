@@ -67,7 +67,6 @@ class DataGatewayAPI(BaseModel):
     def __getitem__(self, item):
         return getattr(self, item)
 
-    model_config = ConfigDict(validate_assignment=True)
 
 
 class SearchScoring(BaseModel):
