@@ -31,68 +31,6 @@ guide found online. It is assumed the commands shown in this part of the README 
 executed in the root directory of this repo once it has been cloned to your local
 machine.
 
-## Python Version Management (pyenv)
-
-To start, install [pyenv](https://github.com/pyenv/pyenv). There is a Windows version of
-this tool ([pyenv-win](https://github.com/pyenv-win/pyenv-win)), however this is
-currently untested on this repo. This is used to manage the various versions of Python
-that will be used to test/lint Python during development. Install by executing the
-following:
-
-```bash
-curl https://pyenv.run | bash
-```
-
-The following lines need to be added to `~/.bashrc` - either open a new terminal or
-execute `source ~/.bashrc` to make these changes apply:
-
-```bash
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-```
-
-Various Python build dependencies need to be installed next. These will vary dependent
-on the platform of your system (see the
-[common pyenv build problems](https://github.com/pyenv/pyenv/wiki/Common-build-problems)
-for the relevant command for your OS), but the following shows the bash command to
-install the requirements for a CentOS/RHEL machine:
-
-```bash
-sudo yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite \
-sqlite-devel openssl-devel xz xz-devel libffi-devel findutils
-```
-
-To make use of `pyenv`, let's install different versions of Python onto the system. In
-production, DataGateway API uses Python 3.6, so this should definitely be part a
-development environment for this repo. This stage might take some time as each Python
-version needs to be downloaded and built individually:
-
-```bash
-pyenv install 3.6.8
-pyenv install 3.7.7
-pyenv install 3.8.2
-pyenv install 3.9.0
-```
-
-To verify the installation commands worked:
-
-```bash
-python3.6 --version
-python3.7 --version
-python3.8 --version
-python3.9 --version
-```
-
-These Python versions need to be made available to local version of the repository. They
-will used during the Nox sessions, explained further down this file. Executing the
-following command will create a `.python-version` file inside the repo (this file is
-currently listed in `.gitignore`):
-
-```bash
-pyenv local 3.6.8 3.7.7 3.8.2 3.9.0
-```
-
 ## API Dependency Management (Poetry)
 
 To maintain records of the API's dependencies,
@@ -114,19 +52,19 @@ Then run `source ~/.bashrc` or open a new terminal and check poetry works by run
 If you encounter this error when installing poetry:
 
 ```
-ERROR: No matching distribution found for poetry==1.2.0
+ERROR: No matching distribution found for poetry==1.8.0
 ```
 
-You can try running the installer with python 3.8 with the command below:
+You can try running the installer with python 3.10 with the command below:
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3.8 -
+curl -sSL https://install.python-poetry.org | python3.10 -
 ```
 
 Or you can specify the version you want to install from the listed versions with the command below:
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 - --version 1.2.0
+curl -sSL https://install.python-poetry.org | python3 - --version 1.8.0
 ```
 
 The dependencies for this repo are stored in `pyproject.toml`, with a more detailed
@@ -231,31 +169,14 @@ As a summary, these are the steps needed to create a dev environment for this re
 compressed into a single code block:
 
 ```bash
-# Install pyenv
-curl https://pyenv.run | bash
+# Install Python 3.10
 
-# Paste into ~/.bashrc
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# Download and install Python 3.10 from the official Python website or use your system’s package manager (e.g., apt for Linux, Homebrew for macOS, or the installer for Windows).
+# Make sure Python is added to your system PATH.
+# Verify the installation by checking the version.
 
-# Apply changes made in ~/.bashrc
-source ~/.bashrc
-
-# Install Python build tools
-sudo yum install @development zlib-devel bzip2 bzip2-devel readline-devel sqlite \
-sqlite-devel openssl-devel xz xz-devel libffi-devel findutils
-
-# Install different versions of Python and verify they work
-pyenv install 3.6.8
-python3.6 --version
-pyenv install 3.7.7
-python3.7 --version
-pyenv install 3.8.2
-python3.8 --version
-
-# Make installed Python versions available to repo
-pyenv local 3.6.8 3.7.7 3.8.2
+# To verify the installation commands worked:
+python3 --version
 
 # Install Poetry
 curl -sSL https://install.python-poetry.org | python3 -
@@ -382,21 +303,25 @@ container is started. Environment variables have also been defined in the `Docke
 to allow for values to be passed at runtime to future running containers. These values
 are used by the `docker/docker-entrypoint.sh` script to update the config values in the
 `config.yaml` file. The environment varialbes are:
+
 - `ICAT_URL` (Default value: `http://localhost`)
 - `ICAT_CHECK_CERT` (Default value: `false`)
 - `LOG_LOCATION` (Default value: `/dev/stdout`)
 
 To build an image, run:
+
 ```bash
 docker build -t datagateway_api_image .
 ```
 
 To start a container on port `8000` from the image that you just built, run:
+
 ```bash
-docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image 
+docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image
 ```
 
 If you want to pass values for the environment variables then instead run:
+
 ```bash
 docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true --env LOG_LOCATION=/datagateway-api-run/logs.log datagateway_api_image
 ```
@@ -444,20 +369,20 @@ testing of the API. Set `test_user_credentials` and `test_mechanism` appropriate
 connection to an instance of ICAT, so set the rest of the config as needed.
 
 By default, this will execute the repo's tests in
-Python 3.6, 3.7, 3.8, 3.9 and 3.10. For most cases, running the tests in a single Python
+Python 3.10. For most cases, running the tests in a single Python
 version will be sufficient:
 
 ```bash
-nox -p 3.6 -s unit_tests
-nox -p 3.6 -s integration
+nox -p 3.10 -s unit_tests
+nox -p 3.10 -s integration
 ```
 
 This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to check how much of the codebase is covered by the tests in `test/`:
 
 ```bash
-nox -p 3.6 -s unit_tests -- --cov-report term --cov=./datagateway_api
-nox -p 3.6 -s integration_tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.10 -s unit_tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.10 -s integration_tests -- --cov-report term --cov=./datagateway_api
 ```
 
 With `pytest`, you can output the duration for each test, useful for showing the slower
@@ -466,13 +391,13 @@ into setup, call and teardown to more easily understand where the tests are bein
 down:
 
 ```bash
-nox -p 3.6 -s unit_tests -- --durations=0
-nox -p 3.6 -s integration_tests -- --durations=0
+nox -p 3.10 -s unit_tests -- --durations=0
+nox -p 3.10 -s integration_tests -- --durations=0
 ```
 
 To test a specific test class (or even a specific test function), you will
 need to use pytest itself through poetry. If you want to change the python
-version use `poetry env use 3.6` which will generate a virtual env with that
+version use `poetry env use 3.10` which will generate a virtual env with that
 version.
 
 ```bash

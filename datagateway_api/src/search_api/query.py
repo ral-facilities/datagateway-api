@@ -13,7 +13,9 @@ class SearchAPIQuery:
         ]
 
         self.icat_query = SearchAPIICATQuery(
-            SessionHandler.client, self.icat_entity_name, **kwargs,
+            SessionHandler.client,
+            self.icat_entity_name,
+            **kwargs,
         )
 
     def __repr__(self):
@@ -53,4 +55,4 @@ class SearchAPIICATQuery(ICATQuery):
         except ValueError as e:
             raise SearchAPIError(
                 f"An issue has occurred while creating a query for ICAT: {e}",
-            )
+            ) from e

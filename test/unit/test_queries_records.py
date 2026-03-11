@@ -17,14 +17,20 @@ class TestQueriesRecords:
             pytest.param(IntegrityError, BadRequestError, 400, id="integrity error"),
             pytest.param(FilterError, FilterError, 400, id="invalid filter"),
             pytest.param(
-                MissingRecordError, MissingRecordError, 404, id="missing record",
+                MissingRecordError,
+                MissingRecordError,
+                404,
+                id="missing record",
             ),
             pytest.param(TypeError, BadRequestError, 400, id="type error"),
             pytest.param(ValueError, BadRequestError, 400, id="value error"),
         ],
     )
     def test_valid_error_raised(
-        self, raised_exception, expected_exception, status_code,
+        self,
+        raised_exception,
+        expected_exception,
+        status_code,
     ):
         @queries_records
         def raise_exception():

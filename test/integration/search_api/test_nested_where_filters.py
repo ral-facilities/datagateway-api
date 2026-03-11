@@ -129,7 +129,12 @@ class TestNestedWhereFilters:
         ],
     )
     def test_search_api_filters(
-        self, lhs, rhs, joining_operator, query, expected_where_clause,
+        self,
+        lhs,
+        rhs,
+        joining_operator,
+        query,
+        expected_where_clause,
     ):
         test_nest = NestedWhereFilters(lhs, rhs, joining_operator, query)
         where_clause = str(test_nest)
@@ -148,7 +153,11 @@ class TestNestedWhereFilters:
         ],
     )
     def test_nested_classes(
-        self, lhs, rhs, joining_operator, expected_where_clause,
+        self,
+        lhs,
+        rhs,
+        joining_operator,
+        expected_where_clause,
     ):
         test_nest = NestedWhereFilters(lhs, rhs, joining_operator)
         where_clause = str(test_nest)

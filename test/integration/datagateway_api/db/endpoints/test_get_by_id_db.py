@@ -24,7 +24,9 @@ class TestDBGetByID:
         assert test_response.json == single_investigation_test_data_db.to_dict()
 
     def test_invalid_get_with_id(
-        self, flask_test_app_db, valid_db_credentials_header,
+        self,
+        flask_test_app_db,
+        valid_db_credentials_header,
     ):
         final_investigation_result = flask_test_app_db.get(
             f"{Config.config.datagateway_api.extension}/investigations/findone?order="

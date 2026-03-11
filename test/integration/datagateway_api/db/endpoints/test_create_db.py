@@ -65,7 +65,9 @@ class TestDBCreateData:
 
     @pytest.mark.usefixtures("remove_test_created_investigation_data")
     def test_valid_boundary_create_data(
-        self, flask_test_app_db, valid_db_credentials_header,
+        self,
+        flask_test_app_db,
+        valid_db_credentials_header,
     ):
         """Create a single investigation, as opposed to multiple"""
 
@@ -97,7 +99,9 @@ class TestDBCreateData:
         assert create_investigation_json == response_json
 
     def test_invalid_create_data(
-        self, flask_test_app_db, valid_db_credentials_header,
+        self,
+        flask_test_app_db,
+        valid_db_credentials_header,
     ):
         """An investigation requires a minimum of: name, visitId, facility, type"""
 

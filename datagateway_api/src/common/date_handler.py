@@ -54,7 +54,7 @@ class DateHandler:
         try:
             datetime_obj = helper.parse_attr_string(data, "Date")
         except ValueError as e:
-            raise BadRequestError(e)
+            raise BadRequestError(e) from e
 
         return datetime_obj
 
