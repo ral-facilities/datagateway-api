@@ -16,6 +16,6 @@ if [ ! -e /datagateway-api-run/datagateway_api/config.yaml ]; then
 
     cat "$TEMPFILE" > /datagateway-api-run/datagateway_api/config.yaml
     rm "$TEMPFILE"
-
+fi
 # Run the CMD instruction
 exec "$@"
