@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway-api
 
 # Build stage
-FROM python:3.11-alpine3.17 as builder
+FROM python:3.11-alpine3.17 AS builder
 
 WORKDIR /datagateway-api-build
 
@@ -41,8 +41,8 @@ RUN --mount=type=cache,target=/root/.cache \
     addgroup -S datagateway-api; \
     adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api; \
     \
-    # Change ownership of config.yaml - the entrypoint script will need to edit it \
-    chown datagateway-api:datagateway-api datagateway_api/config.yaml;
+    # Change ownership of settings location - the entrypoint script will need to edit it \
+    chown -R datagateway-api:datagateway-api datagateway_api/;
 
 USER datagateway-api
 
