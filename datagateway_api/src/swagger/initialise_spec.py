@@ -88,6 +88,11 @@ def initialise_datagateway_api_spec(spec):
                             },
                             {
                                 "type": "object",
+                                "title": "IS NULL",
+                                "properties": {"isnull": {"type": "boolean"}},
+                            },
+                            {
+                                "type": "object",
                                 "title": "Less than",
                                 "properties": {
                                     "lt": {
@@ -157,6 +162,7 @@ def initialise_datagateway_api_spec(spec):
             "examples": {
                 "eq": {"value": [{"id": {"eq": 1}}]},
                 "ne": {"value": [{"id": {"ne": 1}}]},
+                "isnull": {"value": [{"publicationDate": {"isnull": True}}]},
                 "like": {"value": [{"name": {"like": "dog"}}]},
                 "lt": {"value": [{"id": {"lt": 10}}]},
                 "lte": {"value": [{"id": {"lte": 50}}]},
