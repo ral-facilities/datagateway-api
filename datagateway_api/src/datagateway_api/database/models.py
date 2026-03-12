@@ -43,7 +43,7 @@ class EnumAsInteger(TypeDecorator):
     def process_bind_param(self, value, dialect):
         if isinstance(value, self.enum_type):
             return value.value
-        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}") from None
+        raise DatabaseError(f"value {value} not in {self.enum_type.__name__}")
 
     def process_result_value(self, value, dialect):
         try:

@@ -1,7 +1,7 @@
 # Dockerfile to build and serve datagateway-api
 
 # Build stage
-FROM python:3.11-alpine@sha256:f07e2ace46f560f09a6eeec7b4913b80ee99546e749ef82342a419a326620856 AS builder
+FROM python:3.10.4-alpine@sha256:sha256:3ccf8d308cd8cf6b97540a2c5b202b8ce513bdd43a1fd73c1d9e657b96e7ded4 AS builder
 
 WORKDIR /datagateway-api-build
 
@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache \
 
 
 # Install & run stage
-FROM python:3.11-alpine@sha256:f07e2ace46f560f09a6eeec7b4913b80ee99546e749ef82342a419a326620856
+FROM python:3.10.4-alpine@sha256:sha256:3ccf8d308cd8cf6b97540a2c5b202b8ce513bdd43a1fd73c1d9e657b96e7ded4
 
 WORKDIR /datagateway-api-run
 
