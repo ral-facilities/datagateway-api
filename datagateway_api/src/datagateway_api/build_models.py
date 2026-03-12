@@ -108,9 +108,10 @@ def build_datagateway_api_model(**kwargs):
         info = client.getEntityInfo(name)
         fields = {}
         post_fields = {}
+        post_name = f"{name}Post"
+        patch_name = f"{name}Patch"
         for field in info.fields:
-            post_name = f"{name}Post"
-            patch_name = f"{name}Patch"
+
             if field.name in SYSTEM_FIELDS:
                 continue
 
@@ -127,13 +128,12 @@ def build_datagateway_api_model(**kwargs):
 
             else:
                 rel_model_name = field.type
-                post_type = None
                 if field.relType == "MANY":
                     rel_type_str = f"List['{rel_model_name}']"  # noqa: B907
                     post_type = f"List['{rel_model_name}Post']"  # noqa: B907
                 else:
                     rel_type_str = f"'{rel_model_name}'"  # noqa: B907
-                    post_type = Optional[int]
+                    post_type = int
 
                 optional_type = Optional[post_type]
                 rel_type_str = f"Optional[{rel_type_str}]"

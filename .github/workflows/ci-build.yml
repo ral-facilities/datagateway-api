@@ -15,12 +15,7 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
 
-      # Setup Java & Python
-      - name: Setup Java
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.4.0
-        with:
-          distribution: "temurin"
-          java-version: 8
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
@@ -61,11 +56,10 @@ jobs:
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        if: success()
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: payara7
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -136,7 +130,6 @@ jobs:
 
       # Run Nox integration tests session, saves and uploads a coverage report to codecov
       - name: Run Nox Integration tests session
-        if: success()
         run: nox -s integration_tests -- --cov=datagateway_api --cov-report=xml
 
   linting:
@@ -207,12 +200,7 @@ jobs:
       - name: Add apt repo
         run: sudo add-apt-repository universe
 
-      # Setup Java & Python
-      - name: Setup Java
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.4.0
-        with:
-          distribution: "temurin"
-          java-version: 8
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
@@ -224,7 +212,7 @@ jobs:
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: payara7
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt
@@ -363,25 +351,18 @@ jobs:
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v3.5.3
       - name: Add apt repo
         run: sudo add-apt-repository universe
-      # Setup Java & Python
+      # Setup Python
       - name: Setup Python
         uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
         with:
           python-version: "3.11"
           architecture: x64
-      - name: Setup Java
-        uses: actions/setup-java@b36c23c0d998641eff861008f374ee103c25ac73 # v4.4.0
-        with:
-          distribution: "temurin"
-          java-version: 8
-
         # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
-        if: success()
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
           repository: icatproject-contrib/icat-ansible
-          ref: master
+          ref: payara7
           path: icat-ansible
       - name: Install Ansible
         run: pip install -r icat-ansible/requirements.txt

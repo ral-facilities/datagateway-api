@@ -50,6 +50,11 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, "=", self.value)
         elif self.operation in ["ne", "neq"]:
             where_filter = self.create_condition(self.field, "!=", self.value)
+        elif self.operation == "isnull":
+            if self.value:
+                where_filter = self.create_condition(self.field, "IS NULL", None)
+            else:
+                where_filter = self.create_condition(self.field, "IS NOT NULL", None)
         elif self.operation == "like":
             where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "ilike":
@@ -136,6 +141,14 @@ class PythonICATWhereFilter(WhereFilter):
         """
 
         conditions = {}
+
+        # Handle unary operators (IS NULL, IS NOT NULL)
+        normalized_op = operator.strip().upper()
+        if normalized_op in ("IS NULL", "IS NOT NULL"):
+            conditions[attribute_name] = normalized_op
+            log.debug("Unary condition in ICAT where filter, %s", conditions)
+            return conditions
+
         # Removing quote marks when doing conditions with IN expressions or when a
         # distinct filter is used in a request
         jpql_value = (

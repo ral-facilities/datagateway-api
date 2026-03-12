@@ -6,7 +6,6 @@ from typing import Annotated, Optional
 from pydantic import (
     AfterValidator,
     BaseModel,
-    ConfigDict,
     field_validator,
     StrictBool,
     StrictInt,
@@ -66,8 +65,6 @@ class DataGatewayAPI(BaseModel):
 
     def __getitem__(self, item):
         return getattr(self, item)
-
-    model_config = ConfigDict(validate_assignment=True)
 
 
 class SearchScoring(BaseModel):

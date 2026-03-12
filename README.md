@@ -343,7 +343,7 @@ require an ICAT stack. In order to cover all the code you will need to run both 
 To run the unit test use `nox -s unit_tests`, and to run the integration tests use `nox -s integration_tests`
 The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
 and quicker action runs these are additionally split into the unit and integration tests.
-The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and python ICAT
+The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and Python ICAT
 tests (containing tests for the specific components, including tests for the
 different types of endpoints).
 
@@ -422,7 +422,7 @@ non_entities.
 
 The entities package contains `entity_map` which
 maps entity names to their field name.
-this is used for interacting with ICAT objects within Python ICAT. In most instances, the
+This is used for interacting with ICAT objects within Python ICAT. In most instances, the
 dictionary found in `entity_map.py` is simply mapping the plural entity name (used to
 build the entity endpoints) to the singular version. The `entity_endpoint` module
 contains the function that is used to generate endpoints at start up. Finally,
@@ -446,7 +446,7 @@ handler can be used to convert dates between string and datetime objects (using 
 agreed in `datagateway_api.src.common.constants`) and uses a parser from `dateutil` to
 detect if an input contains a date. This is useful for determining if a JSON value given
 in a request body is a date, at which point it can be converted to a datetime object,
-ready for storing in ICAT. The handler is currently only used in the Python ICAT.
+ready for storing in ICAT.
 
 ## Exceptions & Flask Error Handling
 
@@ -475,8 +475,6 @@ Filtering logic is located in `datagateway_api.src.common.helpers`.
 `get_filters_from_query_string()` uses the request query parameters to form filters to
 be used within the API. A `QueryFilterFactory` is used to build filters for the Python ICAT and the static method within this class is called in
 `get_filters_from_query_string()`.
-
-
 
 ## Python ICAT
 
@@ -706,7 +704,6 @@ can be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10
 years of data.
 
-
 When used on a machine that doesn't use UTC timezone, you may find there are a mix of
 timezones when querying the API. This issue was found on SciGateway Preprod when using
 BST and there would be a mix of +00:00 and +01:00 timezones
@@ -724,9 +721,6 @@ for this API. A Postman collection is stored in the root directory of this repos
 containing over 300 requests, with each type of endpoint for every entity as well as the
 table and session endpoints. The exported collection is in v2.1 format and is currently
 the recommended export version for Postman.
-
-This collection is mainly based around the Python ICAT (request bodies for
-creating and updating data uses camelCase attribute names as accepted by that python_icat).
 
 The repo's collection can be easily imported into your Postman installation by opening
 Postman and selecting File > Import... and choosing the Postman collection from your
