@@ -12,6 +12,8 @@ class TestICATWhereFilter:
             pytest.param("eq", 5, ["%s = '5'"], id="equal"),
             pytest.param("ne", 5, ["%s != '5'"], id="not equal (ne)"),
             pytest.param("neq", 5, ["%s != '5'"], id="not equal (neq)"),
+            pytest.param("isnull", True, ["%s IS NULL"], id="isnull (true)"),
+            pytest.param("isnull", False, ["%s IS NOT NULL"], id="isnull (false)"),
             pytest.param("like", 5, ["%s like '%%5%%'"], id="like"),
             pytest.param("ilike", 5, ["UPPER(%s) like UPPER('%%5%%')"], id="ilike"),
             pytest.param("nlike", 5, ["%s not like '%%5%%'"], id="not like"),
