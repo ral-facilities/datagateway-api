@@ -1,6 +1,7 @@
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
+from test.mock_data import LARGE_INVESTIGATION_POST
 
 
 class TestUpdateByID:
@@ -15,6 +16,35 @@ class TestUpdateByID:
             "summary": "Test Summary",
             "startDate": "2019-01-04 01:01:01+00:00",
         }
+        single_investigation_test_data[0].update(update_data_json)
+
+        test_response = test_client.patch(
+            "/investigations" f"/{single_investigation_test_data[0]['id']}",
+            headers=valid_icat_credentials_header,
+            json=update_data_json,
+        )
+
+        response_json = prepare_icat_data_for_assertion([test_response.json()])
+
+        assert response_json == single_investigation_test_data
+
+    def test_valid_update_with_id_with_a_deeply_nested_investigation(
+        self,
+        test_client,
+        valid_icat_credentials_header,
+        single_investigation_test_data,
+    ):
+        update_data_json = LARGE_INVESTIGATION_POST
+
+        update_data_json.pop("facility")
+        update_data_json.pop("type")
+        update_data_json.pop("datasets")
+        update_data_json.pop("investigationFacilityCycles")
+        update_data_json.pop("investigationUsers")
+        update_data_json.pop("publications")
+        update_data_json.pop("samples")
+        update_data_json.pop("studyInvestigations")
+
         single_investigation_test_data[0].update(update_data_json)
 
         test_response = test_client.patch(

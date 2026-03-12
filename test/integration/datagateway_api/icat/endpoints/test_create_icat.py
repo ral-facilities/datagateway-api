@@ -3,6 +3,7 @@ import pytest
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
+from test.mock_data import LARGE_INVESTIGATION_POST
 
 
 class TestICATCreateData:
@@ -32,6 +33,8 @@ class TestICATCreateData:
             for i in range(2)
         ]
 
+        create_investigations_json.append(LARGE_INVESTIGATION_POST)
+
         test_response = test_client.post(
             "/investigations",
             headers=valid_icat_credentials_header,
@@ -41,6 +44,12 @@ class TestICATCreateData:
         for investigation_request in create_investigations_json:
             investigation_request.pop("facility")
             investigation_request.pop("type")
+            investigation_request.pop("datasets")
+            investigation_request.pop("investigationFacilityCycles")
+            investigation_request.pop("investigationUsers")
+            investigation_request.pop("publications")
+            investigation_request.pop("samples")
+            investigation_request.pop("studyInvestigations")
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),
