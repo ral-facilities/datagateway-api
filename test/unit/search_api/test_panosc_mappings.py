@@ -163,7 +163,7 @@ class TestPaNOSCMappings:
         expected_non_related_field_names,
     ):
         non_related_field_names = (
-            test_panosc_mappings.get_panosc_non_related_field_names(  # noqa: B950
+            test_panosc_mappings.get_panosc_non_related_field_names(
                 test_panosc_entity_name,
             )
         )
