@@ -161,7 +161,7 @@ class TestPaNOSCMappings:
         test_panosc_entity_name,
         expected_non_related_field_names,
     ):
-        non_related_field_names = test_panosc_mappings.get_panosc_non_related_field_names(  # noqa: B950
+        non_related_field_names = test_panosc_mappings.get_panosc_non_related_field_names(
             test_panosc_entity_name,
         )
         assert non_related_field_names == expected_non_related_field_names
@@ -214,7 +214,7 @@ class TestPaNOSCMappings:
                 [
                     "user.user.investigationUsers.investigation.type",
                     "user.user.investigationUsers.investigation.keywords",
-                    "user.user.investigationUsers.investigation.datasets.sample" ".parameters.type",
+                    "user.user.investigationUsers.investigation.datasets.sample.parameters.type",
                 ],
                 id="Affiliation members.document.datasets.sample relation",
             ),

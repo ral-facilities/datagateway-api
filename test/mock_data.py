@@ -6,7 +6,7 @@ LARGE_INVESTIGATION_POST = {
             "url": "string",
             "doi": "string",
             "repositoryId": "string",
-        }
+        },
     ],
     "fileSize": 1,
     "studyInvestigations": [{"study": 1}],
@@ -34,7 +34,7 @@ LARGE_INVESTIGATION_POST = {
                     "type": 3,
                     "rangeTop": 0,
                     "error": 0,
-                }
+                },
             ],
             "startDate": "2019-01-04 01:01:01+00:00",
             "doi": "string",
@@ -45,7 +45,7 @@ LARGE_INVESTIGATION_POST = {
             "endDate": "2019-01-04 01:01:01+00:00",
             "sample": 1,
             "location": "string",
-        }
+        },
     ],
     "fileCount": 0,
     "samples": [
@@ -62,10 +62,10 @@ LARGE_INVESTIGATION_POST = {
                     "rangeTop": 0,
                     "error": 0,
                     "sample": 0,
-                }
+                },
             ],
             "name": "string",
-        }
+        },
     ],
     "endDate": "2019-01-04 01:01:01+00:00",
 }
