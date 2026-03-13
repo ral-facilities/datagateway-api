@@ -10,10 +10,7 @@ log = logging.getLogger()
 
 
 class PaNOSCMappings:
-    def __init__(
-        self,
-        path=None,
-    ):
+    def __init__(self, path=None):
         """Load contents of `search_api_mapping.json` into this class"""
 
         if path is None:

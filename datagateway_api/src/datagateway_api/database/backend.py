@@ -61,7 +61,7 @@ class DatabaseBackend(Backend):
             )
             return session_id
         else:
-            raise AuthenticationError("Username and password are incorrect") from None
+            raise AuthenticationError("Username and password are incorrect")
 
     @requires_session_id
     def get_session_details(self, session_id, **kwargs):
