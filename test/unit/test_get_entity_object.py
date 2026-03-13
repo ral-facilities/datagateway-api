@@ -29,7 +29,7 @@ class TestGetEntityObject:
     def test_valid_get_entity_object_from_name(self, entity_name, expected_object_type):
         database_entity = get_entity_object_from_name(entity_name)
 
-        assert type(database_entity) is expected_object_type
+        assert isinstance(database_entity, expected_object_type)
 
     def test_invalid_get_entity_object_from_name(self):
         with pytest.raises(ApiError):
