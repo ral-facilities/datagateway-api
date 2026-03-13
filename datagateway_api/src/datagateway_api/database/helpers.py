@@ -86,7 +86,7 @@ class Query(ABC):
         except Exception as e:
             log.error("Error whilst committing changes to %s, rolling back", self.table)
             self.session.rollback()
-            raise BadRequestError(f"Bad request: {e}")
+            raise BadRequestError(f"Bad request: {e}") from e
 
 
 class CountQuery(Query):
@@ -275,7 +275,7 @@ def get_filtered_read_query_results(filter_handler, filters, query):
         return _get_distinct_fields_as_dicts(filters, results)
     if query.include_related_entities:
         return _get_results_with_include(filters, results)
-    return list(map(lambda x: x.to_dict(), results))
+    return [x.to_dict() for x in results]
 
 
 def _get_results_with_include(filters, results):
@@ -337,8 +337,8 @@ def get_first_filtered_row(table, filters):
     log.info(" Getting first filtered row for %s", table.__tablename__)
     try:
         result = get_rows_by_filter(table, filters)[0]
-    except IndexError:
-        raise MissingRecordError()
+    except IndexError as e:
+        raise MissingRecordError() from e
     return result
 
 

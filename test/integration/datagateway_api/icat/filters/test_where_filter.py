@@ -12,26 +12,40 @@ class TestICATWhereFilter:
             pytest.param("eq", 5, ["%s = '5'"], id="equal"),
             pytest.param("ne", 5, ["%s != '5'"], id="not equal (ne)"),
             pytest.param("neq", 5, ["%s != '5'"], id="not equal (neq)"),
+            pytest.param("isnull", True, ["%s IS NULL"], id="isnull (true)"),
+            pytest.param("isnull", False, ["%s IS NOT NULL"], id="isnull (false)"),
             pytest.param("like", 5, ["%s like '%%5%%'"], id="like"),
             pytest.param("ilike", 5, ["UPPER(%s) like UPPER('%%5%%')"], id="ilike"),
             pytest.param("nlike", 5, ["%s not like '%%5%%'"], id="not like"),
             pytest.param(
-                "nilike", 5, ["UPPER(%s) not like UPPER('%%5%%')"], id="not ilike",
+                "nilike",
+                5,
+                ["UPPER(%s) not like UPPER('%%5%%')"],
+                id="not ilike",
             ),
             pytest.param("lt", 5, ["%s < '5'"], id="less than"),
             pytest.param("lte", 5, ["%s <= '5'"], id="less than or equal"),
             pytest.param("gt", 5, ["%s > '5'"], id="greater than"),
             pytest.param("gte", 5, ["%s >= '5'"], id="greater than or equal"),
             pytest.param(
-                "in", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list (in)",
+                "in",
+                [1, 2, 3, 4],
+                ["%s in (1, 2, 3, 4)"],
+                id="in a list (in)",
             ),
             pytest.param("in", [], ["%s in (NULL)"], id="in empty list (in)"),
             pytest.param(
-                "inq", [1, 2, 3, 4], ["%s in (1, 2, 3, 4)"], id="in a list (inq)",
+                "inq",
+                [1, 2, 3, 4],
+                ["%s in (1, 2, 3, 4)"],
+                id="in a list (inq)",
             ),
             pytest.param("inq", [], ["%s in (NULL)"], id="in empty list (inq)"),
             pytest.param(
-                "nin", [1, 2, 3, 4], ["%s not in (1, 2, 3, 4)"], id="not in a list",
+                "nin",
+                [1, 2, 3, 4],
+                ["%s not in (1, 2, 3, 4)"],
+                id="not in a list",
             ),
             pytest.param("nin", [], ["%s not in (NULL)"], id="not in empty list"),
             pytest.param("between", [1, 2], ["%s between '1' and '2'"], id="between"),
@@ -39,7 +53,11 @@ class TestICATWhereFilter:
         ],
     )
     def test_valid_operations(
-        self, icat_query, operation, value, expected_condition_value,
+        self,
+        icat_query,
+        operation,
+        value,
+        expected_condition_value,
     ):
         test_filter = PythonICATWhereFilter("id", value, operation)
         test_filter.apply_filter(icat_query)
@@ -55,10 +73,14 @@ class TestICATWhereFilter:
             pytest.param("between", "1, 2, 3, 4, 5", id="between - string value"),
             pytest.param("between", [], id="between - empty list"),
             pytest.param(
-                "between", [1], id="between - list with less than two elements",
+                "between",
+                [1],
+                id="between - list with less than two elements",
             ),
             pytest.param(
-                "between", [1, 2, 3], id="between - list with more than two elements",
+                "between",
+                [1, 2, 3],
+                id="between - list with more than two elements",
             ),
         ],
     )

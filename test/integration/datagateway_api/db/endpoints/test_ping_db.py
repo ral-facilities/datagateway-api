@@ -22,6 +22,6 @@ class TestICATPing:
             "sqlalchemy.engine.reflection.Inspector.get_table_names",
             side_effect=SQLAlchemyError("Mocked Exception"),
         ):
+            backend = create_backend("db")
             with pytest.raises(DatabaseError):
-                backend = create_backend("db")
                 backend.ping()

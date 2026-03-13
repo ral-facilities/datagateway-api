@@ -78,7 +78,12 @@ class TestFilterOrderHandler:
         "expected_num_of_python_include_filters, expected_icat_relations",
         [
             pytest.param(
-                "Dataset", [], 0, 0, [], id="Dataset without related entities",
+                "Dataset",
+                [],
+                0,
+                0,
+                [],
+                id="Dataset without related entities",
             ),
             pytest.param(
                 "Dataset",
@@ -167,7 +172,7 @@ class TestFilterOrderHandler:
 
         actual_num_of_python_include_filters = 0
         for filter_ in handler.filters:
-            if type(filter_) == PythonICATIncludeFilter:
+            if type(filter_) is PythonICATIncludeFilter:
                 actual_num_of_python_include_filters += 1
                 assert filter_.included_filters == expected_icat_relations
 

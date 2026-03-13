@@ -23,7 +23,7 @@ class TestICATPing:
             "icat.client.Client.getEntityNames",
             side_effect=ICATError("Mocked Exception"),
         ):
+            backend = create_backend("python_icat")
+            client_pool = create_client_pool()
             with pytest.raises(PythonICATError):
-                backend = create_backend("python_icat")
-                client_pool = create_client_pool()
                 backend.ping(client_pool=client_pool)

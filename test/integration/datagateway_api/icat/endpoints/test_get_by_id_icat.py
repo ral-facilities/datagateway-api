@@ -31,7 +31,9 @@ class TestICATGetByID:
         assert response_json == single_investigation_test_data
 
     def test_invalid_get_with_id(
-        self, flask_test_app_icat, valid_icat_credentials_header,
+        self,
+        flask_test_app_icat,
+        valid_icat_credentials_header,
     ):
         """Request with a non-existent ID"""
 

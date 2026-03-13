@@ -111,8 +111,10 @@ class DatabaseFilterUtilities:
     def _get_field(self, table, field):
         try:
             return getattr(table, field)
-        except AttributeError:
-            raise FilterError(f"Unknown attribute {field} on table {table.__name__}")
+        except AttributeError as e:
+            raise FilterError(
+                f"Unknown attribute {field} on table {table.__name__}",
+            ) from e
 
 
 class DatabaseWhereFilter(WhereFilter, DatabaseFilterUtilities):
@@ -176,8 +178,8 @@ class DatabaseDistinctFieldFilter(DistinctFieldFilter, DatabaseFilterUtilities):
             for field_name in self.fields:
                 self.extract_filter_fields(field_name)
                 self.add_query_join(query)
-        except AttributeError:
-            raise FilterError("Bad field requested")
+        except AttributeError as e:
+            raise FilterError("Bad field requested") from e
 
 
 class DatabaseOrderFilter(OrderFilter):

@@ -13,7 +13,9 @@ class TestOpenAPI:
             pytest.param(float, {"type": "number", "format": "float"}, id="float"),
             pytest.param(bool, {"type": "boolean"}, id="boolean"),
             pytest.param(
-                datetime, {"type": "string", "format": "datetime"}, id="datetime",
+                datetime,
+                {"type": "string", "format": "datetime"},
+                id="datetime",
             ),
             pytest.param(date, {"type": "string", "format": "date"}, id="date"),
             pytest.param(str, {"type": "string"}, id="string"),

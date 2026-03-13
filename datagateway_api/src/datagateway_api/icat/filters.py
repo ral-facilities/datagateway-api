@@ -29,7 +29,7 @@ class PythonICATWhereFilter(WhereFilter):
             raise FilterError(
                 "Something went wrong when adding WHERE filter to ICAT query:"
                 f" {e.args}",
-            )
+            ) from e
 
     def create_filter(self):
         """
@@ -51,21 +51,32 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, "=", self.value)
         elif self.operation in ["ne", "neq"]:
             where_filter = self.create_condition(self.field, "!=", self.value)
+        elif self.operation == "isnull":
+            if self.value:
+                where_filter = self.create_condition(self.field, "IS NULL", None)
+            else:
+                where_filter = self.create_condition(self.field, "IS NOT NULL", None)
         elif self.operation == "like":
             where_filter = self.create_condition(self.field, "like", f"%{self.value}%")
         elif self.operation == "ilike":
             self.field = f"UPPER({self.field})"
             where_filter = self.create_condition(
-                self.field, "like", f"UPPER('%{self.value}%')",
+                self.field,
+                "like",
+                f"UPPER('%{self.value}%')",
             )
         elif self.operation == "nlike":
             where_filter = self.create_condition(
-                self.field, "not like", f"%{self.value}%",
+                self.field,
+                "not like",
+                f"%{self.value}%",
             )
         elif self.operation == "nilike":
             self.field = f"UPPER({self.field})"
             where_filter = self.create_condition(
-                self.field, "not like", f"UPPER('%{self.value}%')",
+                self.field,
+                "not like",
+                f"UPPER('%{self.value}%')",
             )
         elif self.operation == "lt":
             where_filter = self.create_condition(self.field, "<", self.value)
@@ -103,7 +114,9 @@ class PythonICATWhereFilter(WhereFilter):
             where_filter = self.create_condition(self.field, "not in", self.value)
         elif self.operation == "between":
             where_filter = self.create_condition(
-                self.field, "between", f"'{self.value[0]}' and '{self.value[1]}'",
+                self.field,
+                "between",
+                f"'{self.value[0]}' and '{self.value[1]}'",  # noqa: B907
             )
         elif self.operation == "regexp":
             where_filter = self.create_condition(self.field, "regexp", self.value)
@@ -131,6 +144,14 @@ class PythonICATWhereFilter(WhereFilter):
         """
 
         conditions = {}
+
+        # Handle unary operators (IS NULL, IS NOT NULL)
+        normalized_op = operator.strip().upper()
+        if normalized_op in ("IS NULL", "IS NOT NULL"):
+            conditions[attribute_name] = normalized_op
+            log.debug("Unary condition in ICAT where filter, %s", conditions)
+            return conditions
+
         # Removing quote marks when doing conditions with IN expressions or when a
         # distinct filter is used in a request
         jpql_value = (
@@ -138,7 +159,7 @@ class PythonICATWhereFilter(WhereFilter):
             if operator in ("in", "not in", "between")
             or str(value).startswith("UPPER")
             or "o." in str(value)
-            else f"'{value}'"
+            else f"'{value}'"  # noqa: B907
         )
 
         conditions[attribute_name] = f"{operator} {jpql_value}"
@@ -178,7 +199,7 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
             query.setAttributes(self.fields)
 
         except ValueError as e:
-            raise FilterError(e)
+            raise FilterError(e) from e
 
 
 class PythonICATOrderFilter(OrderFilter):
@@ -201,7 +222,7 @@ class PythonICATOrderFilter(OrderFilter):
             query.setOrder(PythonICATOrderFilter.result_order)
         except ValueError as e:
             # Typically invalid attribute(s)
-            raise FilterError(e)
+            raise FilterError(e) from e
 
         split_fields = self.field.split(".")
         for field_pointer in range(len(split_fields)):
@@ -221,12 +242,13 @@ class PythonICATOrderFilter(OrderFilter):
                     PythonICATOrderFilter.join_specs[join_field_str] = "LEFT JOIN"
 
                 log.debug(
-                    "Setting query join specs: %s", PythonICATOrderFilter.join_specs,
+                    "Setting query join specs: %s",
+                    PythonICATOrderFilter.join_specs,
                 )
                 try:
                     query.setJoinSpecs(PythonICATOrderFilter.join_specs)
                 except (TypeError, ValueError) as e:
-                    raise FilterError(e)
+                    raise FilterError(e) from e
 
                 break
 
@@ -277,7 +299,7 @@ def icat_set_limit(query, skip_number, limit_number):
         log.debug("Current limit/skip values assigned to query: %s", query.limit)
     except TypeError as e:
         # Not a two element tuple as managed by Python ICAT's setLimit()
-        raise FilterError(e)
+        raise FilterError(e) from e
 
 
 class PythonICATIncludeFilter(IncludeFilter):
@@ -372,4 +394,4 @@ class PythonICATIncludeFilter(IncludeFilter):
         try:
             query.addIncludes(self.included_filters)
         except ValueError as e:
-            raise FilterError(e)
+            raise FilterError(e) from e

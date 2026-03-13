@@ -17,7 +17,7 @@ class TestBackends:
     def test_valid_backend_creation(self, backend_name, backend_type):
         test_backend = create_backend(backend_name)
 
-        assert type(test_backend) == backend_type
+        assert isinstance(test_backend, backend_type)
 
     def test_invalid_backend_creation(self):
         with pytest.raises(SystemExit):

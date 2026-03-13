@@ -334,7 +334,8 @@ class TestModels:
         ]
 
         dataset_entity = models.Dataset.from_icat(
-            icat_data, ["documents", "techniques"],
+            icat_data,
+            ["documents", "techniques"],
         )
 
         assert dataset_entity.dict(by_alias=True) == expected_entity_data
@@ -496,7 +497,8 @@ class TestModels:
         ]
 
         member_entity = models.Member.from_icat(
-            icat_data, ["document", "person", "affiliation"],
+            icat_data,
+            ["document", "person", "affiliation"],
         )
 
         assert member_entity.dict(by_alias=True) == expected_entity_data
@@ -610,9 +612,9 @@ class TestModels:
         expected_entity_data["datasets"][0]["parameters"] = [
             PARAMETER_PANOSC_DATA.copy(),
         ]
-        expected_entity_data["datasets"][0]["parameters"][0][
-            "value"
-        ] = DATASET_PARAMETER_ICAT_DATA["stringValue"]
+        expected_entity_data["datasets"][0]["parameters"][0]["value"] = (
+            DATASET_PARAMETER_ICAT_DATA["stringValue"]
+        )
         expected_entity_data["datasets"][0]["samples"] = [SAMPLE_PANOSC_DATA.copy()]
         expected_entity_data["datasets"][0]["samples"][0]["description"] = None
         expected_entity_data["members"] = [MEMBER_PANOSC_DATA.copy()]
@@ -671,7 +673,10 @@ class TestModels:
                 id="Affiliation - without data for mandatory related entity",
             ),
             pytest.param(
-                "Dataset", {}, [], id="Dataset - without data for mandatory fields",
+                "Dataset",
+                {},
+                [],
+                id="Dataset - without data for mandatory fields",
             ),
             pytest.param(
                 "Dataset",
@@ -680,7 +685,10 @@ class TestModels:
                 id="Dataset - without data for mandatory related entity",
             ),
             pytest.param(
-                "Document", {}, [], id="Document - without data for mandatory fields",
+                "Document",
+                {},
+                [],
+                id="Document - without data for mandatory fields",
             ),
             pytest.param(
                 "Document",
@@ -689,7 +697,10 @@ class TestModels:
                 id="Document - without data for mandatory related entity",
             ),
             pytest.param(
-                "File", {}, [], id="File - without data for mandatory fields",
+                "File",
+                {},
+                [],
+                id="File - without data for mandatory fields",
             ),
             pytest.param(
                 "File",
@@ -704,7 +715,10 @@ class TestModels:
                 id="Instrument - without data for mandatory fields",
             ),
             pytest.param(
-                "Member", {}, [], id="Member - without data for mandatory fields",
+                "Member",
+                {},
+                [],
+                id="Member - without data for mandatory fields",
             ),
             pytest.param(
                 "Member",
@@ -713,23 +727,39 @@ class TestModels:
                 id="Member - without data for mandatory related entity",
             ),
             pytest.param(
-                "Parameter", {}, [], id="Parameter - without data for mandatory fields",
+                "Parameter",
+                {},
+                [],
+                id="Parameter - without data for mandatory fields",
             ),
             pytest.param(
-                "Person", {}, [], id="Person - without data for mandatory fields",
+                "Person",
+                {},
+                [],
+                id="Person - without data for mandatory fields",
             ),
             pytest.param(
-                "Sample", {}, [], id="Sample - without data for mandatory fields",
+                "Sample",
+                {},
+                [],
+                id="Sample - without data for mandatory fields",
             ),
             pytest.param(
-                "Technique", {}, [], id="Technique - without data for mandatory fields",
+                "Technique",
+                {},
+                [],
+                id="Technique - without data for mandatory fields",
             ),
         ],
     )
     def test_from_icat_raises_validation_error(
-        self, panosc_entity_name, icat_data, required_related_fields,
+        self,
+        panosc_entity_name,
+        icat_data,
+        required_related_fields,
     ):
         with pytest.raises(ValidationError):
             getattr(models, panosc_entity_name).from_icat(
-                icat_data, required_related_fields,
+                icat_data,
+                required_related_fields,
             )

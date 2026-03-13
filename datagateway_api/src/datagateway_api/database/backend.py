@@ -44,7 +44,7 @@ class DatabaseBackend(Backend):
             tables = inspector.get_table_names()
             log.debug("Tables on ping: %s", tables)
         except SQLAlchemyError as e:
-            raise DatabaseError(e)
+            raise DatabaseError(e) from e
 
         return Constants.PING_OK_RESPONSE
 

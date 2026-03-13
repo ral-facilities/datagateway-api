@@ -875,7 +875,11 @@ class TestSearchAPISearchEndpoint:
         ],
     )
     def test_valid_search_endpoint(
-        self, flask_test_app_search_api, endpoint_name, request_filter, expected_json,
+        self,
+        flask_test_app_search_api,
+        endpoint_name,
+        request_filter,
+        expected_json,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/{endpoint_name}?filter="
@@ -896,7 +900,10 @@ class TestSearchAPISearchEndpoint:
         ],
     )
     def test_invalid_search_endpoint(
-        self, flask_test_app_search_api, request_filter, expected_status_code,
+        self,
+        flask_test_app_search_api,
+        request_filter,
+        expected_status_code,
     ):
         test_response = flask_test_app_search_api.get(
             f"{Config.config.search_api.extension}/Instruments?filter={request_filter}",

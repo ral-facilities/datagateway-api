@@ -97,7 +97,9 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 SearchAPIWhereFilter(
-                    "documents.parameters.document.pid", "Test DOI", "eq",
+                    "documents.parameters.document.pid",
+                    "Test DOI",
+                    "eq",
                 ),
                 "Dataset",
                 "SELECT o FROM Dataset o JOIN o.investigation AS i JOIN i.parameters AS"
@@ -141,7 +143,9 @@ class TestSearchAPIWhereFilter:
             ),
             pytest.param(
                 SearchAPIWhereFilter(
-                    "parameters.value", "2018-05-05T15:00:00.000Z", "eq",
+                    "parameters.value",
+                    "2018-05-05T15:00:00.000Z",
+                    "eq",
                 ),
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE"
@@ -261,7 +265,9 @@ class TestSearchAPIWhereFilter:
                     [SearchAPIWhereFilter("title", "Test title", "eq")],
                     [
                         SearchAPIWhereFilter(
-                            "samples.description", "Test description", "like",
+                            "samples.description",
+                            "Test description",
+                            "like",
                         ),
                     ],
                     "and",
@@ -301,7 +307,10 @@ class TestSearchAPIWhereFilter:
         ],
     )
     def test_valid_apply_nested_filters(
-        self, filter_input, entity_name, expected_query,
+        self,
+        filter_input,
+        entity_name,
+        expected_query,
     ):
         test_query = SearchAPIQuery(entity_name)
 
