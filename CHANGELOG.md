@@ -1,6 +1,293 @@
 # CHANGELOG
 
 
+## v10.0.0 (2026-03-13)
+
+### Breaking
+
+* chore(python): drop support for older Python versions in application code
+
+BREAKING CHANGE: The application code no longer supports the removed Python versions. Upgrade your runtime to a supported version. ([`cbb7dec`](https://github.com/ral-facilities/datagateway-api/commit/cbb7dec82798dfaad0b8c910e2e8527ccc62ea33))
+
+### Build System
+
+* build(deps): bump python-semantic-release/python-semantic-release
+
+Bumps [python-semantic-release/python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) from 9.11.0 to 9.12.0.
+- [Release notes](https://github.com/python-semantic-release/python-semantic-release/releases)
+- [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.md)
+- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/ce77b7cf8cd82f06a01a17f0c57e9e6055f96cce...c1bcfdbb994243ac7cf419365d5894d6bfb2950e)
+
+---
+updated-dependencies:
+- dependency-name: python-semantic-release/python-semantic-release
+  dependency-type: direct:production
+  update-type: version-update:semver-minor
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`5e6a880`](https://github.com/ral-facilities/datagateway-api/commit/5e6a8808ad387170ebc633486b90be3f1ca266df))
+
+* build(deps): bump docker/login-action from 2.1.0 to 3.3.0
+
+Bumps [docker/login-action](https://github.com/docker/login-action) from 2.1.0 to 3.3.0.
+- [Release notes](https://github.com/docker/login-action/releases)
+- [Commits](https://github.com/docker/login-action/compare/f4ef78c080cd8ba55a85445d5b36e214a81df20a...9780b0c442fbb1117ed29e0efdff1e18412f7567)
+
+---
+updated-dependencies:
+- dependency-name: docker/login-action
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`128e01f`](https://github.com/ral-facilities/datagateway-api/commit/128e01ff558abb849a6e1151c0933994cac4e33f))
+
+* build(deps): bump python-semantic-release/python-semantic-release
+
+Bumps [python-semantic-release/python-semantic-release](https://github.com/python-semantic-release/python-semantic-release) from 8.3.0 to 9.11.0.
+- [Release notes](https://github.com/python-semantic-release/python-semantic-release/releases)
+- [Changelog](https://github.com/python-semantic-release/python-semantic-release/blob/master/CHANGELOG.md)
+- [Commits](https://github.com/python-semantic-release/python-semantic-release/compare/d38d71ef2ae2b3c34066557ddb822385c1730c7f...ce77b7cf8cd82f06a01a17f0c57e9e6055f96cce)
+
+---
+updated-dependencies:
+- dependency-name: python-semantic-release/python-semantic-release
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`3ab82b9`](https://github.com/ral-facilities/datagateway-api/commit/3ab82b99048d0a035431511848ed003dea4c3830))
+
+* build(deps): bump actions/setup-java from 3.12.0 to 4.4.0
+
+Bumps [actions/setup-java](https://github.com/actions/setup-java) from 3.12.0 to 4.4.0.
+- [Release notes](https://github.com/actions/setup-java/releases)
+- [Commits](https://github.com/actions/setup-java/compare/cd89f46ac9d01407894225f350157564c9c7cee2...b36c23c0d998641eff861008f374ee103c25ac73)
+
+---
+updated-dependencies:
+- dependency-name: actions/setup-java
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`efa713c`](https://github.com/ral-facilities/datagateway-api/commit/efa713cff81e32a3c36075992274bbd6c98ab15a))
+
+* build(deps): bump codecov/codecov-action from 3.1.4 to 4.6.0
+
+Bumps [codecov/codecov-action](https://github.com/codecov/codecov-action) from 3.1.4 to 4.6.0.
+- [Release notes](https://github.com/codecov/codecov-action/releases)
+- [Changelog](https://github.com/codecov/codecov-action/blob/main/CHANGELOG.md)
+- [Commits](https://github.com/codecov/codecov-action/compare/eaaf4bedf32dbdc6b720b63067d99c4d77d6047d...b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238)
+
+---
+updated-dependencies:
+- dependency-name: codecov/codecov-action
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`3f17670`](https://github.com/ral-facilities/datagateway-api/commit/3f17670eac95f31823844796e4e9449d002e7b84))
+
+* build(deps): bump docker/build-push-action from 4.0.0 to 6.9.0
+
+Bumps [docker/build-push-action](https://github.com/docker/build-push-action) from 4.0.0 to 6.9.0.
+- [Release notes](https://github.com/docker/build-push-action/releases)
+- [Commits](https://github.com/docker/build-push-action/compare/3b5e8027fcad23fda98b2e3ac259d8d67585f671...4f58ea79222b3b9dc2c8bbdd6debcef730109a75)
+
+---
+updated-dependencies:
+- dependency-name: docker/build-push-action
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`0330952`](https://github.com/ral-facilities/datagateway-api/commit/03309521c0608366327f4298c5efe547c86445b1))
+
+* build(deps): bump docker/metadata-action from 4.4.0 to 5.5.1
+
+Bumps [docker/metadata-action](https://github.com/docker/metadata-action) from 4.4.0 to 5.5.1.
+- [Release notes](https://github.com/docker/metadata-action/releases)
+- [Upgrade guide](https://github.com/docker/metadata-action/blob/master/UPGRADE.md)
+- [Commits](https://github.com/docker/metadata-action/compare/c4ee3adeed93b1fa6a762f209fb01608c1a22f1e...8e5442c4ef9f78752691e2d8f8d19755c6f78e81)
+
+---
+updated-dependencies:
+- dependency-name: docker/metadata-action
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`2bc03c4`](https://github.com/ral-facilities/datagateway-api/commit/2bc03c40b7224aa31b8e40dac579301f3b3de315))
+
+* build(deps): bump actions/setup-python from 4.7.0 to 5.2.0
+
+Bumps [actions/setup-python](https://github.com/actions/setup-python) from 4.7.0 to 5.2.0.
+- [Release notes](https://github.com/actions/setup-python/releases)
+- [Commits](https://github.com/actions/setup-python/compare/61a6322f88396a6271a6ee3565807d608ecaddd1...f677139bbe7f9c59b41e40162b753c062f5d49a3)
+
+---
+updated-dependencies:
+- dependency-name: actions/setup-python
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`c59768a`](https://github.com/ral-facilities/datagateway-api/commit/c59768a58b48771bfb70a342741e3e127da442ca))
+
+* build(deps): bump actions/checkout from 3.6.0 to 4.2.1
+
+Bumps [actions/checkout](https://github.com/actions/checkout) from 3.6.0 to 4.2.1.
+- [Release notes](https://github.com/actions/checkout/releases)
+- [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
+- [Commits](https://github.com/actions/checkout/compare/f43a0e5ff2bd294095638e18286ca9a3d1956744...eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871)
+
+---
+updated-dependencies:
+- dependency-name: actions/checkout
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+...
+
+Signed-off-by: dependabot[bot] <support@github.com> ([`f289a74`](https://github.com/ral-facilities/datagateway-api/commit/f289a74371b6c1079477b112b2aee3fdb263e226))
+
+### Chores
+
+* chore: remove support for older Python version (#517) ([`f0911eb`](https://github.com/ral-facilities/datagateway-api/commit/f0911ebe150eb6dd642aff7b04e66d6684ab0ac1))
+
+### Documentation
+
+* docs: Update README to include client cache-pool diagram ([`50110da`](https://github.com/ral-facilities/datagateway-api/commit/50110da971e0c5eb4a0d5b446b54f39764dfb2d4))
+
+### Features
+
+* feat: Add ability to supply settings file via volume #532 ([`3061875`](https://github.com/ral-facilities/datagateway-api/commit/30618756076f4099fc28840987df3424bb7548f2))
+
+* feat: add isnull operator for NULL checks ([`379ffe0`](https://github.com/ral-facilities/datagateway-api/commit/379ffe00268deae72324e4408e9a5ceeadd1b9cb))
+
+### Unknown
+
+* Merge pull request #534 from ral-facilities/release/v10.0.0
+
+Release/v10.0.0 ([`317cd0a`](https://github.com/ral-facilities/datagateway-api/commit/317cd0a96abed6d87a2b323e38c9e5aff152e868))
+
+* Update docker/docker-entrypoint.sh
+
+Co-authored-by: Louise Davies <louise.davies@stfc.ac.uk> ([`31ce76f`](https://github.com/ral-facilities/datagateway-api/commit/31ce76fcb102115741f3fb03a17055a08a7d0cb2))
+
+* update docker image ([`4304388`](https://github.com/ral-facilities/datagateway-api/commit/4304388a30e954545f2613f032baf1460173a350))
+
+* address review comments ([`2362e1c`](https://github.com/ral-facilities/datagateway-api/commit/2362e1ca28ee1a650d7a7a6627f5e3aef2ddfb38))
+
+* Merge pull request #533 from ral-facilities/add-ability-to-supply-settings-file-via-volume-#532
+
+feat: Add ability to supply settings file via volume #532 ([`52297ae`](https://github.com/ral-facilities/datagateway-api/commit/52297aeee6b71c6aad358c4f342cc0eb0bb89a65))
+
+* address review comments #532 ([`6224ed8`](https://github.com/ral-facilities/datagateway-api/commit/6224ed81bc22db3f4a832913877bd20782370de3))
+
+* Merge pull request #531 from ral-facilities/add-isnull-where-filter2-#527
+
+feat: add isnull operator for NULL checks ([`54abb15`](https://github.com/ral-facilities/datagateway-api/commit/54abb157d22eaef67907167070fad56bab68b6e6))
+
+* Merge pull request #530 from ral-facilities/remove-old-python-versions-#517
+
+Remove support for older Python version (#517) ([`a6fb0c9`](https://github.com/ral-facilities/datagateway-api/commit/a6fb0c901f33c783151069e48e041f7df6aa7851))
+
+* change strict flag to true in helpers #517 ([`96091d8`](https://github.com/ral-facilities/datagateway-api/commit/96091d8a699845e96afe0212783f3ea4d250408e))
+
+* remove section about pyenv in the readme #517 ([`68fb871`](https://github.com/ral-facilities/datagateway-api/commit/68fb87101c610476b4844695b45c77c485f08105))
+
+* remove the use of matrix in github ci #517 ([`86061d2`](https://github.com/ral-facilities/datagateway-api/commit/86061d2296eb7bfdf2e22dd221568e64a0c9d1c5))
+
+* silence flake8 B909 warnings in query filter factory test #517 ([`8673a50`](https://github.com/ral-facilities/datagateway-api/commit/8673a508aac2326797b3aa1b8d8abd828f3f9eee))
+
+* reset ICAT client before each test to avoid shared state issues #517 ([`89e6b25`](https://github.com/ral-facilities/datagateway-api/commit/89e6b252cdb888edfcac02b638d0492755814491))
+
+* change fixture for db to "function" from "package" #517
+
+- In the test_query_filter_factory the test don't work on the CI as it
+  is not setting up the db backend. ([`210bbbe`](https://github.com/ral-facilities/datagateway-api/commit/210bbbe97da8759f89f51f5ecc47772c48b64c96))
+
+* change strict=True to False for zip functions #517 ([`6951127`](https://github.com/ral-facilities/datagateway-api/commit/69511271d041f845947d1d8900fcf913d53a7ca5))
+
+* ignore B907 in multiple SQL query constructions #517
+
+Added `# noqa: B907` in several places where manual quoting is required
+for valid SQL query syntax. Using `!r` would change the format and break
+query parsing, so explicit quotes are necessary. This ensures tests and
+API calls remain correct while satisfying linting requirements. ([`5de1bd2`](https://github.com/ral-facilities/datagateway-api/commit/5de1bd2a877f8624c57c6f763803f772ec10ca9f))
+
+* fix linting in icat_db_generator.py #517 ([`ec4294b`](https://github.com/ral-facilities/datagateway-api/commit/ec4294ba09fe3b4cd19d75af2afe33d4636b8a37))
+
+* run black formatter for icat_db_generator.py #517 ([`d1f57a1`](https://github.com/ral-facilities/datagateway-api/commit/d1f57a1473ce3d1e51e51ecec9d9cfad97ac6cc6))
+
+* revert icat_db_generator changes #517 ([`d853999`](https://github.com/ral-facilities/datagateway-api/commit/d8539994e415f0cc43cc618d5711a7f4b0e9b0f8))
+
+* revert faker upgrade #517 ([`5b03b30`](https://github.com/ral-facilities/datagateway-api/commit/5b03b30bbaeecb9fe2d5433254bf1aea285469ab))
+
+* remove install with constraints #517 ([`24c1b6e`](https://github.com/ral-facilities/datagateway-api/commit/24c1b6e142ee74f9939adf9c061b8f3fc48b685f))
+
+* upgrade the version of poetry to 1.8.0 #517 ([`d812a13`](https://github.com/ral-facilities/datagateway-api/commit/d812a130e276e4843b28dd20e3bc022ecb81ed87))
+
+* upgrade faker #517
+
+- remove downgrade of setuptools ([`e4f345c`](https://github.com/ral-facilities/datagateway-api/commit/e4f345c7e5cfdfd5bb5e7590a4b90fe896799fa4))
+
+* fix linting errors #517 ([`2f4040a`](https://github.com/ral-facilities/datagateway-api/commit/2f4040ac6022dfba076a49e8ad2194cdab5eb797))
+
+* reformat code using latest version black #517 ([`ab4944b`](https://github.com/ral-facilities/datagateway-api/commit/ab4944b04f555201190dbc40ef13fae84c37da98))
+
+* upgrade the black verison #517 ([`ff558c4`](https://github.com/ral-facilities/datagateway-api/commit/ff558c478b4f2be35c7db788e06f36f0493f9269))
+
+* install black with click version constraint #517 ([`9a21a38`](https://github.com/ral-facilities/datagateway-api/commit/9a21a38fb49e254cde4f81c02589f7e28a8f31df))
+
+* pin python version to 3.10 #517 ([`c44f344`](https://github.com/ral-facilities/datagateway-api/commit/c44f344f804f64d61fe9ac6f7b7856c0c5fb8005))
+
+* update lock file #517 ([`c0e8f74`](https://github.com/ral-facilities/datagateway-api/commit/c0e8f746ad8a8f2dbb1891dc5c009e37cc5abdeb))
+
+* Update lock file #517 ([`0b6071a`](https://github.com/ral-facilities/datagateway-api/commit/0b6071ada9f50684223e6742145b5cc1f2bb7e9e))
+
+* update python to use Python 3.9.12 for Ubuntu 24.04 compatibility #517 ([`8bb55d1`](https://github.com/ral-facilities/datagateway-api/commit/8bb55d196271be6840f9168ad91eab35e19a7d99))
+
+* Merge pull request #500 from ral-facilities/dependabot/github_actions/python-semantic-release/python-semantic-release-9.12.0
+
+build(deps): bump python-semantic-release/python-semantic-release from 9.11.0 to 9.12.0 ([`1f0aba1`](https://github.com/ral-facilities/datagateway-api/commit/1f0aba185c93aed08756c5ab717e5d9610da8f88))
+
+* Merge pull request #492 from ral-facilities/dependabot/github_actions/docker/login-action-3.3.0
+
+build(deps): bump docker/login-action from 2.1.0 to 3.3.0 ([`fa9903e`](https://github.com/ral-facilities/datagateway-api/commit/fa9903e927644d73daa73c41ed8b9278eb3bc813))
+
+* Merge pull request #497 from ral-facilities/dependabot/github_actions/python-semantic-release/python-semantic-release-9.11.0
+
+build(deps): bump python-semantic-release/python-semantic-release from 8.3.0 to 9.11.0 ([`b9768e0`](https://github.com/ral-facilities/datagateway-api/commit/b9768e0c42f2dbc08f3be406cf44fbc8d6a7cca6))
+
+* Merge pull request #498 from ral-facilities/dependabot/github_actions/actions/setup-java-4.4.0
+
+build(deps): bump actions/setup-java from 3.12.0 to 4.4.0 ([`1d4dd6c`](https://github.com/ral-facilities/datagateway-api/commit/1d4dd6c9bd6edb872ae76397e95edd92dd3cc16b))
+
+* Merge pull request #499 from ral-facilities/dependabot/github_actions/codecov/codecov-action-4.6.0
+
+build(deps): bump codecov/codecov-action from 3.1.4 to 4.6.0 ([`c07b8e3`](https://github.com/ral-facilities/datagateway-api/commit/c07b8e32366f0f7c97fc397ba4c690d646bb1315))
+
+* Merge pull request #495 from ral-facilities/dependabot/github_actions/docker/build-push-action-6.9.0
+
+build(deps): bump docker/build-push-action from 4.0.0 to 6.9.0 ([`1e13fbe`](https://github.com/ral-facilities/datagateway-api/commit/1e13fbeb2834b2ea2c89ccb52edc375634f52250))
+
+* Merge pull request #472 from ral-facilities/dependabot/github_actions/docker/metadata-action-5.5.1
+
+build(deps): bump docker/metadata-action from 4.4.0 to 5.5.1 ([`5938049`](https://github.com/ral-facilities/datagateway-api/commit/593804901fc61c68254f3f40a1f40fd2c7192807))
+
+* Merge pull request #494 from ral-facilities/dependabot/github_actions/actions/setup-python-5.2.0
+
+build(deps): bump actions/setup-python from 4.7.0 to 5.2.0 ([`82de680`](https://github.com/ral-facilities/datagateway-api/commit/82de680dee2f063309f93414399dc87aa3c211da))
+
+* Merge pull request #496 from ral-facilities/dependabot/github_actions/actions/checkout-4.2.1
+
+build(deps): bump actions/checkout from 3.6.0 to 4.2.1 ([`c28c026`](https://github.com/ral-facilities/datagateway-api/commit/c28c026977005cf95b0916b1fd7263dba9f032ef))
+
+* Ignore vulnerability ([`05c60f9`](https://github.com/ral-facilities/datagateway-api/commit/05c60f956e0439d07fc133becd66441a8c782844))
+
+
 ## v9.1.0 (2024-10-08)
 
 ### Build System
@@ -63,6 +350,12 @@ Implement Reader Performance Queries for /datafiles and /datasets ([`7fba647`](h
 
 ## v9.0.3 (2024-08-01)
 
+### Bug Fixes
+
+* fix: Upgrade dependencies and ignore further vulnerabilities ([`303529d`](https://github.com/ral-facilities/datagateway-api/commit/303529de6cdcc5f3244a784336d4d375d82b4744))
+
+* fix: Update icat_db_generator.py to properly set datafileCreateTime & datafileModTime #486 ([`23ac563`](https://github.com/ral-facilities/datagateway-api/commit/23ac56381a0d69eb2d707ca7edae0a2e1297711a))
+
 ### Build System
 
 * build(deps): bump python-semantic-release/python-semantic-release
@@ -89,12 +382,6 @@ Signed-off-by: dependabot[bot] <support@github.com> ([`55061c3`](https://github.
 
 * ci: Add more ignores on Safety session ([`a72af44`](https://github.com/ral-facilities/datagateway-api/commit/a72af4496c946850666d858d1f2e17214e466777))
 
-### Fixes
-
-* fix: Upgrade dependencies and ignore further vulnerabilities ([`303529d`](https://github.com/ral-facilities/datagateway-api/commit/303529de6cdcc5f3244a784336d4d375d82b4744))
-
-* fix: Update icat_db_generator.py to properly set datafileCreateTime & datafileModTime #486 ([`23ac563`](https://github.com/ral-facilities/datagateway-api/commit/23ac56381a0d69eb2d707ca7edae0a2e1297711a))
-
 ### Unknown
 
 * Merge pull request #487 from ral-facilities/#486-fix-datafileCreateTime-datafileModTime
@@ -112,6 +399,12 @@ build(deps): bump python-semantic-release/python-semantic-release from 8.0.8 to 
 
 ## v9.0.2 (2024-01-04)
 
+### Bug Fixes
+
+* fix: Pin Flask to 2.0.3 in `pyproject.toml` #467
+
+- This will ensure this version is used when the API is installed via Pip ([`50dd13c`](https://github.com/ral-facilities/datagateway-api/commit/50dd13cdde39fbddd04a2504578d3ecf57cb5f33))
+
 ### Continuous Integration
 
 * ci: Ignore Safety vulnerabilities #467
@@ -119,12 +412,6 @@ build(deps): bump python-semantic-release/python-semantic-release from 8.0.8 to 
 - As normal, we can't upgrade because all patched versions have dropped support for Python 3.6 ([`05b3e13`](https://github.com/ral-facilities/datagateway-api/commit/05b3e13c64fef1913b5cc15ba9d32fe112f322a6))
 
 * ci: Add job to test that the API can be installed via Pip #467 ([`8c2258d`](https://github.com/ral-facilities/datagateway-api/commit/8c2258d3c9abe2ba149a893b335465efa67cb6e5))
-
-### Fixes
-
-* fix: Pin Flask to 2.0.3 in `pyproject.toml` #467
-
-- This will ensure this version is used when the API is installed via Pip ([`50dd13c`](https://github.com/ral-facilities/datagateway-api/commit/50dd13cdde39fbddd04a2504578d3ecf57cb5f33))
 
 ### Unknown
 
@@ -135,19 +422,19 @@ Fix Pip Install Issues ([`2d7736f`](https://github.com/ral-facilities/datagatewa
 
 ## v9.0.1 (2023-09-07)
 
-### Continuous Integration
-
-* ci: fix Safety CI job
-
-- As ever, we're having to ignore these vulnerabilities as patched versions don't support Python 3.6 ([`04c3eaf`](https://github.com/ral-facilities/datagateway-api/commit/04c3eaf6a35466ad77d2b0551ca2b994be8ea040))
-
-### Fixes
+### Bug Fixes
 
 * fix: Make `DataPublicationDate.date` to be different to `DataPublication.publicationDate` #444 ([`312c466`](https://github.com/ral-facilities/datagateway-api/commit/312c466030c0e12131fd575011da273c8b5a267c))
 
 * fix: #444 Generate publication dates between two specific dates
 
 - This should stop relative generation causing different data to be generated on different days ([`7908c10`](https://github.com/ral-facilities/datagateway-api/commit/7908c10422ec859d9c923366731897ee859035f0))
+
+### Continuous Integration
+
+* ci: fix Safety CI job
+
+- As ever, we're having to ignore these vulnerabilities as patched versions don't support Python 3.6 ([`04c3eaf`](https://github.com/ral-facilities/datagateway-api/commit/04c3eaf6a35466ad77d2b0551ca2b994be8ea040))
 
 ### Unknown
 
@@ -578,7 +865,7 @@ Query filter and scoring ([`a09748c`](https://github.com/ral-facilities/datagate
 
 ## v6.3.2 (2023-02-24)
 
-### Fixes
+### Bug Fixes
 
 * fix: add triggers for later stages of consistency test ([`2d7d677`](https://github.com/ral-facilities/datagateway-api/commit/2d7d677fbab85a93fb36fc12afb434ba74dbfc27))
 
@@ -601,7 +888,7 @@ fix: add triggers for later stages of consistency test ([`390ec3c`](https://gith
 
 ## v6.3.1 (2023-02-23)
 
-### Fixes
+### Bug Fixes
 
 * fix: Remove dataset filesize generator ([`fb466dd`](https://github.com/ral-facilities/datagateway-api/commit/fb466dd6012088fb25f575f3c7198a9d7d28e070))
 
@@ -831,7 +1118,7 @@ Tests/db backend tests #370 ([`41c1586`](https://github.com/ral-facilities/datag
 
 ## v6.1.1 (2022-11-23)
 
-### Fixes
+### Bug Fixes
 
 * fix: do not attempt to create related entities if not included #387 ([`819e7a1`](https://github.com/ral-facilities/datagateway-api/commit/819e7a1582d8d108fe5f18b210c08d67cd0a3845))
 
@@ -1053,7 +1340,7 @@ Changes to tests so they pass with icat 5 ([`9bb898d`](https://github.com/ral-fa
 
 ## v5.1.1 (2022-09-22)
 
-### Fixes
+### Bug Fixes
 
 * fix: update to latest dependencies ([`11a0eeb`](https://github.com/ral-facilities/datagateway-api/commit/11a0eeb3cbc4b5db2a0fa8dcd825dbeceb6ac111))
 
@@ -1095,6 +1382,10 @@ This fixes the problem with limit when it is not a number ([`076e805`](https://g
 
 ## v5.0.1 (2022-05-16)
 
+### Bug Fixes
+
+* fix: fix internal server error when running DG API on its own #359 ([`b0d3e06`](https://github.com/ral-facilities/datagateway-api/commit/b0d3e064dc842143de7f7f0a31b947122fae9f88))
+
 ### Build System
 
 * build: add Python 3.10 to tests nox session ([`9fa0b60`](https://github.com/ral-facilities/datagateway-api/commit/9fa0b605cc66b91a15f62fbdf551a392c109312b))
@@ -1116,10 +1407,6 @@ This fixes the problem with limit when it is not a number ([`076e805`](https://g
 * docs: update `flask run` commands in README ([`e85887e`](https://github.com/ral-facilities/datagateway-api/commit/e85887e12bef0a701610c0e198f437a7ff4a8c7b))
 
 * docs: update README to include note for issue in Python 3.10 ([`72181f6`](https://github.com/ral-facilities/datagateway-api/commit/72181f61677a0fdfb7e5ac9a23a731f55ab4c421))
-
-### Fixes
-
-* fix: fix internal server error when running DG API on its own #359 ([`b0d3e06`](https://github.com/ral-facilities/datagateway-api/commit/b0d3e064dc842143de7f7f0a31b947122fae9f88))
 
 ### Unknown
 
@@ -1187,6 +1474,10 @@ ci: remove existing mysql install on GitHub Actions ([`c6aa15e`](https://github.
 
 BREAKING CHANGE: This commits adds a mandatory config option, so is a major change. ([`1c30f2f`](https://github.com/ral-facilities/datagateway-api/commit/1c30f2f17c5bdc9a206ce3a41c7da81ce4be3b23))
 
+### Bug Fixes
+
+* fix: output datetime data in the same format as SciCat #338 ([`4596db9`](https://github.com/ral-facilities/datagateway-api/commit/4596db98808f35488aca86667aa26811d777b58e))
+
 ### Continuous Integration
 
 * ci: move back to ICAT Ansible master branch ([`b1f46cf`](https://github.com/ral-facilities/datagateway-api/commit/b1f46cf66d1113636667725cb2631c2de2a580ac))
@@ -1200,10 +1491,6 @@ BREAKING CHANGE: This commits adds a mandatory config option, so is a major chan
 ### Features
 
 * feat: allow multiple datetime formats to be used when filtering in search API #338 ([`f20ad24`](https://github.com/ral-facilities/datagateway-api/commit/f20ad24886f85bb3ba70abfd29352b1a7e5c58ff))
-
-### Fixes
-
-* fix: output datetime data in the same format as SciCat #338 ([`4596db9`](https://github.com/ral-facilities/datagateway-api/commit/4596db98808f35488aca86667aa26811d777b58e))
 
 ### Testing
 
@@ -1259,7 +1546,7 @@ Add OpenAPI docs for Search API ([`aa98c51`](https://github.com/ral-facilities/d
 
 ## v4.1.5 (2022-02-28)
 
-### Fixes
+### Bug Fixes
 
 * fix: fix `AttributeError` when running DG API on its own #345 ([`7479cc3`](https://github.com/ral-facilities/datagateway-api/commit/7479cc3e17ec046082e08b7e71e8e63eb7fa6e28))
 
@@ -1272,7 +1559,7 @@ Fix AttributeError when trying to run DG API on its own ([`9cc9cdb`](https://git
 
 ## v4.1.4 (2022-02-28)
 
-### Fixes
+### Bug Fixes
 
 * fix: improve error handling for search API exceptions #319 ([`935f22d`](https://github.com/ral-facilities/datagateway-api/commit/935f22d31d96c6810cf7938815b25c8822d892fb))
 
@@ -1289,7 +1576,7 @@ Improve Search API Error Handling ([`982518a`](https://github.com/ral-facilities
 
 ## v4.1.3 (2022-02-28)
 
-### Fixes
+### Bug Fixes
 
 * fix: fix `parameters.value` WHERE filter with between operator #270 ([`3fe8dfe`](https://github.com/ral-facilities/datagateway-api/commit/3fe8dfe79ac7e070db369471859b1793e54a0852))
 
@@ -1307,6 +1594,10 @@ Add Missing Endpoint Tests & Fix parameters.value bug ([`6d5edf5`](https://githu
 
 
 ## v4.1.2 (2022-02-28)
+
+### Bug Fixes
+
+* fix: fix requests which include parameters and filter on them #319 ([`598bf9f`](https://github.com/ral-facilities/datagateway-api/commit/598bf9f5c9fbf71b87a3313680617b8addbe5cc9))
 
 ### Build System
 
@@ -1335,10 +1626,6 @@ Co-authored-by: Viktor Bozhinov <45173816+VKTB@users.noreply.github.com> ([`0a9c
 Co-authored-by: Viktor Bozhinov <45173816+VKTB@users.noreply.github.com> ([`d04447d`](https://github.com/ral-facilities/datagateway-api/commit/d04447d835e049127ba15ef981f69a63b85ff015))
 
 * docs: update docs for search API #320 ([`2daf395`](https://github.com/ral-facilities/datagateway-api/commit/2daf3956805dc0476e3d400d52b20a8b51f0e309))
-
-### Fixes
-
-* fix: fix requests which include parameters and filter on them #319 ([`598bf9f`](https://github.com/ral-facilities/datagateway-api/commit/598bf9f5c9fbf71b87a3313680617b8addbe5cc9))
 
 ### Refactoring
 
@@ -1397,7 +1684,7 @@ Change Default DataGateway API Backend to Python ICAT ([`8d2264d`](https://githu
 
 ## v4.1.1 (2022-02-17)
 
-### Fixes
+### Bug Fixes
 
 * fix: ignore filters on `isPublic` fields #329 ([`d6c10d5`](https://github.com/ral-facilities/datagateway-api/commit/d6c10d56b788ff3c491feaf1fae3a6fadd634a9d))
 
@@ -1455,7 +1742,7 @@ Search API Error Signalling/Formatting ([`aefafcc`](https://github.com/ral-facil
 
 ## v4.0.1 (2022-02-11)
 
-### Fixes
+### Bug Fixes
 
 * fix: use alternative ICAT mapping for Technique pid when pid is None #314 ([`bf1c830`](https://github.com/ral-facilities/datagateway-api/commit/bf1c8305fc73630fbf1e6c4771664d974c72fd93))
 
@@ -1523,7 +1810,7 @@ Make Number of Years to Determine Public Data Configurable ([`9e2fb9a`](https://
 
 ## v3.6.1 (2022-02-07)
 
-### Fixes
+### Bug Fixes
 
 * fix: convert `isPublic` PaNOSC filter to appropriate ICAT filter #308 ([`6a40307`](https://github.com/ral-facilities/datagateway-api/commit/6a40307ba19d5818bdb6bf1acc79d98abd6a3f83))
 
@@ -1546,15 +1833,15 @@ Cannot Use Filters on isPublic Field ([`9ee06a4`](https://github.com/ral-facilit
 
 ## v3.6.0 (2022-02-07)
 
-### Continuous Integration
-
-* ci: add anon user to ICAT Server rootUserNames #268 ([`22a0ea8`](https://github.com/ral-facilities/datagateway-api/commit/22a0ea850435d0f4ca4326b7525c5a0fa1d1d8a5))
-
-### Fixes
+### Bug Fixes
 
 * fix: use alternative ICAT mapping for Sample pid when pid is None #314 ([`7e211f7`](https://github.com/ral-facilities/datagateway-api/commit/7e211f74aa4fa81ab26c339b27806a64510f261c))
 
 * fix: make get by pid endpoints return data in PaNOSC format #266 ([`0de2b5b`](https://github.com/ral-facilities/datagateway-api/commit/0de2b5b2b713699b66164ca5732888f997230aa5))
+
+### Continuous Integration
+
+* ci: add anon user to ICAT Server rootUserNames #268 ([`22a0ea8`](https://github.com/ral-facilities/datagateway-api/commit/22a0ea850435d0f4ca4326b7525c5a0fa1d1d8a5))
 
 ### Refactoring
 
@@ -1595,7 +1882,7 @@ Implement Search API Endpoints ([`afad6de`](https://github.com/ral-facilities/da
 
 ## v3.5.3 (2022-02-02)
 
-### Fixes
+### Bug Fixes
 
 * fix: retrieve non-related fields that have a list of ICAT relations #265 ([`2c5edc5`](https://github.com/ral-facilities/datagateway-api/commit/2c5edc50f9f713b0d15e137ad4a307a90a86b5aa))
 
@@ -1634,7 +1921,7 @@ Include ICAT relations for non-related PaNOSC fields ([`fad4c3e`](https://github
 
 ## v3.5.2 (2022-02-02)
 
-### Fixes
+### Bug Fixes
 
 * fix: make `ne` and `neq` operators work with non-numeric values #315 ([`f5e3b4b`](https://github.com/ral-facilities/datagateway-api/commit/f5e3b4b1bfebd25c6d6fb288eb3f5a79daf87dac))
 
@@ -1651,17 +1938,17 @@ Make ne and neq operators work with non-numeric values ([`a13e699`](https://gith
 
 ## v3.5.1 (2022-01-31)
 
-### Code Style
-
-* style: remove unused import #261 ([`5da48f8`](https://github.com/ral-facilities/datagateway-api/commit/5da48f8393bf9c52de38bd2410d63dd85508a023))
-
-### Fixes
+### Bug Fixes
 
 * fix: fix nested relations bug #261 ([`67fcbfe`](https://github.com/ral-facilities/datagateway-api/commit/67fcbfe2a35ca2b7e007a1a6d78105b2e46b0b5f))
 
 * fix: reference self instead of fixed instance #301
 
 Co-authored-by: Viktor Bozhinov <45173816+VKTB@users.noreply.github.com> ([`40f5662`](https://github.com/ral-facilities/datagateway-api/commit/40f566279543871c5b7b1eab2c8b74050d8b3525))
+
+### Code Style
+
+* style: remove unused import #261 ([`5da48f8`](https://github.com/ral-facilities/datagateway-api/commit/5da48f8393bf9c52de38bd2410d63dd85508a023))
 
 ### Testing
 
@@ -1771,6 +2058,18 @@ Start Defining PaNOSC to ICAT Mapping and Implement WHERE Filter ([`942b3cf`](ht
 
 ## v3.2.0 (2022-01-31)
 
+### Bug Fixes
+
+* fix: fix example mapping file ([`3802cc9`](https://github.com/ral-facilities/datagateway-api/commit/3802cc9ee71a355d0ad87529f65112e8c3f8b881))
+
+* fix: fix list type field checking in Python 3.6 #265 ([`691a59e`](https://github.com/ral-facilities/datagateway-api/commit/691a59ea3f850475572c3a877fb739e5216c6fe7))
+
+* fix: add logic to deal with `PythonICATIncludeFilter` that could be related for ICAT relations for non-related PaNOSC fields #268 ([`29232c6`](https://github.com/ral-facilities/datagateway-api/commit/29232c6b2c032c61999118b2f69177f3b9bd5d57))
+
+* fix: correct order of arguments for where filter #266 ([`1e38eae`](https://github.com/ral-facilities/datagateway-api/commit/1e38eaee9f201a45742cf868ad2fa28f4adee065))
+
+* fix: update `__str__()` for WHERE filter to cope with applying filter #260 ([`8d259d7`](https://github.com/ral-facilities/datagateway-api/commit/8d259d75a28414f26cc569293720ef4e306e6844))
+
 ### Build System
 
 * build: upgrade `python-icat` to 0.21.0 #305 ([`8e472cf`](https://github.com/ral-facilities/datagateway-api/commit/8e472cff813cd2b5953824c763909dd904276321))
@@ -1826,18 +2125,6 @@ Start Defining PaNOSC to ICAT Mapping and Implement WHERE Filter ([`942b3cf`](ht
 * feat: implement basic version of `SearchAPIIncludeFilter` #261 ([`f2f53c9`](https://github.com/ral-facilities/datagateway-api/commit/f2f53c92229d052ae697787eb80a35dcd2ea3b45))
 
 * feat: add function to get PaNOSC to ICAT mapping for where filter #260 ([`34b1d81`](https://github.com/ral-facilities/datagateway-api/commit/34b1d819482aa3efdb4f8da321125d3e40d76617))
-
-### Fixes
-
-* fix: fix example mapping file ([`3802cc9`](https://github.com/ral-facilities/datagateway-api/commit/3802cc9ee71a355d0ad87529f65112e8c3f8b881))
-
-* fix: fix list type field checking in Python 3.6 #265 ([`691a59e`](https://github.com/ral-facilities/datagateway-api/commit/691a59ea3f850475572c3a877fb739e5216c6fe7))
-
-* fix: add logic to deal with `PythonICATIncludeFilter` that could be related for ICAT relations for non-related PaNOSC fields #268 ([`29232c6`](https://github.com/ral-facilities/datagateway-api/commit/29232c6b2c032c61999118b2f69177f3b9bd5d57))
-
-* fix: correct order of arguments for where filter #266 ([`1e38eae`](https://github.com/ral-facilities/datagateway-api/commit/1e38eaee9f201a45742cf868ad2fa28f4adee065))
-
-* fix: update `__str__()` for WHERE filter to cope with applying filter #260 ([`8d259d7`](https://github.com/ral-facilities/datagateway-api/commit/8d259d75a28414f26cc569293720ef4e306e6844))
 
 ### Refactoring
 
@@ -2117,6 +2404,10 @@ Co-authored-by: Matthew Richards <32678030+MRichards99@users.noreply.github.com>
 
 ## v3.1.1 (2021-12-15)
 
+### Bug Fixes
+
+* fix: correct reference to class name #264 ([`fc4c180`](https://github.com/ral-facilities/datagateway-api/commit/fc4c18085ab496d838e8d1e9e3f8c77f07826e9d))
+
 ### Chores
 
 * chore: add pattern to gitignore
@@ -2146,10 +2437,6 @@ Co-authored-by: Matthew Richards <32678030+MRichards99@users.noreply.github.com>
 * feat: add class to represent nested conditions #259 ([`583cbf2`](https://github.com/ral-facilities/datagateway-api/commit/583cbf29744b72c020429b61ae7442b19acef231))
 
 * feat: add first pass of query param implementation #259 ([`ee668e3`](https://github.com/ral-facilities/datagateway-api/commit/ee668e38cd43354851163616a93924ad84e14b90))
-
-### Fixes
-
-* fix: correct reference to class name #264 ([`fc4c180`](https://github.com/ral-facilities/datagateway-api/commit/fc4c18085ab496d838e8d1e9e3f8c77f07826e9d))
 
 ### Refactoring
 
@@ -2373,7 +2660,7 @@ Search API Session/Client Handling ([`93905e3`](https://github.com/ral-facilitie
 
 ## v3.0.1 (2021-11-24)
 
-### Fixes
+### Bug Fixes
 
 * fix: allow blank extensions and slash extension to be valid ([`70ddb7a`](https://github.com/ral-facilities/datagateway-api/commit/70ddb7a4fd89ba10b06cd71c3ab2a98648cfb773))
 
@@ -2489,6 +2776,12 @@ Search API Structure ([`14dfc2a`](https://github.com/ral-facilities/datagateway-
 
 ## v1.0.1 (2021-11-15)
 
+### Bug Fixes
+
+* fix: add PID field for study in DB backend #287 ([`18379be`](https://github.com/ral-facilities/datagateway-api/commit/18379becafd23ff2957e556de2bd3fc210a71f5b))
+
+* fix: add generation of study.pid #287 ([`f6a8ebc`](https://github.com/ral-facilities/datagateway-api/commit/f6a8ebc6c775ba3f5252d5af5cedc4e1e0e79a40))
+
 ### Build System
 
 * build: fix poetry.lock issue #256 ([`59eca6e`](https://github.com/ral-facilities/datagateway-api/commit/59eca6e8cb0254731ba8cab5796ba6d9ff4bc993))
@@ -2506,12 +2799,6 @@ Details of error encountered can be seen at: https://www.mail-archive.com/debian
 ### Documentation
 
 * docs: add study PID to swagger docs #287 ([`89a9e27`](https://github.com/ral-facilities/datagateway-api/commit/89a9e27b72dfe1d474d49a721f128a643ef2ae36))
-
-### Fixes
-
-* fix: add PID field for study in DB backend #287 ([`18379be`](https://github.com/ral-facilities/datagateway-api/commit/18379becafd23ff2957e556de2bd3fc210a71f5b))
-
-* fix: add generation of study.pid #287 ([`f6a8ebc`](https://github.com/ral-facilities/datagateway-api/commit/f6a8ebc6c775ba3f5252d5af5cedc4e1e0e79a40))
 
 ### Refactoring
 
