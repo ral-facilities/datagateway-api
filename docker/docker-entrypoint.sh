@@ -12,7 +12,7 @@ if [ ! -e /datagateway-api-run/datagateway_api/config.yaml ]; then
     sed -e "s|icat_url: \".*\"|icat_url: \"$ICAT_URL\"|" \
         -e "s|icat_check_cert: .*|icat_check_cert: $ICAT_CHECK_CERT|" \
         -e "s|log_location: \".*\"|log_location: \"$LOG_LOCATION\"|" \
-        /datagateway-api-run/datagateway_api/config.yaml > "$TEMPFILE"
+        /datagateway-api-run/datagateway_api/config.yaml.example > "$TEMPFILE"
 
     cat "$TEMPFILE" > /datagateway-api-run/datagateway_api/config.yaml
     rm "$TEMPFILE"
