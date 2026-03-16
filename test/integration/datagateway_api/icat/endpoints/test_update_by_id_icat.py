@@ -34,16 +34,8 @@ class TestUpdateByID:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        update_data_json = LARGE_INVESTIGATION_POST
+        update_data_json = {**LARGE_INVESTIGATION_POST, "visitId":'test large update'}
 
-        update_data_json.pop("facility")
-        update_data_json.pop("type")
-        update_data_json.pop("datasets")
-        update_data_json.pop("investigationFacilityCycles")
-        update_data_json.pop("investigationUsers")
-        update_data_json.pop("publications")
-        update_data_json.pop("samples")
-        update_data_json.pop("studyInvestigations")
 
         single_investigation_test_data[0].update(update_data_json)
 
@@ -52,6 +44,20 @@ class TestUpdateByID:
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
+   
+        optional_keys_to_remove = (
+            "facility",
+            "type",
+            "datasets",
+            "investigationFacilityCycles",
+            "investigationUsers",
+            "publications",
+            "samples",
+            "studyInvestigations",
+        )
+
+        for key in optional_keys_to_remove:
+            single_investigation_test_data[0].pop(key, None)
 
         response_json = prepare_icat_data_for_assertion([test_response.json()])
 

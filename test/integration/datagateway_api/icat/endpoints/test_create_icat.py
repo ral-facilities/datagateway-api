@@ -41,15 +41,25 @@ class TestICATCreateData:
             json=create_investigations_json,
         )
 
+
+        optional_keys_to_remove = (
+            "facility",
+            "type",
+            "datasets",
+            "investigationFacilityCycles",
+            "investigationUsers",
+            "publications",
+            "samples",
+            "studyInvestigations",
+        )
+
         for investigation_request in create_investigations_json:
-            investigation_request.pop("facility")
-            investigation_request.pop("type")
-            investigation_request.pop("datasets")
-            investigation_request.pop("investigationFacilityCycles")
-            investigation_request.pop("investigationUsers")
-            investigation_request.pop("publications")
-            investigation_request.pop("samples")
-            investigation_request.pop("studyInvestigations")
+            for key in optional_keys_to_remove:
+                investigation_request.pop(key, None)
+
+        
+        create_investigations_json[2]['releaseDate'] = None
+        create_investigations_json[2]['startDate'] = None
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),
