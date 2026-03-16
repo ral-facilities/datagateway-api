@@ -3,7 +3,6 @@ from functools import wraps
 import json
 import logging
 
-from dateutil.tz.tz import tzlocal
 from flask import request
 from flask_restful import reqparse
 import requests
@@ -17,7 +16,7 @@ from datagateway_api.src.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.src.datagateway_api.database import models
+from datagateway_api.src.datagateway_api.icat import models
 from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
@@ -133,12 +132,12 @@ def get_filters_from_query_string(api_type, entity_name=None):
 def get_entity_object_from_name(entity_name):
     """
     From an entity name, this function gets a Python version of that entity for the
-    database backend
+    Python ICAT
 
     :param entity_name: Name of the entity to fetch a version from this model
     :type entity_name: :class:`str`
     :return: Object of the entity requested (e.g.
-        :class:`.datagateway_api.database.models.INVESTIGATIONINSTRUMENT`)
+        :class:`.datagateway_api.icat.models.INVESTIGATIONINSTRUMENT`)
     :raises: KeyError: If an entity model cannot be found as a class in this model
     """
     try:
@@ -174,17 +173,15 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
 
     When selecting multiple (but not all) attributes in a database query, the results
     are returned in a list and not mapped to an entity object. This means the 'normal'
-    functions used to process data ready for output (`entity_to_dict()` for the ICAT
-    backend) cannot be used, as the structure of the query result is different.
+    functions used to process data ready for output (`entity_to_dict()` for Python ICAT
+    ) cannot be used, as the structure of the query result is different.
 
     :param distinct_attributes: List of distinct attributes from the distinct
         filter of the incoming request
     :type distinct_attributes: :class:`list`
-    :param query_result: Results fetched from a database query (backend independent due
-        to the data structure of this parameter)
+    :param query_result: Results fetched from a database query
     :type query_result: :class:`tuple` or :class:`list` when a single attribute is
-        given from ICAT backend, or :class:`sqlalchemy.engine.row.Row` when used on the
-        DB backend
+        given from Python ICAT
     :return: Dictionary of attribute names paired with the results, ready to be
         returned to the user
     """
@@ -194,10 +191,6 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         split_attr_name = attr_name.split(".")
 
         if isinstance(data, datetime):
-            # Workaround for when this function is used on DB backend, where usually
-            # `_make_serializable()` would fix tzinfo
-            if data.tzinfo is None:
-                data = data.replace(tzinfo=tzlocal())
             data = DateHandler.datetime_object_to_str(data)
 
         # Attribute name is from the 'origin' entity (i.e. not a related entity)

@@ -6,8 +6,8 @@ import pytest
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.constants import Constants
 from datagateway_api.src.common.exceptions import PythonICATError
-from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 class TestICATPing:
@@ -23,7 +23,7 @@ class TestICATPing:
             "icat.client.Client.getEntityNames",
             side_effect=ICATError("Mocked Exception"),
         ):
-            backend = create_backend("python_icat")
+            python_icat = PythonICAT()
             client_pool = create_client_pool()
             with pytest.raises(PythonICATError):
-                backend.ping(client_pool=client_pool)
+                python_icat.ping(client_pool=client_pool)

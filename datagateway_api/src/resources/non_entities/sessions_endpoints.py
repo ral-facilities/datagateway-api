@@ -10,14 +10,14 @@ from datagateway_api.src.common.helpers import get_session_id_from_auth_header
 log = logging.getLogger()
 
 
-def session_endpoints(backend, **kwargs):
+def session_endpoints(python_icat, **kwargs):
     """
-    Generate a flask_restful Resource class using the configured backend. In main.py
+    Generate a flask_restful Resource class using python ICAT. In main.py
     these generated classes are registered with the api e.g.
     `api.add_resource(get_endpoint("Datafiles", DATAFILE), "/datafiles")`
 
-    :param backend: The backend instance used for processing requests
-    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :param python_icat: The python ICAT instance used for processing requests
+    :type python_icat: :class:`PythonICAT`
     :return: The generated session endpoint class
     """
 
@@ -74,7 +74,7 @@ def session_endpoints(backend, **kwargs):
             if not ("mechanism" in request.json):
                 request.json["mechanism"] = "simple"
             try:
-                return {"sessionID": backend.login(request.json, **kwargs)}, 201
+                return {"sessionID": python_icat.login(request.json, **kwargs)}, 201
             except AuthenticationError:
                 return "Forbidden", 403
 
@@ -99,7 +99,7 @@ def session_endpoints(backend, **kwargs):
               404:
                 description: Not Found - Unable to find session ID
             """
-            backend.logout(get_session_id_from_auth_header(), **kwargs)
+            python_icat.logout(get_session_id_from_auth_header(), **kwargs)
             return "", 200
 
         def get(self):
@@ -137,7 +137,7 @@ def session_endpoints(backend, **kwargs):
                 description: Forbidden - The session ID provided is invalid
             """
             return (
-                backend.get_session_details(
+                python_icat.get_session_details(
                     get_session_id_from_auth_header(),
                     **kwargs,
                 ),
@@ -167,6 +167,6 @@ def session_endpoints(backend, **kwargs):
               403:
                 description: Forbidden - The session ID provided is invalid
             """
-            return backend.refresh(get_session_id_from_auth_header(), **kwargs), 200
+            return python_icat.refresh(get_session_id_from_auth_header(), **kwargs), 200
 
     return Sessions

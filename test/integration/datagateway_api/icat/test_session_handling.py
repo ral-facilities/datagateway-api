@@ -8,9 +8,9 @@ import pytest
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import AuthenticationError
-from datagateway_api.src.datagateway_api.backends import create_backend
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 class TestSessionHandling:
@@ -118,7 +118,7 @@ class TestSessionHandling:
         icat_query.setAggregate("COUNT")
         title_filter = PythonICATWhereFilter(
             "title",
-            "Test data for the Python ICAT Backend on DataGateway API",
+            "Test data for Python ICAT on DataGateway API",
             "like",
         )
         title_filter.apply_filter(icat_query)
@@ -156,11 +156,14 @@ class TestSessionHandling:
         assert login_response.status_code == expected_response_code
 
     def test_expired_session(self):
-        test_backend = create_backend("python_icat")
+        test_python_icat = PythonICAT()
         client_pool = create_client_pool()
         with patch("icat.client.Client.getRemainingMinutes", return_value=-1):
             with pytest.raises(AuthenticationError):
-                test_backend.get_session_details("session id", client_pool=client_pool)
+                test_python_icat.get_session_details(
+                    "session id",
+                    client_pool=client_pool,
+                )
 
     def test_valid_logout(self, flask_test_app_icat):
         client = Client(

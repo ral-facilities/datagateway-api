@@ -7,7 +7,7 @@ from datagateway_api.src.common.helpers import (
 )
 
 
-def get_endpoint(name, entity_type, backend, **kwargs):
+def get_endpoint(name, entity_type, python_icat, **kwargs):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
@@ -17,8 +17,8 @@ def get_endpoint(name, entity_type, backend, **kwargs):
     :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
     :type entity_type: :class:`str`
-    :param backend: The backend instance used for processing requests
-    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :param python_icat: The python ICAT instance used for processing requests
+    :type python_icat: :class:`PythonICAT`
     :return: The generated endpoint class
     """
 
@@ -27,7 +27,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
     class Endpoint(Resource):
         def get(self):
             return (
-                backend.get_with_filters(
+                python_icat.get_with_filters(
                     get_session_id_from_auth_header(),
                     entity_type,
                     get_filters_from_query_string("datagateway_api"),
@@ -72,7 +72,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
 
         def post(self):
             return (
-                backend.create(
+                python_icat.create(
                     get_session_id_from_auth_header(),
                     entity_type,
                     request.json,
@@ -118,7 +118,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
 
         def patch(self):
             return (
-                backend.update(
+                python_icat.update(
                     get_session_id_from_auth_header(),
                     entity_type,
                     request.json,
@@ -166,7 +166,7 @@ def get_endpoint(name, entity_type, backend, **kwargs):
     return Endpoint
 
 
-def get_id_endpoint(name, entity_type, backend, **kwargs):
+def get_id_endpoint(name, entity_type, python_icat, **kwargs):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
@@ -176,8 +176,8 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
     :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
     :type entity_type: :class:`str`
-    :param backend: The backend instance used for processing requests
-    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :param python_icat: The python ICAT instance used for processing requests
+    :type python_icat: :class:`PythonICAT`
     :return: The generated id endpoint class
     """
 
@@ -186,7 +186,7 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
     class EndpointWithID(Resource):
         def get(self, id_):
             return (
-                backend.get_with_id(
+                python_icat.get_with_id(
                     get_session_id_from_auth_header(),
                     entity_type,
                     id_,
@@ -226,7 +226,7 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
             """
 
         def delete(self, id_):
-            backend.delete_with_id(
+            python_icat.delete_with_id(
                 get_session_id_from_auth_header(),
                 entity_type,
                 id_,
@@ -263,14 +263,14 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
 
         def patch(self, id_):
             session_id = get_session_id_from_auth_header()
-            backend.update_with_id(
+            python_icat.update_with_id(
                 session_id,
                 entity_type,
                 id_,
                 request.json,
                 **kwargs,
             )
-            return backend.get_with_id(session_id, entity_type, id_, **kwargs), 200
+            return python_icat.get_with_id(session_id, entity_type, id_, **kwargs), 200
 
         patch.__doc__ = f"""
             ---
@@ -314,7 +314,7 @@ def get_id_endpoint(name, entity_type, backend, **kwargs):
     return EndpointWithID
 
 
-def get_count_endpoint(name, entity_type, backend, **kwargs):
+def get_count_endpoint(name, entity_type, python_icat, **kwargs):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
@@ -324,8 +324,8 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
     :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
     :type entity_type: :class:`str`
-    :param backend: The backend instance used for processing requests
-    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :param python_icat: The python ICAT instance used for processing requests
+    :type python_icat: :class:`PythonICAT`
     :return: The generated count endpoint class
     """
 
@@ -333,7 +333,7 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
         def get(self):
             filters = get_filters_from_query_string("datagateway_api")
             return (
-                backend.count_with_filters(
+                python_icat.count_with_filters(
                     get_session_id_from_auth_header(),
                     entity_type,
                     filters,
@@ -374,7 +374,7 @@ def get_count_endpoint(name, entity_type, backend, **kwargs):
     return CountEndpoint
 
 
-def get_find_one_endpoint(name, entity_type, backend, **kwargs):
+def get_find_one_endpoint(name, entity_type, python_icat, **kwargs):
     """
     Given an entity name, generate a flask_restful `Resource` class. In
     `create_api_endpoints()`, these generated classes are registered with the API e.g.
@@ -384,8 +384,8 @@ def get_find_one_endpoint(name, entity_type, backend, **kwargs):
     :type name: :class:`str`
     :param entity_type: The entity the endpoint will use in queries
     :type entity_type: :class:`str`
-    :param backend: The backend instance used for processing requests
-    :type backend: :class:`DatabaseBackend` or :class:`PythonICATBackend`
+    :param python_icat: The python ICAT instance used for processing requests
+    :type python_icat: :class:`PythonICAT`
     :return: The generated findOne endpoint class
     """
 
@@ -395,7 +395,7 @@ def get_find_one_endpoint(name, entity_type, backend, **kwargs):
         def get(self):
             filters = get_filters_from_query_string("datagateway_api")
             return (
-                backend.get_one_with_filters(
+                python_icat.get_one_with_filters(
                     get_session_id_from_auth_header(),
                     entity_type,
                     filters,

@@ -18,7 +18,7 @@ class TestICATCreateData:
         create_investigations_json = [
             {
                 "name": f"{self.investigation_name_prefix} {i}",
-                "title": "Test data for the Python ICAT Backend on DataGateway API",
+                "title": "Test data for Python ICAT on DataGateway API",
                 "summary": "Test data for DataGateway API testing",
                 "releaseDate": "2020-03-03 08:00:08+00:00",
                 "startDate": "2020-02-02 09:00:09+00:00",
@@ -60,7 +60,7 @@ class TestICATCreateData:
 
         create_investigation_json = {
             "name": f"{self.investigation_name_prefix} 0",
-            "title": "Test data for the Python ICAT Backend on the API",
+            "title": "Test data for Python ICAT on the API",
             "summary": "Test data for DataGateway API testing",
             "releaseDate": "2020-03-03 08:00:08+00:00",
             "startDate": "2020-02-02 09:00:09+00:00",
@@ -97,7 +97,7 @@ class TestICATCreateData:
         """An investigation requires a minimum of: name, visitId, facility, type"""
 
         invalid_request_body = {
-            "title": "Test Title for DataGateway API Backend testing",
+            "title": "Test Title for DataGateway API Python ICAT testing",
         }
 
         test_response = flask_test_app_icat.post(

@@ -2,7 +2,7 @@ import pytest
 
 from datagateway_api.src.common.exceptions import ApiError
 from datagateway_api.src.common.helpers import get_entity_object_from_name
-from datagateway_api.src.datagateway_api.database.models import (
+from datagateway_api.src.datagateway_api.icat.models import (
     FACILITY,
     INVESTIGATION,
     JOB,

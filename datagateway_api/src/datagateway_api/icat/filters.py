@@ -93,8 +93,7 @@ class PythonICATWhereFilter(WhereFilter):
             self.value = str(self.value).replace("[", "(").replace("]", ")")
 
             # DataGateway Search can send requests with blank lists. Adding NULL to the
-            # filter prevents the API from returning a 500. An empty list will be
-            # returned instead, equivalent to the DB backend
+            # filter prevents the API from returning a 500.
             if self.value == "()":
                 self.value = "(NULL)"
 
@@ -106,8 +105,7 @@ class PythonICATWhereFilter(WhereFilter):
             self.value = str(self.value).replace("[", "(").replace("]", ")")
 
             # DataGateway Search can send requests with blank lists. Adding NULL to the
-            # filter prevents the API from returning a 500. An empty list will be
-            # returned instead, equivalent to the DB backend
+            # filter prevents the API from returning a 500.
             if self.value == "()":
                 self.value = "(NULL)"
 

@@ -8,13 +8,13 @@ class TestICATCountWithFilters:
         "query_params, expected_result",
         [
             pytest.param(
-                '?where={"title": {"like": "Test data for the Python ICAT Backend on'
+                '?where={"title": {"like": "Test data for Python ICAT on'
                 ' DataGateway API"}}',
                 5,
                 id="Filter on test data",
             ),
             pytest.param(
-                '?where={"title": {"like": "Test data for the Python ICAT Backend on'
+                '?where={"title": {"like": "Test data for Python ICAT on'
                 ' DataGateway API"}}&distinct=["startDate"]',
                 1,
                 id="Distinct test data",

@@ -12,7 +12,7 @@ from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
 class TestFilterOrderHandler:
     """
     `merge_python_icat_limit_skip_filters` and`clear_python_icat_order_filters()` are
-    tested while testing the ICAT backend filters, so tests of these functions won't be
+    tested while testing the Python ICAT filters, so tests of these functions won't be
     found here
     """
 
