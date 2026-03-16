@@ -315,9 +315,9 @@ def initialise_search_api_spec(spec):
         Technique,
     ]
     for panosc_model in panosc_models:
-        schema = panosc_model.schema(ref_template="#/components/schemas/{model}")[
-            "definitions"
-        ][panosc_model.__name__]
+        schema = panosc_model.model_json_schema(
+            ref_template="#/components/schemas/{model}",
+        )["$defs"][panosc_model.__name__]
 
         schema_name = panosc_model.__name__
         spec.components.schema(schema_name, schema)

@@ -1,9 +1,8 @@
 from pydantic import ValidationError
 import pytest
 
-from datagateway_api.src.common.date_handler import DateHandler
 import datagateway_api.src.search_api.models as models
-from datagateway_api.src.search_api.models import SearchAPIDatetime
+from test.unit.search_api.utlis import normalise_date
 
 
 AFFILIATION_ICAT_DATA = {
@@ -200,9 +199,7 @@ AFFILIATION_PANOSC_DATA = {
 DATASET_PANOSC_DATA = {
     "pid": DATASET_ICAT_DATA["doi"],
     "title": DATASET_ICAT_DATA["name"],
-    "creationDate": SearchAPIDatetime.use_search_api_format(
-        DateHandler.str_to_datetime_object(DATASET_ICAT_DATA["createTime"]),
-    ),
+    "creationDate": normalise_date(DATASET_ICAT_DATA["createTime"]),
     "isPublic": True,
     "size": None,
     "documents": [],
@@ -220,15 +217,9 @@ DOCUMENT_PANOSC_DATA = {
     "title": INVESTIGATION_ICAT_DATA["name"],
     "summary": INVESTIGATION_ICAT_DATA["summary"],
     "doi": INVESTIGATION_ICAT_DATA["doi"],
-    "startDate": SearchAPIDatetime.use_search_api_format(
-        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["startDate"]),
-    ),
-    "endDate": SearchAPIDatetime.use_search_api_format(
-        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["endDate"]),
-    ),
-    "releaseDate": SearchAPIDatetime.use_search_api_format(
-        DateHandler.str_to_datetime_object(INVESTIGATION_ICAT_DATA["releaseDate"]),
-    ),
+    "startDate": normalise_date(INVESTIGATION_ICAT_DATA["startDate"]),
+    "endDate": normalise_date(INVESTIGATION_ICAT_DATA["endDate"]),
+    "releaseDate": normalise_date(INVESTIGATION_ICAT_DATA["releaseDate"]),
     "license": None,
     "keywords": [KEYWORD_ICAT_DATA["name"]],
     "datasets": [],
@@ -296,7 +287,7 @@ class TestModels:
     def test_from_icat_affiliation_entity_without_data_for_related_entities(self):
         affiliation_entity = models.Affiliation.from_icat(AFFILIATION_ICAT_DATA, [])
 
-        assert affiliation_entity.dict(by_alias=True) == AFFILIATION_PANOSC_DATA
+        assert affiliation_entity.model_dump(by_alias=True) == AFFILIATION_PANOSC_DATA
 
     def test_from_icat_affiliation_entity_with_data_for_all_related_entities(self):
         expected_entity_data = AFFILIATION_PANOSC_DATA.copy()
@@ -309,12 +300,12 @@ class TestModels:
 
         affiliation_entity = models.Affiliation.from_icat(icat_data, ["members"])
 
-        assert affiliation_entity.dict(by_alias=True) == expected_entity_data
+        assert affiliation_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_dataset_entity_without_data_for_related_entities(self):
         dataset_entity = models.Dataset.from_icat(DATASET_ICAT_DATA, [])
 
-        assert dataset_entity.dict(by_alias=True) == DATASET_PANOSC_DATA
+        assert dataset_entity.model_dump(by_alias=True) == DATASET_PANOSC_DATA
 
     def test_from_icat_dataset_entity_with_data_for_mandatory_related_entities(self):
         expected_entity_data = DATASET_PANOSC_DATA.copy()
@@ -338,7 +329,7 @@ class TestModels:
             ["documents", "techniques"],
         )
 
-        assert dataset_entity.dict(by_alias=True) == expected_entity_data
+        assert dataset_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_dataset_entity_with_data_for_all_related_entities(self):
         expected_entity_data = DATASET_PANOSC_DATA.copy()
@@ -383,7 +374,7 @@ class TestModels:
             ["documents", "techniques", "instrument", "files", "parameters", "samples"],
         )
 
-        assert dataset_entity.dict(by_alias=True) == expected_entity_data
+        assert dataset_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_document_entity_without_data_for_related_entities(self):
         icat_data = INVESTIGATION_ICAT_DATA.copy()
@@ -392,7 +383,7 @@ class TestModels:
 
         document_entity = models.Document.from_icat(icat_data, [])
 
-        assert document_entity.dict(by_alias=True) == DOCUMENT_PANOSC_DATA
+        assert document_entity.model_dump(by_alias=True) == DOCUMENT_PANOSC_DATA
 
     def test_from_icat_document_entity_with_data_for_mandatory_related_entities(self):
         expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
@@ -405,7 +396,7 @@ class TestModels:
 
         document_entity = models.Document.from_icat(icat_data, ["datasets"])
 
-        assert document_entity.dict(by_alias=True) == expected_entity_data
+        assert document_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_document_entity_with_data_for_all_related_entities(self):
         expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
@@ -424,12 +415,12 @@ class TestModels:
 
         document_entity = models.Document.from_icat(icat_data, ["datasets"])
 
-        assert document_entity.dict(by_alias=True) == expected_entity_data
+        assert document_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_file_entity_without_data_for_related_entities(self):
         file_entity = models.File.from_icat(DATAFILE_ICAT_DATA, [])
 
-        assert file_entity.dict(by_alias=True) == FILE_PANOSC_DATA
+        assert file_entity.model_dump(by_alias=True) == FILE_PANOSC_DATA
 
     def test_from_icat_file_entity_with_data_for_all_related_entities(self):
         expected_entity_data = FILE_PANOSC_DATA.copy()
@@ -439,7 +430,7 @@ class TestModels:
 
         file_entity = models.File.from_icat(icat_data, [])
 
-        assert file_entity.dict(by_alias=True) == expected_entity_data
+        assert file_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_instrument_entity_without_data_for_related_entities(self):
         icat_data = INSTRUMENT_ICAT_DATA.copy()
@@ -447,7 +438,7 @@ class TestModels:
 
         instrument_entity = models.Instrument.from_icat(icat_data, [])
 
-        assert instrument_entity.dict(by_alias=True) == INSTRUMENT_PANOSC_DATA
+        assert instrument_entity.model_dump(by_alias=True) == INSTRUMENT_PANOSC_DATA
 
     def test_from_icat_instrument_entity_with_data_for_all_related_entities(self):
         expected_entity_data = INSTRUMENT_PANOSC_DATA.copy()
@@ -461,12 +452,12 @@ class TestModels:
 
         instrument_entity = models.Instrument.from_icat(icat_data, ["datasets"])
 
-        assert instrument_entity.dict(by_alias=True) == expected_entity_data
+        assert instrument_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_member_entity_without_data_for_related_entities(self):
         member_entity = models.Member.from_icat(INVESTIGATION_USER_ICAT_DATA, [])
 
-        assert member_entity.dict(by_alias=True) == MEMBER_PANOSC_DATA
+        assert member_entity.model_dump(by_alias=True) == MEMBER_PANOSC_DATA
 
     def test_from_icat_member_entity_with_data_for_mandatory_related_entities(self):
         expected_entity_data = MEMBER_PANOSC_DATA.copy()
@@ -479,7 +470,7 @@ class TestModels:
 
         member_entity = models.Member.from_icat(icat_data, ["document"])
 
-        assert member_entity.dict(by_alias=True) == expected_entity_data
+        assert member_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_member_entity_with_data_for_all_related_entities(self):
         expected_entity_data = MEMBER_PANOSC_DATA.copy()
@@ -501,7 +492,7 @@ class TestModels:
             ["document", "person", "affiliation"],
         )
 
-        assert member_entity.dict(by_alias=True) == expected_entity_data
+        assert member_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_parameter_entity_without_data_for_related_entities(self):
         icat_data = INVESTIGATION_PARAMETER_ICAT_DATA.copy()
@@ -509,7 +500,7 @@ class TestModels:
 
         parameter_entity = models.Parameter.from_icat(icat_data, [])
 
-        assert parameter_entity.dict(by_alias=True) == PARAMETER_PANOSC_DATA
+        assert parameter_entity.model_dump(by_alias=True) == PARAMETER_PANOSC_DATA
 
     def test_from_icat_parameter_entity_with_investigation_parameter_data(self):
         expected_entity_data = PARAMETER_PANOSC_DATA.copy()
@@ -523,7 +514,7 @@ class TestModels:
 
         parameter_entity = models.Parameter.from_icat(icat_data, ["document"])
 
-        assert parameter_entity.dict(by_alias=True) == expected_entity_data
+        assert parameter_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_parameter_entity_with_dataset_parameter_data(self):
         expected_entity_data = PARAMETER_PANOSC_DATA.copy()
@@ -536,12 +527,12 @@ class TestModels:
 
         parameter_entity = models.Parameter.from_icat(icat_data, ["dataset"])
 
-        assert parameter_entity.dict(by_alias=True) == expected_entity_data
+        assert parameter_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_person_entity_without_data_for_related_entities(self):
         person_entity = models.Person.from_icat(USER_ICAT_DATA, [])
 
-        assert person_entity.dict(by_alias=True) == PERSON_PANOSC_DATA
+        assert person_entity.model_dump(by_alias=True) == PERSON_PANOSC_DATA
 
     def test_from_icat_person_entity_with_data_for_all_related_entities(self):
         expected_entity_data = PERSON_PANOSC_DATA.copy()
@@ -555,7 +546,7 @@ class TestModels:
 
         person_entity = models.Person.from_icat(icat_data, ["members"])
 
-        assert person_entity.dict(by_alias=True) == expected_entity_data
+        assert person_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_sample_entity_without_data_for_related_entities(self):
         icat_data = SAMPLE_ICAT_DATA.copy()
@@ -564,7 +555,7 @@ class TestModels:
         ]
         sample_entity = models.Sample.from_icat(icat_data, [])
 
-        assert sample_entity.dict(by_alias=True) == SAMPLE_PANOSC_DATA
+        assert sample_entity.model_dump(by_alias=True) == SAMPLE_PANOSC_DATA
 
     def test_from_icat_sample_entity_with_data_for_all_related_entities(self):
         expected_entity_data = SAMPLE_PANOSC_DATA.copy()
@@ -580,12 +571,12 @@ class TestModels:
 
         sample_entity = models.Sample.from_icat(icat_data, ["datasets"])
 
-        assert sample_entity.dict(by_alias=True) == expected_entity_data
+        assert sample_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_technique_entity_without_data_for_related_entities(self):
         technique_entity = models.Technique.from_icat(TECHNIQUE_ICAT_DATA, [])
 
-        assert technique_entity.dict(by_alias=True) == TECHNIQUE_PANOSC_DATA
+        assert technique_entity.model_dump(by_alias=True) == TECHNIQUE_PANOSC_DATA
 
     def test_from_icat_technique_entity_with_data_for_all_related_entities(self):
         expected_entity_data = TECHNIQUE_PANOSC_DATA.copy()
@@ -598,7 +589,7 @@ class TestModels:
 
         technique_entity = models.Technique.from_icat(icat_data, ["datasets"])
 
-        assert technique_entity.dict(by_alias=True) == expected_entity_data
+        assert technique_entity.model_dump(by_alias=True) == expected_entity_data
 
     def test_from_icat_multiple_and_nested_relations(self):
         expected_entity_data = DOCUMENT_PANOSC_DATA.copy()
@@ -661,7 +652,7 @@ class TestModels:
 
         document_entity = models.Document.from_icat(icat_data, relations)
 
-        assert document_entity.dict(by_alias=True) == expected_entity_data
+        assert document_entity.model_dump(by_alias=True) == expected_entity_data
 
     @pytest.mark.parametrize(
         "panosc_entity_name, icat_data, required_related_fields",
