@@ -172,7 +172,7 @@ class TestSessionHandling:
         )
         client.login(
             Config.config.test_mechanism,
-            Config.config.test_user_credentials.dict(),
+            Config.config.test_user_credentials.model_dump(),
         )
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 

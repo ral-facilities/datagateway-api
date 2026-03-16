@@ -15,12 +15,21 @@ class DateHandler:
     def is_str_a_date(potential_date):
         """
         This function identifies if a string contains a date. This function doesn't
-        detect which format the date is, just if there's a date or not.
+        detect which format the date is, just if there's a date or not. An additional
+        check is performed to ensure purely numeric strings (e.g. "5", "20200101") are
+        not incorrectly treated as dates.
+
 
         :param potential_date: String data that could contain a date of any format
         :type potential_date: :class:`str`
         :return: Boolean to signify whether `potential_date` is a date or not
         """
+
+        text = potential_date.strip()
+
+        # Reject if the string is just digits (like "5" or "20200101")
+        if text.isdigit():
+            return False
 
         try:
             # Disabled fuzzy to avoid picking up dates in things like descriptions etc.

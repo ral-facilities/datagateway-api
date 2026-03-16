@@ -1,4 +1,3 @@
-from datagateway_api.src.resources.entities.entity_map import create_entity_models
 from datagateway_api.src.search_api.models import (
     Affiliation,
     Dataset,
@@ -13,7 +12,7 @@ from datagateway_api.src.search_api.models import (
 )
 
 
-def initialise_datagateway_api_spec(spec):
+def initialise_datagateway_api_spec(spec, datagateway_model_list):
     """
     Given a apispec spec object, will initialise it with the security scheme, models and
     parameters we use
@@ -22,15 +21,40 @@ def initialise_datagateway_api_spec(spec):
     :return: void
     """
 
+    # Track schemas that have already been registered to avoid duplicates
+    registered_schemas: set[str] = set()
+
+    def register_schema(name: str, schema: dict):
+        # Register a schema only once to prevent overwriting or OpenAPI conflicts
+        if name in registered_schemas:
+            return
+        registered_schemas.add(name)
+        spec.components.schema(name, schema)
+
+    # Define the authentication mechanism used by the API
     spec.components.security_scheme(
         "session_id",
         {"type": "http", "scheme": "bearer", "bearerFormat": "uuid"},
     )
 
-    entity_schemas = create_entity_models()
+    for datagateway_model in datagateway_model_list:
 
-    for schema_name, schema in entity_schemas.items():
-        spec.components.schema(schema_name, schema)
+        # Generate the full JSON Schema including referenced models in $defs
+        full_schema = datagateway_model.model_json_schema(
+            ref_template="#/components/schemas/{model}",
+        )
+
+        # Extract and register all referenced schemas used by this model
+        defs = full_schema.get("$defs", {})
+        for def_name, def_schema in defs.items():
+            register_schema(def_name, def_schema)
+
+        # Remove $defs so the root schema only describes this model
+        root_schema = dict(full_schema)
+        root_schema.pop("$defs", None)
+
+        # Register the root schema for the model itself
+        register_schema(datagateway_model.__name__, root_schema)
 
     spec.components.parameter(
         "WHERE_FILTER",

@@ -12,7 +12,10 @@ from datagateway_api.src.api_start_utils import (
     create_app_infrastructure,
 )
 from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.datagateway_api.icat.models import SESSION
+from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
+from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.src.datagateway_api.icat.models import Session
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 
 @pytest.fixture(scope="package")
@@ -23,7 +26,7 @@ def icat_client():
     )
     client.login(
         Config.config.test_mechanism,
-        Config.config.test_user_credentials.dict(),
+        Config.config.test_user_credentials.model_dump(),
     )
     return client
 
@@ -32,8 +35,13 @@ def icat_client():
 def flask_test_app():
     """This is used to check the endpoints exist and have the correct HTTP methods"""
     test_app = Flask(__name__)
-    api, spec = create_app_infrastructure(test_app)
-    create_api_endpoints(test_app, api, spec)
+
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(test_app, dg_models.values())
+    create_api_endpoints(test_app, api, spec, python_icat, icat_client_pool)
 
     yield test_app
 
@@ -47,8 +55,12 @@ def flask_test_app_db():
     db_app = Flask(__name__)
     db_app.config["TESTING"] = True
 
-    api, spec = create_app_infrastructure(db_app)
-    create_api_endpoints(db_app, api, spec)
+    python_icat = PythonICAT()
+    # Create client pool
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    api, spec = create_app_infrastructure(db_app, dg_models.values())
+    create_api_endpoints(db_app, api, spec, python_icat, icat_client_pool)
     db_app.app_context().push()
 
     yield db_app.test_client()
@@ -56,10 +68,11 @@ def flask_test_app_db():
 
 @pytest.fixture()
 def valid_db_credentials_header():
-    session = SESSION()
-    session.id = "Test"
-    session.expireDateTime = datetime.now() + timedelta(hours=1)
-    session.username = "Test User"
+    session = Session(
+        id="Test",
+        expireDateTime=datetime.now() + timedelta(hours=1),
+        username="Test User",
+    )
 
     yield {"Authorization": f"Bearer {session.id}"}
 

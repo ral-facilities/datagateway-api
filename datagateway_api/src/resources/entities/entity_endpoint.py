@@ -22,7 +22,7 @@ def get_endpoint(name, entity_type, python_icat, **kwargs):
     :return: The generated endpoint class
     """
 
-    entity_schema_name = entity_type.strip("_").upper()
+    entity_schema_name = entity_type.strip("_")
 
     class Endpoint(Resource):
         def get(self):
@@ -96,7 +96,7 @@ def get_endpoint(name, entity_type, python_icat, **kwargs):
                   schema:
                     type: array
                     items:
-                      $ref: '#/components/schemas/{entity_schema_name}'
+                      $ref: '#/components/schemas/{entity_schema_name}Post'
             responses:
                 200:
                     description: Success - returns the created object
@@ -142,7 +142,7 @@ def get_endpoint(name, entity_type, python_icat, **kwargs):
                   schema:
                     type: array
                     items:
-                      $ref: '#/components/schemas/{entity_schema_name}'
+                      $ref: '#/components/schemas/{entity_schema_name}Patch'
             responses:
                 200:
                     description: Success - returns the updated object(s)
@@ -181,7 +181,7 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
     :return: The generated id endpoint class
     """
 
-    entity_schema_name = entity_type.strip("_").upper()
+    entity_schema_name = entity_type.strip("_")
 
     class EndpointWithID(Resource):
         def get(self, id_):
@@ -292,7 +292,7 @@ def get_id_endpoint(name, entity_type, python_icat, **kwargs):
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/{entity_schema_name}'
+                    $ref: '#/components/schemas/{entity_schema_name}Post'
             responses:
                 200:
                     description: Success - returns the updated object
@@ -389,7 +389,7 @@ def get_find_one_endpoint(name, entity_type, python_icat, **kwargs):
     :return: The generated findOne endpoint class
     """
 
-    entity_schema_name = entity_type.strip("_").upper()
+    entity_schema_name = entity_type.strip("_")
 
     class FindOneEndpoint(Resource):
         def get(self):

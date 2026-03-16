@@ -9,8 +9,6 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 from datagateway_api.src.common.config import Config
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 from datagateway_api.src.resources.entities.entity_endpoint import (
     get_count_endpoint,
     get_endpoint,
@@ -102,7 +100,7 @@ def create_search_api_spec():
     )
 
 
-def create_app_infrastructure(flask_app):
+def create_app_infrastructure(flask_app, datagateway_model_list):
     CORS(flask_app)
     flask_app.url_map.strict_slashes = False
     api = CustomErrorHandledApi(flask_app)
@@ -110,7 +108,7 @@ def create_app_infrastructure(flask_app):
     if Config.config.datagateway_api is not None:
         configure_datagateway_api_swaggerui_blueprint(flask_app)
         datagateway_api_spec = create_datagateway_api_spec()
-        initialise_datagateway_api_spec(datagateway_api_spec)
+        initialise_datagateway_api_spec(datagateway_api_spec, datagateway_model_list)
         specs.append(datagateway_api_spec)
     if Config.config.search_api is not None:
         configure_search_api_swaggerui_blueprint(flask_app)
@@ -121,18 +119,13 @@ def create_app_infrastructure(flask_app):
     return api, specs
 
 
-def create_api_endpoints(flask_app, api, specs):
+def create_api_endpoints(flask_app, api, specs, python_icat, icat_client_pool):
     # DataGateway API endpoints
     if Config.config.datagateway_api is not None:
         datagateway_api_spec = next(
             (spec for spec in specs if spec.title == "DataGateway API"),
             None,
         )
-
-        python_icat = PythonICAT()
-
-        # Create client pool
-        icat_client_pool = create_client_pool()
 
         datagateway_api_extension = Config.config.datagateway_api.extension
         for entity_name in endpoints:
