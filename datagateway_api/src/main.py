@@ -88,12 +88,12 @@ icat_client_pool = create_client_pool()
 dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
 
 
-for entity_name in endpoints:
+for endpoint_name, entity_name in endpoints.items():
     router = create_collection_router(
+        endpoint_name,
         entity_name,
-        endpoints[entity_name],
-        python_icat,
         dg_models,
+        python_icat,
         client_pool=icat_client_pool,
     )
 

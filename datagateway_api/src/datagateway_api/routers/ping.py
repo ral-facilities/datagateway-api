@@ -1,4 +1,8 @@
+from typing import Literal
+
 from fastapi import APIRouter, HTTPException
+
+from datagateway_api.src.common.constants import Constants
 
 
 def ping_endpoint(python_icat, **kwargs) -> APIRouter:
@@ -18,6 +22,7 @@ def ping_endpoint(python_icat, **kwargs) -> APIRouter:
         "",
         summary="Ping API connection method",
         description="Pings the API's connection method to check responsiveness",
+        response_model=Literal[Constants.PING_OK_RESPONSE],
         response_description="OK message",
         responses={
             200: {

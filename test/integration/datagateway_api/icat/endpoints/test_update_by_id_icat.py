@@ -34,8 +34,7 @@ class TestUpdateByID:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        update_data_json = {**LARGE_INVESTIGATION_POST, "visitId":'test large update'}
-
+        update_data_json = {**LARGE_INVESTIGATION_POST, "visitId": "test large update"}
 
         single_investigation_test_data[0].update(update_data_json)
 
@@ -44,7 +43,7 @@ class TestUpdateByID:
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
-   
+
         optional_keys_to_remove = (
             "facility",
             "type",

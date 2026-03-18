@@ -51,6 +51,7 @@ def queries_records(method):
 def get_session_id_from_auth_header(request: Request):
     """
     Gets the sessionID from the Authorization header of a request
+    :request Request: FastAPI Request object containing the incoming headers
     :return: String: SessionID
     """
     log.info("Getting session Id from auth header")
@@ -90,6 +91,7 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
 
+    :request Request: FastAPI Request object containing the incoming headers
     :param api_type: Type of API this function is being used for i.e. DataGateway API or
         Search API
     :type api_type: :class:`str`
@@ -109,7 +111,7 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
         )
     else:
         raise ApiError(
-            "Incorrect api_type passed into `get_filter_from_query_string(): " f"{api_type}",
+            "Incorrect api_type passed into `get_filter_from_query_string(): {api_type}",
         )
 
     log.info("Getting filters from query string")

@@ -56,7 +56,7 @@ class ICATQuery:
             self.query.manual_count = False
         except ValueError as e:
             raise PythonICATError(
-                "An issue has occurred while creating a Python ICAT Query object," " suggesting an invalid argument",
+                "An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument",
             ) from e
 
     def execute_query(self, client, return_json_formattable=False):

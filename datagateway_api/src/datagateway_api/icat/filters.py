@@ -27,7 +27,7 @@ class PythonICATWhereFilter(WhereFilter):
             query.addConditions(self.create_filter())
         except ValueError as e:
             raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query:" f" {e.args}",
+                f"Something went wrong when adding WHERE filter to ICAT query: {e.args}",
             ) from e
 
     def create_filter(self):
@@ -320,7 +320,7 @@ class PythonICATIncludeFilter(IncludeFilter):
             for key, value in field.items():
                 if not isinstance(key, str):
                     raise FilterError(
-                        "Include Filter: Dictionary key should only be a string, not" " any other type",
+                        "Include Filter: Dictionary key should only be a string, not any other type",
                     )
 
                 if isinstance(value, str):
@@ -342,7 +342,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                             ) in element.items():
                                 if not isinstance(inner_element_key, str):
                                     raise FilterError(
-                                        "Include Filter: Dictionary key should only be" " a string, not any other type",
+                                        "Include Filter: Dictionary key should only be a string, not any other type",
                                     )
                                 self._extract_filter_fields(
                                     {
@@ -355,7 +355,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                     for inner_key, inner_value in value.items():
                         if not isinstance(inner_key, str):
                             raise FilterError(
-                                "Include Filter: Dictionary key should only be a" " string, not any other type",
+                                "Include Filter: Dictionary key should only be a string, not any other type",
                             )
 
                         # Will end up as: key.inner_key.inner_value

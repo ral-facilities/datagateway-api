@@ -95,7 +95,7 @@ class PaNOSCMappings:
             )[0]
         except KeyError as e:
             raise SearchAPIError(
-                f"Cannot find related entity name from: {panosc_entity_name}" f", {panosc_related_field_name}",
+                f"Cannot find related entity name from: {panosc_entity_name}, {panosc_related_field_name}",
             ) from e
 
         return panosc_related_entity_name

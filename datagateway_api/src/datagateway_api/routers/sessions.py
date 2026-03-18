@@ -1,6 +1,6 @@
 from datetime import datetime
 import logging
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional
 
 from fastapi import APIRouter, Depends, Request, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -48,6 +48,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
         "",
         summary="Login",
         description="Generates a sessionID if the user has correct credentials",
+        response_model=SessionResponse,
         status_code=status.HTTP_201_CREATED,
         responses={
             201: {
@@ -57,7 +58,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
             403: {"description": "Forbidden - User credentials were invalid"},
         },
     )
-    def post(request: LoginRequest) -> SessionResponse:
+    def post(request: LoginRequest):
         """
         Generates a sessionID if the user has correct credentials
         :return: String - SessionID
@@ -68,6 +69,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
         "",
         summary="Delete session",
         description="Deletes a users sessionID when they logout",
+        response_model=Literal[""],
         responses={
             200: {"description": "Success - User's session was successfully deleted"},
             400: {"description": "Bad request - something was wrong with the request"},
@@ -89,6 +91,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
         "",
         summary="Get session details",
         description="Gives details of a user's session",
+        response_model=SessionDetailsResponse,
         responses={
             200: {
                 "description": "Success - a user's session details",
@@ -106,7 +109,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
             403: {"description": "Forbidden - The session ID provided is invalid"},
         },
     )
-    def get(request: Request, _: Annotated[str, Depends(session_auth)]) -> SessionDetailsResponse:
+    def get(request: Request, _: Annotated[str, Depends(session_auth)]):
         """
         Gives details of a user's session
         :return: Session details
@@ -117,6 +120,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
         "",
         summary="Refresh session",
         description="Refreshes a user's session",
+        response_model=Literal[""],
         responses={
             200: {
                 "description": "Success - the user's session ID that has been refreshed",

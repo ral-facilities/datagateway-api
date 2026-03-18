@@ -1,9 +1,11 @@
 from typing import Annotated, Any, List, Type
 
+
 from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
 
 from datagateway_api.src.common.helpers import get_filters_from_query_string, get_session_id_from_auth_header
+from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 WhereQuery = Query(
     default=None,
@@ -199,34 +201,34 @@ IncludeQuery = Query(
 
 def get_endpoint(
     router: APIRouter,
-    name: str,
-    entity_type: str,
+    endpoint_name: str,
+    entity_name: str,
     dg_models: dict[str, Type[BaseModel]],
-    python_icat,
+    python_icat: PythonICAT,
     **kwargs,
 ) -> None:
     """
-    Given an entity name, register collection-level FastAPI endpoints on the
+    Given an entity endpoint_name, register collection-level FastAPI endpoints on the
     provided APIRouter.
 
     It registers GET, POST, and PATCH handlers for collection
     access.
 
     :param router: FastAPI APIRouter to register endpoints on
-    :param name: The name of the entity
-    :param entity_type: The entity the endpoint will use in queries
-    :param model: Pydantic model representing the entity
+    :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Datasets").
+    :param entity_name: The ICAT entity name used for backend queries and model selection (e.g. "Dataset").
+    :param dg_models: Dictionary mapping entity names to their corresponding DataGateway Pydantic models
     :param python_icat: The python ICAT instance used for processing requests
     """
 
     @router.get(
         "",
-        summary=f"Get {name}",
-        description=f"Retrieves a list of {entity_type} objects",
-        response_model=List[dg_models[entity_type]],
+        summary=f"Get {endpoint_name}",
+        description=f"Retrieves a list of {entity_name} objects",
+        response_model=List[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
-            200: {"description": f"Success - returns {entity_type} that satisfy the filters"},
+            200: {"description": f"Success - returns {entity_name} that satisfy the filters"},
             400: {"description": "Bad request - Something was wrong with the request"},
             401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
             403: {"description": "Forbidden - The session ID provided is invalid"},
@@ -244,16 +246,16 @@ def get_endpoint(
     ):
         return python_icat.get_with_filters(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             get_filters_from_query_string(request, "datagateway_api"),
             **kwargs,
         )
 
     @router.post(
         "",
-        summary=f"Create new {name}",
-        description=(f"Creates new {entity_type} object(s) with details provided " "in the request body"),
-        response_model=List[dg_models[entity_type]],
+        summary=f"Create new {endpoint_name}",
+        description=(f"Creates new {entity_name} object(s) with details provided in the request body"),
+        response_model=List[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the created object"},
@@ -263,19 +265,19 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def post(body: List[dg_models[f"{entity_type}Post"]], request: Request):  # noqa: F821
+    def post(body: List[dg_models[f"{entity_name}Post"]], request: Request):  # noqa: F821
         return python_icat.create(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             [result.model_dump(by_alias=True) for result in body],
             **kwargs,
         )
 
     @router.patch(
         "",
-        summary=f"Update {name}",
-        description=(f"Updates {entity_type} object(s) with details provided " "in the request body"),
-        response_model=List[dg_models[entity_type]],
+        summary=f"Update {endpoint_name}",
+        description=(f"Updates {entity_name} object(s) with details provided in the request body"),
+        response_model=List[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the updated object(s)"},
@@ -285,10 +287,10 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def patch(body: List[dg_models[f"{entity_type}Patch"]], request: Request):  # noqa: F821
+    def patch(body: List[dg_models[f"{entity_name}Patch"]], request: Request):  # noqa: F821
         return python_icat.update(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             [result.model_dump(by_alias=True, exclude_none=True) for result in body],
             **kwargs,
         )
@@ -296,33 +298,33 @@ def get_endpoint(
 
 def get_id_endpoint(
     router: APIRouter,
-    name: str,
-    entity_type: str,
+    endpoint_name: str,
+    entity_name: str,
     dg_models: dict[str, Type[BaseModel]],
-    python_icat,
+    python_icat: PythonICAT,
     **kwargs,
 ) -> None:
     """
-    Given an entity name, register ID-level FastAPI endpoints on the
+    Given an entity endpoint_name, register ID-level FastAPI endpoints on the
     provided APIRouter.
 
     It registers GET, DELETE, and PATCH handlers for single-entity access.
 
     :param router: FastAPI APIRouter to register endpoints on
-    :param name: The name of the entity
-    :param entity_type: The entity the endpoint will use in queries
-    :param model: Pydantic model representing the entity
+    :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Datasets").
+    :param entity_name: The ICAT entity name used for backend queries and model selection (e.g. "Dataset").
+    :param dg_models: Dictionary mapping entity names to their corresponding DataGateway Pydantic models
     :param python_icat: The python ICAT instance used for processing requests
     """
 
     @router.get(
         "/{id_}",
-        summary=f"Find the {entity_type} matching the given ID",
-        description=f"Retrieves a single {entity_type} object",
-        response_model=dg_models[f"{entity_type}"],
+        summary=f"Find the {entity_name} matching the given ID",
+        description=f"Retrieves a single {entity_name} object",
+        response_model=dg_models[entity_name],
         response_model_exclude_unset=True,
         responses={
-            200: {"description": f"Success - the matching {entity_type}"},
+            200: {"description": f"Success - the matching {entity_name}"},
             400: {"description": "Bad request - Something was wrong with the request"},
             401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
             403: {"description": "Forbidden - The session ID provided is invalid"},
@@ -335,15 +337,15 @@ def get_id_endpoint(
     ):
         return python_icat.get_with_id(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             id_,
             **kwargs,
         )
 
     @router.delete(
         "/{id_}",
-        summary=f"Delete {name} by id",
-        description=f"Deletes the {entity_type} with the specified ID",
+        summary=f"Delete {endpoint_name} by id",
+        description=f"Deletes the {entity_name} with the specified ID",
         status_code=204,
         responses={
             204: {"description": "No Content - Object was successfully deleted"},
@@ -359,16 +361,16 @@ def get_id_endpoint(
     ):
         python_icat.delete_with_id(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             id_,
             **kwargs,
         )
 
     @router.patch(
         "/{id_}",
-        summary=f"Update {name} by id",
-        description=f"Updates the {entity_type} with the specified ID",
-        response_model=dg_models[entity_type],
+        summary=f"Update {endpoint_name} by id",
+        description=f"Updates the {entity_name} with the specified ID",
+        response_model=dg_models[entity_name],
         response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the updated object"},
@@ -379,7 +381,7 @@ def get_id_endpoint(
         },
     )
     def patch(
-        body: dg_models[f"{entity_type}Post"],  # noqa: F821
+        body: dg_models[f"{entity_name}Post"],  # noqa: F821
         request: Request,
         id_: Annotated[int, Path(description="The id of the entity to update")],
     ):
@@ -387,7 +389,7 @@ def get_id_endpoint(
 
         python_icat.update_with_id(
             session_id,
-            entity_type,
+            entity_name,
             id_,
             body.model_dump(by_alias=True),
             **kwargs,
@@ -395,7 +397,7 @@ def get_id_endpoint(
 
         return python_icat.get_with_id(
             session_id,
-            entity_type,
+            entity_name,
             id_,
             **kwargs,
         )
@@ -403,33 +405,33 @@ def get_id_endpoint(
 
 def get_count_endpoint(
     router: APIRouter,
-    name: str,
-    entity_type: str,
-    python_icat,
+    endpoint_name: str,
+    entity_name: str,
+    python_icat: PythonICAT,
     **kwargs,
 ) -> None:
     """
-    Given an entity name, register a count-level FastAPI endpoint on the
+    Given an entity endpoint_name, register a count-level FastAPI endpoint on the
     provided APIRouter.
 
     It registers a GET handler that returns the count of entities matching
     the provided filters.
 
     :param router: FastAPI APIRouter to register endpoints on
-    :param name: The name of the entity
-    :param entity_type: The entity the endpoint will use in queries
+    :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Datasets").
+    :param entity_name: The ICAT entity name used for backend queries and model selection (e.g. "Dataset").
     :param python_icat: The python ICAT instance used for processing requests
     """
 
     @router.get(
         "/count",
-        summary=f"Count {name}",
+        summary=f"Count {endpoint_name}",
         description=(
-            f"Return the count of the {entity_type} objects that would be " "retrieved given the filters provided"
+            f"Return the count of the {entity_name} objects that would be " "retrieved given the filters provided"
         ),
         response_model=int,
         responses={
-            200: {"description": f"Success - The count of the {entity_type} objects"},
+            200: {"description": f"Success - The count of the {entity_name} objects"},
             400: {"description": "Bad request - Something was wrong with the request"},
             401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
             403: {"description": "Forbidden - The session ID provided is invalid"},
@@ -446,7 +448,7 @@ def get_count_endpoint(
 
         return python_icat.count_with_filters(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             filters,
             **kwargs,
         )
@@ -454,27 +456,32 @@ def get_count_endpoint(
 
 def get_find_one_endpoint(
     router: APIRouter,
-    entity_type: str,
+    entity_name: str,
     dg_models: dict[str, Type[BaseModel]],
-    python_icat,
+    python_icat: PythonICAT,
     **kwargs,
 ) -> None:
     """
-    Given an entity name, register a find-one FastAPI endpoint on the
+    Given an entity endpoint_name, register a find-one FastAPI endpoint on the
     provided APIRouter.
 
     It registers a GET handler that returns the first entity matching
     the provided filters.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries and model selection (e.g. "Dataset").
+    :param dg_models: Dictionary mapping entity names to their corresponding DataGateway Pydantic models
+    :param python_icat: The python ICAT instance used for processing requests
     """
 
     @router.get(
         "/findone",
-        summary=f"Get single {entity_type}",
-        description=(f"Retrieves the first {entity_type} object that satisfies the filters."),
-        response_model=dg_models[entity_type],
+        summary=f"Get single {entity_name}",
+        description=(f"Retrieves the first {entity_name} object that satisfies the filters."),
+        response_model=dg_models[entity_name],
         response_model_exclude_unset=True,
         responses={
-            200: {"description": (f"Success - a {entity_type} object that satisfies the filters")},
+            200: {"description": (f"Success - a {entity_name} object that satisfies the filters")},
             400: {"description": "Bad request - Something was wrong with the request"},
             401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
             403: {"description": "Forbidden - The session ID provided is invalid"},
@@ -494,17 +501,17 @@ def get_find_one_endpoint(
 
         return python_icat.get_one_with_filters(
             get_session_id_from_auth_header(request),
-            entity_type,
+            entity_name,
             filters,
             **kwargs,
         )
 
 
 def create_collection_router(
-    name: str,
-    entity_type: str,
-    python_icat,
+    endpoint_name: str,
+    entity_name: str,
     dg_models: dict[str, Type[BaseModel]],
+    python_icat: PythonICAT,
     **kwargs,
 ) -> APIRouter:
     """
@@ -519,12 +526,18 @@ def create_collection_router(
 
     The endpoint implementations themselves are defined in separate
     helper functions.
-    """
-    router = APIRouter(prefix=f"/{name.lower()}", tags=[name])
 
-    get_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
-    get_count_endpoint(router, name, entity_type, python_icat, **kwargs)
-    get_find_one_endpoint(router, entity_type, dg_models, python_icat, **kwargs)
-    get_id_endpoint(router, name, entity_type, dg_models, python_icat, **kwargs)
+    :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Datasets").
+    :param entity_name: The ICAT entity name used for backend queries and model selection (e.g. "Dataset").
+    :param dg_models: Dictionary mapping entity names to their corresponding DataGateway Pydantic models
+    :param python_icat: The python ICAT instance used for processing requests
+    :returns APIRouter: The router with the registered endpoints.
+    """
+    router = APIRouter(prefix=f"/{endpoint_name.lower()}", tags=[endpoint_name])
+
+    get_endpoint(router, endpoint_name, entity_name, dg_models, python_icat, **kwargs)
+    get_count_endpoint(router, endpoint_name, entity_name, python_icat, **kwargs)
+    get_find_one_endpoint(router, entity_name, dg_models, python_icat, **kwargs)
+    get_id_endpoint(router, endpoint_name, entity_name, dg_models, python_icat, **kwargs)
 
     return router

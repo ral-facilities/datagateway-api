@@ -33,14 +33,19 @@ class TestICATCreateData:
             for i in range(2)
         ]
 
-        create_investigations_json.append(LARGE_INVESTIGATION_POST)
+        create_investigations_json.append(
+            {
+                **LARGE_INVESTIGATION_POST,
+                "releaseDate": "2020-03-03 08:00:08+00:00",
+                "startDate": "2020-02-02 09:00:09+00:00",
+            }
+        )
 
         test_response = test_client.post(
             "/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigations_json,
         )
-
 
         optional_keys_to_remove = (
             "facility",
@@ -57,9 +62,8 @@ class TestICATCreateData:
             for key in optional_keys_to_remove:
                 investigation_request.pop(key, None)
 
-        
-        create_investigations_json[2]['releaseDate'] = None
-        create_investigations_json[2]['startDate'] = None
+        # create_investigations_json[2]["releaseDate"] = None
+        # create_investigations_json[2]["startDate"] = None
 
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),

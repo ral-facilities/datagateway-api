@@ -25,8 +25,8 @@ def get_model_for_entity(entity_name: str) -> BaseModel:
     Dynamically get the Pydantic model for the given entity name.
 
     :param entity_name: The name of the entity (string)
-    :return: Pydantic BaseModel class
-    :raises AttributeError: If model does not exist
+    :return: The Pydantic model class for the given entity.s
+    :raises ValueError: If no matching model exists
     """
     try:
         return getattr(search_api_models, entity_name)
@@ -125,6 +125,10 @@ def get_search_endpoint(
 ) -> None:
     """
     Register a search endpoint for the given entity.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
+    :param model: The Pydantic model type used for response validation.
     """
 
     @router.get(
@@ -151,14 +155,10 @@ def get_search_endpoint(
 
         results = get_search(entity_name, filters)
 
-        scoring_filter = next(
-            (f for f in filters if isinstance(f, SearchAPIScoringFilter)),
-            None,
-        )
-
-        if scoring_filter:
-            scores = SearchScoring.get_score(scoring_filter.value)
-            results = SearchScoring.add_scores_to_results(results, scores)
+        for possible_scoring_filter in filters:
+            if isinstance(possible_scoring_filter, SearchAPIScoringFilter):
+                scores = SearchScoring.get_score(possible_scoring_filter.value)
+                return SearchScoring.add_scores_to_results(results, scores)
 
         return results
 
@@ -170,6 +170,10 @@ def get_single_endpoint(
 ) -> None:
     """
     Register a single-entity (PID) search endpoint.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
+    :param model: The Pydantic model type used for response validation.
     """
 
     @router.get(
@@ -205,13 +209,16 @@ def get_number_count_endpoint(
 ) -> None:
     """
     Register a count endpoint for search entities.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
     """
 
     @router.get(
         "/count",
         summary=f"Count {entity_name}s",
         description=(
-            f"Return the count of the {entity_name} objects that would be " "retrieved given the filters provided"
+            f"Return the count of the {entity_name} objects that would be retrieved given the filters provided"
         ),
         response_model=search_api_models.CountResponse,
         responses={
@@ -238,6 +245,10 @@ def get_number_count_endpoint(
 def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
     """
     Register a files endpoint for a Dataset PID.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
+    :param model: The Pydantic model type used for response validation.
     """
 
     @router.get(
@@ -273,6 +284,9 @@ def get_number_count_files_endpoint(
 ) -> None:
     """
     Register a count-files endpoint for a Dataset PID.
+
+    :param router: FastAPI APIRouter to register endpoints on
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
     """
 
     @router.get(
@@ -322,6 +336,10 @@ def create_search_collection_router(
 
     The endpoint implementations themselves are defined in separate
     helper functions.
+
+    :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
+    :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Documents").
+    :returns APIRouter: The router with the registered endpoints.
     """
     router = APIRouter(prefix=f"/{endpoint_name}", tags=[entity_name])
     model = get_model_for_entity(entity_name)

@@ -147,7 +147,7 @@ def refresh_client_session(client):
     client.refresh()
 
 
-def update_attributes(client, old_entity, new_entity):
+def update_attributes(old_entity, new_entity):
     """
     Updates the attribute(s) of a given object which is a record of an entity from
     Python ICAT
@@ -161,37 +161,39 @@ def update_attributes(client, old_entity, new_entity):
         - typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId &
         modTime)
     """
-    log.debug("Updating entity attributes: %s", [k for k, v in new_entity.items() if v is not None])
-    for key, value in new_entity.items():
-        if value is not None:
-            try:
-                original_data_attribute = getattr(old_entity, key)
-                if isinstance(original_data_attribute, datetime):
-                    new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
-            except AttributeError as e:
-                raise BadRequestError(
-                    f"Bad request made, cannot find attribute `{key}` within the" f" {old_entity.BeanName} entity",
-                ) from e
+    entity_non_null_fields = {k: v for k, v in new_entity.items() if v is not None}
 
-            try:
+    log.debug("Updating entity attributes: %s", list(entity_non_null_fields.keys()))
 
-                related_object = new_entity[key]
-                if key != "id":
-                    entity_info = old_entity.getAttrInfo(client, key)
-                    if entity_info.relType.lower() == "many":
-                        related_object = build_related_entities(
-                            client,
-                            entity_info.type,
-                            value,
-                            parent_entity_type=old_entity.BeanName,
-                        )
-                    elif entity_info.relType.lower() == "one":
-                        related_object = client.get(entity_info.type, value)
-                setattr(old_entity, key, related_object)
-            except AttributeError as e:
-                raise BadRequestError(
-                    f"Bad request made, cannot modify attribute `{key}` within the" f" {old_entity.BeanName} entity",
-                ) from e
+    for key, value in entity_non_null_fields.items():
+        try:
+            original_data_attribute = getattr(old_entity, key)
+            if isinstance(original_data_attribute, datetime):
+                new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
+        except AttributeError as e:
+            raise BadRequestError(
+                f"Bad request made, cannot find attribute `{key}` within the {old_entity.BeanName} entity",
+            ) from e
+
+        try:
+
+            related_object = new_entity[key]
+            if key != "id":
+                entity_info = old_entity.getAttrInfo(old_entity.client, key)
+                if entity_info.relType.lower() == "many":
+                    related_object = build_related_entities(
+                        old_entity.client,
+                        entity_info.type,
+                        value,
+                        parent_entity_type=old_entity.BeanName,
+                    )
+                elif entity_info.relType.lower() == "one":
+                    related_object = old_entity.client.get(entity_info.type, value)
+            setattr(old_entity, key, related_object)
+        except AttributeError as e:
+            raise BadRequestError(
+                f"Bad request made, cannot modify attribute `{key}` within the {old_entity.BeanName} entity",
+            ) from e
     return old_entity
 
 
@@ -297,7 +299,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
     # get_entity_by_id()
-    updated_icat_entity = update_attributes(client, entity_id_data, new_data)
+    updated_icat_entity = update_attributes(entity_id_data, new_data)
     push_data_updates_to_icat(updated_icat_entity)
 
     # The record is re-obtained from Python ICAT (rather than using entity_id_data) to
@@ -506,7 +508,7 @@ def update_entities(client, entity_type, data_to_update):
             )
             icat_data_backup.append(entity_data.copy())
 
-            updated_entity_data = update_attributes(client, entity_data, entity_request)
+            updated_entity_data = update_attributes(entity_data, entity_request)
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(

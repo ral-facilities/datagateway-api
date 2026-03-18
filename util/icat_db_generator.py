@@ -1108,7 +1108,7 @@ def generate_all(i, generators, client):
     for generator in generators:
         if generator.tier == i:
             print(
-                f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of" f" tier {generator.tier}",
+                f"Adding {type(generator).__name__.replace('Generator', 's')} of tier {generator.tier}",
             )
             processes.append(Process(target=generator.generate))
 

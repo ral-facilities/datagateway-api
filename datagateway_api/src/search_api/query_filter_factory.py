@@ -81,7 +81,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     query_filters.append(SearchAPIScoringFilter(filter_input))
                 else:
                     raise FilterError(
-                        "No valid filter name given within filter query param:" f" {filter_name}",
+                        "No valid filter name given within filter query param: {filter_name}",
                     )
         elif query_param_name == "where":
             # For the count endpoints
@@ -163,7 +163,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 entity_class = getattr(search_api_models, entity_class_name)
             except AttributeError as e:
                 raise SearchAPIError(
-                    f"No text operator fields have been defined for {entity_class_name}" f", {e.args}",
+                    f"No text operator fields have been defined for {entity_class_name}, {e.args}",
                 ) from e
 
             or_conditional_filters = []
@@ -179,7 +179,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 # is empty (meaning they are not present in the origina PaNOSC data
                 # model)
                 log.info(
-                    "No text operator fields found for PaNOSC entity %s, will" " ignore",
+                    "No text operator fields found for PaNOSC entity %s, will ignore",
                     entity_name,
                 )
             else:
@@ -330,7 +330,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         elif isinstance(filter_data, dict):
             # Format: {"where": {"property": {"operator": "value"}}}
             log.debug(
-                "Format of WHERE filter:" " {'where': {'property': {'operator': 'value'}}}",
+                "Format of WHERE filter: {'where': {'property': {'operator': 'value'}}}",
             )
             value = list(conditions_dict[field].values())[0]
             operation = list(conditions_dict[field].keys())[0]
