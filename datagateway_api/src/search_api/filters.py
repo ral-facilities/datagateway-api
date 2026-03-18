@@ -139,10 +139,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
             return repr(self)
 
     def __repr__(self):
-        return (
-            f"Field: '{self.field}', Value: '{self.value}', Operation:"  # noqa: B907
-            f" '{self.operation}'"  # noqa: B907
-        )
+        return f"Field: '{self.field}', Value: '{self.value}', Operation: '{self.operation}'"  # noqa: B907
 
 
 class SearchAPISkipFilter(PythonICATSkipFilter):

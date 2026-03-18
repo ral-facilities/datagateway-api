@@ -114,19 +114,19 @@ OrderQuery = Query(
 LimitQuery = Query(
     default=None,
     title="LIMIT_FILTER",
-    description="Apply limit filter to the query. Limit the number of" " entities returned.",
+    description="Apply limit filter to the query. Limit the number of entities returned.",
     json_schema_extra={"type": "integer", "default": ""},
 )
 SkipQuery = Query(
     default=None,
     title="SKIP_FILTER",
-    description="Apply skip filter to the query. Offset the returned" " entities by a given number.",
+    description="Apply skip filter to the query. Offset the returned entities by a given number.",
     json_schema_extra={"type": "integer", "default": ""},
 )
 DistinctQuery = Query(
     default=None,
     title="DISTINCT_FILTER",
-    description="Apply distinct filter to the query. Return unique values" " for the fields requested.",
+    description="Apply distinct filter to the query. Return unique values for the fields requested.",
     json_schema_extra={"type": "array", "items": {"type": "string", "default": ""}},
 )
 IncludeQuery = Query(
@@ -427,7 +427,7 @@ def get_count_endpoint(
         "/count",
         summary=f"Count {endpoint_name}",
         description=(
-            f"Return the count of the {entity_name} objects that would be " "retrieved given the filters provided"
+            f"Return the count of the {entity_name} objects that would be retrieved given the filters provided"
         ),
         response_model=int,
         responses={

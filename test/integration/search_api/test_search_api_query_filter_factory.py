@@ -103,7 +103,7 @@ class TestSearchAPIQueryFilterFactory:
                 assert test_filter.limit_value == 0
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_lhs, expected_rhs" ", expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"text": "Dataset 1"}}},
@@ -167,7 +167,7 @@ class TestSearchAPIQueryFilterFactory:
             )
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_lhs, expected_rhs" ", expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"and": [{"summary": "My Test Summary"}]}}},
@@ -305,7 +305,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "and",
-                id="Multiple conditions (two), text operator on dataset and " "property value with no operator",
+                id="Multiple conditions (two), text operator on dataset and property value with no operator",
             ),
             pytest.param(
                 {
@@ -325,7 +325,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "and",
-                id="Multiple conditions (two), text operator on instrument and " "property value with no operator",
+                id="Multiple conditions (two), text operator on instrument and property value with no operator",
             ),
             pytest.param(
                 {
@@ -348,7 +348,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "and",
-                id="Multiple conditions (two), text operator on dataset and " "property value with operator",
+                id="Multiple conditions (two), text operator on dataset and property value with operator",
             ),
             pytest.param(
                 {
@@ -371,7 +371,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "and",
-                id="Multiple conditions (two), text operator on instrument and " "property value with operator",
+                id="Multiple conditions (two), text operator on instrument and property value with operator",
             ),
         ],
     )
@@ -398,7 +398,7 @@ class TestSearchAPIQueryFilterFactory:
         )
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_lhs, expected_rhs" ", expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {"filter": {"where": {"or": [{"summary": "My Test Summary"}]}}},
@@ -536,7 +536,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "or",
-                id="Multiple conditions (two), text operator on dataset and " "property value with no operator",
+                id="Multiple conditions (two), text operator on dataset and property value with no operator",
             ),
             pytest.param(
                 {
@@ -556,7 +556,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "or",
-                id="Multiple conditions (two), text operator on instrument and " "property value with no operator",
+                id="Multiple conditions (two), text operator on instrument and property value with no operator",
             ),
             pytest.param(
                 {
@@ -576,7 +576,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "or",
-                id="Multiple conditions (two), text operator on dataset and " "property value with operator",
+                id="Multiple conditions (two), text operator on dataset and property value with operator",
             ),
             pytest.param(
                 {
@@ -599,7 +599,7 @@ class TestSearchAPIQueryFilterFactory:
                 ],
                 [SearchAPIWhereFilter("pid", "Test pid", "eq")],
                 "or",
-                id="Multiple conditions (two), text operator on instrument and " "property value with operator",
+                id="Multiple conditions (two), text operator on instrument and property value with operator",
             ),
         ],
     )
@@ -626,7 +626,7 @@ class TestSearchAPIQueryFilterFactory:
         )
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_lhs, expected_rhs" ", expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {
@@ -970,7 +970,7 @@ class TestSearchAPIQueryFilterFactory:
         )
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_lhs, expected_rhs" ", expected_joining_operator",
+        "test_request_filter, test_entity_name, expected_lhs, expected_rhs, expected_joining_operator",
         [
             pytest.param(
                 {
@@ -1314,7 +1314,7 @@ class TestSearchAPIQueryFilterFactory:
         )
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length" ", expected_included_entities",
+        "test_request_filter, test_entity_name, expected_length, expected_included_entities",
         [
             pytest.param(
                 {"filter": {"include": [{"relation": "files"}]}},
@@ -1843,7 +1843,7 @@ class TestSearchAPIQueryFilterFactory:
                 assert repr(test_filter) == repr(expected_where)
 
     @pytest.mark.parametrize(
-        "test_request_filter, test_entity_name, expected_length" ", expected_included_entities",
+        "test_request_filter, test_entity_name, expected_length, expected_included_entities",
         [
             pytest.param(
                 {
@@ -1961,7 +1961,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].skip_value == expected_skip_value
 
     @patch(
-        "datagateway_api.src.common.config.Config.config.search_api.search_scoring" ".enabled",
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring.enabled",
         True,
     )
     def test_valid_scoring_filter(self):
@@ -1981,7 +1981,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].operation == "ilike"
 
     @patch(
-        "datagateway_api.src.common.config.Config.config.search_api.search_scoring" ".enabled",
+        "datagateway_api.src.common.config.Config.config.search_api.search_scoring.enabled",
         True,
     )
     @pytest.mark.parametrize(

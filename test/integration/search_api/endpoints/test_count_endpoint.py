@@ -81,7 +81,7 @@ class TestSearchAPICountEndpoint:
         expected_json,
     ):
         test_response = test_search_api_client.get(
-            f"/{endpoint_name}/count?where=" f"{request_filter}",
+            f"/{endpoint_name}/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -128,7 +128,7 @@ class TestSearchAPICountEndpoint:
         expected_json,
     ):
         test_response = test_search_api_client.get(
-            f"/{endpoint_name}/count?where=" f"{request_filter}",
+            f"/{endpoint_name}/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -150,7 +150,7 @@ class TestSearchAPICountEndpoint:
         request_filter,
     ):
         test_response = test_search_api_client.get(
-            f"/Datasets/count" f"?where={request_filter}",
+            f"/Datasets/count?where={request_filter}",
         )
 
         assert test_response.status_code == 400

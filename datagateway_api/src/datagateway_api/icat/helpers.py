@@ -512,8 +512,7 @@ def update_entities(client, entity_type, data_to_update):
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(
-                "The new data in the request body must contain the ID (using the key:"
-                " 'id') of the entity you wish to update",
+                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to update",
             ) from e
 
     # This separates the local data updates from pushing these updates to icatdb

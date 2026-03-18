@@ -45,8 +45,7 @@ class TestEndpointRules:
             for route in matching_routes:
                 actual_methods |= route.methods
 
-            for method in expected_methods:
-                assert method in actual_methods
+            assert expected_methods <= actual_methods
 
     @pytest.mark.parametrize(
         "endpoint_name, expected_methods",

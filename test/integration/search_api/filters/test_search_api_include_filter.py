@@ -49,13 +49,13 @@ class TestSearchAPIIncludeFilter:
             pytest.param(
                 SearchAPIIncludeFilter(["members.person"], "Document"),
                 "Document",
-                "SELECT o FROM Investigation o INCLUDE o.investigationUsers AS iu," " iu.user",
+                "SELECT o FROM Investigation o INCLUDE o.investigationUsers AS iu, iu.user",
                 id="Document.members.person",
             ),
             pytest.param(
                 SearchAPIIncludeFilter(["dataset.samples.datasets"], "File"),
                 "File",
-                "SELECT o FROM Datafile o INCLUDE o.dataset AS ds, ds.sample AS s1," " s1.datasets",
+                "SELECT o FROM Datafile o INCLUDE o.dataset AS ds, ds.sample AS s1, s1.datasets",
                 id="File.dataset.samples.datasets",
             ),
             pytest.param(
@@ -68,7 +68,7 @@ class TestSearchAPIIncludeFilter:
             pytest.param(
                 SearchAPIIncludeFilter(["datasets", "members"], "Document"),
                 "Document",
-                "SELECT o FROM Investigation o INCLUDE o.datasets," " o.investigationUsers",
+                "SELECT o FROM Investigation o INCLUDE o.datasets, o.investigationUsers",
                 id="Document.datasets & Document.members",
             ),
             pytest.param(
@@ -80,7 +80,7 @@ class TestSearchAPIIncludeFilter:
             pytest.param(
                 SearchAPIIncludeFilter(["documents", "files", "samples"], "Dataset"),
                 "Dataset",
-                "SELECT o FROM Dataset o INCLUDE o.datafiles, o.investigation," " o.sample",
+                "SELECT o FROM Dataset o INCLUDE o.datafiles, o.investigation, o.sample",
                 id="List of three included entities",
             ),
         ],

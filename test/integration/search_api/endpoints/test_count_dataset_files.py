@@ -55,7 +55,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
         expected_json,
     ):
         test_response = test_search_api_client.get(
-            f"/Datasets/{pid}/files/count" f"?where={request_filter}",
+            f"/Datasets/{pid}/files/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
@@ -74,7 +74,7 @@ class TestSearchAPICountDatasetFilesEndpoint:
     )
     def test_invalid_count_dataset_files_endpoint(self, test_search_api_client, pid, request_filter):
         test_response = test_search_api_client.get(
-            f"/Datasets/{pid}/files/count" f"?where={request_filter}",
+            f"/Datasets/{pid}/files/count?where={request_filter}",
         )
 
         assert test_response.status_code == 400

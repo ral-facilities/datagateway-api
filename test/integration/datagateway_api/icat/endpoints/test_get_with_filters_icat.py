@@ -13,7 +13,7 @@ class TestICATGetWithFilters:
         single_investigation_test_data,
     ):
         test_response = test_client.get(
-            "/investigations?where=" '{"title": {"like": "Test data for Python ICAT on ' 'DataGateway API"}}',
+            '/investigations?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
         response_json = prepare_icat_data_for_assertion(test_response.json())
@@ -26,7 +26,7 @@ class TestICATGetWithFilters:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            "/investigations?where=" '{"title": {"eq": "This filter should cause a 404 fortesting ' 'purposes..."}}',
+            '/investigations?where={"title": {"eq": "This filter should cause a 404 fortesting purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 
@@ -39,8 +39,7 @@ class TestICATGetWithFilters:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            "/investigations?where="
-            '{"title": {"like": "Test data for Python ICAT on '
+            '/investigations?where={"title": {"like": "Test data for Python ICAT on '
             'DataGateway API"}}&distinct="title"&order="title asc"',
             headers=valid_icat_credentials_header,
         )
@@ -60,9 +59,7 @@ class TestICATGetWithFilters:
         limit_value = 2
 
         test_response = test_client.get(
-            "/investigations?where="
-            '{"title": {"like": "Test data for Python ICAT on '
-            'DataGateway API"}}'
+            '/investigations?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}'
             f'&skip={skip_value}&limit={limit_value}&order="id ASC"',
             headers=valid_icat_credentials_header,
         )

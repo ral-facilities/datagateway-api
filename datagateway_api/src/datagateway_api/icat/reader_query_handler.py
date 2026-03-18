@@ -150,14 +150,14 @@ class ReaderQueryHandler:
 
         if results:
             log.debug(
-                "User is authorised to see '%s' '%s'",
+                "User is authorised to see '%s%s'",
                 ReaderQueryHandler.entity_filter_check[self.entity_type],
                 self.where_filter_entity_id,
             )
             user_authorised = True
         else:
             log.debug(
-                "User is NOT authorised to see '%s' '%s'",
+                "User is NOT authorised to see '%s%s'",
                 ReaderQueryHandler.entity_filter_check[self.entity_type],
                 self.where_filter_entity_id,
             )

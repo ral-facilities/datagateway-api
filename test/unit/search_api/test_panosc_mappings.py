@@ -41,7 +41,7 @@ class TestPaNOSCMappings:
                 PaNOSCMappings("bad/path")
 
     @pytest.mark.parametrize(
-        "panosc_entity_name, field_name, expected_panosc_entity_name" ", expected_icat_field_name",
+        "panosc_entity_name, field_name, expected_panosc_entity_name, expected_icat_field_name",
         [
             pytest.param("Dataset", "title", "Dataset", "name", id="String mapping"),
             pytest.param(

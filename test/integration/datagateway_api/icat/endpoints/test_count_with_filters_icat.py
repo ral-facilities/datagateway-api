@@ -26,7 +26,7 @@ class TestICATCountWithFilters:
         expected_result,
     ):
         test_response = test_client.get(
-            "/investigations" f"/count{query_params}",
+            f"/investigations/count{query_params}",
             headers=valid_icat_credentials_header,
         )
 
@@ -38,8 +38,7 @@ class TestICATCountWithFilters:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            "/investigations/count?where="
-            '{"title": {"like": "This filter should cause 0results to be found '
+            '/investigations/count?where={"title": {"like": "This filter should cause 0 results to be found '
             'for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )

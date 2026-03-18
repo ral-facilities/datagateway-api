@@ -12,7 +12,7 @@ class TestICATGetByID:
     ):
         # Need to identify the ID given to the test data
         investigation_data = test_client.get(
-            "/investigations?where=" '{"title": {"like": "Test data for Python ICAT on ' 'DataGateway API"}}',
+            '/investigations?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
         test_data_id = investigation_data.json()[0]["id"]
@@ -35,14 +35,14 @@ class TestICATGetByID:
         """Request with a non-existent ID"""
 
         final_investigation_result = test_client.get(
-            "/investigations/findone?order=" '"id DESC"',
+            '/investigations/findone?order="id DESC"',
             headers=valid_icat_credentials_header,
         )
         test_data_id = final_investigation_result.json()["id"]
 
         # Adding 100 onto the ID to the most recent result should ensure a 404
         test_response = test_client.get(
-            "/investigations" f"/{test_data_id + 100}",
+            f"/investigations/{test_data_id + 100}",
             headers=valid_icat_credentials_header,
         )
 

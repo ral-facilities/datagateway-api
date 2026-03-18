@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 import uuid
 
 from dateutil.tz import tzlocal
@@ -89,7 +90,7 @@ def multiple_investigation_test_data(icat_client):
 @pytest.fixture()
 def final_instrument_id(test_client, valid_icat_credentials_header):
     final_instrument_result = test_client.get(
-        "/instruments/findone" '?order="id DESC"',
+        '/instruments/findone?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_instrument_result.json["id"]
@@ -98,7 +99,7 @@ def final_instrument_id(test_client, valid_icat_credentials_header):
 @pytest.fixture()
 def final_facilitycycle_id(test_client, valid_icat_credentials_header):
     final_facilitycycle_result = test_client.get(
-        "/facilitycycles/findone" '?order="id DESC"',
+        '/facilitycycles/findone?order="id DESC"',
         headers=valid_icat_credentials_header,
     )
     return final_facilitycycle_result.json["id"]
@@ -121,11 +122,10 @@ def remove_test_created_investigation_data(
 
     yield
 
+    where = {"name": {"like": TestICATCreateData.investigation_name_prefix}}
+
     created_test_data = test_client.get(
-        "/investigations?where="  # noqa: B907
-        '{"name":{"like":'
-        f'"{TestICATCreateData.investigation_name_prefix}"'  # noqa: B907
-        "}}",
+        f"/investigations?where={json.dumps(where)}",
         headers=valid_icat_credentials_header,
     )
     investigation_ids = []
@@ -134,6 +134,6 @@ def remove_test_created_investigation_data(
 
     for investigation_id in investigation_ids:
         test_client.delete(
-            "/investigations" f"/{investigation_id}",
+            f"/investigations/{investigation_id}",
             headers=valid_icat_credentials_header,
         )

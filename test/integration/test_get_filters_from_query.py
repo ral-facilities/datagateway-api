@@ -20,6 +20,8 @@ class TestGetFiltersFromQueryString:
             filters = get_filters_from_query_string(request, "datagateway_api")
             assert filters == []
 
+        test_client.get("/")
+
     @pytest.mark.parametrize(
         "filter_input, filter_type",
         [
@@ -51,20 +53,26 @@ class TestGetFiltersFromQueryString:
                 filters = get_filters_from_query_string(request, "datagateway_api")
                 assert isinstance(filters[0], filter_type)
 
+            test_client.get(f"/test-filters?{filter_input}")
+
     def test_valid_multiple_filters(self, test_client):
         with test_client:
             app = test_client.app
 
-            @app.get("/?limit=10&skip=4")
+            @app.get("/test-multiple-filters/?limit=10&skip=4")
             def test_filters_route(request: Request):
                 filters = get_filters_from_query_string(request, "datagateway_api")
                 assert len(filters) == 2
+
+            test_client.get("/test-multiple-filters/?limit=10&skip=4")
 
     def test_valid_search_api_filter(self, test_client):
         with test_client:
             app = test_client.app
 
-            @app.get('/?filter={"skip": 5, "limit": 10}')
+            @app.get('/test-search_api-filters/?filter={"skip": 5, "limit": 10}')
             def test_filters_route(request: Request):
                 filters = get_filters_from_query_string(request, "search_api", "Dataset")
                 assert len(filters) == 2
+
+            test_client.get('/test-search_api-filters/?filter={"skip": 5, "limit": 10}')

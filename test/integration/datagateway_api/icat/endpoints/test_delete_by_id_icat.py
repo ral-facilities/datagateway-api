@@ -6,7 +6,7 @@ class TestDeleteByID:
         single_investigation_test_data,
     ):
         test_response = test_client.delete(
-            "/investigations" f'/{single_investigation_test_data[0]["id"]}',
+            f'/investigations/{single_investigation_test_data[0]["id"]}',
             headers=valid_icat_credentials_header,
         )
 
@@ -20,7 +20,7 @@ class TestDeleteByID:
         """Request with a non-existent ID"""
 
         final_investigation_result = test_client.get(
-            "/investigations" '/findone?order="id DESC"',
+            '/investigations/findone?order="id DESC"',
             headers=valid_icat_credentials_header,
         )
 
@@ -28,7 +28,7 @@ class TestDeleteByID:
 
         # Adding 100 onto the ID to the most recent result should ensure a 404
         test_response = test_client.delete(
-            "/investigations" f"/{test_data_id + 100}",
+            f"/investigations/{test_data_id + 100}",
             headers=valid_icat_credentials_header,
         )
 

@@ -38,7 +38,7 @@ class TestICATCreateData:
                 **LARGE_INVESTIGATION_POST,
                 "releaseDate": "2020-03-03 08:00:08+00:00",
                 "startDate": "2020-02-02 09:00:09+00:00",
-            }
+            },
         )
 
         test_response = test_client.post(

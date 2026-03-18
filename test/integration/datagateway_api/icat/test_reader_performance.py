@@ -59,7 +59,7 @@ class TestReaderPerformance:
         ],
     )
     @patch(
-        "datagateway_api.src.common.config.Config.config.datagateway_api" ".use_reader_for_performance.enabled",
+        "datagateway_api.src.common.config.Config.config.datagateway_api.use_reader_for_performance.enabled",
         return_value=True,
     )
     def test_eligbility(
@@ -115,7 +115,7 @@ class TestReaderPerformance:
 
     @patch("datagateway_api.src.datagateway_api.icat.helpers.execute_entity_query")
     @patch(
-        "datagateway_api.src.common.config.Config.config.datagateway_api" ".use_reader_for_performance.enabled",
+        "datagateway_api.src.common.config.Config.config.datagateway_api.use_reader_for_performance.enabled",
         return_value=True,
     )
     def test_execute_query_as_reader(self, _, mock_execute_entity_query, icat_client):

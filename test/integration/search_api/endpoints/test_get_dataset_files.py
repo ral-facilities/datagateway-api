@@ -153,7 +153,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
     ):
 
         test_response = test_search_api_client.get(
-            f"/Datasets/{pid}/files" f"?filter={request_filter}",
+            f"/Datasets/{pid}/files?filter={request_filter}",
         )
 
         response_data = prepare_data_for_assertion(test_response.json())
@@ -191,7 +191,7 @@ class TestSearchAPIGetDatasetFilesEndpoint:
         expected_status_code,
     ):
         test_response = test_search_api_client.get(
-            f"/Datasets/{pid}/files" f"?filter={request_filter}",
+            f"/Datasets/{pid}/files?filter={request_filter}",
         )
 
         assert test_response.status_code == expected_status_code
