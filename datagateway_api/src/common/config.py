@@ -111,7 +111,7 @@ class APIConfig(BaseModel):
     Config options used for testing are not checked here as they should only be used
     during tests, not in the typical running of the API.
 
-    Some options used when running the API (host, debug_mode etc.) aren't mandatory
+    Some options used when running the API (host, reload etc.) aren't mandatory
     when running the API in production (these options aren't used in the `wsgi.py`
     entrypoint). As a result, they're not present in `config_keys`. However, they
     are required when using `main.py` as an entrypoint. In any case of these
@@ -120,12 +120,12 @@ class APIConfig(BaseModel):
     """
 
     datagateway_api: Optional[DataGatewayAPI] = None
-    debug_mode: Optional[StrictBool] = None
+    reload: Optional[StrictBool] = None
     generate_swagger: StrictBool
     host: Optional[StrictStr] = None
     log_level: StrictStr
     log_location: StrictStr
-    port: Optional[StrictStr] = None
+    port: Optional[StrictInt] = None
     search_api: Optional[SearchAPI] = None
     test_mechanism: Optional[StrictStr] = None
     url_prefix: DataGatewayAPIExtension

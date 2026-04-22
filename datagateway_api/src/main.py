@@ -4,12 +4,13 @@ import logging
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import uvicorn
 
 from datagateway_api.src.auth.session_bearer import SessionBearer
 from datagateway_api.src.common.config import Config
 from datagateway_api.src.common.entity_endpoint_dict import endpoints
 from datagateway_api.src.common.exceptions import ApiError
-from datagateway_api.src.common.logger_setup import setup_logger
+from datagateway_api.src.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
 from datagateway_api.src.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
 from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
@@ -118,4 +119,14 @@ for endpoint_name, entity_name in search_api_entity_endpoints.items():
 
     search_api_app.include_router(
         router,
+    )
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        "datagateway_api.src.main:datagateway_app",
+        host=Config.config.host,
+        port=Config.config.port,
+        reload=Config.config.reload,
+        log_config=LOGGING_CONFIG_FILE_PATH,
     )

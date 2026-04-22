@@ -26,10 +26,10 @@ search_api:
     limit: 1000
 log_level: "DEBUG"
 log_location: "/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"
-debug_mode: true
+reload: true
 generate_swagger: false
 host: "127.0.0.1"
-port: "5000"
+port: 5000
 test_user_credentials: { username: "root", password: "pw" }
 test_mechanism: "simple"
 url_prefix: "/"
