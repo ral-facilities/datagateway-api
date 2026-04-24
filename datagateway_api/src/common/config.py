@@ -122,10 +122,7 @@ class APIConfig(BaseModel):
 
     datagateway_api: Optional[DataGatewayAPI] = None
     reload: Optional[StrictBool] = None
-    generate_swagger: StrictBool
     host: Optional[StrictStr] = None
-    log_level: StrictStr
-    log_location: StrictStr
     port: Optional[StrictInt] = None
     search_api: Optional[SearchAPI] = None
     test_mechanism: Optional[StrictStr] = None

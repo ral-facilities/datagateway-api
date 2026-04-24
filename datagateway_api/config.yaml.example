@@ -24,10 +24,7 @@ search_api:
     api_request_timeout: 5
     group: "documents" #corresponds to the defined group in the scoring app. https://github.com/panosc-eu/panosc-search-scoring/blob/master/docs/md/PaNOSC_Federated_Search_Results_Scoring_API.md#model
     limit: 1000
-log_level: "DEBUG"
-log_location: "/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"
 reload: true
-generate_swagger: false
 host: "127.0.0.1"
 port: 5000
 test_user_credentials: { username: "root", password: "pw" }

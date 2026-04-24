@@ -259,7 +259,6 @@ are used by the `docker/docker-entrypoint.sh` script to update the config values
 
 - `ICAT_URL` (Default value: `http://localhost`)
 - `ICAT_CHECK_CERT` (Default value: `false`)
-- `LOG_LOCATION` (Default value: `/dev/stdout`)
 
 To build an image, run:
 
@@ -276,7 +275,7 @@ docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image
 If you want to pass values for the environment variables then instead run:
 
 ```bash
-docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true --env LOG_LOCATION=/datagateway-api-run/logs.log datagateway_api_image
+docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true datagateway_api_image
 ```
 
 ## DataGateway API Authentication
