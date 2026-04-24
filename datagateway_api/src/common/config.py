@@ -7,6 +7,7 @@ from pydantic import (
     AfterValidator,
     BaseModel,
     field_validator,
+    model_validator,
     StrictBool,
     StrictInt,
     StrictStr,
@@ -184,6 +185,28 @@ class APIConfig(BaseModel):
             )
 
         return value
+
+    @model_validator(mode="after")
+    def validate_root_path_usage(self):
+        """
+        Ensures that the root path ('/') is not used by both APIs at the same time.
+
+        Mounting an API at '/' is valid when running a single API instance, however
+        when both the DataGateway API and Search API are enabled, using '/' for either
+        would cause a routing conflict with the root FastAPI application. In this case,
+        both APIs must use distinct, non-root extensions.
+        """
+        dg_api = self.datagateway_api
+        search_api = self.search_api
+
+        if dg_api and search_api:
+            if dg_api.extension == "":
+                raise ValueError("datagateway_api extension cannot be '/' when search_api is also enabled")
+
+            if search_api.extension == "":
+                raise ValueError("search_api extension cannot be '/' when datagateway_api is also enabled")
+
+        return self
 
 
 class Config:

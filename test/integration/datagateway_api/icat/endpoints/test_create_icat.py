@@ -42,7 +42,7 @@ class TestICATCreateData:
         )
 
         test_response = test_client.post(
-            "/investigations",
+            "/datagateway_api/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigations_json,
         )
@@ -98,7 +98,7 @@ class TestICATCreateData:
         ]
 
         test_response = test_client.post(
-            "/investigations",
+            "/datagateway_api/investigations",
             headers=valid_icat_credentials_header,
             json=create_investigation_json,
         )
@@ -127,7 +127,7 @@ class TestICATCreateData:
         ]
 
         test_response = test_client.post(
-            "/investigations",
+            "/datagateway_api/investigations",
             headers=valid_icat_credentials_header,
             json=invalid_request_body,
         )
@@ -155,7 +155,7 @@ class TestICATCreateData:
         ]
 
         test_response = test_client.post(
-            "/investigations",
+            "/datagateway_api/investigations",
             headers=valid_icat_credentials_header,
             json=existing_object_json,
         )
@@ -186,13 +186,13 @@ class TestICATCreateData:
         ]
 
         create_response = test_client.post(
-            "/investigations",
+            "/datagateway_api/investigations",
             headers=valid_icat_credentials_header,
             json=request_body,
         )
 
         get_response = test_client.get(
-            "/investigations?where="  # noqa: B907
+            "/datagateway_api/investigations?where="  # noqa: B907
             '{"title": {"eq": "'
             f'{request_body[0]["title"]}'
             '"}}',

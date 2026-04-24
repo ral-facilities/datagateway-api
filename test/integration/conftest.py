@@ -10,7 +10,7 @@ import pytest
 
 from datagateway_api.src.common.config import APIConfig, Config
 from datagateway_api.src.datagateway_api.icat.models import Session
-from datagateway_api.src.main import datagateway_app, register_common_handlers
+from datagateway_api.src.main import main_app, register_common_handlers
 
 
 @pytest.fixture(scope="package")
@@ -33,7 +33,7 @@ def fixture_test_client() -> TestClient:
 
     :return: The test client.
     """
-    return TestClient(datagateway_app)
+    return TestClient(main_app)
 
 
 @pytest.fixture(name="local_auth_client")

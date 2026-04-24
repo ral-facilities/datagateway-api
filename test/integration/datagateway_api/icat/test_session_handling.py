@@ -20,7 +20,7 @@ class TestSessionHandling:
         valid_icat_credentials_header,
     ):
         session_details = test_client.get(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=valid_icat_credentials_header,
         )
 
@@ -49,7 +49,7 @@ class TestSessionHandling:
         test_client,
     ):
         session_details = test_client.get(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=bad_credentials_header,
         )
 
@@ -57,17 +57,17 @@ class TestSessionHandling:
 
     def test_refresh_session(self, valid_icat_credentials_header, test_client):
         pre_refresh_session_details = test_client.get(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=valid_icat_credentials_header,
         )
 
         refresh_session = test_client.put(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=valid_icat_credentials_header,
         )
 
         post_refresh_session_details = test_client.get(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=valid_icat_credentials_header,
         )
 
@@ -107,7 +107,7 @@ class TestSessionHandling:
         request_body,
     ):
         login_response = test_client.post(
-            "/sessions",
+            "/datagateway_api/sessions",
             json=request_body,
         )
 
@@ -146,7 +146,7 @@ class TestSessionHandling:
         expected_response_code,
     ):
         login_response = test_client.post(
-            "/sessions",
+            "/datagateway_api/sessions",
             json=request_body,
         )
 
@@ -174,7 +174,7 @@ class TestSessionHandling:
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = test_client.delete(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=creds_header,
         )
 
@@ -182,7 +182,7 @@ class TestSessionHandling:
 
     def test_invalid_logout(self, bad_credentials_header, test_client):
         logout_response = test_client.delete(
-            "/sessions",
+            "/datagateway_api/sessions",
             headers=bad_credentials_header,
         )
 

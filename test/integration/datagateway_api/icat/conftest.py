@@ -125,7 +125,7 @@ def remove_test_created_investigation_data(
     where = {"name": {"like": TestICATCreateData.investigation_name_prefix}}
 
     created_test_data = test_client.get(
-        f"/investigations?where={json.dumps(where)}",
+        f"/datagateway_api/investigations?where={json.dumps(where)}",
         headers=valid_icat_credentials_header,
     )
     investigation_ids = []
@@ -134,6 +134,6 @@ def remove_test_created_investigation_data(
 
     for investigation_id in investigation_ids:
         test_client.delete(
-            f"/investigations/{investigation_id}",
+            f"/datagateway_api/investigations/{investigation_id}",
             headers=valid_icat_credentials_header,
         )

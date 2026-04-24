@@ -32,18 +32,17 @@ class TestEndpointRules:
         ],
     )
     def test_entity_endpoints(self, test_client, endpoint_ending, expected_methods):
-        routes = [r for r in test_client.app.routes if isinstance(r, APIRoute)]
+        all_routes = collect_routes(test_client.app)
 
         for endpoint_entity in endpoints.keys():
-            expected_path = f"/{endpoint_entity.lower()}{endpoint_ending}"
+            endpoint_name = f"/{endpoint_entity.lower()}{endpoint_ending}"
+            matching_routes = [methods for path, methods in all_routes if path == endpoint_name]
 
-            matching_routes = [r for r in routes if r.path == expected_path]
-
-            assert matching_routes, f"Endpoint not found: {expected_path}"
+            assert matching_routes, f"Endpoint not found: {endpoint_name}"
 
             actual_methods = set()
-            for route in matching_routes:
-                actual_methods |= route.methods
+            for methods in matching_routes:
+                actual_methods |= methods
 
             assert expected_methods <= actual_methods
 
