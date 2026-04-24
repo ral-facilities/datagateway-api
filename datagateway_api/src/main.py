@@ -28,13 +28,6 @@ if search_api_enabled:
     from datagateway_api.src.search_api.routers.entity import create_search_collection_router
     from datagateway_api.src.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
 
-
-main_app = FastAPI(
-    title="DataGateway",
-    root_path=Config.config.url_prefix,
-    separate_input_output_schemas=False,
-)
-
 setup_logger()
 logger = logging.getLogger()
 enabled_apis = []
@@ -65,13 +58,13 @@ async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONRe
     )
 
 
-def register_common_handlers(app: FastAPI) -> None:
-    app.add_exception_handler(ApiError, custom_api_error_handler)
-    app.add_exception_handler(Exception, custom_general_exception_handler)
+def register_common_handlers(fastapi_app: FastAPI) -> None:
+    fastapi_app.add_exception_handler(ApiError, custom_api_error_handler)
+    fastapi_app.add_exception_handler(Exception, custom_general_exception_handler)
 
 
-def enable_cors(app: FastAPI) -> None:
-    app.add_middleware(
+def enable_cors(fastapi_app: FastAPI) -> None:
+    fastapi_app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
@@ -80,80 +73,90 @@ def enable_cors(app: FastAPI) -> None:
     )
 
 
-if datagateway_api_enabled:
-    datagateway_app = FastAPI(
-        title="DataGateway API",
-        separate_input_output_schemas=False,
-    )
-
-    enable_cors(datagateway_app)
-    register_common_handlers(datagateway_app)
-
-    python_icat = PythonICAT()
-    icat_client_pool = create_client_pool()
-    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-
-    for endpoint_name, entity_name in endpoints.items():
-        router = create_collection_router(
-            endpoint_name,
-            entity_name,
-            dg_models,
-            python_icat,
-            client_pool=icat_client_pool,
-        )
-        datagateway_app.include_router(
-            router,
-            dependencies=[Depends(SessionBearer())],
+def create_datagateway_app() -> FastAPI | None:
+    if datagateway_api_enabled:
+        datagateway_app = FastAPI(
+            title="DataGateway API",
+            separate_input_output_schemas=False,
         )
 
-    datagateway_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
-    datagateway_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
+        enable_cors(datagateway_app)
+        register_common_handlers(datagateway_app)
 
-    main_app.mount(
-        Config.config.datagateway_api.extension,
-        datagateway_app,
-    )
+        python_icat = PythonICAT()
+        icat_client_pool = create_client_pool()
+        dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
 
-    if not search_api_enabled:
-        main_app = datagateway_app
-        main_app.root_path = f"{Config.config.url_prefix}{Config.config.datagateway_api.extension}"
-    else:
-        main_app.mount(
-            Config.config.datagateway_api.extension,
-            datagateway_app,
-        )
+        for endpoint_name, entity_name in endpoints.items():
+            router = create_collection_router(
+                endpoint_name,
+                entity_name,
+                dg_models,
+                python_icat,
+                client_pool=icat_client_pool,
+            )
+            datagateway_app.include_router(
+                router,
+                dependencies=[Depends(SessionBearer())],
+            )
+
+        datagateway_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
+        datagateway_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
+
+        return datagateway_app
+    return None
 
 
-if search_api_enabled:
-    search_api_app = FastAPI(
-        title="Search API",
-        separate_input_output_schemas=False,
-    )
-    register_common_handlers(search_api_app)
-
-    for endpoint_name, entity_name in search_api_entity_endpoints.items():
-        router = create_search_collection_router(
-            entity_name,
-            endpoint_name,
-            add_file_endpoints=(entity_name == "Dataset"),
+def create_search_api_app() -> FastAPI | None:
+    if search_api_enabled:
+        search_api_app = FastAPI(
+            title="Search API",
+            separate_input_output_schemas=False,
         )
 
         enable_cors(search_api_app)
-        search_api_app.include_router(router)
+        register_common_handlers(search_api_app)
 
-    if not datagateway_api_enabled:
-        main_app = search_api_app
-        main_app.root_path = f"{Config.config.url_prefix}{Config.config.search_api.extension}"
-    else:
-        main_app.mount(
-            Config.config.search_api.extension,
-            search_api_app,
-        )
+        for endpoint_name, entity_name in search_api_entity_endpoints.items():
+            router = create_search_collection_router(
+                entity_name,
+                endpoint_name,
+                add_file_endpoints=(entity_name == "Dataset"),
+            )
+            search_api_app.include_router(router)
+
+        return search_api_app
+    return None
+
+
+if datagateway_api_enabled and search_api_enabled:
+    app = FastAPI(
+        title="DataGateway",
+        root_path=Config.config.url_prefix,
+        separate_input_output_schemas=False,
+    )
+
+    app.mount(
+        Config.config.datagateway_api.extension,
+        create_datagateway_app(),
+    )
+    app.mount(
+        Config.config.search_api.extension,
+        create_search_api_app(),
+    )
+
+elif datagateway_api_enabled:
+    app = create_datagateway_app()
+    app.root_path = f"{Config.config.url_prefix}{Config.config.datagateway_api.extension}"
+
+elif search_api_enabled:
+    app = create_search_api_app()
+    app.root_path = f"{Config.config.url_prefix}{Config.config.search_api.extension}"
 
 
 if __name__ == "__main__":
     uvicorn.run(
-        "datagateway_api.src.main:main_app",
+        "datagateway_api.src.main:app",
         host=Config.config.host,
         port=Config.config.port,
         reload=Config.config.reload,
