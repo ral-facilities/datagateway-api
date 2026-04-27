@@ -26,7 +26,7 @@ class TestICATCountWithFilters:
         expected_result,
     ):
         test_response = test_client.get(
-            f"/datagateway_api/investigations/count{query_params}",
+            f"/datagateway-api/investigations/count{query_params}",
             headers=valid_icat_credentials_header,
         )
 
@@ -38,7 +38,7 @@ class TestICATCountWithFilters:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            '/datagateway_api/investigations/count?where={"title": {"like": "This filter should cause 0 results to be found '
+            '/datagateway-api/investigations/count?where={"title": {"like": "This filter should cause 0 results to be found '
             'for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )

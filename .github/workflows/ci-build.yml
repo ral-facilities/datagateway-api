@@ -38,7 +38,7 @@ jobs:
       # Prep for using the API for tests
       - name: Configure datagateway extension
         run: echo "`yq \
-          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
       - name: Create config.yaml
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
@@ -103,7 +103,7 @@ jobs:
       # Prep for using the API for tests
       - name: Configure datagateway extension
         run: echo "`yq \
-          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
       - name: Create config.yaml
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json
@@ -405,7 +405,7 @@ jobs:
       # Prep for using the API for tests
       - name: Configure datagateway extension
         run: echo "`yq \
-          '.datagateway_api.extension="/datagateway_api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
       - name: Create config.yaml
         run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
       - name: Create search_api_mapping.json

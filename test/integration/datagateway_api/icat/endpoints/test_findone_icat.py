@@ -11,7 +11,7 @@ class TestICATFindone:
         single_investigation_test_data,
     ):
         test_response = test_client.get(
-            '/datagateway_api/investigations/findone?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
+            '/datagateway-api/investigations/findone?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
         response_json = prepare_icat_data_for_assertion([test_response.json()])
@@ -24,7 +24,7 @@ class TestICATFindone:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            "/datagateway_api/investigations/findone?"
+            "/datagateway-api/investigations/findone?"
             'where={"title": {"eq": "This filter should cause a404 for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )

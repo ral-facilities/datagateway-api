@@ -11,7 +11,7 @@ from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
 
 class TestICATPing:
     def test_valid_ping(self, test_client):
-        test_response = test_client.get("/datagateway_api/ping")
+        test_response = test_client.get("/datagateway-api/ping")
 
         assert test_response.json() == Constants.PING_OK_RESPONSE
 
