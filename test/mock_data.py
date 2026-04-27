@@ -21,7 +21,7 @@ LARGE_INVESTIGATION_POST = {
     "facility": 1,
     "datasets": [
         {
-            "complete": "string",
+            "complete": False,
             "type": 1,
             "fileCount": 0,
             "parameters": [

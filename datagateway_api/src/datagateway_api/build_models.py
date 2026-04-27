@@ -1,9 +1,9 @@
-from datetime import datetime
+import decimal
 import logging
 from typing import Annotated, List, Optional, Union
 
 from icat.exception import ICATError
-from pydantic import BaseModel, create_model, Field
+from pydantic import AwareDatetime, BaseModel, create_model, Field
 
 from datagateway_api.src.common.exceptions import PythonICATError
 from datagateway_api.src.datagateway_api.icat.helpers import get_cached_client
@@ -12,12 +12,30 @@ log = logging.getLogger()
 
 
 TYPE_MAP = {
+    # Text
     "String": str,
+    # Integer numbers
+    "Integer": int,
     "Long": int,
-    "Date": str,
-    "Boolean": bool,
+    "Short": int,
+    "BigInteger": int,
+    # Floating / precise
     "Double": float,
+    "Float": float,
+    "BigDecimal": decimal.Decimal,
+    # Boolean
+    "Boolean": bool,
+    "boolean": bool,
+    # Date
+    "Date": str,
+    "Timestamp": str,
+    "LocalDate": str,
+    "LocalDateTime": str,
+    "Instant": str,
+    # Enum
+    "Enum": str,
 }
+
 
 SYSTEM_FIELDS = {
     "id",
@@ -34,9 +52,9 @@ class ICATId(BaseModel):
 
 class ICATBaseEntity(ICATId):
     create_id: Annotated[Optional[str], Field(None, alias="createId")]
-    create_time: Annotated[Optional[datetime], Field(None, alias="createTime")]
+    create_time: Annotated[Optional[AwareDatetime], Field(None, alias="createTime")]
     mod_id: Annotated[Optional[str], Field(None, alias="modId")]
-    mod_time: Annotated[Optional[datetime], Field(None, alias="modTime")]
+    mod_time: Annotated[Optional[AwareDatetime], Field(None, alias="modTime")]
 
 
 def build_datagateway_api_model(**kwargs):
