@@ -147,10 +147,10 @@ def build_datagateway_api_model(**kwargs):
             else:
                 rel_model_name = field.type
                 if field.relType == "MANY":
-                    rel_type_str = f"List['{rel_model_name}']"  # noqa: B907
+                    rel_type_str = f"List[{rel_model_name!r}]"
                     post_type = f"List['{rel_model_name}Post']"  # noqa: B907
                 else:
-                    rel_type_str = f"'{rel_model_name}'"  # noqa: B907
+                    rel_type_str = f"{rel_model_name!r}"
                     post_type = int
 
                 optional_type = Optional[post_type]

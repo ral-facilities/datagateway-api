@@ -169,7 +169,7 @@ class TestSearchAPIWhereFilter:
                 SearchAPIWhereFilter("parameters.value", 20.0, "eq"),
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE p.numericValue = '20.0'",
-                id="Numeric (float) parameter value (mapping that maps to multiple ICATfields)",
+                id="Numeric (float) parameter value (mapping that maps to multiple ICAT fields)",
             ),
             pytest.param(
                 SearchAPIWhereFilter("parameters.value", [20, 30], "between"),
@@ -181,7 +181,7 @@ class TestSearchAPIWhereFilter:
                 SearchAPIWhereFilter("parameters.value", ["test"], "eq"),
                 "Document",
                 "SELECT o FROM Investigation o JOIN o.parameters AS p WHERE p.stringValue = '['test']'",
-                id="Other type parameter value (mapping that maps to multiple ICATfields)",
+                id="Other type parameter value (mapping that maps to multiple ICAT fields)",
             ),
         ],
     )

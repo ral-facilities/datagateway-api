@@ -111,7 +111,7 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
         )
     else:
         raise ApiError(
-            "Incorrect api_type passed into `get_filter_from_query_string(): {api_type}",
+            f"Incorrect api_type passed into `get_filter_from_query_string(): {api_type}",
         )
 
     log.info("Getting filters from query string")

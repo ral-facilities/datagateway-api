@@ -25,7 +25,7 @@ def get_model_for_entity(entity_name: str) -> BaseModel:
     Dynamically get the Pydantic model for the given entity name.
 
     :param entity_name: The name of the entity (string)
-    :return: The Pydantic model class for the given entity.s
+    :return: The Pydantic model class for the given entity.
     :raises ValueError: If no matching model exists
     """
     try:
@@ -248,7 +248,6 @@ def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
 
     :param router: FastAPI APIRouter to register endpoints on
     :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
-    :param model: The Pydantic model type used for response validation.
     """
 
     @router.get(
@@ -339,6 +338,7 @@ def create_search_collection_router(
 
     :param entity_name: The ICAT entity name used for backend queries (e.g. "Document").
     :param endpoint_name: The plural of the entity_name used for the API route and documentation (e.g. "Documents").
+    :param add_file_endpoints: Adds file endpoints for the route.
     :returns APIRouter: The router with the registered endpoints.
     """
     router = APIRouter(prefix=f"/{endpoint_name}", tags=[entity_name])

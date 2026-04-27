@@ -62,9 +62,6 @@ class TestICATCreateData:
             for key in optional_keys_to_remove:
                 investigation_request.pop(key, None)
 
-        # create_investigations_json[2]["releaseDate"] = None
-        # create_investigations_json[2]["startDate"] = None
-
         response_json = prepare_icat_data_for_assertion(
             test_response.json(),
             remove_id=True,

@@ -25,7 +25,7 @@ class TestICATFindone:
     ):
         test_response = test_client.get(
             "/datagateway-api/investigations/findone?"
-            'where={"title": {"eq": "This filter should cause a404 for testing purposes..."}}',
+            'where={"title": {"eq": "This filter should cause a 404 for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 
