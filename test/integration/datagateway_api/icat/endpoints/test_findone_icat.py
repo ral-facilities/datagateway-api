@@ -1,4 +1,3 @@
-from datagateway_api.src.common.config import Config
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
@@ -7,29 +6,26 @@ from test.integration.datagateway_api.icat.test_query import (
 class TestICATFindone:
     def test_valid_findone_with_filters(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        test_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations/findone?where="
-            '{"title": {"like": "Test data for Python ICAT on '
-            'DataGateway API"}}',
+        test_response = test_client.get(
+            '/datagateway-api/investigations/findone?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
-        response_json = prepare_icat_data_for_assertion([test_response.json])
+        response_json = prepare_icat_data_for_assertion([test_response.json()])
 
         assert response_json == single_investigation_test_data
 
     def test_valid_no_results_findone_with_filters(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
     ):
-        test_response = flask_test_app_icat.get(
-            f"{Config.config.datagateway_api.extension}/investigations/findone?where="
-            '{"title": {"eq": "This filter should cause a404 for testing '
-            'purposes..."}}',
+        test_response = test_client.get(
+            "/datagateway-api/investigations/findone?"
+            'where={"title": {"eq": "This filter should cause a 404 for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 

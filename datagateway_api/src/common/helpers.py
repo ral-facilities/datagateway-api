@@ -3,8 +3,7 @@ from functools import wraps
 import json
 import logging
 
-from flask import request
-from flask_restful import reqparse
+from fastapi import Request
 from pydantic import ValidationError
 import requests
 
@@ -49,24 +48,26 @@ def queries_records(method):
     return wrapper_gets_records
 
 
-def get_session_id_from_auth_header():
+def get_session_id_from_auth_header(request: Request):
     """
     Gets the sessionID from the Authorization header of a request
+    :request Request: FastAPI Request object containing the incoming headers
     :return: String: SessionID
     """
-    log.info(" Getting session Id from auth header")
-    parser = reqparse.RequestParser()
-    parser.add_argument("Authorization", location="headers")
-    args = parser.parse_args()
-    auth_header = (
-        args["Authorization"].split(" ") if args["Authorization"] is not None else ""
-    )
-    if auth_header == "":
+    log.info("Getting session Id from auth header")
+
+    auth_header_value = request.headers.get("Authorization")
+
+    if auth_header_value is None:
         raise MissingCredentialsError("No credentials provided in auth header")
+
+    auth_header = auth_header_value.split(" ")
+
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(
-            f" Could not authenticate consumer with auth header {auth_header}",
+            f"Could not authenticate consumer with auth header {auth_header}",
         )
+
     return auth_header[1]
 
 
@@ -85,11 +86,12 @@ def is_valid_json(string):
     return True
 
 
-def get_filters_from_query_string(api_type, entity_name=None):
+def get_filters_from_query_string(request: Request, api_type, entity_name=None):
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
 
+    :request Request: FastAPI Request object containing the incoming headers
     :param api_type: Type of API this function is being used for i.e. DataGateway API or
         Search API
     :type api_type: :class:`str`
@@ -109,14 +111,15 @@ def get_filters_from_query_string(api_type, entity_name=None):
         )
     else:
         raise ApiError(
-            "Incorrect api_type passed into `get_filter_from_query_string(): "
-            f"{api_type}",
+            f"Incorrect api_type passed into `get_filter_from_query_string(): {api_type}",
         )
-    log.info(" Getting filters from query string")
+
+    log.info("Getting filters from query string")
+
     try:
         filters = []
-        for arg in request.args:
-            for value in request.args.getlist(arg):
+        for arg in request.query_params:
+            for value in request.query_params.getlist(arg):
                 filters.extend(
                     QueryFilterFactory.get_query_filter(
                         {arg: json.loads(value)},

@@ -176,8 +176,5 @@ class TestFilterOrderHandler:
                 actual_num_of_python_include_filters += 1
                 assert filter_.included_filters == expected_icat_relations
 
-        assert (
-            actual_num_of_python_include_filters
-            == expected_num_of_python_include_filters
-        )
+        assert actual_num_of_python_include_filters == expected_num_of_python_include_filters
         assert len(handler.filters) == expected_filters_length

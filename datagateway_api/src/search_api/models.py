@@ -48,10 +48,7 @@ SearchAPIId = Annotated[
 
 def _is_panosc_entity_field_of_type_list(entity_field):
     entity_field_annotation = entity_field.annotation
-    if (
-        hasattr(entity_field_annotation, "_name")
-        and entity_field_annotation._name == "List"
-    ):
+    if hasattr(entity_field_annotation, "_name") and entity_field_annotation._name == "List":
         is_list = True  # pragma: py-37-code
     # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
     # whether the field is of type list in Python 3.6, we are checking the type of its
@@ -141,8 +138,7 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # Doing this allows for recursion.
 
                 if entity_field_alias not in [
-                    required_related_field.split(".")[0]
-                    for required_related_field in required_related_fields
+                    required_related_field.split(".")[0] for required_related_field in required_related_fields
                 ]:
                     # Before proceeding, check if the related entity really needs to be created.
                     # Do not attempt to create the related entity if ICAT data for it is available
@@ -152,27 +148,19 @@ class PaNOSCAttribute(ABC, BaseModel):
                     # entities unless explicitly specified to be included by the user.
                     continue
 
-                data = (
-                    [field_value] if not isinstance(field_value, list) else field_value
-                )
+                data = [field_value] if not isinstance(field_value, list) else field_value
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:
                     required_related_field = required_related_field.split(".")
-                    if (
-                        len(required_related_field) > 1
-                        and entity_field_alias in required_related_field
-                    ):
+                    if len(required_related_field) > 1 and entity_field_alias in required_related_field:
                         required_related_fields_for_next_entity.extend(
                             required_related_field[1:],
                         )
 
                 # Get the class of the referenced entity
                 entity_attr = getattr(sys.modules[__name__], entity_name)
-                field_value = [
-                    entity_attr.from_icat(d, required_related_fields_for_next_entity)
-                    for d in data
-                ]
+                field_value = [entity_attr.from_icat(d, required_related_fields_for_next_entity) for d in data]
 
             if not _is_panosc_entity_field_of_type_list(
                 cls.model_fields[entity_field],
@@ -188,8 +176,7 @@ class PaNOSCAttribute(ABC, BaseModel):
 
             if (
                 required_related_field in entity_fields
-                and required_related_field
-                in cls._related_fields_with_min_cardinality_one
+                and required_related_field in cls._related_fields_with_min_cardinality_one
                 and required_related_field not in entity_data
             ):
                 # If we are here, it means that a related entity, which has a minimum
@@ -443,6 +430,10 @@ class Technique(PaNOSCAttribute):
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Technique, cls).from_icat(icat_data, required_related_fields)
+
+
+class CountResponse(BaseModel):
+    count: int
 
 
 # The below models reference other models that may not be defined during their

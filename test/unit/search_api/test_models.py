@@ -339,9 +339,7 @@ class TestModels:
         expected_entity_data["instrument"] = INSTRUMENT_PANOSC_DATA
         expected_entity_data["files"] = [FILE_PANOSC_DATA, FILE_PANOSC_DATA]
         expected_entity_data["parameters"] = [PARAMETER_PANOSC_DATA.copy()]
-        expected_entity_data["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA[
-            "stringValue"
-        ]
+        expected_entity_data["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA["stringValue"]
         expected_entity_data["samples"] = [SAMPLE_PANOSC_DATA]
 
         icat_data = DATASET_ICAT_DATA.copy()
@@ -354,12 +352,8 @@ class TestModels:
             {"instrument": INSTRUMENT_ICAT_DATA.copy()},
             {"instrument": INSTRUMENT_ICAT_DATA.copy()},
         ]
-        icat_data["datasetInstruments"][0]["instrument"][
-            "facility"
-        ] = FACILITY_ICAT_DATA
-        icat_data["datasetInstruments"][1]["instrument"][
-            "facility"
-        ] = FACILITY_ICAT_DATA
+        icat_data["datasetInstruments"][0]["instrument"]["facility"] = FACILITY_ICAT_DATA
+        icat_data["datasetInstruments"][1]["instrument"]["facility"] = FACILITY_ICAT_DATA
         icat_data["datafiles"] = [DATAFILE_ICAT_DATA, DATAFILE_ICAT_DATA]
         icat_data["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
         icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
@@ -603,9 +597,7 @@ class TestModels:
         expected_entity_data["datasets"][0]["parameters"] = [
             PARAMETER_PANOSC_DATA.copy(),
         ]
-        expected_entity_data["datasets"][0]["parameters"][0]["value"] = (
-            DATASET_PARAMETER_ICAT_DATA["stringValue"]
-        )
+        expected_entity_data["datasets"][0]["parameters"][0]["value"] = DATASET_PARAMETER_ICAT_DATA["stringValue"]
         expected_entity_data["datasets"][0]["samples"] = [SAMPLE_PANOSC_DATA.copy()]
         expected_entity_data["datasets"][0]["samples"][0]["description"] = None
         expected_entity_data["members"] = [MEMBER_PANOSC_DATA.copy()]
@@ -620,9 +612,7 @@ class TestModels:
         icat_data["datasets"][0]["datasetInstruments"] = [
             {"instrument": INSTRUMENT_ICAT_DATA.copy()},
         ]
-        icat_data["datasets"][0]["datasetInstruments"][0]["instrument"][
-            "facility"
-        ] = FACILITY_ICAT_DATA
+        icat_data["datasets"][0]["datasetInstruments"][0]["instrument"]["facility"] = FACILITY_ICAT_DATA
         icat_data["datasets"][0]["datafiles"] = [DATAFILE_ICAT_DATA, DATAFILE_ICAT_DATA]
         icat_data["datasets"][0]["parameters"] = [DATASET_PARAMETER_ICAT_DATA.copy()]
         icat_data["datasets"][0]["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
@@ -635,9 +625,7 @@ class TestModels:
         icat_data["parameters"] = [INVESTIGATION_PARAMETER_ICAT_DATA.copy()]
         icat_data["parameters"][0]["type"] = PARAMETER_TYPE_ICAT_DATA
         icat_data["parameters"][0]["investigation"] = INVESTIGATION_ICAT_DATA.copy()
-        icat_data["parameters"][0]["investigation"][
-            "type"
-        ] = INVESTIGATION_TYPE_ICAT_DATA
+        icat_data["parameters"][0]["investigation"]["type"] = INVESTIGATION_TYPE_ICAT_DATA
         icat_data["parameters"][0]["investigation"]["keywords"] = [KEYWORD_ICAT_DATA]
 
         relations = [

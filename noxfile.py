@@ -32,14 +32,14 @@ def safety(session):
     )
 
 
-@nox.session(python=["3.10"], reuse_venv=True)
+@nox.session(python=["3.11"], reuse_venv=True)
 def unit_tests(session):
     args = session.posargs
     session.run("poetry", "install", external=True)
     session.run("pytest", "test/unit", *args)
 
 
-@nox.session(python=["3.10"], reuse_venv=True)
+@nox.session(python=["3.11"], reuse_venv=True)
 def integration_tests(session):
     args = session.posargs
     session.run("poetry", "install", external=True)

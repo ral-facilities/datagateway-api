@@ -104,8 +104,7 @@ class FilterOrderHandler(object):
 
         if icat_relations:
             log.info(
-                "Including ICAT relations of non-related fields of related PaNOSC "
-                "entities",
+                "Including ICAT relations of non-related fields of related PaNOSC entities",
             )
             # Remove any duplicate ICAT relations
             icat_relations = list(dict.fromkeys(icat_relations))
@@ -169,10 +168,7 @@ class FilterOrderHandler(object):
         """
         log.debug("Resetting result order for the order filter")
 
-        if any(
-            isinstance(icat_filter, PythonICATOrderFilter)
-            for icat_filter in self.filters
-        ):
+        if any(isinstance(icat_filter, PythonICATOrderFilter) for icat_filter in self.filters):
             PythonICATOrderFilter.result_order = []
             PythonICATOrderFilter.join_specs = {}
 

@@ -52,11 +52,7 @@ class SearchScoring:
         """
         for result in results:
             result["score"] = next(
-                (
-                    score["score"]
-                    for score in scores
-                    if score["itemId"] == result["pid"]
-                ),
+                (score["score"] for score in scores if score["itemId"] == result["pid"]),
                 -1,
             )
 

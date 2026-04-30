@@ -56,8 +56,7 @@ class ICATQuery:
             self.query.manual_count = False
         except ValueError as e:
             raise PythonICATError(
-                "An issue has occurred while creating a Python ICAT Query object,"
-                " suggesting an invalid argument",
+                "An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument",
             ) from e
 
     def execute_query(self, client, return_json_formattable=False):
@@ -94,11 +93,7 @@ class ICATQuery:
                 log.debug("This ICATQuery is used for COUNT purposes")
 
         distinct_query = False
-        if (
-            self.query.aggregate == "DISTINCT"
-            and not count_query
-            and not self.query.manual_count
-        ):
+        if self.query.aggregate == "DISTINCT" and not count_query and not self.query.manual_count:
             distinct_query = True
             log.info("Extracting the distinct fields from query's conditions")
             # Check query's conditions for the ones created by the distinct filter

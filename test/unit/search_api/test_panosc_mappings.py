@@ -41,8 +41,7 @@ class TestPaNOSCMappings:
                 PaNOSCMappings("bad/path")
 
     @pytest.mark.parametrize(
-        "panosc_entity_name, field_name, expected_panosc_entity_name"
-        ", expected_icat_field_name",
+        "panosc_entity_name, field_name, expected_panosc_entity_name, expected_icat_field_name",
         [
             pytest.param("Dataset", "title", "Dataset", "name", id="String mapping"),
             pytest.param(
@@ -162,10 +161,8 @@ class TestPaNOSCMappings:
         test_panosc_entity_name,
         expected_non_related_field_names,
     ):
-        non_related_field_names = (
-            test_panosc_mappings.get_panosc_non_related_field_names(
-                test_panosc_entity_name,
-            )
+        non_related_field_names = test_panosc_mappings.get_panosc_non_related_field_names(
+            test_panosc_entity_name,
         )
         assert non_related_field_names == expected_non_related_field_names
 
@@ -217,8 +214,7 @@ class TestPaNOSCMappings:
                 [
                     "user.user.investigationUsers.investigation.type",
                     "user.user.investigationUsers.investigation.keywords",
-                    "user.user.investigationUsers.investigation.datasets.sample"
-                    ".parameters.type",
+                    "user.user.investigationUsers.investigation.datasets.sample.parameters.type",
                 ],
                 id="Affiliation members.document.datasets.sample relation",
             ),
@@ -259,8 +255,10 @@ class TestPaNOSCMappings:
         test_entity_relation,
         expected_icat_relations,
     ):
-        icat_relations = test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
-            test_panosc_entity_name,
-            test_entity_relation,
+        icat_relations = (
+            test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+                test_panosc_entity_name,
+                test_entity_relation,
+            )
         )
         assert icat_relations == expected_icat_relations

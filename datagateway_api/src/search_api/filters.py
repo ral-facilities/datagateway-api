@@ -44,8 +44,7 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
         panosc_mapping_name = query.panosc_entity_name
 
         log.debug(
-            "Converting PaNOSC where input to ICAT using: %s (PaNOSC field names) and"
-            " %s (PaNOSC mapping name)",
+            "Converting PaNOSC where input to ICAT using: %s (PaNOSC field names) and %s (PaNOSC mapping name)",
             panosc_field_names,
             panosc_mapping_name,
         )
@@ -135,16 +134,12 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
             return str_cond
         else:
             log.info(
-                "__str__ for SearchAPIWhereFilter, no query found so repr() will be"
-                " returned",
+                "__str__ for SearchAPIWhereFilter, no query found so repr() will be returned",
             )
             return repr(self)
 
     def __repr__(self):
-        return (
-            f"Field: '{self.field}', Value: '{self.value}', Operation:"  # noqa: B907
-            f" '{self.operation}'"  # noqa: B907
-        )
+        return f"Field: {self.field!r}, Value: {self.value!r}, Operation: {self.operation!r}"
 
 
 class SearchAPISkipFilter(PythonICATSkipFilter):

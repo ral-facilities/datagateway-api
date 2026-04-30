@@ -1,7 +1,5 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
-
 
 class TestSearchAPICountEndpoint:
     @pytest.mark.parametrize(
@@ -77,18 +75,17 @@ class TestSearchAPICountEndpoint:
     )
     def test_valid_count_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         endpoint_name,
         request_filter,
         expected_json,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
-            f"{request_filter}",
+        test_response = test_search_api_client.get(
+            f"/{endpoint_name}/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
-        assert test_response.json == expected_json
+        assert test_response.json() == expected_json
 
     @pytest.mark.parametrize(
         "endpoint_name, request_filter, expected_json",
@@ -96,13 +93,13 @@ class TestSearchAPICountEndpoint:
             pytest.param(
                 "Datasets",
                 '{"isPublic": true}',
-                {"count": 119},
+                {"count": 120},
                 id="Dataset count with isPublic condition (True)",
             ),
             pytest.param(
                 "Documents",
                 '{"isPublic": true}',
-                {"count": 59},
+                {"count": 60},
                 id="Document count with isPublic condition (True)",
             ),
             pytest.param(
@@ -125,18 +122,17 @@ class TestSearchAPICountEndpoint:
     )
     def test_valid_count_endpoint_is_public_field(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         endpoint_name,
         request_filter,
         expected_json,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/{endpoint_name}/count?where="
-            f"{request_filter}",
+        test_response = test_search_api_client.get(
+            f"/{endpoint_name}/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
-        assert test_response.json == expected_json
+        assert test_response.json() == expected_json
 
     @pytest.mark.parametrize(
         "request_filter",
@@ -150,12 +146,11 @@ class TestSearchAPICountEndpoint:
     )
     def test_invalid_count_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         request_filter,
     ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/count"
-            f"?where={request_filter}",
+        test_response = test_search_api_client.get(
+            f"/Datasets/count?where={request_filter}",
         )
 
         assert test_response.status_code == 400

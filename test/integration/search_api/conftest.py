@@ -1,16 +1,11 @@
 import json
 from unittest.mock import mock_open, patch
 
-from flask import Flask
+from fastapi.testclient import TestClient
 import pytest
 
-from datagateway_api.src.api_start_utils import (
-    create_api_endpoints,
-    create_app_infrastructure,
-)
-from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
+from datagateway_api.src.common.config import Config
+from datagateway_api.src.main import create_search_api_app
 from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
 from datagateway_api.src.search_api.query import SearchAPIQuery
 
@@ -140,16 +135,13 @@ def test_panosc_mappings(test_search_api_mappings_data):
         return PaNOSCMappings("test/path")
 
 
-@pytest.fixture(scope="package")
-def flask_test_app_search_api(flask_test_app):
-    search_api_app = Flask(__name__)
-    search_api_app.config["TESTING"] = True
+@pytest.fixture(name="test_search_api_client")
+def fixture_test_client() -> TestClient:
+    """
+    Fixture for creating a test client for the application.
 
-    python_icat = PythonICAT()
-    # Create client pool
-    icat_client_pool = create_client_pool()
-    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-    api, spec = create_app_infrastructure(search_api_app, dg_models.values())
-    create_api_endpoints(search_api_app, api, spec, python_icat, icat_client_pool)
-
-    yield search_api_app.test_client()
+    :return: The test client.
+    """
+    app = create_search_api_app()
+    app.root_path = f"{Config.config.url_prefix}{Config.config.search_api.extension}"
+    return TestClient(app)

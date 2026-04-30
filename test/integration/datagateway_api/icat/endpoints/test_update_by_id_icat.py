@@ -1,13 +1,13 @@
-from datagateway_api.src.common.config import Config
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
+from test.mock_data import LARGE_INVESTIGATION_POST
 
 
 class TestUpdateByID:
     def test_valid_update_with_id(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
@@ -18,19 +18,53 @@ class TestUpdateByID:
         }
         single_investigation_test_data[0].update(update_data_json)
 
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations"
-            f"/{single_investigation_test_data[0]['id']}",
+        test_response = test_client.patch(
+            f"/datagateway-api/investigations/{single_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
             json=update_data_json,
         )
-        response_json = prepare_icat_data_for_assertion([test_response.json])
+
+        response_json = prepare_icat_data_for_assertion([test_response.json()])
+
+        assert response_json == single_investigation_test_data
+
+    def test_valid_update_with_id_with_a_deeply_nested_investigation(
+        self,
+        test_client,
+        valid_icat_credentials_header,
+        single_investigation_test_data,
+    ):
+        update_data_json = {**LARGE_INVESTIGATION_POST, "visitId": "test large update"}
+
+        single_investigation_test_data[0].update(update_data_json)
+
+        test_response = test_client.patch(
+            f"/datagateway-api/investigations/{single_investigation_test_data[0]['id']}",
+            headers=valid_icat_credentials_header,
+            json=update_data_json,
+        )
+
+        optional_keys_to_remove = (
+            "facility",
+            "type",
+            "datasets",
+            "investigationFacilityCycles",
+            "investigationUsers",
+            "publications",
+            "samples",
+            "studyInvestigations",
+        )
+
+        for key in optional_keys_to_remove:
+            single_investigation_test_data[0].pop(key, None)
+
+        response_json = prepare_icat_data_for_assertion([test_response.json()])
 
         assert response_json == single_investigation_test_data
 
     def test_invalid_update_with_id(
         self,
-        flask_test_app_icat,
+        test_client,
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
@@ -41,9 +75,8 @@ class TestUpdateByID:
             "doi": "_" * 256,
         }
 
-        test_response = flask_test_app_icat.patch(
-            f"{Config.config.datagateway_api.extension}/investigations"
-            f"/{single_investigation_test_data[0]['id']}",
+        test_response = test_client.patch(
+            f"/datagateway-api/investigations/{single_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
             json=invalid_update_json,
         )

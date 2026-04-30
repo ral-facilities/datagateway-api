@@ -27,8 +27,7 @@ class PythonICATWhereFilter(WhereFilter):
             query.addConditions(self.create_filter())
         except ValueError as e:
             raise FilterError(
-                "Something went wrong when adding WHERE filter to ICAT query:"
-                f" {e.args}",
+                f"Something went wrong when adding WHERE filter to ICAT query: {e.args}",
             ) from e
 
     def create_filter(self):
@@ -154,9 +153,7 @@ class PythonICATWhereFilter(WhereFilter):
         # distinct filter is used in a request
         jpql_value = (
             f"{value}"
-            if operator in ("in", "not in", "between")
-            or str(value).startswith("UPPER")
-            or "o." in str(value)
+            if operator in ("in", "not in", "between") or str(value).startswith("UPPER") or "o." in str(value)
             else f"'{value}'"  # noqa: B907
         )
 
@@ -226,15 +223,10 @@ class PythonICATOrderFilter(OrderFilter):
         for field_pointer in range(len(split_fields)):
             # Looking for plural entities but not field names
             # This is to avoid adding JOINs to field names such as job's argument field
-            if (
-                split_fields[field_pointer].endswith("s")
-                and split_fields[field_pointer] != split_fields[-1]
-            ):
+            if split_fields[field_pointer].endswith("s") and split_fields[field_pointer] != split_fields[-1]:
                 # Length minus 1 is used to omit field names, same reason as above
                 for join_field_pointer in range(field_pointer, len(split_fields) - 1):
-                    join_field_list = split_fields[
-                        field_pointer : join_field_pointer + 1
-                    ]
+                    join_field_list = split_fields[field_pointer : join_field_pointer + 1]
                     join_field_str = ".".join(join_field_list)
 
                     PythonICATOrderFilter.join_specs[join_field_str] = "LEFT JOIN"
@@ -328,8 +320,7 @@ class PythonICATIncludeFilter(IncludeFilter):
             for key, value in field.items():
                 if not isinstance(key, str):
                     raise FilterError(
-                        "Include Filter: Dictionary key should only be a string, not"
-                        " any other type",
+                        "Include Filter: Dictionary key should only be a string, not any other type",
                     )
 
                 if isinstance(value, str):
@@ -351,8 +342,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                             ) in element.items():
                                 if not isinstance(inner_element_key, str):
                                     raise FilterError(
-                                        "Include Filter: Dictionary key should only be"
-                                        " a string, not any other type",
+                                        "Include Filter: Dictionary key should only be a string, not any other type",
                                     )
                                 self._extract_filter_fields(
                                     {
@@ -365,8 +355,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                     for inner_key, inner_value in value.items():
                         if not isinstance(inner_key, str):
                             raise FilterError(
-                                "Include Filter: Dictionary key should only be a"
-                                " string, not any other type",
+                                "Include Filter: Dictionary key should only be a string, not any other type",
                             )
 
                         # Will end up as: key.inner_key.inner_value

@@ -14,7 +14,7 @@ from datagateway_api.src.datagateway_api.query_filter_factory import (
 
 
 class TestDataGatewayAPIQueryFilterFactory:
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     def test_valid_distinct_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
             {"distinct": "TEST"},
@@ -22,7 +22,7 @@ class TestDataGatewayAPIQueryFilterFactory:
         assert isinstance(test_filter[0], PythonICATDistinctFieldFilter)
         assert len(test_filter) == 1
 
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     @pytest.mark.parametrize(
         "filter_input",
         [
@@ -39,13 +39,13 @@ class TestDataGatewayAPIQueryFilterFactory:
         assert isinstance(test_filter[0], PythonICATIncludeFilter)
         assert len(test_filter) == 1
 
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     def test_valid_limit_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter({"limit": 10})
         assert isinstance(test_filter[0], PythonICATLimitFilter)
         assert len(test_filter) == 1
 
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     def test_valid_order_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(
             {"order": "id DESC"},
@@ -53,13 +53,13 @@ class TestDataGatewayAPIQueryFilterFactory:
         assert isinstance(test_filter[0], PythonICATOrderFilter)
         assert len(test_filter) == 1
 
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     def test_valid_skip_filter(self):
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter({"skip": 10})
         assert isinstance(test_filter[0], PythonICATSkipFilter)
         assert len(test_filter) == 1
 
-    @pytest.mark.usefixtures("flask_test_app_db")
+    @pytest.mark.usefixtures("test_client")
     @pytest.mark.parametrize(
         "filter_input",
         [

@@ -7,6 +7,7 @@ from pydantic import (
     AfterValidator,
     BaseModel,
     field_validator,
+    model_validator,
     StrictBool,
     StrictInt,
     StrictStr,
@@ -111,7 +112,7 @@ class APIConfig(BaseModel):
     Config options used for testing are not checked here as they should only be used
     during tests, not in the typical running of the API.
 
-    Some options used when running the API (host, debug_mode etc.) aren't mandatory
+    Some options used when running the API (host, reload etc.) aren't mandatory
     when running the API in production (these options aren't used in the `wsgi.py`
     entrypoint). As a result, they're not present in `config_keys`. However, they
     are required when using `main.py` as an entrypoint. In any case of these
@@ -120,13 +121,9 @@ class APIConfig(BaseModel):
     """
 
     datagateway_api: Optional[DataGatewayAPI] = None
-    debug_mode: Optional[StrictBool] = None
-    flask_reloader: Optional[StrictBool] = None
-    generate_swagger: StrictBool
+    reload: Optional[StrictBool] = None
     host: Optional[StrictStr] = None
-    log_level: StrictStr
-    log_location: StrictStr
-    port: Optional[StrictStr] = None
+    port: Optional[StrictInt] = None
     search_api: Optional[SearchAPI] = None
     test_mechanism: Optional[StrictStr] = None
     url_prefix: DataGatewayAPIExtension
@@ -155,8 +152,7 @@ class APIConfig(BaseModel):
 
                 if "datagateway_api" not in data and "search_api" not in data:
                     log.warning(
-                        "   WARNING: There is no API specified in the "
-                        "configuration file",
+                        "There is no API specified in the configuration file",
                     )
 
                 return cls(**data)
@@ -186,6 +182,28 @@ class APIConfig(BaseModel):
             )
 
         return value
+
+    @model_validator(mode="after")
+    def validate_root_path_usage(self):
+        """
+        Ensures that the root path ('/') is not used by both APIs at the same time.
+
+        Mounting an API at '/' is valid when running a single API instance, however
+        when both the DataGateway API and Search API are enabled, using '/' for either
+        would cause a routing conflict with the root FastAPI application. In this case,
+        both APIs must use distinct, non-root extensions.
+        """
+        dg_api = self.datagateway_api
+        search_api = self.search_api
+
+        if dg_api and search_api:
+            if dg_api.extension == "":
+                raise ValueError("datagateway_api extension cannot be '/' when search_api is also enabled")
+
+            if search_api.extension == "":
+                raise ValueError("search_api extension cannot be '/' when datagateway_api is also enabled")
+
+        return self
 
 
 class Config:

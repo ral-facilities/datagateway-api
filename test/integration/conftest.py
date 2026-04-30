@@ -2,20 +2,15 @@ from datetime import datetime, timedelta
 import json
 from unittest.mock import mock_open, patch
 
-from flask import Flask
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from icat.client import Client
 import pytest
 
 
-from datagateway_api.src.api_start_utils import (
-    create_api_endpoints,
-    create_app_infrastructure,
-)
 from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.datagateway_api.build_models import build_datagateway_api_model
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.src.datagateway_api.icat.models import Session
-from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
+from datagateway_api.src.main import app, register_common_handlers
 
 
 @pytest.fixture(scope="package")
@@ -31,43 +26,29 @@ def icat_client():
     return client
 
 
-@pytest.fixture(scope="package")
-def flask_test_app():
-    """This is used to check the endpoints exist and have the correct HTTP methods"""
-    test_app = Flask(__name__)
-
-    python_icat = PythonICAT()
-    # Create client pool
-    icat_client_pool = create_client_pool()
-    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-    api, spec = create_app_infrastructure(test_app, dg_models.values())
-    create_api_endpoints(test_app, api, spec, python_icat, icat_client_pool)
-
-    yield test_app
-
-
-@pytest.fixture(scope="function")
-def flask_test_app_db():
+@pytest.fixture(name="test_client")
+def fixture_test_client() -> TestClient:
     """
-    This is in the common conftest file because this test app is also used in
-    non Python ICAT specific tests
+    Fixture for creating a test client for the application.
+
+    :return: The test client.
     """
-    db_app = Flask(__name__)
-    db_app.config["TESTING"] = True
+    return TestClient(app)
 
-    python_icat = PythonICAT()
-    # Create client pool
-    icat_client_pool = create_client_pool()
-    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-    api, spec = create_app_infrastructure(db_app, dg_models.values())
-    create_api_endpoints(db_app, api, spec, python_icat, icat_client_pool)
-    db_app.app_context().push()
 
-    yield db_app.test_client()
+@pytest.fixture(name="local_auth_client")
+def fixture_auth_test_client() -> TestClient:
+    """
+    Isolated TestClient for auth tests.
+    """
+
+    auth_app = FastAPI()
+    register_common_handlers(auth_app)
+    return TestClient(auth_app)
 
 
 @pytest.fixture()
-def valid_db_credentials_header():
+def valid_credentials_header():
     session = Session(
         id="Test",
         expireDateTime=datetime.now() + timedelta(hours=1),
