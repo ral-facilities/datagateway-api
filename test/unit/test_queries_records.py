@@ -1,5 +1,5 @@
+from pydantic import ValidationError
 import pytest
-from sqlalchemy.exc import IntegrityError
 
 from datagateway_api.src.common.exceptions import (
     BadRequestError,
@@ -14,7 +14,7 @@ class TestQueriesRecords:
         "raised_exception, expected_exception, status_code",
         [
             pytest.param(BadRequestError, BadRequestError, 400, id="bad request error"),
-            pytest.param(IntegrityError, BadRequestError, 400, id="integrity error"),
+            pytest.param(ValidationError, BadRequestError, 400, id="validation error"),
             pytest.param(FilterError, FilterError, 400, id="invalid filter"),
             pytest.param(
                 MissingRecordError,

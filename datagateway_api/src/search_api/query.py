@@ -8,9 +8,7 @@ from datagateway_api.src.search_api.session_handler import SessionHandler
 class SearchAPIQuery:
     def __init__(self, panosc_entity_name, **kwargs):
         self.panosc_entity_name = panosc_entity_name
-        self.icat_entity_name = mappings.mappings[panosc_entity_name][
-            "base_icat_entity"
-        ]
+        self.icat_entity_name = mappings.mappings[panosc_entity_name]["base_icat_entity"]
 
         self.icat_query = SearchAPIICATQuery(
             SessionHandler.client,

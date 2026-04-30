@@ -100,7 +100,7 @@ def icat_client():
     )
     client.login(
         Config.config.test_mechanism,
-        Config.config.test_user_credentials.dict(),
+        Config.config.test_user_credentials.model_dump(),
     )
     return client
 
@@ -903,11 +903,7 @@ class DatasetGenerator(Generator):
         investigation_id = i % InvestigationGenerator.amount
         dataset.investigation = self.client.get(
             "Investigation",
-            (
-                investigation_id
-                if investigation_id != 0
-                else InvestigationGenerator.amount - 1
-            ),
+            (investigation_id if investigation_id != 0 else InvestigationGenerator.amount - 1),
         )
         sample_id = i % SampleGenerator.amount
         dataset.sample = self.client.get(
@@ -1112,8 +1108,7 @@ def generate_all(i, generators, client):
     for generator in generators:
         if generator.tier == i:
             print(
-                f"Adding {type(generator).__name__.replace('Generator', '') + 's'} of"
-                f" tier {generator.tier}",
+                f"Adding {type(generator).__name__.replace('Generator', 's')} of tier {generator.tier}",
             )
             processes.append(Process(target=generator.generate))
 

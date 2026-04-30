@@ -37,7 +37,7 @@ log = logging.getLogger()
 
 def requires_session_id(method):
     """
-    Decorator for Python ICAT backend methods that looks out for session errors when
+    Decorator for Python ICAT methods that looks out for session errors when
     using the API. The API call runs and an ICATSessionError may be raised due to an
     expired session, invalid session ID etc.
 
@@ -50,7 +50,7 @@ def requires_session_id(method):
     decorator is applied, which is reasonable to assume considering the current method
     signatures of all the endpoints.
 
-    :param method: The method for the backend operation
+    :param method: The method for the python ICAT operation
     :raises AuthenticationError: If a valid session_id is not provided with the request
     """
 
@@ -61,7 +61,8 @@ def requires_session_id(method):
 
             client = get_cached_client(args[1], client_pool)
             client.sessionId = args[1]
-            # Client object put into kwargs so it can be accessed by backend functions
+            # Client object put into kwargs so it can be accessed by
+            # python ICAT functions
             kwargs["client"] = client
 
             # Find out if session has expired
@@ -116,9 +117,7 @@ def get_session_details_helper(client):
         body
     """
     session_time_remaining = client.getRemainingMinutes()
-    session_expiry_time = (
-        datetime.now(tzlocal()) + timedelta(minutes=session_time_remaining)
-    ).replace(microsecond=0)
+    session_expiry_time = (datetime.now(tzlocal()) + timedelta(minutes=session_time_remaining)).replace(microsecond=0)
     username = client.getUserName()
 
     return {
@@ -162,26 +161,39 @@ def update_attributes(old_entity, new_entity):
         - typically if Python ICAT doesn't allow an attribute to be edited (e.g. modId &
         modTime)
     """
-    log.debug("Updating entity attributes: %s", list(new_entity.keys()))
-    for key in new_entity:
+    entity_non_null_fields = {k: v for k, v in new_entity.items() if v is not None}
+
+    log.debug("Updating entity attributes: %s", list(entity_non_null_fields.keys()))
+
+    for key, value in entity_non_null_fields.items():
         try:
             original_data_attribute = getattr(old_entity, key)
             if isinstance(original_data_attribute, datetime):
                 new_entity[key] = DateHandler.str_to_datetime_object(new_entity[key])
         except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot find attribute `{key}` within the"
-                f" {old_entity.BeanName} entity",
+                f"Bad request made, cannot find attribute `{key}` within the {old_entity.BeanName} entity",
             ) from e
 
         try:
-            setattr(old_entity, key, new_entity[key])
+
+            related_object = new_entity[key]
+            if key != "id":
+                entity_info = old_entity.getAttrInfo(old_entity.client, key)
+                if entity_info.relType.lower() == "many":
+                    related_object = build_related_entities(
+                        old_entity.client,
+                        entity_info.type,
+                        value,
+                        parent_entity_type=old_entity.BeanName,
+                    )
+                elif entity_info.relType.lower() == "one":
+                    related_object = old_entity.client.get(entity_info.type, value)
+            setattr(old_entity, key, related_object)
         except AttributeError as e:
             raise BadRequestError(
-                f"Bad request made, cannot modify attribute `{key}` within the"
-                f" {old_entity.BeanName} entity",
+                f"Bad request made, cannot modify attribute `{key}` within the {old_entity.BeanName} entity",
             ) from e
-
     return old_entity
 
 
@@ -500,8 +512,7 @@ def update_entities(client, entity_type, data_to_update):
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(
-                "The new data in the request body must contain the ID (using the key:"
-                " 'id') of the entity you wish to update",
+                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to update",
             ) from e
 
     # This separates the local data updates from pushing these updates to icatdb
@@ -528,7 +539,7 @@ def update_entities(client, entity_type, data_to_update):
     return updated_data
 
 
-def create_entities(client, entity_type, data):
+def create_entities(client, entity_type, data):  # noqa: C901
     """
     Add one or more results for the given entity using the JSON provided in `data`
 
@@ -556,9 +567,13 @@ def create_entities(client, entity_type, data):
         data = [data]
 
     for result in data:
+
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
+            if value is None:
+                continue
+
             log.debug("Preparing data for %s", attribute_name)
             try:
                 entity_info = new_entity.getAttrInfo(client, attribute_name)
@@ -572,11 +587,20 @@ def create_entities(client, entity_type, data):
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-                        related_object = client.get(entity_info.type, value)
+
+                        related_object = []
+                        if entity_info.relType.lower() == "many":
+                            related_object = build_related_entities(
+                                client,
+                                entity_info.type,
+                                value,
+                                parent_entity_type=entity_type,
+                            )
+                        else:
+                            related_object = client.get(entity_info.type, value)
+
                     except ICATNoObjectError as e:
                         raise BadRequestError(e) from e
-                    if entity_info.relType.lower() == "many":
-                        related_object = [related_object]
                     setattr(new_entity, attribute_name, related_object)
 
             except ValueError as e:
@@ -602,3 +626,65 @@ def create_entities(client, entity_type, data):
         created_data.append(get_entity_by_id(client, entity_type, entity.id, True))
 
     return created_data
+
+
+def initobj(obj, attrs):
+    """Initialize an entity object from a dict of attributes."""
+    for a in attrs:
+        if a != "id" and a in attrs:
+            setattr(obj, a, attrs[a])
+
+
+def build_related_entities(
+    client,
+    entity_type: str,
+    value: list | None,
+    parent_entity_type: str | None = None,
+):
+    """
+    Build related ICAT entities recursively, preserving cascade logic.
+    """
+
+    if not value:
+        return []
+    related_objects = []
+
+    entity_info = client.getEntityInfo(entity_type)
+    for val in value:
+        new_entity = client.new(entity_type)
+
+        for field in entity_info.fields:
+            if field.name not in val:
+                continue
+
+            field_value = val[field.name]
+
+            # ---- ATTRIBUTE ----
+            if field.relType.lower() == "attribute":
+                setattr(new_entity, field.name, field_value)
+
+            # ---- ONE (STOP) ----
+            elif field.relType.lower() == "one":
+                if parent_entity_type and field.type.lower() == parent_entity_type.lower():
+                    # SQL cascade case
+                    del val[field.name]
+                else:
+                    setattr(
+                        new_entity,
+                        field.name,
+                        client.get(field.type, field_value),
+                    )
+
+            # ---- MANY (RECURSE) ----
+            elif field.relType.lower() == "many":
+                nested = build_related_entities(
+                    client,
+                    field.type,
+                    field_value,
+                    parent_entity_type=entity_type,
+                )
+                setattr(new_entity, field.name, nested)
+
+        related_objects.append(new_entity)
+
+    return related_objects

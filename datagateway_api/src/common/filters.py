@@ -21,8 +21,8 @@ class WhereFilter(QueryFilter):
     precedence = 1
 
     def __init__(self, field, value, operation):
-        # The field is set to None as a precaution but this should be set by the
-        # individual backend since backends deal with this data differently
+        # The field is set to None as a precaution but this should be set
+        # when initialising Python ICAT
         self.field = None
         self.value = value
         self.operation = operation

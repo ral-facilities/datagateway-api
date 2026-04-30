@@ -3,11 +3,10 @@ from functools import wraps
 import json
 import logging
 
-from dateutil.tz.tz import tzlocal
-from flask import request
-from flask_restful import reqparse
+from fastapi import Request
+from pydantic import ValidationError
 import requests
-from sqlalchemy.exc import IntegrityError
+
 
 from datagateway_api.src.common.date_handler import DateHandler
 from datagateway_api.src.common.exceptions import (
@@ -17,8 +16,6 @@ from datagateway_api.src.common.exceptions import (
     FilterError,
     MissingCredentialsError,
 )
-from datagateway_api.src.datagateway_api.database import models
-from datagateway_api.src.resources.entities.entity_endpoint_dict import endpoints
 
 log = logging.getLogger()
 
@@ -44,31 +41,33 @@ def queries_records(method):
         except TypeError as e:
             log.exception(e.args)
             raise BadRequestError() from e
-        except IntegrityError as e:
+        except ValidationError as e:
             log.exception(e.args)
             raise BadRequestError() from e
 
     return wrapper_gets_records
 
 
-def get_session_id_from_auth_header():
+def get_session_id_from_auth_header(request: Request):
     """
     Gets the sessionID from the Authorization header of a request
+    :request Request: FastAPI Request object containing the incoming headers
     :return: String: SessionID
     """
-    log.info(" Getting session Id from auth header")
-    parser = reqparse.RequestParser()
-    parser.add_argument("Authorization", location="headers")
-    args = parser.parse_args()
-    auth_header = (
-        args["Authorization"].split(" ") if args["Authorization"] is not None else ""
-    )
-    if auth_header == "":
+    log.info("Getting session Id from auth header")
+
+    auth_header_value = request.headers.get("Authorization")
+
+    if auth_header_value is None:
         raise MissingCredentialsError("No credentials provided in auth header")
+
+    auth_header = auth_header_value.split(" ")
+
     if len(auth_header) != 2 or auth_header[0] != "Bearer":
         raise AuthenticationError(
-            f" Could not authenticate consumer with auth header {auth_header}",
+            f"Could not authenticate consumer with auth header {auth_header}",
         )
+
     return auth_header[1]
 
 
@@ -87,11 +86,12 @@ def is_valid_json(string):
     return True
 
 
-def get_filters_from_query_string(api_type, entity_name=None):
+def get_filters_from_query_string(request: Request, api_type, entity_name=None):
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
     QueryFilter Objects
 
+    :request Request: FastAPI Request object containing the incoming headers
     :param api_type: Type of API this function is being used for i.e. DataGateway API or
         Search API
     :type api_type: :class:`str`
@@ -111,14 +111,15 @@ def get_filters_from_query_string(api_type, entity_name=None):
         )
     else:
         raise ApiError(
-            "Incorrect api_type passed into `get_filter_from_query_string(): "
-            f"{api_type}",
+            f"Incorrect api_type passed into `get_filter_from_query_string(): {api_type}",
         )
-    log.info(" Getting filters from query string")
+
+    log.info("Getting filters from query string")
+
     try:
         filters = []
-        for arg in request.args:
-            for value in request.args.getlist(arg):
+        for arg in request.query_params:
+            for value in request.query_params.getlist(arg):
                 filters.extend(
                     QueryFilterFactory.get_query_filter(
                         {arg: json.loads(value)},
@@ -128,30 +129,6 @@ def get_filters_from_query_string(api_type, entity_name=None):
         return filters
     except Exception as e:
         raise FilterError(e) from e
-
-
-def get_entity_object_from_name(entity_name):
-    """
-    From an entity name, this function gets a Python version of that entity for the
-    database backend
-
-    :param entity_name: Name of the entity to fetch a version from this model
-    :type entity_name: :class:`str`
-    :return: Object of the entity requested (e.g.
-        :class:`.datagateway_api.database.models.INVESTIGATIONINSTRUMENT`)
-    :raises: KeyError: If an entity model cannot be found as a class in this model
-    """
-    try:
-        # If a plural is given, fetch the singular field name
-        if entity_name[-1] == "s":
-            entity_name = entity_name[0].upper() + entity_name[1:]
-            entity_name = endpoints[entity_name]
-
-        return getattr(models, entity_name.upper())
-    except KeyError as e:
-        raise ApiError(
-            f"Entity class cannot be found, missing class for {entity_name}",
-        ) from e
 
 
 def get_icat_properties(icat_url, icat_check_cert):
@@ -174,17 +151,15 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
 
     When selecting multiple (but not all) attributes in a database query, the results
     are returned in a list and not mapped to an entity object. This means the 'normal'
-    functions used to process data ready for output (`entity_to_dict()` for the ICAT
-    backend) cannot be used, as the structure of the query result is different.
+    functions used to process data ready for output (`entity_to_dict()` for Python ICAT
+    ) cannot be used, as the structure of the query result is different.
 
     :param distinct_attributes: List of distinct attributes from the distinct
         filter of the incoming request
     :type distinct_attributes: :class:`list`
-    :param query_result: Results fetched from a database query (backend independent due
-        to the data structure of this parameter)
+    :param query_result: Results fetched from a database query
     :type query_result: :class:`tuple` or :class:`list` when a single attribute is
-        given from ICAT backend, or :class:`sqlalchemy.engine.row.Row` when used on the
-        DB backend
+        given from Python ICAT
     :return: Dictionary of attribute names paired with the results, ready to be
         returned to the user
     """
@@ -194,10 +169,6 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         split_attr_name = attr_name.split(".")
 
         if isinstance(data, datetime):
-            # Workaround for when this function is used on DB backend, where usually
-            # `_make_serializable()` would fix tzinfo
-            if data.tzinfo is None:
-                data = data.replace(tzinfo=tzlocal())
             data = DateHandler.datetime_object_to_str(data)
 
         # Attribute name is from the 'origin' entity (i.e. not a related entity)

@@ -1,15 +1,17 @@
 import logging
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import Annotated, Optional
 
 from pydantic import (
+    AfterValidator,
     BaseModel,
+    field_validator,
+    model_validator,
     StrictBool,
     StrictInt,
     StrictStr,
     ValidationError,
-    validator,
 )
 import yaml
 
@@ -38,6 +40,9 @@ def validate_extension(extension):
     return extension
 
 
+DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
+
+
 class UseReaderForPerformance(BaseModel):
     enabled: StrictBool
     reader_mechanism: StrictStr
@@ -48,90 +53,19 @@ class UseReaderForPerformance(BaseModel):
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
-    validation of the DataGatewayAPI config data using Python type annotations. It takes
-    the backend into account, meaning only the config options for the backend used are
-    required.
+    validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    backend: StrictStr
-    client_cache_size: Optional[StrictInt]
-    client_pool_init_size: Optional[StrictInt]
-    client_pool_max_size: Optional[StrictInt]
-    db_url: Optional[StrictStr]
-    extension: StrictStr
-    icat_check_cert: Optional[StrictBool]
-    icat_url: Optional[StrictStr]
-    use_reader_for_performance: Optional[UseReaderForPerformance]
-
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
+    client_cache_size: StrictInt
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
+    extension: DataGatewayAPIExtension
+    icat_check_cert: StrictBool
+    icat_url: StrictStr
+    use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
-
-    @validator("db_url", always=True)
-    def require_db_config_value(cls, value, values):  # noqa: B902, N805
-        """
-        By default the `db_url` config field is optional so that it does not have to be
-        present in the config file if `backend` is set to `python_icat`. However, if the
-        `backend` is set to `db`, this validator esentially makes the `db_url` config
-        field mandatory. This means that an error is raised, at which point the
-        application exits, if a `db_url` config value is not present in the config file.
-
-        :param cls: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
-        """
-        if "backend" in values and values["backend"] == "db" and value is None:
-            raise TypeError("field required")
-        return value
-
-    @validator(
-        "client_cache_size",
-        "client_pool_init_size",
-        "client_pool_max_size",
-        "icat_check_cert",
-        "icat_url",
-        always=True,
-    )
-    def require_icat_config_value(cls, value, values):  # noqa: B902, N805
-        """
-        By default the above config fields that are passed to the `@validator` decorator
-        are optional so that they do not have to be present in the config file if
-        `backend` is set to `db`. However, if the `backend` is set to `python_icat`,
-        this validator esentially makes these config fields mandatory. This means that
-        an error is raised, at which point the application exits, if any of these config
-        values are not present in the config file.
-
-        :param cls: :class:`DataGatewayAPI` pointer
-        :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
-        """
-
-        if "backend" in values and values["backend"] == "python_icat" and value is None:
-            raise TypeError("field required")
-        return value
-
-    def set_backend_type(self, backend_type):
-        """
-        This setter is used as a way for automated tests to set the backend type. The
-        API can detect if the Flask app setup is from an automated test by checking the
-        app's config for a `TEST_BACKEND`. If this value exists (a KeyError will be
-        raised when the API is run normally, which will then grab the backend type from
-        `config.yaml`), it needs to be set using this function. This is required because
-        creating filters in the `QueryFilterFactory` is backend-specific so the backend
-        type must be fetched. This must be done using this module (rather than directly
-        importing and checking the Flask app's config) to avoid circular import issues.
-        """
-        self.backend = backend_type
-
-    class Config:
-        """
-        The behaviour of the BaseModel class can be controlled via this class.
-        """
-
-        # Enables assignment validation on the BaseModel fields. Useful for when the
-        # backend type is changed using the set_backend_type function.
-        validate_assignment = True
 
 
 class SearchScoring(BaseModel):
@@ -148,15 +82,13 @@ class SearchAPI(BaseModel):
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    extension: StrictStr
+    extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
     search_scoring: SearchScoring
-
-    _validate_extension = validator("extension", allow_reuse=True)(validate_extension)
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -180,7 +112,7 @@ class APIConfig(BaseModel):
     Config options used for testing are not checked here as they should only be used
     during tests, not in the typical running of the API.
 
-    Some options used when running the API (host, debug_mode etc.) aren't mandatory
+    Some options used when running the API (host, reload etc.) aren't mandatory
     when running the API in production (these options aren't used in the `wsgi.py`
     entrypoint). As a result, they're not present in `config_keys`. However, they
     are required when using `main.py` as an entrypoint. In any case of these
@@ -188,20 +120,14 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
-    datagateway_api: Optional[DataGatewayAPI]
-    debug_mode: Optional[StrictBool]
-    flask_reloader: Optional[StrictBool]
-    generate_swagger: StrictBool
-    host: Optional[StrictStr]
-    log_level: StrictStr
-    log_location: StrictStr
-    port: Optional[StrictStr]
-    search_api: Optional[SearchAPI]
-    test_mechanism: Optional[StrictStr]
-    test_user_credentials: Optional[TestUserCredentials]
-    url_prefix: StrictStr
-
-    _validate_extension = validator("url_prefix", allow_reuse=True)(validate_extension)
+    datagateway_api: Optional[DataGatewayAPI] = None
+    reload: Optional[StrictBool] = None
+    host: Optional[StrictStr] = None
+    port: Optional[StrictInt] = None
+    search_api: Optional[SearchAPI] = None
+    test_mechanism: Optional[StrictStr] = None
+    url_prefix: DataGatewayAPIExtension
+    test_user_credentials: Optional[TestUserCredentials] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -226,16 +152,16 @@ class APIConfig(BaseModel):
 
                 if "datagateway_api" not in data and "search_api" not in data:
                     log.warning(
-                        "   WARNING: There is no API specified in the "
-                        "configuration file",
+                        "There is no API specified in the configuration file",
                     )
 
                 return cls(**data)
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
-    @validator("search_api")
-    def validate_api_extensions(cls, value, values):  # noqa: B902, N805
+    @field_validator("search_api")
+    @classmethod
+    def validate_api_extensions(cls, value, info):  # noqa: B902, N805
         """
         Checks that the DataGateway API and Search API extensions are not the same. An
         error is raised, at which point the application exits, if the extensions are the
@@ -243,19 +169,41 @@ class APIConfig(BaseModel):
 
         :param cls: :class:`APIConfig` pointer
         :param value: The value of the given config field
-        :param values: The config field values loaded before the given config field
+        :param info: The config field values loaded before the given config field
         """
         if (
-            "datagateway_api" in values
-            and values["datagateway_api"] is not None
+            "datagateway_api" in info.data
+            and info.data["datagateway_api"] is not None
             and value is not None
-            and values["datagateway_api"].extension == value.extension
+            and info.data["datagateway_api"].extension == value.extension
         ):
             raise ValueError(
                 "extension cannot be the same as datagateway_api extension",
             )
 
         return value
+
+    @model_validator(mode="after")
+    def validate_root_path_usage(self):
+        """
+        Ensures that the root path ('/') is not used by both APIs at the same time.
+
+        Mounting an API at '/' is valid when running a single API instance, however
+        when both the DataGateway API and Search API are enabled, using '/' for either
+        would cause a routing conflict with the root FastAPI application. In this case,
+        both APIs must use distinct, non-root extensions.
+        """
+        dg_api = self.datagateway_api
+        search_api = self.search_api
+
+        if dg_api and search_api:
+            if dg_api.extension == "":
+                raise ValueError("datagateway_api extension cannot be '/' when search_api is also enabled")
+
+            if search_api.extension == "":
+                raise ValueError("search_api extension cannot be '/' when datagateway_api is also enabled")
+
+        return self
 
 
 class Config:

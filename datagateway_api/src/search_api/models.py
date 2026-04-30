@@ -1,21 +1,54 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 import sys
-from typing import ClassVar, List, Optional, Union
+from typing import Annotated, ClassVar, List, Literal, Optional, Union
 
-from pydantic import BaseModel, Field, root_validator, ValidationError, validator
-from pydantic.datetime_parse import parse_datetime
-from pydantic.error_wrappers import ErrorWrapper
+from pydantic import (
+    BaseModel,
+    BeforeValidator,
+    ConfigDict,
+    Field,
+    PlainSerializer,
+    ValidationError,
+)
+from pydantic_core import ErrorDetails
 
 from datagateway_api.src.search_api.panosc_mappings import mappings
 
 
+def format_datetime(dt):
+    return dt.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
+
+
+SearchAPIDatetime = Annotated[
+    datetime,
+    PlainSerializer(format_datetime, return_type=str, when_used="always"),
+]
+
+
+def pid_prefix(value):
+    return f"pid:{value}" if isinstance(value, int) else value
+
+
+SearchAPIPid = Annotated[str, BeforeValidator(pid_prefix)]
+
+# The PaNOSC fields that map to id fields in ICAT were set to be of type StrictStr but
+# because they are integers in ICAT, the creation of the PaNOSC models was failing
+# because they were only accepting strings. To deal with this issue, the type of such
+# PaNOSC fields were changed to str instead as this casts integers to strings but still
+# throws a ValidationError if None is passed to it. To keep things consistent and less
+# confusing, the types of all the other fields were made non-strict.
+
+
+SearchAPIId = Annotated[
+    str,
+    Field(alias="id"),
+]
+
+
 def _is_panosc_entity_field_of_type_list(entity_field):
-    entity_field_outer_type = entity_field.outer_type_
-    if (
-        hasattr(entity_field_outer_type, "_name")
-        and entity_field_outer_type._name == "List"
-    ):
+    entity_field_annotation = entity_field.annotation
+    if hasattr(entity_field_annotation, "_name") and entity_field_annotation._name == "List":
         is_list = True  # pragma: py-37-code
     # The `_name` `outer_type_` attribute was introduced in Python 3.7 so to check
     # whether the field is of type list in Python 3.6, we are checking the type of its
@@ -45,37 +78,28 @@ def _get_icat_field_value(icat_field_name, icat_data):
     return icat_data
 
 
-class SearchAPIDatetime(datetime):
-    """
-    An alternative datetime class so datetimes can be outputted in a different format to
-    DataGateway API
-    """
-
-    @classmethod
-    def __get_validators__(cls):
-        # Use default pydantic behaviour as well as behaviour defined in this class
-        yield parse_datetime
-        yield cls.use_search_api_format
-
-    @classmethod
-    def use_search_api_format(cls, v):
-        return v.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-
-
 class PaNOSCAttribute(ABC, BaseModel):
-    _datetime_field_names = ["creationDate", "startDate", "endDate", "releaseDate"]
+    _datetime_field_names: ClassVar[List[str]] = [
+        "creationDate",
+        "startDate",
+        "endDate",
+        "releaseDate",
+    ]
+
+    model_config = ConfigDict(coerce_numbers_to_str=True)
 
     @classmethod
     @abstractmethod
     def from_icat(cls, icat_data, required_related_fields):  # noqa: B902, N805
-        entity_fields = cls.__fields__
+        entity_fields = cls.model_fields
 
         entity_data = {}
         for entity_field in entity_fields:
             # Some fields have aliases so we must use them when creating a model
             # instance. If a field does not have an alias then the `alias` property
             # holds the name of the field
-            entity_field_alias = cls.__fields__[entity_field].alias
+            field_info = cls.model_fields[entity_field]
+            entity_field_alias = field_info.alias or entity_field
 
             entity_name, icat_field_name = mappings.get_icat_mapping(
                 cls.__name__,
@@ -114,8 +138,7 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # Doing this allows for recursion.
 
                 if entity_field_alias not in [
-                    required_related_field.split(".")[0]
-                    for required_related_field in required_related_fields
+                    required_related_field.split(".")[0] for required_related_field in required_related_fields
                 ]:
                     # Before proceeding, check if the related entity really needs to be created.
                     # Do not attempt to create the related entity if ICAT data for it is available
@@ -125,30 +148,22 @@ class PaNOSCAttribute(ABC, BaseModel):
                     # entities unless explicitly specified to be included by the user.
                     continue
 
-                data = (
-                    [field_value] if not isinstance(field_value, list) else field_value
-                )
+                data = [field_value] if not isinstance(field_value, list) else field_value
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:
                     required_related_field = required_related_field.split(".")
-                    if (
-                        len(required_related_field) > 1
-                        and entity_field_alias in required_related_field
-                    ):
+                    if len(required_related_field) > 1 and entity_field_alias in required_related_field:
                         required_related_fields_for_next_entity.extend(
                             required_related_field[1:],
                         )
 
                 # Get the class of the referenced entity
                 entity_attr = getattr(sys.modules[__name__], entity_name)
-                field_value = [
-                    entity_attr.from_icat(d, required_related_fields_for_next_entity)
-                    for d in data
-                ]
+                field_value = [entity_attr.from_icat(d, required_related_fields_for_next_entity) for d in data]
 
             if not _is_panosc_entity_field_of_type_list(
-                cls.__fields__[entity_field],
+                cls.model_fields[entity_field],
             ) and isinstance(field_value, list):
                 # If the field does not hold list of values but `field_value`
                 # is a list, then just get its first element
@@ -161,8 +176,7 @@ class PaNOSCAttribute(ABC, BaseModel):
 
             if (
                 required_related_field in entity_fields
-                and required_related_field
-                in cls._related_fields_with_min_cardinality_one
+                and required_related_field in cls._related_fields_with_min_cardinality_one
                 and required_related_field not in entity_data
             ):
                 # If we are here, it means that a related entity, which has a minimum
@@ -170,11 +184,18 @@ class PaNOSCAttribute(ABC, BaseModel):
                 # entity but the relevant ICAT data needed for its creation cannot be
                 # found in the provided ICAT response. Because of this, a
                 # `ValidationError` is raised.
-                error_wrapper = ErrorWrapper(
-                    TypeError("field required"),
-                    loc=required_related_field,
+
+                raise ValidationError.from_exception_data(
+                    cls.__name__,
+                    [
+                        ErrorDetails(
+                            type="missing",
+                            loc=(required_related_field,),
+                            msg="Field required",
+                            input=None,
+                        ),
+                    ],
                 )
-                raise ValidationError(errors=[error_wrapper], model=cls)
 
         return cls(**entity_data)
 
@@ -186,7 +207,7 @@ class Affiliation(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = []
 
     name: Optional[str] = None
-    id_: Optional[str] = Field(None, alias="id")
+    id_: Annotated[Optional[str], Field(alias="id")]
     address: Optional[str] = None
     city: Optional[str] = None
     country: Optional[str] = None
@@ -210,9 +231,11 @@ class Dataset(PaNOSCAttribute):
     ]
     _text_operator_fields: ClassVar[List[str]] = ["title"]
 
-    pid: str
+    pid: SearchAPIPid
     title: str
-    is_public: bool = Field(alias="isPublic")
+    # Hardcoding this to True because anon user is used for querying so all data
+    # returned by it is public
+    is_public: Literal[True] = Field(True, alias="isPublic")
     creation_date: SearchAPIDatetime = Field(alias="creationDate")
     size: Optional[int] = None
 
@@ -222,17 +245,6 @@ class Dataset(PaNOSCAttribute):
     files: Optional[List["File"]] = []
     parameters: Optional[List["Parameter"]] = []
     samples: Optional[List["Sample"]] = []
-
-    @validator("pid", pre=True, always=True)
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
-
-    @root_validator(pre=True)
-    def set_is_public(cls, values):  # noqa: B902, N805
-        # Hardcoding this to True because anon user is used for querying so all data
-        # returned by it is public
-        values["isPublic"] = True
-        return values
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -247,8 +259,10 @@ class Document(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["datasets"]
     _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
 
-    pid: str
-    is_public: bool = Field(alias="isPublic")
+    pid: SearchAPIPid
+    # Hardcoding this to True because anon user is used for querying so all data
+    # returned by it is public
+    is_public: Literal[True] = Field(True, alias="isPublic")
     type_: str = Field(alias="type")
     title: str
     summary: Optional[str] = None
@@ -263,17 +277,6 @@ class Document(PaNOSCAttribute):
     members: Optional[List["Member"]] = []
     parameters: Optional[List["Parameter"]] = []
 
-    @validator("pid", pre=True, always=True)
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
-
-    @root_validator(pre=True)
-    def set_is_public(cls, values):  # noqa: B902, N805
-        # Hardcoding this to True because anon user is used for querying so all data
-        # returned by it is public
-        values["isPublic"] = True
-        return values
-
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Document, cls).from_icat(icat_data, required_related_fields)
@@ -285,12 +288,12 @@ class File(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["dataset"]
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     name: str
     path: Optional[str] = None
     size: Optional[int] = None
 
-    dataset: Dataset = None
+    dataset: Optional[Dataset] = None
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -303,15 +306,11 @@ class Instrument(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
 
-    pid: str
+    pid: SearchAPIPid
     name: str
     facility: str
 
     datasets: Optional[List[Dataset]] = []
-
-    @validator("pid", pre=True, always=True)
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -324,10 +323,10 @@ class Member(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["document"]
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     role: Optional[str] = Field(None, alias="role")
 
-    document: Document = None
+    document: Optional[Document] = None
     person: Optional["Person"] = None
     affiliation: Optional[Affiliation] = None
 
@@ -345,7 +344,7 @@ class Parameter(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     name: str
     value: Union[float, int, str]
     unit: Optional[str] = None
@@ -386,7 +385,7 @@ class Person(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = []
 
-    id_: str = Field(alias="id")
+    id_: SearchAPIId
     full_name: str = Field(alias="fullName")
     orcid: Optional[str] = None
     researcher_id: Optional[str] = Field(None, alias="researcherId")
@@ -407,14 +406,10 @@ class Sample(PaNOSCAttribute):
     _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
 
     name: str
-    pid: str
+    pid: SearchAPIPid
     description: Optional[str] = None
 
     datasets: Optional[List[Dataset]] = []
-
-    @validator("pid", pre=True, always=True)
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
@@ -427,26 +422,26 @@ class Technique(PaNOSCAttribute):
     _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
     _text_operator_fields: ClassVar[List[str]] = ["name"]
 
-    pid: str
+    pid: SearchAPIPid
     name: str
 
     datasets: Optional[List[Dataset]] = []
-
-    @validator("pid", pre=True, always=True)
-    def set_pid(cls, value):  # noqa: B902, N805
-        return f"pid:{value}" if isinstance(value, int) else value
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
         return super(Technique, cls).from_icat(icat_data, required_related_fields)
 
 
+class CountResponse(BaseModel):
+    count: int
+
+
 # The below models reference other models that may not be defined during their
 # creation so their references have to manually be updated to lead to the actual
 # models or else an exception will be raised. This can be done with the help of
 # the postponed annotations via the future import together with the
-# `update_forward_refs` method, only after all related models are declared.
-Affiliation.update_forward_refs()
-Dataset.update_forward_refs()
-Document.update_forward_refs()
-Member.update_forward_refs()
+# `model_rebuild` method, only after all related models are declared.
+Affiliation.model_rebuild()
+Dataset.model_rebuild()
+Document.model_rebuild()
+Member.model_rebuild()

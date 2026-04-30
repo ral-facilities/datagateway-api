@@ -3,12 +3,7 @@
 
 # DataGateway API
 
-This is a Flask-based API that fetches data from an ICAT instance, and has two sets of
-endpoints, for two different use cases. The first is for
-[DataGateway](https://github.com/ral-facilities/datagateway) which has two methods of
-interfacing with an ICAT stack, using a
-[Python-based ICAT wrapper library](https://github.com/icatproject/python-icat) or using
-[sqlalchemy](https://www.sqlalchemy.org/) to communicate directly with an ICAT database.
+This is a FastAPI backend that fetches data from an ICAT instance, and has two sets of endpoints, for two different use cases. The first is for [DataGateway](https://github.com/ral-facilities/datagateway) which interfaces with an ICAT stack using a [Python-based ICAT wrapper library](https://github.com/icatproject/python-icat).
 
 The other use case is for the
 [PaNOSC Search API](https://github.com/panosc-eu/search-api/), required to be
@@ -55,10 +50,10 @@ If you encounter this error when installing poetry:
 ERROR: No matching distribution found for poetry==1.8.0
 ```
 
-You can try running the installer with python 3.10 with the command below:
+You can try running the installer with python 3.11 with the command below:
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3.10 -
+curl -sSL https://install.python-poetry.org | python3.11 -
 ```
 
 Or you can specify the version you want to install from the listed versions with the command below:
@@ -124,11 +119,9 @@ Currently, the following Nox sessions have been created:
   dependencies (pulled directly from Poetry) for any known vulnerabilities. This session
   gives the output in a full ASCII style report.
 - `unit_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
-  automated tests in `test/unit`, tests for the database and ICAT backends, and non-backend
-  specific tests. More details about the tests themselves [here](#running-tests).
+  automated tests in `test/unit`, tests for Python ICAT, and non Python ICAT specific tests. More details about the tests themselves [here](#running-tests).
 - `integration_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
-  automated tests in `test/unit`, tests for the database and ICAT backends, and non-backend
-  specific tests. Requires an ICAT backend. More details about the tests themselves [here](#running-tests).
+  automated tests in `test/unit`, tests for Python ICAT, and non Python ICAT specific tests. Requires ICAT. More details about the tests themselves [here](#running-tests).
 
 Each Nox session builds an environment using the repo's dependencies (defined using
 Poetry) using `install_with_constraints()`. This stores the dependencies in a
@@ -169,9 +162,9 @@ As a summary, these are the steps needed to create a dev environment for this re
 compressed into a single code block:
 
 ```bash
-# Install Python 3.10
+# Install Python 3.11
 
-# Download and install Python 3.10 from the official Python website or use your system’s package manager (e.g., apt for Linux, Homebrew for macOS, or the installer for Windows).
+# Download and install Python 3.11 from the official Python website or use your system’s package manager (e.g., apt for Linux, Homebrew for macOS, or the installer for Windows).
 # Make sure Python is added to your system PATH.
 # Verify the installation by checking the version.
 
@@ -199,17 +192,11 @@ pre-commit install
 
 # Running DataGateway API
 
-By default, the API will run on `http://localhost:5000` and all requests are made here
-e.g. `http://localhost:5000/datagateway-api/sessions`.
-
 ## DataGateway API
 
-Depending on the backend you want to use (either `db` or `python_icat`, more details
-about backends [here](#datagateway-api-backends)) the connection URL for the backend needs to be set.
-These are set in `config.yaml` (an example file is provided in the base directory of
-this repository). While both `db_url` and `icat_url` should have values assigned to them
-(for best practice), `db_url` will only be used for the database backend, and `icat_url`
-will only be used for the Python ICAT backend. Copy `config.yaml.example` to
+The `icat_url` should have a value assigned to it.
+This is set in `config.yaml` (an example file is provided in the base directory of
+this repository). Copy `config.yaml.example` to
 `config.yaml` and set the values as needed. If you need to create an instance of ICAT,
 there are a number of markdown-formatted tutorials that can be found on the
 [icat.manual](https://github.com/icatproject/icat.manual/tree/master/tutorials)
@@ -245,45 +232,11 @@ below) should only be used for development purposes.
 poetry run python -m datagateway_api.src.main
 ```
 
-However, it can also be run with the `flask run` command (installed with Flask). To use
-`flask run`, the enviroment variable `FLASK_APP` should be set to
-`datagateway_api/src/main.py`. Once this is set, the API can be run with `flask run`
-while inside the root directory of the project. This shouldn't be used in production, as
-detailed in Flask's documentation, this method of running the API is only
-["provided for convenience"](https://flask.palletsprojects.com/en/1.1.x/cli/#run-the-development-server).
-
-**WARNING: the host, port and debug config options will not be respected when the API is
-run this way**
-
-Examples:
-
-Unix:
+However, it can also be run with the `fastapi dev` command. This should only be used for development.
 
 ```bash
-$ export FLASK_APP=datagateway_api/src/main.py
-$ poetry run flask run
+fastapi dev datagateway_api/src/main.py --host 0.0.0.0 --port 5000
 ```
-
-CMD:
-
-```CMD
-> set FLASK_APP=datagateway_api/src/main.py
-> poetry run flask run
-```
-
-PowerShell:
-
-```powershell
-> $env:FLASK_APP = "datagateway_api/src/main.py"
-> poetry run flask run
-```
-
-The Flask app can be configured so that code changes are monitored and the server will
-reload itself when a change is detected. This setting can be toggled using
-`flask_reloader` in `config.yaml`. This is useful for development purposes. It should be
-noted that when this setting is enabled, the API will go through the startup process
-twice. In the case of the ICAT backend, this could dramatically increase startup time if
-the API is configured with a large initial client pool size.
 
 If you get the following error when starting the API, changes need to be made to your
 Poetry environment:
@@ -292,13 +245,13 @@ Poetry environment:
 ModuleNotFoundError: No module named 'urlparse'
 ```
 
-If using Python 3.10, please use Payara 5 on the ICAT stack which the API is being
+Please use Payara 5 on the ICAT stack which the API is being
 pointed at. There is a known issue when making HTTPS connections to Payara (via Python
 ICAT).
 
 It is also possible to run the API inside Docker. The `Dockerfile` can be used to build
 a Docker image which in turn can be used to create a container. The `Dockerfile` is
-configured to create a production image and runs a Gunicorn serve on port `8000` when a
+configured to create a production image and runs a FastAPI run on port `5000` when a
 container is started. Environment variables have also been defined in the `Dockerfile`
 to allow for values to be passed at runtime to future running containers. These values
 are used by the `docker/docker-entrypoint.sh` script to update the config values in the
@@ -306,7 +259,6 @@ are used by the `docker/docker-entrypoint.sh` script to update the config values
 
 - `ICAT_URL` (Default value: `http://localhost`)
 - `ICAT_CHECK_CERT` (Default value: `false`)
-- `LOG_LOCATION` (Default value: `/dev/stdout`)
 
 To build an image, run:
 
@@ -323,7 +275,7 @@ docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image
 If you want to pass values for the environment variables then instead run:
 
 ```bash
-docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true --env LOG_LOCATION=/datagateway-api-run/logs.log datagateway_api_image
+docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true datagateway_api_image
 ```
 
 ## DataGateway API Authentication
@@ -342,13 +294,7 @@ specification to visualise and allow users to easily interact with the API witho
 building their own requests. It's great for gaining an understanding in what endpoints
 are available and what inputs the requests can receive, all from an interactive
 interface.
-
-For DataGateway API, this specification is built with the Database Backend in mind
-(e.g. attribute names on example outputs are capitalised), however the Swagger interface
-can also be used with the Python ICAT Backend. More details on how the API's OpenAPI
-specification is built can be found [here](#generating-the-openapi-specification). An
-issue has been [created](https://github.com/ral-facilities/datagateway-api/issues/347)
-for the Swagger interface to be up to date when using the Python ICAT backend.
+For DataGateway API, the Swagger interface is designed to be compatible with the Python ICAT.
 
 # Running Tests
 
@@ -359,30 +305,29 @@ require an ICAT stack. In order to cover all the code you will need to run both 
 To run the unit test use `nox -s unit_tests`, and to run the integration tests use `nox -s integration_tests`
 The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
 and quicker action runs these are additionally split into the unit and integration tests.
-The tests are split into 3 main sections: non-backend specific (testing features such as the date handler), ICAT backend
-tests (containing tests for backend specific components, including tests for the
-different types of endpoints) and Database Backend tests (like the ICAT backend tests,
-but covering only the most used aspects of the API).
+The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and Python ICAT
+tests (containing tests for the specific components, including tests for the
+different types of endpoints).
 
 The configuration file (`config.yaml`) contains two options that will be used during the
 testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for your test environment, using `config.yaml.example` as a reference. The tests require a
 connection to an instance of ICAT, so set the rest of the config as needed.
 
 By default, this will execute the repo's tests in
-Python 3.10. For most cases, running the tests in a single Python
+Python 3.11. For most cases, running the tests in a single Python
 version will be sufficient:
 
 ```bash
-nox -p 3.10 -s unit_tests
-nox -p 3.10 -s integration
+nox -p 3.11 -s unit_tests
+nox -p 3.11 -s integration
 ```
 
 This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to check how much of the codebase is covered by the tests in `test/`:
 
 ```bash
-nox -p 3.10 -s unit_tests -- --cov-report term --cov=./datagateway_api
-nox -p 3.10 -s integration_tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.11 -s unit_tests -- --cov-report term --cov=./datagateway_api
+nox -p 3.11 -s integration_tests -- --cov-report term --cov=./datagateway_api
 ```
 
 With `pytest`, you can output the duration for each test, useful for showing the slower
@@ -391,13 +336,13 @@ into setup, call and teardown to more easily understand where the tests are bein
 down:
 
 ```bash
-nox -p 3.10 -s unit_tests -- --durations=0
-nox -p 3.10 -s integration_tests -- --durations=0
+nox -p 3.11 -s unit_tests -- --durations=0
+nox -p 3.11 -s integration_tests -- --durations=0
 ```
 
 To test a specific test class (or even a specific test function), you will
 need to use pytest itself through poetry. If you want to change the python
-version use `poetry env use 3.10` which will generate a virtual env with that
+version use `poetry env use 3.11` which will generate a virtual env with that
 version.
 
 ```bash
@@ -415,36 +360,79 @@ poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQ
 
 The project consists of 5 main packages:
 
-- `datagateway_api.src.datagateway_api` - code for DataGateway API, for both database and Python ICAT backends
+- `datagateway_api.src.datagateway_api` - code for DataGateway API, for Python ICAT
 - `datagateway_api.src.search_api` - Search API specific code e.g. `NestedWhereFilters` for the OR functionality for WHERE clauses
 - `datagateway_api.src.common` - code that is shared between DataGateway API and the search API
-- `datagateway_api.src.resources` - contains the API resources and their HTTP method definitions (e.g. GET, POST)
 - `test` - mixture of automated unit and integration tests written using Pytest
 
 ## Main
 
-`main.py` is where the flask_restful API is set up. This is where each endpoint resource
-class is generated and mapped to an endpoint.
+`main.py` is where the FastAPI application is set up. This file initialises both the
+DataGateway API and Search API applications, configures middleware (CORS), sets up
+exception handlers, and registers all endpoint routers. It also initialises the Python
+ICAT client pool for database interactions.
 
-Example:
+Example router registration:
 
 ```python
-api.add_resource(get_endpoint_resource, f"/{entity_name.lower()}")
+datagateway_app.include_router(
+    router,
+    dependencies=[Depends(SessionBearer())],
+)
 ```
+
+## Models
+
+DataGateway API models are dynamically constructed at application startup using the
+[`build_datagateway_api_model()`](datagateway_api/src/datagateway_api/build_models.py) function. This function queries
+the connected ICAT server for its schema and generates Pydantic models for all ICAT entities.
+
+For each ICAT entity, three models are generated:
+
+- **Base Model** (e.g., `Investigation`): Represents the full entity with all fields for GET responses
+- **POST Model** (e.g., `InvestigationPost`): Used for creation requests
+- **PATCH Model** (e.g., `InvestigationPatch`): Used for partial updates
+
+The models include metadata from ICAT schema (field descriptions, types, and relationships).
+Attribute fields are mapped to Python primitives according to their ICAT type, while relationship
+fields are converted to model references or lists of IDs.
+
+### Warning: All Fields Are Optional Due to Cascading Entity Creation and Modification
+
+**All fields (both relationship fields and attribute fields) are defined as optional in the generated
+models.** This design decision was made to support cascading entity creation and Modification and complex nested data
+structures.
+
+When creating or modifying nested entities through cascade operations, parent entities use their generated IDs for
+child relationships rather than requiring the full nested objects. For example, when creating a Job
+within an Application, the Job object contains only the Application's ID rather than the full
+Application object. This is especially important for deeply nested hierarchies like
+Investigation → Dataset → DataFile (4+ levels deep), where creating custom models for each
+combination would be inefficient and error-prone.
+
+In practice, this means:
+
+- **Relationship fields** are always optional since they reference parent IDs in cascade scenarios
+- **Attribute fields** are also optional to allow flexibility in partial entity creation and updates,
+  even though the ICAT SQL schema may define certain attributes as NOT NULL
+
+**Important:** This approach means that validation for required fields does **not** occur at the
+Pydantic schema level. Instead, validation failures will occur when the API attempts to insert the
+entity into ICAT. If you provide an incomplete entity missing required fields, the request will fail
+with an ICAT database error rather than a Pydantic validation error. To determine which fields are
+actually required, refer to the [ICAT schema documentation](https://repo.icatproject.org/site/icat/server/6.2.0/schema.html) and the specific ICAT facility's validation
+rules.
 
 ## Endpoints
 
-The logic for each endpoint is within `/src/resources` - they're split into entities and
-non_entities.
-
-The entities package contains `entity_map` which
-maps entity names to their field name used in backend-specific code. The Database
-Backend uses this for its mapped classes (explained below) and the Python ICAT Backend
-uses this for interacting with ICAT objects within Python ICAT. In most instances, the
-dictionary found in `entity_map.py` is simply mapping the plural entity name (used to
-build the entity endpoints) to the singular version. The `entity_endpoint` module
-contains the function that is used to generate endpoints at start up. Finally,
-`non_entities` contains the session endpoint for session handling.
+Endpoint logic is organised in the `routers/` subdirectories of both the DataGateway API
+and Search API. Router factory functions create FastAPI `APIRouter` objects that are
+dynamically registered during application startup in `main.py`. Each router factory
+accepts configuration parameters like entity names and models, and returns a configured
+router with all relevant endpoints (GET, POST, PATCH, DELETE, etc.) based on the entity
+type. The Search API and DataGateway API have separate router implementations tailored
+to their specific requirements. Session handling endpoints are also registered as part
+of the router setup.
 
 ## Logging
 
@@ -464,90 +452,36 @@ handler can be used to convert dates between string and datetime objects (using 
 agreed in `datagateway_api.src.common.constants`) and uses a parser from `dateutil` to
 detect if an input contains a date. This is useful for determining if a JSON value given
 in a request body is a date, at which point it can be converted to a datetime object,
-ready for storing in ICAT. The handler is currently only used in the Python ICAT
-Backend, however this is non-backend specific class.
+ready for storing in ICAT.
 
-## Exceptions & Flask Error Handling
+## Exceptions & FastAPI Error Handling
 
 Exceptions custom to DataGateway API are defined in
-`datagateway_api.src.common.exceptions`. Each exception has a status code and a default
-message (which can be changed when raising the exception in code). None of them are
-backend specific, however some are only used in a single backend because their meaning
-becomes irrelevant anywhere else.
+[datagateway_api.src.common.exceptions](datagateway_api/src/common/exceptions.py). Each exception has a status code and a default
+message (which can be changed when raising the exception in code).
 
-When the API is setup in `main.py`, a custom API object is created (inheriting
-flask_restful's `Api` object) so `handle_error()` can be overridden. A previous
-iteration of the API registered a error handler with the `Api` object, however this
-meant DataGateway API's custom error handling only worked as intended in debug mode (as
-detailed in a
-[GitHub issue](https://github.com/ral-facilities/datagateway-api/issues/147)). This
-solution prevents any exception returning a 500 status code (no matter the defined
-status code in `exceptions.py`) in production mode. This is explained in a
-[Stack Overflow answer](https://stackoverflow.com/a/43534068).
+When the API is set up in `main.py`, custom exception handlers are registered using FastAPI's
+`add_exception_handler()` method. The `custom_api_error_handler()` handles all `ApiError` exceptions
+and its subclasses, logging the exception and returning a JSON response with the appropriate
+status code and message. A catch-all `custom_general_exception_handler()` handles any uncaught
+exceptions to prevent internal server errors from leaking sensitive information. Both handlers
+are registered for both the DataGateway API and Search API applications.
 
 ## Filtering
 
 Filters available for use in the API are defined in `datagateway_api.src.common.filters`.
 These filters are all based from `QueryFilter`, an asbtract class to define any filter
 for the API. Precedence is used to prioritise in which order filters should be applied,
-but is only needed for the Database Backend.
+but is only needed for the Search API.
 
 Filtering logic is located in `datagateway_api.src.common.helpers`.
 `get_filters_from_query_string()` uses the request query parameters to form filters to
-be used within the API. A `QueryFilterFactory` is used to build filters for the correct
-backend and the static method within this class is called in
+be used within the API. A `QueryFilterFactory` is used to build filters for the Python ICAT and the static method within this class is called in
 `get_filters_from_query_string()`.
 
-## DataGateway API Backends
+## Python ICAT
 
-As described at the top of this file, there are currently two ways that DataGateway API
-creates/fetches/updates/deletes data from ICAT. The intention is each backend allows a
-different method to communicate with ICAT, but results in a very similarly behaving
-DataGateway API.
-
-### Abstract Backend Class
-
-The abstract class can be found in `datagateway_api.src.datagateway_api.backend` and
-contains all the abstract methods that should be found in a class which implements
-`Backend`. The typical architecture across both backends is that the implemented
-functions call a helper function to process the request and the result of that is
-returned to the user.
-
-Each backend module contains the following files which offer similar functionality,
-implemented in their own ways:
-
-- `backend.py` - Implemented version of `datagateway_api.src.datagateway_api.backend`
-- `filters.py` - Inherited versions of each filter defined in
-  `datagateway_api.src.common.filters`
-- `helpers.py` - Helper functions that are called in `backend.py`
-
-### Creating a Backend
-
-A function inside `datagateway_api.src.datagateway_api.backends` creates an instance of a
-backend using input to that function to decide which backend to create. This function is
-called in `main.py` which uses the backend type set in `config.yaml`, or a config value
-in the Flask app if it's set (this config option is only used in the tests however). The
-backend object is then parsed into the endpoint classes so the correct backend can be
-used.
-
-## Database Backend
-
-The Database Backend uses [SQLAlchemy](https://www.sqlalchemy.org/) to interface
-directly with the database for an instance of ICAT. This backend favours speed over
-thoroughness, allowing no control over which users can access a particular piece of
-data.
-
-### Mapped Classes
-
-The classes mapped from the database (as described [above](#endpoints)) are stored in
-`/common/database/models.py`. Each model was automatically generated using sqlacodegen.
-A class `EntityHelper` is defined so that each model may inherit two methods `to_dict()`
-and `update_from_dict(dictionary)`, both used for returning entities and updating them,
-in a form easily converted to JSON.
-
-## Python ICAT Backend
-
-Sometimes referred to as the ICAT Backend, this uses
+This uses
 [python-icat](https://python-icat.readthedocs.io/en/stable/) to interact with ICAT data.
 The Python-based API wrapper allows ICAT Server to be accessed using the SOAP interface.
 Python ICAT allows control over which users can access a particular piece of data, with
@@ -735,28 +669,6 @@ The [European Photon and Neutron Open Data Search Portal](https://data.panosc.eu
 requires all Search APIs that want to be integrated with the portal to support search
 scoring.
 
-## Generating the OpenAPI Specification
-
-When the config option `generate_swagger` is set to true in `config.yaml`, a YAML
-file defining the API using OpenAPI standards will be created at
-`src/swagger/openapi.yaml`. This option should be disabled in production to avoid any
-issues with read-only directories.
-
-[apispec](https://apispec.readthedocs.io/en/latest/) is used to help with this, with an
-`APISpec()` object created in `src/main.py` which endpoint specifications are added to
-(using `APISpec.path()`) when the endpoints are created for Flask. These paths are
-iterated over and ordered alphabetically, to ensure `openapi.yaml` only changes if there
-have been changes to the Swagger docs of the API; without that code, Git will detect
-changes on that file everytime startup occurs (preventing a clean development repo). The
-contents of the `APISpec` object are written to a YAML file and is used when the user
-goes to the configured (root) page in their browser.
-
-The endpoint related files in `src/resources/` contain `__doc__` which have the Swagger
-docs for each type of endpoint. For non-entity and table endpoints, the Swagger docs are
-contained in the docstrings. `src/resources/swagger/` contain code to aid Swagger doc
-generation, with a plugin (`RestfulPlugin`) created for `apispec` to extract Swagger
-documentation from `flask-restful` functions.
-
 # Utilities
 
 Within the repository, there are some useful files which can help with using the API.
@@ -772,9 +684,6 @@ can be changed by using the arg flags `-s` or `--seed` for the seed, and `-y` or
 `--years` for the number of years. For example:
 `python -m util.icat_db_generator -s 4 -y 10` Would set the seed to 4 and generate 10
 years of data.
-
-This uses code from the API's Database Backend, so a suitable `db_url` should be
-configured in `config.yaml`.
 
 When used on a machine that doesn't use UTC timezone, you may find there are a mix of
 timezones when querying the API. This issue was found on SciGateway Preprod when using
@@ -793,13 +702,6 @@ for this API. A Postman collection is stored in the root directory of this repos
 containing over 300 requests, with each type of endpoint for every entity as well as the
 table and session endpoints. The exported collection is in v2.1 format and is currently
 the recommended export version for Postman.
-
-This collection is mainly based around the Python ICAT Backend (request bodies for
-creating and updating data uses camelCase attribute names as accepted by that backend)
-but can easily be adapted for using the Database Backend if needed (changing attribute
-names to uppercase for example). The collection also contains a login request specially
-for the Database Backend, as logging in using that backend is slightly different to
-logging in via the Python ICAT Backend.
 
 The repo's collection can be easily imported into your Postman installation by opening
 Postman and selecting File > Import... and choosing the Postman collection from your
@@ -866,7 +768,7 @@ poetry run semantic-release print-version
 
 # Updating README
 
-Like the codebase, this README file follows a 88 character per line formatting approach.
+Like the codebase, this README file follows a 120 character per line formatting approach.
 This isn't always possible with URLs and codeblocks, but the vast majority of the file
 should follow this approach. Most IDEs can be configured to include a guideline to show
 where this point is. To do this in VS Code, insert the following line into
@@ -874,7 +776,7 @@ where this point is. To do this in VS Code, insert the following line into
 
 ```json
 "editor.rulers": [
-  88
+  120
 ]
 ```
 

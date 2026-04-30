@@ -1,10 +1,14 @@
 import logging
 
 from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.common.exceptions import (
-    ApiError,
-    FilterError,
+from datagateway_api.src.common.exceptions import FilterError
+from datagateway_api.src.datagateway_api.icat.filters import (
+    PythonICATDistinctFieldFilter as DistinctFieldFilter,
+    PythonICATIncludeFilter as IncludeFilter,
+    PythonICATLimitFilter as LimitFilter,
+    PythonICATOrderFilter as OrderFilter,
+    PythonICATSkipFilter as SkipFilter,
+    PythonICATWhereFilter as WhereFilter,
 )
 
 log = logging.getLogger()
@@ -16,11 +20,6 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
         """
         Given a filter, return a matching Query filter object
 
-        The filters are imported inside this method to enable the unit tests to not rely
-        on the contents of `config.yaml`. If they're imported at the top of the file,
-        the backend type won't have been updated if the Flask app has been created from
-        an automated test (file imports occur before `create_api_endpoints()` executes).
-
         :param request_filter: The filter to create the QueryFilter for
         :type request_filter: :class:`dict`
         :param entity_name: Not utilised in DataGateway API implementation of this
@@ -29,34 +28,8 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
             used for both implementations
         :type entity_name: :class:`str`
         :return: The QueryFilter object created
-        :raises ApiError: If the backend type contains an invalid value
         :raises FilterError: If the filter name is not recognised
         """
-
-        backend_type = Config.config.datagateway_api.backend
-        if backend_type == "db":
-            from datagateway_api.src.datagateway_api.database.filters import (
-                DatabaseDistinctFieldFilter as DistinctFieldFilter,
-                DatabaseIncludeFilter as IncludeFilter,
-                DatabaseLimitFilter as LimitFilter,
-                DatabaseOrderFilter as OrderFilter,
-                DatabaseSkipFilter as SkipFilter,
-                DatabaseWhereFilter as WhereFilter,
-            )
-        elif backend_type == "python_icat":
-            from datagateway_api.src.datagateway_api.icat.filters import (
-                PythonICATDistinctFieldFilter as DistinctFieldFilter,
-                PythonICATIncludeFilter as IncludeFilter,
-                PythonICATLimitFilter as LimitFilter,
-                PythonICATOrderFilter as OrderFilter,
-                PythonICATSkipFilter as SkipFilter,
-                PythonICATWhereFilter as WhereFilter,
-            )
-        else:
-            raise ApiError(
-                "Cannot select which implementation of filters to import, check the"
-                " config file has a valid backend type",
-            )
 
         filter_name = list(request_filter)[0].lower()
         if filter_name == "where":

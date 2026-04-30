@@ -1,11 +1,9 @@
 ---
 datagateway_api:
-  extension: "/"
-  backend: "python_icat"
+  extension: "/datagateway-api"
   client_cache_size: 5
   client_pool_init_size: 2
   client_pool_max_size: 5
-  db_url: "mysql+pymysql://icatdbuser:icatdbuserpw@localhost:3306/icatdb"
   icat_url: "https://localhost:8181"
   icat_check_cert: false
   use_reader_for_performance:
@@ -26,13 +24,9 @@ search_api:
     api_request_timeout: 5
     group: "documents" #corresponds to the defined group in the scoring app. https://github.com/panosc-eu/panosc-search-scoring/blob/master/docs/md/PaNOSC_Federated_Search_Results_Scoring_API.md#model
     limit: 1000
-flask_reloader: false
-log_level: "DEBUG"
-log_location: "/home/runner/work/datagateway/datagateway/datagateway-api/datagateway_api/logs.log"
-debug_mode: true
-generate_swagger: false
+reload: true
 host: "127.0.0.1"
-port: "5000"
+port: 5000
 test_user_credentials: { username: "root", password: "pw" }
 test_mechanism: "simple"
 url_prefix: "/"

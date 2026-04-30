@@ -2,20 +2,15 @@ from datetime import datetime, timedelta
 import json
 from unittest.mock import mock_open, patch
 
-from flask import Flask
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.api_start_utils import (
-    create_api_endpoints,
-    create_app_infrastructure,
-)
+
 from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.datagateway_api.database.helpers import (
-    delete_row_by_id,
-    insert_row_into_table,
-)
-from datagateway_api.src.datagateway_api.database.models import SESSION
+from datagateway_api.src.datagateway_api.icat.models import Session
+from datagateway_api.src.main import app, register_common_handlers
 
 
 @pytest.fixture(scope="package")
@@ -26,50 +21,41 @@ def icat_client():
     )
     client.login(
         Config.config.test_mechanism,
-        Config.config.test_user_credentials.dict(),
+        Config.config.test_user_credentials.model_dump(),
     )
     return client
 
 
-@pytest.fixture(scope="package")
-def flask_test_app():
-    """This is used to check the endpoints exist and have the correct HTTP methods"""
-    test_app = Flask(__name__)
-    api, spec = create_app_infrastructure(test_app)
-    create_api_endpoints(test_app, api, spec)
-
-    yield test_app
-
-
-@pytest.fixture(scope="function")
-def flask_test_app_db():
+@pytest.fixture(name="test_client")
+def fixture_test_client() -> TestClient:
     """
-    This is in the common conftest file because this test app is also used in
-    non-backend specific tests
+    Fixture for creating a test client for the application.
+
+    :return: The test client.
     """
-    db_app = Flask(__name__)
-    db_app.config["TESTING"] = True
-    db_app.config["TEST_BACKEND"] = "db"
+    return TestClient(app)
 
-    api, spec = create_app_infrastructure(db_app)
-    create_api_endpoints(db_app, api, spec)
-    db_app.app_context().push()
 
-    yield db_app.test_client()
+@pytest.fixture(name="local_auth_client")
+def fixture_auth_test_client() -> TestClient:
+    """
+    Isolated TestClient for auth tests.
+    """
+
+    auth_app = FastAPI()
+    register_common_handlers(auth_app)
+    return TestClient(auth_app)
 
 
 @pytest.fixture()
-def valid_db_credentials_header():
-    session = SESSION()
-    session.id = "Test"
-    session.expireDateTime = datetime.now() + timedelta(hours=1)
-    session.username = "Test User"
-
-    insert_row_into_table(SESSION, session)
+def valid_credentials_header():
+    session = Session(
+        id="Test",
+        expireDateTime=datetime.now() + timedelta(hours=1),
+        username="Test User",
+    )
 
     yield {"Authorization": f"Bearer {session.id}"}
-
-    delete_row_by_id(SESSION, "Test")
 
 
 @pytest.fixture()

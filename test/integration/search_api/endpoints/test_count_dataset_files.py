@@ -1,7 +1,5 @@
 import pytest
 
-from datagateway_api.src.common.config import Config
-
 
 class TestSearchAPICountDatasetFilesEndpoint:
     @pytest.mark.parametrize(
@@ -51,19 +49,17 @@ class TestSearchAPICountDatasetFilesEndpoint:
     )
     def test_valid_count_dataset_files_endpoint(
         self,
-        flask_test_app_search_api,
+        test_search_api_client,
         pid,
         request_filter,
         expected_json,
     ):
-
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
-            f"?where={request_filter}",
+        test_response = test_search_api_client.get(
+            f"/Datasets/{pid}/files/count?where={request_filter}",
         )
 
         assert test_response.status_code == 200
-        assert test_response.json == expected_json
+        assert test_response.json() == expected_json
 
     @pytest.mark.parametrize(
         "pid, request_filter",
@@ -76,15 +72,9 @@ class TestSearchAPICountDatasetFilesEndpoint:
             ),
         ],
     )
-    def test_invalid_count_dataset_files_endpoint(
-        self,
-        flask_test_app_search_api,
-        pid,
-        request_filter,
-    ):
-        test_response = flask_test_app_search_api.get(
-            f"{Config.config.search_api.extension}/Datasets/{pid}/files/count"
-            f"?where={request_filter}",
+    def test_invalid_count_dataset_files_endpoint(self, test_search_api_client, pid, request_filter):
+        test_response = test_search_api_client.get(
+            f"/Datasets/{pid}/files/count?where={request_filter}",
         )
 
         assert test_response.status_code == 400
