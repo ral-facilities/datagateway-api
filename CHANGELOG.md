@@ -1,6 +1,259 @@
 # CHANGELOG
 
 
+## v11.0.0 (2026-04-30)
+
+### Breaking
+
+* chore(api): migrate Flask-RESTful to FastAPI migration
+
+BREAKING CHANGE: Flask-RESTful has been removed and replaced with FastAPI. ([`8e4dc74`](https://github.com/ral-facilities/datagateway-api/commit/8e4dc74a3521db4a9d8d047569e5840d913efb85))
+
+### Chores
+
+* chore: update version of pydantic to V2 #520 ([`619c9d4`](https://github.com/ral-facilities/datagateway-api/commit/619c9d43b85b9e85d8fe1cd2e0d2f21e2af69c5d))
+
+### Refactoring
+
+* refactor: datagateway api model to use pydantic V2 #522 ([`f0b4bf6`](https://github.com/ral-facilities/datagateway-api/commit/f0b4bf66e93858067d7adc36e428110a2b7f0eea))
+
+### Unknown
+
+* Merge pull request #542 from ral-facilities/develop
+
+version 11 release ([`3989a65`](https://github.com/ral-facilities/datagateway-api/commit/3989a655e43e768fbab4afd1e2e553ce913ce95d))
+
+* Merge pull request #524 from ral-facilities/port-over-to-fastapi-#519
+
+Port over to fastapi #519 ([`352d45f`](https://github.com/ral-facilities/datagateway-api/commit/352d45f97eced036894ca6a26039c96b59fef63c))
+
+* fix typo on test_get_with_filters_icat.py #519 ([`cc9af2b`](https://github.com/ral-facilities/datagateway-api/commit/cc9af2bfef1bdce41e9610e2a918957db6259a48))
+
+* address review comments #519 ([`8de403d`](https://github.com/ral-facilities/datagateway-api/commit/8de403d96ce41cddc7524711da63ed03c3a1ba36))
+
+* improve typemap of jpql to python pydantic types #519 ([`3ad000a`](https://github.com/ral-facilities/datagateway-api/commit/3ad000ae4aff6178c9d8aad18c08281d785b828e))
+
+* Change "/datagateway_api" to "/datagateway-api" dg extension #519 ([`d8f1686`](https://github.com/ral-facilities/datagateway-api/commit/d8f16861d6ba24e5cbcc3fac63ec3b19de9daa17))
+
+* remove unused config variables #519 ([`8af1fa8`](https://github.com/ral-facilities/datagateway-api/commit/8af1fa836e43294793ab096d2e998f340caf2959))
+
+* refactor main.py #519 ([`742b47e`](https://github.com/ral-facilities/datagateway-api/commit/742b47e333f6263395b81539f1cc9572606cdcd7))
+
+* allow search-api and datagateway_api to run separately #519 ([`c30b9e6`](https://github.com/ral-facilities/datagateway-api/commit/c30b9e60ea718b7a6e66a1b118efba73ce1454ed))
+
+* Update README with FastAPI changes #519 ([`85b9ba0`](https://github.com/ral-facilities/datagateway-api/commit/85b9ba0b662f34e2bfd7789cb0647962cdb833e4))
+
+* allow FastAPI app to run via python -m using uvicorn #519
+
+- Rename debug_mode to reload
+- Change the type of port from string to integer ([`8a85ec3`](https://github.com/ral-facilities/datagateway-api/commit/8a85ec335be54ab1e35f0e090e458d0095dd3379))
+
+* Address review comments #519
+- improve formatting in test files ([`c4f80a4`](https://github.com/ral-facilities/datagateway-api/commit/c4f80a4e44446eec4e02e7dad142e9e9f6dd3495))
+
+* address review comments #519
+
+- only changes in src directory ([`32b8294`](https://github.com/ral-facilities/datagateway-api/commit/32b829453cc546bd2ade740609a3ffcbad9306a5))
+
+* fix failing search api test #519 ([`8f802fc`](https://github.com/ral-facilities/datagateway-api/commit/8f802fc1d10c04fcdf80d8894d6221eb476b14b7))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`ed910a0`](https://github.com/ral-facilities/datagateway-api/commit/ed910a025acae88537d28010904af36be809f90d))
+
+* add more post and patch testing #519 ([`48b7d60`](https://github.com/ral-facilities/datagateway-api/commit/48b7d60e1ab779724b661d03aa9d11f074a737da))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`8baf1dc`](https://github.com/ral-facilities/datagateway-api/commit/8baf1dc82d187203324caff4b8bbffd6ba8d88d1))
+
+* change response_model_exclude_none to response_model_exclude_unset  #519 ([`151bc7c`](https://github.com/ral-facilities/datagateway-api/commit/151bc7c110f7f9cf6996f566c7c0b32d3592a14e))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`74c1979`](https://github.com/ral-facilities/datagateway-api/commit/74c1979de1aebef2d8bdad23ae5f6b4a27563597))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`d4dd96c`](https://github.com/ral-facilities/datagateway-api/commit/d4dd96c84258206c5a94945331effb4a2da96f7a))
+
+* remove make_fields_optional #519 ([`9a7068b`](https://github.com/ral-facilities/datagateway-api/commit/9a7068b4182d92827d5a92747f107b4fc6d52cf4))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`3c832fa`](https://github.com/ral-facilities/datagateway-api/commit/3c832fae826723d51f41ad350f750bbca8aea00b))
+
+* make relational values optional #519 ([`2ffdbb7`](https://github.com/ral-facilities/datagateway-api/commit/2ffdbb7f1aaeb09f8e158f96043060a0e7f4f7e1))
+
+* update dockerfile #519 ([`2a47f5d`](https://github.com/ral-facilities/datagateway-api/commit/2a47f5d3413ebba26eed64bdc196723c1ef0cb46))
+
+* fix failing integration tests #519 ([`8ab0d9a`](https://github.com/ral-facilities/datagateway-api/commit/8ab0d9a1402f7179e5a7b51d19b4ac8ca9da441d))
+
+* update python version in ci-build #519 ([`5750aa9`](https://github.com/ral-facilities/datagateway-api/commit/5750aa91980f9a2f0d24016f17c8d2183f0b3ba4))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`e3be704`](https://github.com/ral-facilities/datagateway-api/commit/e3be704b03a225767b5b03a10ee41a9bc6978a8b))
+
+* refactor the integration test for datagateway-api ([`03d778a`](https://github.com/ral-facilities/datagateway-api/commit/03d778a07f386fd843df02426c13be71de76c3d7))
+
+* refactor search-api integration test #519 ([`146744d`](https://github.com/ral-facilities/datagateway-api/commit/146744dca9a42039452f7d35c20f7b9afcc9c2e2))
+
+* fix small issues with search models and routers #519 ([`ec1e08c`](https://github.com/ral-facilities/datagateway-api/commit/ec1e08c4fb0181a6f2666d784e5ab0407d1b06b5))
+
+* add exception handling for search api #519 ([`a9d4b8b`](https://github.com/ral-facilities/datagateway-api/commit/a9d4b8ba23280ac5a656ffe889d387bf6253a5d3))
+
+* refactor integration test in root level #519 ([`b853e3c`](https://github.com/ral-facilities/datagateway-api/commit/b853e3cc557f55a77965206025a3e6ffb46e1c08))
+
+* remove the swagger_ui tests #519 ([`79cce83`](https://github.com/ral-facilities/datagateway-api/commit/79cce83dd3f1007adbe00871d81b514b019199e1))
+
+* fix list types on the include query param for get endpoints #519 ([`4f4d009`](https://github.com/ral-facilities/datagateway-api/commit/4f4d009b51d5767f943fa02b1eb0ac559701e9be))
+
+* Add typing functions to the namespace #519 ([`dc2f2ae`](https://github.com/ral-facilities/datagateway-api/commit/dc2f2aeb51757dab27ccc523def40a19cd9e7748))
+
+* fix post and patch endpoints #519 ([`a6c98b2`](https://github.com/ral-facilities/datagateway-api/commit/a6c98b2d6c54b539d62a3e7ed811cd39e239f5c5))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`83cc952`](https://github.com/ral-facilities/datagateway-api/commit/83cc952dc9889e697930fd0557e8c4cc51e35be9))
+
+* Fix minor bugs
+
+- add TODO for issue found with post and patch requesr #525 ([`05e11a3`](https://github.com/ral-facilities/datagateway-api/commit/05e11a326a42752407d163917c49eea93388fa80))
+
+* Remove endpoints created by flask #519 ([`3f9250c`](https://github.com/ral-facilities/datagateway-api/commit/3f9250cb50b395ae370a2d5d55be213129dd9194))
+
+* Implement the search api endpoints #519 ([`f1e3dd5`](https://github.com/ral-facilities/datagateway-api/commit/f1e3dd5a62424ee9f2bdb9da2d75031e57140002))
+
+* move entity_endpoint_dict to common #519 ([`eb02265`](https://github.com/ral-facilities/datagateway-api/commit/eb0226598643656e1b042059b648c767dddeb20a))
+
+* Implement the get_find_one_endpoint func using fastapi #519 ([`b91cc3d`](https://github.com/ral-facilities/datagateway-api/commit/b91cc3d0157085f5f52b830625a49959b5917884))
+
+* Implement the get_count_endpoint func using fastapi #519 ([`96ee558`](https://github.com/ral-facilities/datagateway-api/commit/96ee55834fc0b1f8962e6b98fb892e2997f2dd2b))
+
+* Implement the get_id_endpoint func using fastapi #519 ([`9fffa67`](https://github.com/ral-facilities/datagateway-api/commit/9fffa674729e65d65b5ece3c6853de60a8a2dd9a))
+
+* Implement the get_endpoint func using fastapi #519 ([`1d8f42b`](https://github.com/ral-facilities/datagateway-api/commit/1d8f42b80bbb59174d19c3be3e561aae152304de))
+
+* prefixing paths with datagateway-api #519 ([`c535118`](https://github.com/ral-facilities/datagateway-api/commit/c535118b8ede594239287e03ece5177c3e50d57a))
+
+* Implemented Session router #519
+
+- implement session bearer to add session id in header ([`e0101bd`](https://github.com/ral-facilities/datagateway-api/commit/e0101bd7082cbed20c46edf6d339def07b550613))
+
+* Modify main.py to work with fastapi #519
+
+-  Implement ping router ([`b7a1cbe`](https://github.com/ral-facilities/datagateway-api/commit/b7a1cbef0397bb7b539d92fbb82f741f8b3814c0))
+
+* run black formatter #519 ([`6513a1e`](https://github.com/ral-facilities/datagateway-api/commit/6513a1e85921840fc20bce47d96eed3ebe59739d))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`7c0fc81`](https://github.com/ral-facilities/datagateway-api/commit/7c0fc81db73ff20917caeaa943529317cdfc6233))
+
+* update noxfile to use 3.11 #519 ([`8af6bc6`](https://github.com/ral-facilities/datagateway-api/commit/8af6bc6ef06af4de417b7ba06bb39ba815e70277))
+
+* Merge branch 'refactor-dg-api-model-to-pydantic-522' into port-over-to-fastapi-#519 ([`4296c21`](https://github.com/ral-facilities/datagateway-api/commit/4296c21d8e80322f8bd5d00d8bdf8c8502100dc7))
+
+* Add a logging.ini example file #519 ([`7627575`](https://github.com/ral-facilities/datagateway-api/commit/7627575d9d61d23cc614737b7d9d9e0b74b6a776))
+
+* Refactor logger logic to use configuration from .ini file #519 ([`3deaacf`](https://github.com/ral-facilities/datagateway-api/commit/3deaacf40346abff687e7973ecada8e4b0d78624))
+
+* Set black's and flake's max line length to 120 #519 ([`249c9e0`](https://github.com/ral-facilities/datagateway-api/commit/249c9e025a37cbb76a3272ec629fc14c991b741c))
+
+* Delete wsgi.py module #519 ([`52336fc`](https://github.com/ral-facilities/datagateway-api/commit/52336fc985ad639c8d101b222b3a55c07222e46e))
+
+* Replace Flask-RESTful dependencies with FastAPI #519 ([`2d1dc4a`](https://github.com/ral-facilities/datagateway-api/commit/2d1dc4a54a51a58509c94251706b8fef4452e8a6))
+
+* Merge branch 'remove-database-backend-#489' into port-over-to-fastapi-#519 ([`34843fb`](https://github.com/ral-facilities/datagateway-api/commit/34843fbaf433f0c680ae6ced025655b80ffe1b5a))
+
+* Drop support for Python versions below 3.11 #519 ([`f3cf213`](https://github.com/ral-facilities/datagateway-api/commit/f3cf213f52869bb4ad17582adeef794581bbb9fa))
+
+* Merge pull request #523 from ral-facilities/refactor-dg-api-model-to-pydantic-522
+
+Refactor dg api model to pydantic #522 ([`36076e4`](https://github.com/ral-facilities/datagateway-api/commit/36076e4bd9bde2bf31feb0f9c2be68fa329f90df))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`bf6083f`](https://github.com/ral-facilities/datagateway-api/commit/bf6083fface533cbade4a1631b589b7551767cff))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`e8e0b9f`](https://github.com/ral-facilities/datagateway-api/commit/e8e0b9face07c4a0ec0d1f20b757daa9b7a99b96))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`40b50da`](https://github.com/ral-facilities/datagateway-api/commit/40b50dae1b7bd00dc15de942a4f6872343ffd664))
+
+* Address review comments #522 ([`bf4bd8a`](https://github.com/ral-facilities/datagateway-api/commit/bf4bd8adbf69469f47e67aa274760c4a810761e7))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`edfcce6`](https://github.com/ral-facilities/datagateway-api/commit/edfcce656d4e92182cffef3a17c935e7e3c35c3b))
+
+* fix linting #522 ([`7a007ee`](https://github.com/ral-facilities/datagateway-api/commit/7a007ee72d8024a1581157d879a0fa96b1a3098c))
+
+* Make all field value schema optional #522
+
+-  As values support the distinct filter operator, which may request
+one or many values from a given object.
+
+- Let error validation be done on ICAT ([`6153cf2`](https://github.com/ral-facilities/datagateway-api/commit/6153cf2c47a10afc18057a4dc14801e11e30b5b3))
+
+* fix linting and failing integration test #522 ([`57cb6fb`](https://github.com/ral-facilities/datagateway-api/commit/57cb6fb29a209b3123f6f6e201875f5b39ac7ba1))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`1f4707f`](https://github.com/ral-facilities/datagateway-api/commit/1f4707fadb8425e025ac366c46951c806b0d157e))
+
+* make the relational fields optional on schemas #522
+
+In the models all the relationships fields so ONE to ONE , ONE to MANY
+and MANY to MANY are optional. This was done because the model are
+deeply nested and can cascade. When they cascade they use the id
+generated by the parent for the given field e.g. so if you can create
+jobs in Applications, the job object would have the application id.
+This is a complex when it comes to Investigation when there is 4 levels
+deep so investigation - dataset - data file etc. for this to work you
+have to create many custom models of existing entities. So it is more
+efficient to make them optional. The ATTRIBUTES can be optional or
+mandatory depending on the SQL schema. ([`6896015`](https://github.com/ral-facilities/datagateway-api/commit/6896015dec242396c92012790ed585bed5e8d200))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`6a04939`](https://github.com/ral-facilities/datagateway-api/commit/6a04939e5ab1a449b12bf751551792efc3c58714))
+
+* Fix minor bugs
+
+- add TODO for issue found with post and patch requesr #525 ([`cc387dc`](https://github.com/ral-facilities/datagateway-api/commit/cc387dc5a3a02fad490eee46bb08e6274bee0f15))
+
+* add docstring to build_models #522 ([`2492b49`](https://github.com/ral-facilities/datagateway-api/commit/2492b4906b8ba620fceba5fb11026bdf1d064016))
+
+* Auto generated pydantic using ICAT entity type #519 ([`d53c565`](https://github.com/ral-facilities/datagateway-api/commit/d53c56500496f165e7732e135266575fd9c64843))
+
+* use endpoint_dict for swagger #522 ([`d9bd46f`](https://github.com/ral-facilities/datagateway-api/commit/d9bd46fef6ac077bfadd812f57fced59b48771a0))
+
+* Merge branch 'upgrade-to-pydantic-V2-#520' into refactor-dg-api-model-to-pydantic-522 ([`24be733`](https://github.com/ral-facilities/datagateway-api/commit/24be7333dee006c94d0b9ce305dfc60759031192))
+
+* Improve pydantic models #520 ([`7284f0d`](https://github.com/ral-facilities/datagateway-api/commit/7284f0d038ab1be9d0d1f8b537221b2ed9c02e97))
+
+* Merge pull request #521 from ral-facilities/upgrade-to-pydantic-V2-#520
+
+Upgrade to pydantic v2 #520 ([`34af353`](https://github.com/ral-facilities/datagateway-api/commit/34af353ac5b46c486c46da6a1e5a605ad89b24df))
+
+* Merge branch 'remove-database-backend-#489' into upgrade-to-pydantic-V2-#520 ([`569e9ac`](https://github.com/ral-facilities/datagateway-api/commit/569e9ac1167144fffd8c9b35fe118de224c02dfb))
+
+* Merge branch 'remove-database-backend-#489' into upgrade-to-pydantic-V2-#520 ([`7d27951`](https://github.com/ral-facilities/datagateway-api/commit/7d27951228cde426aac441f589d7bb5454d08a70))
+
+* fix linting #520 ([`11686cd`](https://github.com/ral-facilities/datagateway-api/commit/11686cd1a78f754eeae2722a4eb1d4cbfdad32e1))
+
+* Merge branch 'remove-database-backend-#489' into upgrade-to-pydantic-V2-#520 ([`84c5d1f`](https://github.com/ral-facilities/datagateway-api/commit/84c5d1f4fdaaafa4935b1b296d49e5dfb81cf3b3))
+
+* refactor isPublic and Id implementation in search models #520 ([`eed604f`](https://github.com/ral-facilities/datagateway-api/commit/eed604ff376175bb1e71663ef60f6afeda331066))
+
+* use @classmethod for validators #520 ([`ce999ef`](https://github.com/ral-facilities/datagateway-api/commit/ce999ef338daed12ad9b5b31d584eef7e172bf26))
+
+* fix type of optional fields in search api #520 ([`d4459b0`](https://github.com/ral-facilities/datagateway-api/commit/d4459b0c8c5e1cad6d4d1404e71b16fac46b4ac4))
+
+* Merge branch 'remove-database-backend-#489' into upgrade-to-pydantic-V2-#520 ([`8cc5d91`](https://github.com/ral-facilities/datagateway-api/commit/8cc5d91b93097e963e71c1d7b1219ff2c1991705))
+
+* Improve pydantic models #520 ([`06c6be2`](https://github.com/ral-facilities/datagateway-api/commit/06c6be25c142c2175b45a3ac50487c1cd842dffe))
+
+* create normalize_date utils func #520 ([`946caea`](https://github.com/ral-facilities/datagateway-api/commit/946caea8a5c98bae9944c3efe5b8ed52ef041ed5))
+
+* fix integration_tests #520 ([`f5a8fbf`](https://github.com/ral-facilities/datagateway-api/commit/f5a8fbfabebdcb58254f15b7036ba33dde054f85))
+
+* fix pip install test #520 ([`da2eb4d`](https://github.com/ral-facilities/datagateway-api/commit/da2eb4ddeba87b21bcd25e7aea6107682e82fbae))
+
+* Fix model for unit_tests #520 ([`b9fbab0`](https://github.com/ral-facilities/datagateway-api/commit/b9fbab08cdcfa8745ec160ce82ba13e663d6395c))
+
+* update search api to pydantic v2 #519 ([`5af1093`](https://github.com/ral-facilities/datagateway-api/commit/5af109346f987549e7911b766e91a31d3f62748f))
+
+* update the config to use pydantic v2 #519 ([`d77a00b`](https://github.com/ral-facilities/datagateway-api/commit/d77a00b9cff120796a3bf5884489597555ba6485))
+
+* Merge pull request #507 from ral-facilities/remove-database-backend-#489
+
+remove database backend #489 ([`109ccc5`](https://github.com/ral-facilities/datagateway-api/commit/109ccc5c0125800b01301727324957b7edbb0e8a))
+
+* Merge branch 'develop' into remove-database-backend-#489 ([`28e98a5`](https://github.com/ral-facilities/datagateway-api/commit/28e98a5d22570f083d109b1629c273ae47dfeab0))
+
+* Merge pull request #537 from ral-facilities/main
+
+Merge main into develop 10.0.0 ([`7bb1ec2`](https://github.com/ral-facilities/datagateway-api/commit/7bb1ec24d7e2b5c70bab01a03db2f282c3987a8b))
+
+
 ## v10.0.0 (2026-03-13)
 
 ### Breaking
@@ -165,6 +418,10 @@ Signed-off-by: dependabot[bot] <support@github.com> ([`f289a74`](https://github.
 
 * feat: add isnull operator for NULL checks ([`379ffe0`](https://github.com/ral-facilities/datagateway-api/commit/379ffe00268deae72324e4408e9a5ceeadd1b9cb))
 
+### Refactoring
+
+* refactor: remove database backend #489 ([`743b34b`](https://github.com/ral-facilities/datagateway-api/commit/743b34b4c1b0964b9c0feb9f9d67a0a94e251359))
+
 ### Unknown
 
 * Merge pull request #534 from ral-facilities/release/v10.0.0
@@ -185,6 +442,8 @@ feat: Add ability to supply settings file via volume #532 ([`52297ae`](https://g
 
 * address review comments #532 ([`6224ed8`](https://github.com/ral-facilities/datagateway-api/commit/6224ed81bc22db3f4a832913877bd20782370de3))
 
+* Merge branch 'develop' into remove-database-backend-#489 ([`188b1a2`](https://github.com/ral-facilities/datagateway-api/commit/188b1a2c6e441ae57486a8088476219a9a98706b))
+
 * Merge pull request #531 from ral-facilities/add-isnull-where-filter2-#527
 
 feat: add isnull operator for NULL checks ([`54abb15`](https://github.com/ral-facilities/datagateway-api/commit/54abb157d22eaef67907167070fad56bab68b6e6))
@@ -195,9 +454,32 @@ Remove support for older Python version (#517) ([`a6fb0c9`](https://github.com/r
 
 * change strict flag to true in helpers #517 ([`96091d8`](https://github.com/ral-facilities/datagateway-api/commit/96091d8a699845e96afe0212783f3ea4d250408e))
 
+* remove unnecessary "success()" for ci_build #489 ([`b898294`](https://github.com/ral-facilities/datagateway-api/commit/b898294d3f02b8ec60447138f5ce8780467a4e44))
+
+* use payara7 branch for icat-ansible #489
+
+- remove installation of java this should installed by the ansible
+  script ([`7f9d351`](https://github.com/ral-facilities/datagateway-api/commit/7f9d351d9625fcf0f29880fcd4385e6ee33fc77c))
+
+* address review comments #489
+
+- remove unnecessary argument "validate_assignment = True" in config
+- format strings better in test_query for title
+- update README ([`4a3d23f`](https://github.com/ral-facilities/datagateway-api/commit/4a3d23fb8933f88f9981d92cf416be6d5e0d0668))
+
+* address review comments #489 ([`9fae76f`](https://github.com/ral-facilities/datagateway-api/commit/9fae76f7c431bb04aeca3fab563943584f032328))
+
+* remove unused sql imports #489 ([`5be200a`](https://github.com/ral-facilities/datagateway-api/commit/5be200a62b3583b227cfb7e72ca79d4052fa99b7))
+
+* Merge branch 'remove-older-python-versions-#517' into remove-database-backend-#489 ([`84b9f59`](https://github.com/ral-facilities/datagateway-api/commit/84b9f59fcdd9b5ce1b66fb032c4fca7525e4a660))
+
+* change strict flag to true in helpers #517 ([`a069cec`](https://github.com/ral-facilities/datagateway-api/commit/a069cece085456b153b79298a4e91b8dac0fdb6f))
+
 * remove section about pyenv in the readme #517 ([`68fb871`](https://github.com/ral-facilities/datagateway-api/commit/68fb87101c610476b4844695b45c77c485f08105))
 
 * remove the use of matrix in github ci #517 ([`86061d2`](https://github.com/ral-facilities/datagateway-api/commit/86061d2296eb7bfdf2e22dd221568e64a0c9d1c5))
+
+* Merge branch 'remove-older-python-versions-#517' into remove-database-backend-#489 ([`e280471`](https://github.com/ral-facilities/datagateway-api/commit/e2804713b37a5bf87669981cc7625901a120c448))
 
 * silence flake8 B909 warnings in query filter factory test #517 ([`8673a50`](https://github.com/ral-facilities/datagateway-api/commit/8673a508aac2326797b3aa1b8d8abd828f3f9eee))
 
@@ -248,6 +530,66 @@ API calls remain correct while satisfying linting requirements. ([`5de1bd2`](htt
 * Update lock file #517 ([`0b6071a`](https://github.com/ral-facilities/datagateway-api/commit/0b6071ada9f50684223e6742145b5cc1f2bb7e9e))
 
 * update python to use Python 3.9.12 for Ubuntu 24.04 compatibility #517 ([`8bb55d1`](https://github.com/ral-facilities/datagateway-api/commit/8bb55d196271be6840f9168ad91eab35e19a7d99))
+
+* Merge branch 'remove-older-python-versions-#517' into remove-database-backend-#489 ([`6e5e7f3`](https://github.com/ral-facilities/datagateway-api/commit/6e5e7f3fd2aaa2f9c10d25a1cff723841ccfedcd))
+
+* silence flake8 B909 warnings in query filter factory test #517 ([`04a2567`](https://github.com/ral-facilities/datagateway-api/commit/04a2567495100f60c454158694d0b3f239bb7bc9))
+
+* reset ICAT client before each test to avoid shared state issues #517 ([`ec4350a`](https://github.com/ral-facilities/datagateway-api/commit/ec4350a0c9dafb61dd903f40b637544b0d580e52))
+
+* Change fixture for db to "function" from "package"
+
+- In the test_query_filter_factory the test don't work on the CI as it
+  is not setting up the db backend. ([`90c8474`](https://github.com/ral-facilities/datagateway-api/commit/90c84749b83ca8d1067f65929aab46cc1077cc3f))
+
+* change strict=True to False for zip functions #517 ([`c4c9526`](https://github.com/ral-facilities/datagateway-api/commit/c4c9526049410022b3f4b33184579b39d3824086))
+
+* ignore B907 in multiple SQL query constructions
+
+Added `# noqa: B907` in several places where manual quoting is required
+for valid SQL query syntax. Using `!r` would change the format and break
+query parsing, so explicit quotes are necessary. This ensures tests and
+API calls remain correct while satisfying linting requirements. ([`94eff86`](https://github.com/ral-facilities/datagateway-api/commit/94eff861039f20ad4a66f967e1fb8f90b97af144))
+
+* fix linting in icat_db_generator.py #517 ([`137e5de`](https://github.com/ral-facilities/datagateway-api/commit/137e5de9050bf7d8297269e7700c30c1bfc81215))
+
+* run black formatter for icat_db_generator.py #517 ([`f3ed2fb`](https://github.com/ral-facilities/datagateway-api/commit/f3ed2fb405ce17db10db3b07e35e61f886635ba1))
+
+* revert icat_db_generator changes #517 ([`8eb1a43`](https://github.com/ral-facilities/datagateway-api/commit/8eb1a43da2be8e570977e81655f6fbac50563b10))
+
+* revert faker upgrade #517 ([`53b4507`](https://github.com/ral-facilities/datagateway-api/commit/53b4507e4d32f004099622cac0164b49e1f94c07))
+
+* remove install with constraints #517 ([`2433b06`](https://github.com/ral-facilities/datagateway-api/commit/2433b06284934d7c8e7c5513ca94c4ebd1291c29))
+
+* upgrade the version of poetry to 1.8.0 #517 ([`ac6a5bb`](https://github.com/ral-facilities/datagateway-api/commit/ac6a5bbb58d5144a54c67381b55f2c26bf9c6297))
+
+* upgrade faker #517
+
+- remove downgrade of setuptools ([`c449888`](https://github.com/ral-facilities/datagateway-api/commit/c449888e8c0bb78f72c76d5d30a921a25ed2ab0d))
+
+* fix linting errors #517 ([`fe50126`](https://github.com/ral-facilities/datagateway-api/commit/fe50126e70d7828d6440005c623eaa27165854db))
+
+* reformat code using latest version black #517 ([`2ef73ff`](https://github.com/ral-facilities/datagateway-api/commit/2ef73ff35ee2d9cc85d5bba6930707ddb5fcbf4d))
+
+* upgrade the black verison ([`b2be8df`](https://github.com/ral-facilities/datagateway-api/commit/b2be8df18ccbfb946dc363776117b2161625b41a))
+
+* mend ([`46862fd`](https://github.com/ral-facilities/datagateway-api/commit/46862fdf2b39dbfb9d4c72661dabd482f1f29527))
+
+* pin python version to 3.10 ([`d841fee`](https://github.com/ral-facilities/datagateway-api/commit/d841feec2446138963aadbea4a524d22d92ce62c))
+
+* update lock file ([`b1ac7e2`](https://github.com/ral-facilities/datagateway-api/commit/b1ac7e2f9983243e564504eab16f303c010dd481))
+
+* Update lock file ([`d98b735`](https://github.com/ral-facilities/datagateway-api/commit/d98b73549aece37f9302c92c58be660f36a44fb1))
+
+* update python to use Python 3.9.12 for Ubuntu 24.04 compatibility ([`482231d`](https://github.com/ral-facilities/datagateway-api/commit/482231d1b6b7a5385587412392075ee65d619d99))
+
+* remove remaining remnants of the backends #489 ([`34d2603`](https://github.com/ral-facilities/datagateway-api/commit/34d2603d4ab705316a3cc5965c683e07d995ba7f))
+
+* ignore vulnerability for werkzeug and cryptography #489 ([`27f8ff9`](https://github.com/ral-facilities/datagateway-api/commit/27f8ff94edbb7dbff3b7d6a12dff93ee662f7e8d))
+
+* set up icat stack before pip install test #489 ([`2939010`](https://github.com/ral-facilities/datagateway-api/commit/2939010d56c3ad0644bc666d4b6fcad3c23229a0))
+
+* fix intergration tests #489 ([`cf349cf`](https://github.com/ral-facilities/datagateway-api/commit/cf349cfacc6fa593360bd4111eeac33759ff8914))
 
 * Merge pull request #500 from ral-facilities/dependabot/github_actions/python-semantic-release/python-semantic-release-9.12.0
 
