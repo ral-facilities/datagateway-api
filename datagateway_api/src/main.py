@@ -129,21 +129,16 @@ def create_search_api_app() -> FastAPI | None:
     return None
 
 
-if datagateway_api_enabled and search_api_enabled:
+if Config.config.multi_api_count > 1:
     app = FastAPI(
         title="DataGateway",
         root_path=Config.config.url_prefix,
         separate_input_output_schemas=False,
     )
-
-    app.mount(
-        Config.config.datagateway_api.extension,
-        create_datagateway_app(),
-    )
-    app.mount(
-        Config.config.search_api.extension,
-        create_search_api_app(),
-    )
+    if datagateway_api_enabled:
+        app.mount(path=Config.config.datagateway_api.extension, app=create_datagateway_app())
+    if search_api_enabled:
+        app.mount(path=Config.config.search_api.extension, app=create_search_api_app())
 
 elif datagateway_api_enabled:
     app = create_datagateway_app()

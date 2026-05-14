@@ -1,15 +1,15 @@
+from datetime import datetime, timezone
 import logging
 from typing import List, Optional
 
+from cachetools.func import ttl_cache
 from icat.exception import ICATSessionError
 
 from datagateway_api.src.common.config import Config
-from datagateway_api.src.common.exceptions import PythonICATError
-from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.src.common.exceptions import MissingRecordError, PythonICATError
 from datagateway_api.src.common.filters import QueryFilter
 from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
 from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
-from datagateway_api.src.datagateway_api.icat.query import ICATQuery
 
 log = logging.getLogger()
 
@@ -45,6 +45,8 @@ class ReaderQueryHandler:
     # the first instance of this class is created and is refreshed when a login attempt
     # fails (due to an expired session ID)
     reader_client = None
+    maxsize = Config.config.reader and Config.config.reader.maxsize or 128  # cachetools default value
+    ttl = Config.config.reader and Config.config.reader.ttl or 600  # seconds, cachetools default value
 
     def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
         self.entity_type = entity_type
@@ -57,31 +59,132 @@ class ReaderQueryHandler:
         if not ReaderQueryHandler.reader_client:
             self.create_reader_client()
 
-    def create_reader_client(self) -> ICATClient:
+    @classmethod
+    def create_reader_client(cls) -> ICATClient:
         """
         Create a new client (assigning it as a class variable) and login using the
         reader's credentials. If the credentials aren't valid, a PythonICATError is
         raised (resulting in a 500). The client object is returned
         """
-
         log.info("Creating reader_client")
-        ReaderQueryHandler.reader_client = ICATClient("datagateway_api")
-        reader_config = Config.config.datagateway_api.use_reader_for_performance
-        login_credentals = {
-            "username": reader_config.reader_username,
-            "password": reader_config.reader_password,
-        }
+        cls.reader_client = ICATClient("datagateway_api")
         try:
-            ReaderQueryHandler.reader_client.login(
-                reader_config.reader_mechanism,
-                login_credentals,
+            cls.reader_client.login(
+                auth=Config.config.reader.mechanism,
+                credentials={
+                    "username": Config.config.reader.username,
+                    "password": Config.config.reader.password.get_secret_value(),
+                },
             )
         except ICATSessionError as e:
             log.error("User credentials for reader account aren't valid")
-            raise PythonICATError(
-                "Internal error with reader account configuration",
-            ) from e
-        return ReaderQueryHandler.reader_client
+            raise PythonICATError("Internal error with reader account configuration") from e
+
+        return cls.reader_client
+
+    @classmethod
+    def refresh(cls) -> None:
+        """
+        Refresh `cls.reader_client` if it is defined and is close to expiring.
+        If it is not defined, or has already expired, create a new one.
+        """
+        if cls.reader_client is not None and cls.reader_client.sessionId is not None:
+            try:
+                cls.reader_client.autoRefresh()
+                return
+            except ICATSessionError:
+                log.debug("Reader session expired")
+
+        cls.create_reader_client()
+
+    @classmethod
+    @ttl_cache(maxsize=maxsize, ttl=ttl)
+    def get_investigation_id(cls, dataset_id: int) -> int:
+        """
+        Args:
+            dataset_id (int): ICAT Dataset.id.
+
+        Raises:
+            MissingRecordError: If no Dataset with `dataset_id` is found.
+
+        Returns:
+            int: ICAT id of the Dataset's parent Investigation.
+        """
+        dataset_id = int(dataset_id)  # Ensure we actually have an int, and can't inject
+        query = f"SELECT d.investigation.id FROM Dataset d WHERE d.id={dataset_id}"  # noqa: S608
+        cls.refresh()
+        investigation_ids = cls.reader_client.search(query)
+        if len(investigation_ids) == 0:
+            raise MissingRecordError(f"No Dataset found for id={dataset_id}")
+
+        log.debug("Found investigation.id=%s for dataset.id=%s", investigation_ids[0], dataset_id)
+        return investigation_ids[0]
+
+    @classmethod
+    @ttl_cache(maxsize=maxsize, ttl=ttl)
+    def get_investigation_readers(cls, investigation_id: int) -> set[str]:
+        """
+        Args:
+            investigation_id (int): ICAT Investigation.id.
+
+        Returns:
+            set[str]:
+                ICAT User.name of all InvestigationUsers and InstrumentScientists associated with the Investigation with
+                id `investigation_id`.
+        """
+        investigation_id = int(investigation_id)  # Ensure we actually have an int, and can't inject
+        query = (
+            "SELECT u.name FROM User u LEFT JOIN u.investigationUsers iu "  # noqa: S608
+            "LEFT JOIN u.instrumentScientists s LEFT JOIN s.instrument i LEFT JOIN i.investigationInstruments ii "
+            f"WHERE iu.investigation.id={investigation_id} OR ii.investigation.id={investigation_id}"
+        )
+        cls.refresh()
+        user_names = cls.reader_client.search(query=query)
+        log.debug("Found %s as readers for investigation.id=%s", user_names, investigation_id)
+        return set(user_names)
+
+    @classmethod
+    def get_dataset_readers(cls, dataset_id: int) -> set[str]:
+        """
+        Args:
+            dataset_id (int): ICAT Dataset.id.
+
+        Returns:
+            set[str]:
+                ICAT User.name of all InvestigationUsers and InstrumentScientists associated with the Dataset with id
+                `dataset_id`.
+        """
+        return cls.get_investigation_readers(investigation_id=cls.get_investigation_id(dataset_id=dataset_id))
+
+    @classmethod
+    @ttl_cache(maxsize=maxsize, ttl=ttl)
+    def is_dataset_open(cls, dataset_id: int) -> bool:
+        """
+        Args:
+            dataset_id (int): ICAT Dataset.id.
+
+        Returns:
+            bool: Whether the Dataset with `dataset_id` has been made open/public.
+        """
+        if Config.config.reader is None or Config.config.reader.data_publication_type_public is None:
+            log.debug("Configuration for open data not defined.")
+            return False
+
+        dataset_id = int(dataset_id)  # Ensure we actually have an int, and can't inject
+        query = (
+            "SELECT dp.publicationDate FROM DataPublication dp JOIN dp.content c "  # noqa: S608
+            "JOIN c.dataCollectionDatasets dcd "
+            f"WHERE dp.type.name={Config.config.reader.data_publication_type_public!r} AND dcd.dataset.id={dataset_id}"
+        )
+        cls.refresh()
+        for publication_date in cls.reader_client.search(query):
+            log.debug(publication_date)
+            if publication_date < datetime.now(tz=timezone.utc):
+                log.debug("dataset.id=%s is open", dataset_id)
+                return True
+
+        log.debug("dataset.id=%s is closed", dataset_id)
+        return False
 
     def check_eligibility(self) -> bool:
         """
@@ -132,35 +235,22 @@ class ReaderQueryHandler:
         created and sent to ICAT for execution - the query is performed using the
         session ID provided in the request
         """
+        user_name = client.getUserName()
+        id_field = ReaderQueryHandler.entity_filter_check[self.entity_type]
+        log.info("Checking to see if user '%s' can see %s=%s", user_name, id_field, self.where_filter_entity_id)
 
-        log.info(
-            "Checking to see if user '%s' can see '%s' = %s",
-            client.getUserName(),
-            ReaderQueryHandler.entity_filter_check[self.entity_type],
-            self.where_filter_entity_id,
-        )
-        access_query = ICATQuery(
-            client,
-            ReaderQueryHandler.parent_entity_lookup[self.entity_type],
-        )
-        id_check = PythonICATWhereFilter("id", self.where_filter_entity_id, "eq")
-        access_filter_handler = FilterOrderHandler()
-        access_filter_handler.manage_icat_filters([id_check], access_query.query)
-        results = access_query.execute_query(client)
+        if self.entity_type == "Dataset":
+            if user_name in self.get_investigation_readers(investigation_id=self.where_filter_entity_id):
+                log.debug("User is authorised to see investigation.id=%s", self.where_filter_entity_id)
+                return True
 
-        if results:
-            log.debug(
-                "User is authorised to see '%s%s'",
-                ReaderQueryHandler.entity_filter_check[self.entity_type],
-                self.where_filter_entity_id,
-            )
-            user_authorised = True
-        else:
-            log.debug(
-                "User is NOT authorised to see '%s%s'",
-                ReaderQueryHandler.entity_filter_check[self.entity_type],
-                self.where_filter_entity_id,
-            )
-            user_authorised = False
+        elif self.entity_type == "Datafile":
+            if user_name in self.get_dataset_readers(dataset_id=self.where_filter_entity_id):
+                log.debug("User is authorised to see dataset.id=%s", self.where_filter_entity_id)
+                return True
+            elif self.is_dataset_open(dataset_id=self.where_filter_entity_id):
+                log.debug("dataset.id=%s is open", self.where_filter_entity_id)
+                return True
 
-        return user_authorised
+        log.debug("User not authorised to see %s=%s", id_field, self.where_filter_entity_id)
+        return False
