@@ -46,10 +46,11 @@ def validate_extension(extension):
 DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
 
 
-class ReaderConfig(BaseModel):
-    mechanism: StrictStr
-    username: StrictStr
-    password: SecretStr
+class UseReaderForPerformance(BaseModel):
+    enabled: StrictBool
+    reader_mechanism: StrictStr
+    reader_username: StrictStr
+    reader_password: SecretStr
     maxsize: int = Field(
         default=128,
         description="Each cacheable function will store up to this many results in memory.",
@@ -57,13 +58,6 @@ class ReaderConfig(BaseModel):
     ttl: float = Field(
         default=600,
         description="Time-to-live for each of the cacheable functions in seconds.",
-    )
-    data_publication_type_public: str | None = Field(
-        default=None,
-        description=(
-            "If a Dataset belongs to a DataPublication of this type where publicationDate is set, it and its Datafiles "
-            "are considered open."
-        ),
     )
 
 
@@ -79,6 +73,7 @@ class DataGatewayAPI(BaseModel):
     extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
+    use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -137,7 +132,6 @@ class APIConfig(BaseModel):
     """
 
     datagateway_api: Optional[DataGatewayAPI] = None
-    reader: ReaderConfig | None = None
     reload: Optional[StrictBool] = None
     host: Optional[StrictStr] = None
     port: Optional[StrictInt] = None

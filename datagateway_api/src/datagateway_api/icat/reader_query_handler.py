@@ -45,8 +45,11 @@ class ReaderQueryHandler:
     # the first instance of this class is created and is refreshed when a login attempt
     # fails (due to an expired session ID)
     reader_client = None
-    maxsize = Config.config.reader and Config.config.reader.maxsize or 128  # cachetools default value
-    ttl = Config.config.reader and Config.config.reader.ttl or 600  # seconds, cachetools default value
+    maxsize = 128  # cachetools default value
+    ttl = 600  # seconds, cachetools default value
+    if Config.config.datagateway_api.use_reader_for_performance is not None:
+        maxsize = Config.config.datagateway_api.use_reader_for_performance.maxsize
+        ttl = Config.config.datagateway_api.use_reader_for_performance.ttl
 
     def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
         self.entity_type = entity_type
@@ -70,10 +73,12 @@ class ReaderQueryHandler:
         cls.reader_client = ICATClient("datagateway_api")
         try:
             cls.reader_client.login(
-                auth=Config.config.reader.mechanism,
+                auth=Config.config.datagateway_api.use_reader_for_performance.reader_mechanism,
                 credentials={
-                    "username": Config.config.reader.username,
-                    "password": Config.config.reader.password.get_secret_value(),
+                    "username": Config.config.datagateway_api.use_reader_for_performance.reader_username,
+                    "password": (
+                        Config.config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value()
+                    ),
                 },
             )
         except ICATSessionError as e:
@@ -110,7 +115,6 @@ class ReaderQueryHandler:
         Returns:
             int: ICAT id of the Dataset's parent Investigation.
         """
-        dataset_id = int(dataset_id)  # Ensure we actually have an int, and can't inject
         query = f"SELECT d.investigation.id FROM Dataset d WHERE d.id={dataset_id}"  # noqa: S608
         cls.refresh()
         investigation_ids = cls.reader_client.search(query)
@@ -122,39 +126,56 @@ class ReaderQueryHandler:
 
     @classmethod
     @ttl_cache(maxsize=maxsize, ttl=ttl)
-    def get_investigation_readers(cls, investigation_id: int) -> set[str]:
+    def get_investigation_users(cls, investigation_id: int) -> set[str]:
         """
         Args:
             investigation_id (int): ICAT Investigation.id.
 
         Returns:
             set[str]:
-                ICAT User.name of all InvestigationUsers and InstrumentScientists associated with the Investigation with
-                id `investigation_id`.
+                ICAT User.name of all InvestigationUsers associated with the Investigation with id `investigation_id`.
         """
-        investigation_id = int(investigation_id)  # Ensure we actually have an int, and can't inject
         query = (
-            "SELECT u.name FROM User u LEFT JOIN u.investigationUsers iu "  # noqa: S608
-            "LEFT JOIN u.instrumentScientists s LEFT JOIN s.instrument i LEFT JOIN i.investigationInstruments ii "
-            f"WHERE iu.investigation.id={investigation_id} OR ii.investigation.id={investigation_id}"
+            f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
         )
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
-        log.debug("Found %s as readers for investigation.id=%s", user_names, investigation_id)
+        log.debug("Found %s as InvestigationUsers for investigation.id=%s", user_names, investigation_id)
         return set(user_names)
 
     @classmethod
-    def get_dataset_readers(cls, dataset_id: int) -> set[str]:
+    @ttl_cache(maxsize=maxsize, ttl=ttl)
+    def get_instrument_scientists(cls, investigation_id: int) -> set[str]:
         """
         Args:
-            dataset_id (int): ICAT Dataset.id.
+            investigation_id (int): ICAT Investigation.id.
 
         Returns:
             set[str]:
-                ICAT User.name of all InvestigationUsers and InstrumentScientists associated with the Dataset with id
-                `dataset_id`.
+                ICAT User.name of all InstrumentScientists associated with the Investigation with id `investigation_id`.
         """
-        return cls.get_investigation_readers(investigation_id=cls.get_investigation_id(dataset_id=dataset_id))
+        query = (
+            "SELECT s.user.name FROM InstrumentScientist s "  # noqa: S608
+            f"LEFT JOIN s.instrument.investigationInstruments ii WHERE ii.investigation.id={investigation_id}"
+        )
+        cls.refresh()
+        user_names = cls.reader_client.search(query=query)
+        log.debug("Found %s as InstrumentScientists for investigation.id=%s", user_names, investigation_id)
+        return set(user_names)
+
+    @classmethod
+    def is_user_allowed(cls, user_name: str, investigation_id: int) -> bool:
+        """
+        Args:
+            user_name (str): ICAT User.name.
+            investigation_id (int): ICAT Investigation.id.
+
+        Returns:
+            bool: If `user_name` has an association with `investigation_id` allowing read access.
+        """
+        return user_name in cls.get_investigation_users(
+            investigation_id=investigation_id,
+        ) or user_name in cls.get_instrument_scientists(investigation_id=investigation_id)
 
     @classmethod
     @ttl_cache(maxsize=maxsize, ttl=ttl)
@@ -166,19 +187,12 @@ class ReaderQueryHandler:
         Returns:
             bool: Whether the Dataset with `dataset_id` has been made open/public.
         """
-        if Config.config.reader is None or Config.config.reader.data_publication_type_public is None:
-            log.debug("Configuration for open data not defined.")
-            return False
-
-        dataset_id = int(dataset_id)  # Ensure we actually have an int, and can't inject
         query = (
             "SELECT dp.publicationDate FROM DataPublication dp JOIN dp.content c "  # noqa: S608
-            "JOIN c.dataCollectionDatasets dcd "
-            f"WHERE dp.type.name={Config.config.reader.data_publication_type_public!r} AND dcd.dataset.id={dataset_id}"
+            f"JOIN c.dataCollectionDatasets dcd WHERE dcd.dataset.id={dataset_id}"
         )
         cls.refresh()
         for publication_date in cls.reader_client.search(query):
-            log.debug(publication_date)
             if publication_date < datetime.now(tz=timezone.utc):
                 log.debug("dataset.id=%s is open", dataset_id)
                 return True
@@ -223,7 +237,7 @@ class ReaderQueryHandler:
                     "WHERE filter relevant for reader query checking: %s",
                     query_filter,
                 )
-                self.where_filter_entity_id = query_filter.value
+                self.where_filter_entity_id = int(query_filter.value)
                 return query_filter
 
         return None
@@ -240,16 +254,17 @@ class ReaderQueryHandler:
         log.info("Checking to see if user '%s' can see %s=%s", user_name, id_field, self.where_filter_entity_id)
 
         if self.entity_type == "Dataset":
-            if user_name in self.get_investigation_readers(investigation_id=self.where_filter_entity_id):
+            if ReaderQueryHandler.is_user_allowed(user_name=user_name, investigation_id=self.where_filter_entity_id):
                 log.debug("User is authorised to see investigation.id=%s", self.where_filter_entity_id)
                 return True
 
         elif self.entity_type == "Datafile":
-            if user_name in self.get_dataset_readers(dataset_id=self.where_filter_entity_id):
+            investigation_id = ReaderQueryHandler.get_investigation_id(dataset_id=self.where_filter_entity_id)
+            if ReaderQueryHandler.is_user_allowed(
+                user_name=user_name,
+                investigation_id=investigation_id,
+            ) or ReaderQueryHandler.is_dataset_open(dataset_id=self.where_filter_entity_id):
                 log.debug("User is authorised to see dataset.id=%s", self.where_filter_entity_id)
-                return True
-            elif self.is_dataset_open(dataset_id=self.where_filter_entity_id):
-                log.debug("dataset.id=%s is open", self.where_filter_entity_id)
                 return True
 
         log.debug("User not authorised to see %s=%s", id_field, self.where_filter_entity_id)

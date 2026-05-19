@@ -5,7 +5,7 @@ from typing import Generator
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.common.config import APIConfig, Config, ReaderConfig
+from datagateway_api.src.common.config import APIConfig, Config
 from datagateway_api.src.common.exceptions import AuthenticationError, MissingRecordError, PythonICATError
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
@@ -110,26 +110,15 @@ def icat_user_client() -> Client:
 
 @pytest.fixture(scope="function")
 def enable_reader_config() -> Generator[None, None, None]:
-    Config.config.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")  # noqa: S106
-    yield
-    Config.config = APIConfig.load()
-
-
-@pytest.fixture(scope="function")
-def enable_reader_open_config() -> Generator[None, None, None]:
-    Config.config.reader = ReaderConfig(  # noqa: S106
-        mechanism="simple",
-        username="reader",
-        password="readerpw",
-        data_publication_type_public="center",
-    )
+    Config.config.datagateway_api.use_reader_for_performance.enabled = True
     yield
     Config.config = APIConfig.load()
 
 
 @pytest.fixture(scope="function")
 def enable_reader_bad_config() -> Generator[None, None, None]:
-    Config.config.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")  # noqa: S106
+    Config.config.datagateway_api.use_reader_for_performance.enabled = True
+    Config.config.datagateway_api.use_reader_for_performance.reader_mechanism = "bad"
     yield
     Config.config = APIConfig.load()
 
@@ -193,7 +182,9 @@ class TestReaderPerformance:
         ReaderQueryHandler("Datafile", [])
         reader_client = ReaderQueryHandler.reader_client
         assert isinstance(reader_client, ICATClient)
-        assert reader_client.getUserName() == f"{Config.config.reader.mechanism}/{Config.config.reader.username}"
+        assert reader_client.getUserName() == (
+            f"{Config.config.datagateway_api.use_reader_for_performance.reader_mechanism}/{Config.config.datagateway_api.use_reader_for_performance.reader_username}"
+        )
 
     @pytest.mark.parametrize(
         ["entity_type", "filters", "results_length", "exception"],
@@ -279,7 +270,7 @@ class TestReaderPerformance:
     )
     def test_open_data(
         self,
-        enable_reader_open_config: None,
+        enable_reader_config: None,
         enable_reader_permissions: None,
         associate_data_publication: None,
         icat_user_client: Client,

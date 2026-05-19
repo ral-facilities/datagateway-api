@@ -427,7 +427,13 @@ def is_use_reader_for_performance_enabled() -> bool:
     Returns true is the 'use_reader_for_performance' section is present in the
     config file and 'enabled' in that section is set to true
     """
-    return Config.config.reader is not None
+    reader_config = Config.config.datagateway_api.use_reader_for_performance
+    if not reader_config:
+        return False
+    if not reader_config.enabled:
+        return False
+
+    return True
 
 
 def get_first_result_with_filters(client, entity_type, filters):
