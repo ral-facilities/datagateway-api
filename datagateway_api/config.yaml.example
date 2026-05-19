@@ -6,6 +6,11 @@ datagateway_api:
   client_pool_max_size: 5
   icat_url: "https://localhost:8181"
   icat_check_cert: false
+  use_reader_for_performance:
+    enabled: false
+    reader_mechanism: simple
+    reader_username: reader
+    reader_password: readerpw
 search_api:
   extension: "/search-api"
   icat_url: "https://localhost:8181"
@@ -19,12 +24,6 @@ search_api:
     api_request_timeout: 5
     group: "documents" #corresponds to the defined group in the scoring app. https://github.com/panosc-eu/panosc-search-scoring/blob/master/docs/md/PaNOSC_Federated_Search_Results_Scoring_API.md#model
     limit: 1000
-# reader:
-#   mechanism: simple
-#   username: reader
-#   password: readerpw
-#   maxsize: 128
-#   ttl: 600
 reload: true
 host: "127.0.0.1"
 port: 5000
