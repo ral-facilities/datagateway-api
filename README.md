@@ -115,9 +115,6 @@ Currently, the following Nox sessions have been created:
 - `lint` - this uses [flake8](https://flake8.pycqa.org/en/latest/) with a number of
   additional plugins (see the included `noxfile.py` to see which plugins are used) to
   lint the code to keep it Pythonic. `.flake8` configures `flake8` and the plugins.
-- `safety` - this uses [safety](https://github.com/pyupio/safety) to check the
-  dependencies (pulled directly from Poetry) for any known vulnerabilities. This session
-  gives the output in a full ASCII style report.
 - `unit_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
   automated tests in `test/unit`, tests for Python ICAT, and non Python ICAT specific tests. More details about the tests themselves [here](#running-tests).
 - `integration_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
