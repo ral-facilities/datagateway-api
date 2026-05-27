@@ -362,44 +362,34 @@ def get_data_with_filters(client, entity_type, filters, aggregate=None):
     more details about the inner workings in ReaderQueryHandler
     """
 
-    if not is_use_reader_for_performance_enabled():
-        # just execute the query as normal
-        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+    if is_use_reader_for_performance_enabled():
+        # See if this query is eligible to benefit from running faster using the reader account
+        reader_query = ReaderQueryHandler(entity_type, filters)
+        if reader_query.is_query_eligible_for_reader_performance():
+            log.info("Query is eligible to be passed as reader acount")
+            if reader_query.is_user_authorised_to_see_entity_id(client):
+                reader_client = ReaderQueryHandler.reader_client
+                log.info("Query to be executed as reader account")
+                try:
+                    return execute_entity_query(
+                        reader_client,
+                        entity_type,
+                        filters,
+                        aggregate=aggregate,
+                    )
+                except ICATSessionError:
+                    # re-login as reader and try the query again
+                    reader_client = reader_query.create_reader_client()
+                    return execute_entity_query(
+                        reader_client,
+                        entity_type,
+                        filters,
+                        aggregate=aggregate,
+                    )
 
-    # otherwise see if this query is eligible to benefit from running
-    # faster using the reader account
-    reader_query = ReaderQueryHandler(entity_type, filters)
-    if reader_query.is_query_eligible_for_reader_performance():
-        log.info("Query is eligible to be passed as reader acount")
-        if reader_query.is_user_authorised_to_see_entity_id(client):
-            reader_client = ReaderQueryHandler.reader_client
-            log.info("Query to be executed as reader account")
-            try:
-                results = execute_entity_query(
-                    reader_client,
-                    entity_type,
-                    filters,
-                    aggregate=aggregate,
-                )
-            except ICATSessionError:
-                # re-login as reader and try the query again
-                reader_client = reader_query.create_reader_client()
-                results = execute_entity_query(
-                    reader_client,
-                    entity_type,
-                    filters,
-                    aggregate=aggregate,
-                )
-            return results
-        else:
-            raise AuthenticationError(
-                "Not authorised to access the"
-                f" {ReaderQueryHandler.entity_filter_check[entity_type]}"
-                " you have filtered on",
-            )
-    else:
-        log.info("Query to be executed as user from request: %s", client.getUserName())
-        return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
+    # We may still be able to get results, as we may be a root user who does not need direct association with the data
+    log.info("Query to be executed as user from request: %s", client.getUserName())
+    return execute_entity_query(client, entity_type, filters, aggregate=aggregate)
 
 
 def execute_entity_query(client, entity_type, filters, aggregate=None):

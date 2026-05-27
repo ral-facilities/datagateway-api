@@ -108,6 +108,13 @@ def icat_user_client() -> Client:
     return client
 
 
+@pytest.fixture(scope="class")
+def icat_root_client() -> Client:
+    client = Client(url=Config.config.datagateway_api.icat_url, checkCert=Config.config.datagateway_api.icat_check_cert)
+    client.login(auth="simple", credentials={"username": "root", "password": "pw"})
+    return client
+
+
 @pytest.fixture(scope="function")
 def enable_reader_config() -> Generator[None, None, None]:
     Config.config.datagateway_api.use_reader_for_performance.enabled = True
@@ -187,56 +194,16 @@ class TestReaderPerformance:
         )
 
     @pytest.mark.parametrize(
-        ["entity_type", "filters", "results_length", "exception"],
+        ["entity_type", "filters", "results_length"],
         [
-            pytest.param(
-                "Dataset",
-                [PythonICATWhereFilter("investigation.id", 1, "eq")],
-                None,
-                "Not authorised to access the investigation.id you have filtered on",
-            ),
-            pytest.param(
-                "Datafile",
-                [PythonICATWhereFilter("dataset.id", 1, "eq")],
-                None,
-                "Not authorised to access the dataset.id you have filtered on",
-            ),
-            pytest.param(
-                "Dataset",
-                [PythonICATWhereFilter("investigation.id", 2, "eq")],
-                2,
-                None,
-            ),
-            pytest.param(
-                "Datafile",
-                [PythonICATWhereFilter("dataset.id", 2, "eq")],
-                16,
-                None,
-            ),
-            pytest.param(
-                "Dataset",
-                [PythonICATWhereFilter("investigation.id", 3, "eq")],
-                2,
-                None,
-            ),
-            pytest.param(
-                "Datafile",
-                [PythonICATWhereFilter("dataset.id", 3, "eq")],
-                16,
-                None,
-            ),
-            pytest.param(
-                "Dataset",
-                [PythonICATWhereFilter("investigation.id", 4, "eq")],
-                2,
-                None,
-            ),
-            pytest.param(
-                "Datafile",
-                [PythonICATWhereFilter("dataset.id", 4, "eq")],
-                16,
-                None,
-            ),
+            pytest.param("Dataset", [PythonICATWhereFilter("investigation.id", 1, "eq")], 0),
+            pytest.param("Datafile", [PythonICATWhereFilter("dataset.id", 1, "eq")], 0),
+            pytest.param("Dataset", [PythonICATWhereFilter("investigation.id", 2, "eq")], 2),
+            pytest.param("Datafile", [PythonICATWhereFilter("dataset.id", 2, "eq")], 16),
+            pytest.param("Dataset", [PythonICATWhereFilter("investigation.id", 3, "eq")], 2),
+            pytest.param("Datafile", [PythonICATWhereFilter("dataset.id", 3, "eq")], 16),
+            pytest.param("Dataset", [PythonICATWhereFilter("investigation.id", 4, "eq")], 2),
+            pytest.param("Datafile", [PythonICATWhereFilter("dataset.id", 4, "eq")], 16),
         ],
     )
     def test_execute_query_as_reader(
@@ -248,24 +215,15 @@ class TestReaderPerformance:
         entity_type: str,
         filters: list[PythonICATWhereFilter],
         results_length: int,
-        exception: str,
     ) -> None:
-        if exception:
-            with pytest.raises(AuthenticationError, match=exception):
-                get_data_with_filters(client=icat_user_client, entity_type=entity_type, filters=filters)
-        else:
-            results = get_data_with_filters(client=icat_user_client, entity_type=entity_type, filters=filters)
-            assert len(results) == results_length
+        results = get_data_with_filters(client=icat_user_client, entity_type=entity_type, filters=filters)
+        assert len(results) == results_length
 
     @pytest.mark.parametrize(
-        ["filters", "results_length", "exception"],
+        ["filters", "results_length"],
         [
-            pytest.param(
-                [PythonICATWhereFilter("dataset.id", 7, "eq")],
-                None,
-                "Not authorised to access the dataset.id you have filtered on",
-            ),
-            pytest.param([PythonICATWhereFilter("dataset.id", 6, "eq")], 16, None),
+            pytest.param([PythonICATWhereFilter("dataset.id", 6, "eq")], 16, id="Dataset in a DataPublication"),
+            pytest.param([PythonICATWhereFilter("dataset.id", 7, "eq")], 0, id="Dataset not in a DataPublication"),
         ],
     )
     def test_open_data(
@@ -276,14 +234,29 @@ class TestReaderPerformance:
         icat_user_client: Client,
         filters: list[PythonICATWhereFilter],
         results_length: int,
-        exception: str,
     ) -> None:
-        if exception:
-            with pytest.raises(AuthenticationError, match=exception):
-                get_data_with_filters(client=icat_user_client, entity_type="Datafile", filters=filters)
-        else:
-            results = get_data_with_filters(client=icat_user_client, entity_type="Datafile", filters=filters)
-            assert len(results) == results_length
+        results = get_data_with_filters(client=icat_user_client, entity_type="Datafile", filters=filters)
+        assert len(results) == results_length
+
+    @pytest.mark.parametrize(
+        ["entity_type", "filters", "results_length"],
+        [
+            pytest.param("Dataset", [PythonICATWhereFilter("investigation.id", 1, "eq")], 2),
+            pytest.param("Datafile", [PythonICATWhereFilter("dataset.id", 1, "eq")], 15),
+        ],
+    )
+    def test_root_access(
+        self,
+        enable_reader_config: None,
+        enable_reader_permissions: None,
+        associate_data_publication: None,
+        icat_root_client: Client,
+        entity_type: str,
+        filters: list[PythonICATWhereFilter],
+        results_length: int,
+    ) -> None:
+        results = get_data_with_filters(client=icat_root_client, entity_type=entity_type, filters=filters)
+        assert len(results) == results_length
 
     def test_refresh(self, enable_reader_config: None) -> None:
         client = Client(
