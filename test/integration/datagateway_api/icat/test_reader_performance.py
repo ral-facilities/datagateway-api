@@ -6,7 +6,7 @@ from icat.client import Client
 import pytest
 
 from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.common.exceptions import AuthenticationError, MissingRecordError, PythonICATError
+from datagateway_api.src.common.exceptions import MissingRecordError, PythonICATError
 from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATOrderFilter,
