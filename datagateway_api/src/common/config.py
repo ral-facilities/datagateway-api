@@ -1,13 +1,16 @@
+from functools import cached_property
 import logging
 from pathlib import Path
 import sys
-from typing import Annotated, Optional
+from typing import Annotated, Optional, Self
 
 from pydantic import (
     AfterValidator,
     BaseModel,
-    field_validator,
+    computed_field,
+    Field,
     model_validator,
+    SecretStr,
     StrictBool,
     StrictInt,
     StrictStr,
@@ -47,7 +50,15 @@ class UseReaderForPerformance(BaseModel):
     enabled: StrictBool
     reader_mechanism: StrictStr
     reader_username: StrictStr
-    reader_password: StrictStr
+    reader_password: SecretStr
+    maxsize: int = Field(
+        default=128,
+        description="Each cacheable function will store up to this many results in memory.",
+    )
+    ttl: float = Field(
+        default=600,
+        description="Time-to-live for each of the cacheable functions in seconds.",
+    )
 
 
 class DataGatewayAPI(BaseModel):
@@ -132,6 +143,11 @@ class APIConfig(BaseModel):
     def __getitem__(self, item):
         return getattr(self, item)
 
+    @computed_field
+    @cached_property
+    def multi_api_count(self) -> int:
+        return (self.datagateway_api is not None) + (self.search_api is not None)
+
     @classmethod
     def load(cls, path=None):
         """
@@ -159,49 +175,30 @@ class APIConfig(BaseModel):
         except (IOError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
-    @field_validator("search_api")
-    @classmethod
-    def validate_api_extensions(cls, value, info):  # noqa: B902, N805
-        """
-        Checks that the DataGateway API and Search API extensions are not the same. An
-        error is raised, at which point the application exits, if the extensions are the
-        same.
+    @staticmethod
+    def _validate_api_extension(
+        extensions: set[DataGatewayAPIExtension],
+        sub_api_config: DataGatewayAPI | SearchAPI,
+    ) -> bool:
+        if sub_api_config is not None:
+            if sub_api_config.extension in extensions:
+                raise ValueError("All api extensions must be unique.")
 
-        :param cls: :class:`APIConfig` pointer
-        :param value: The value of the given config field
-        :param info: The config field values loaded before the given config field
-        """
-        if (
-            "datagateway_api" in info.data
-            and info.data["datagateway_api"] is not None
-            and value is not None
-            and info.data["datagateway_api"].extension == value.extension
-        ):
-            raise ValueError(
-                "extension cannot be the same as datagateway_api extension",
-            )
-
-        return value
+            extensions.add(sub_api_config.extension)
 
     @model_validator(mode="after")
-    def validate_root_path_usage(self):
+    def _validate_api_extensions(self) -> Self:
         """
-        Ensures that the root path ('/') is not used by both APIs at the same time.
-
-        Mounting an API at '/' is valid when running a single API instance, however
-        when both the DataGateway API and Search API are enabled, using '/' for either
-        would cause a routing conflict with the root FastAPI application. In this case,
-        both APIs must use distinct, non-root extensions.
+        Checks that the API extensions are not the same.
+        An error is raised, at which point the application exits, if the extensions are the same.
         """
-        dg_api = self.datagateway_api
-        search_api = self.search_api
-
-        if dg_api and search_api:
-            if dg_api.extension == "":
-                raise ValueError("datagateway_api extension cannot be '/' when search_api is also enabled")
-
-            if search_api.extension == "":
-                raise ValueError("search_api extension cannot be '/' when datagateway_api is also enabled")
+        extensions = set()
+        APIConfig._validate_api_extension(extensions=extensions, sub_api_config=self.datagateway_api)
+        APIConfig._validate_api_extension(extensions=extensions, sub_api_config=self.search_api)
+        if self.multi_api_count == 0:
+            raise ValueError("At least 1 API must be enabled.")
+        elif self.multi_api_count > 1 and "" in extensions:
+            raise ValueError("No API extension can be '/' when multiple APIs enabled.")
 
         return self
 

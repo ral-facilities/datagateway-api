@@ -707,6 +707,30 @@ cloned DataGateway API repository.
 This collection has not been updated for the search API endpoints, so can only be used
 to query DataGateway API.
 
+## Setup
+
+### v11.1.0
+
+Version 11.1.0 of the API will introduce changes to the reader functionality, and the reader account will require more permissions in order to determine if a user is associated with the entities they are querying. For ease of deployment, [setup_v11_1_0.py](/util/setup_v11_1_0.py) creates the necessary ICAT Rules for the reader account. It assumes that the reader User and corresponding Grouping already existing, and Rules for Datasets and Datafiles have been defined (as necessary for reader functionality in versions of the API <11.1). As it will create new Rule entities, to credentials used for the script should have permissions for this, such as an ICAT "root" account. As it loads from the main DataGateway API `Config` class and imports from Python-ICAT, it should be run in the same Python environment as DataGateway API. However, it does not require the API to be running as it communicates directly with ICAT server via the Python-ICAT bindings.
+
+```bash
+python util/setup_v11_1_0.py --help
+```
+```
+usage: datagateway_api_setup [-h] [--url URL] [-a AUTHENTICATOR] -u USERNAME [-p PASSWORD_FILE] [--allow-existing]
+
+options:
+  -h, --help            show this help message and exit
+  --url URL             The url address of the ICAT server.
+  -a AUTHENTICATOR, --authenticator AUTHENTICATOR
+                        The authentication mechanism to use for ICAT login.
+  -u USERNAME, --username USERNAME
+                        The username used for ICAT login.
+  -p PASSWORD_FILE, --password-file PASSWORD_FILE
+                        Location of file containing password for ICAT login. If not provided, the password will need to be provided by prompt.
+  --allow-existing      Iterates over each Entity and if it already exists, suppresses the ICATObjectAlreadyExists error.
+```
+
 # API Versioning
 
 This repository uses semantic versioning as the standard for version number
