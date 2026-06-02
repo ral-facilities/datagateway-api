@@ -109,7 +109,7 @@ OrderQuery = Query(
     title="ORDER_FILTER",
     description=("Apply order filters to the query. Given a field and direction, order the returned entities."),
     json_schema_extra={"type": "array", "items": {"type": "string", "default": ""}},
-    openapi_examples={"asc": {"value": ["id asc"]}, "desc": {"value": ["id desc"]}},
+    openapi_examples={"asc": {"value": ['"id asc"']}, "desc": {"value": ['"id desc"']}},
 )
 LimitQuery = Query(
     default=None,
@@ -136,41 +136,10 @@ IncludeQuery = Query(
     " related entities, include them in the results. Only one include parameter"
     " is allowed.",
     json_schema_extra={
-        "oneOf": [
-            {"type": "string"},
-            {
-                "type": "array",
-                "items": {
-                    "oneOf": [
-                        {"type": "string"},
-                        {
-                            "type": "object",
-                            "additionalProperties": {
-                                "oneOf": [
-                                    {"type": "string"},
-                                    {
-                                        "type": "array",
-                                        "items": [{"type": "string"}],
-                                    },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
-            {
-                "type": "object",
-                "additionalProperties": {
-                    "oneOf": [
-                        {"type": "string"},
-                        {"type": "array", "items": [{"type": "string"}]},
-                    ],
-                },
-            },
-        ],
+        "type": "string",
     },
     openapi_examples={
-        "single": {"value": "RELATED_COLUMN"},
+        "single": {"value": '"RELATED_COLUMN"'},
         "array": {"value": ["RELATED_COLUMN_1", "RELATED_COLUMN_2"]},
         "multi-level": {
             "value": {"RELATED_COLUMN": "RELATED_COLUMN_RELATED_COLUMN"},
