@@ -31,9 +31,7 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
-      # Install Nox, Poetry and API's dependencies
-      - name: Install Nox
-        run: pip install nox==2020.8.22
+      # Install Poetry and API's dependencies
       - name: Install Poetry
         run: pip install poetry==1.8.0
       # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
@@ -52,8 +50,8 @@ jobs:
       - name: Create logging.ini
         run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       # Run Unit tests
-      - name: Run Nox unit tests session
-        run: nox -s unit_tests -- --cov=datagateway_api --cov-report=xml
+      - name: Install dependencies and run unit tests
+        run: poetry install && poetry run pytest test/unit --cov=datagateway_api --cov-report=xml
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -124,9 +122,9 @@ jobs:
         run: |
           poetry run python -m util.icat_db_generator
 
-      # Run Nox integration tests session, saves and uploads a coverage report to codecov
-      - name: Run Nox Integration tests session
-        run: nox -s integration_tests -- --cov=datagateway_api --cov-report=xml
+      # Run integration tests session, saves and uploads a coverage report to codecov
+      - name: Install dependencies and run integration tests
+        run: poetry install && poetry run pytest test/integration --cov=datagateway_api --cov-report=xml
 
   linting:
     runs-on: ubuntu-24.04
@@ -140,13 +138,11 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
-      - name: Install Nox
-        run: pip install nox==2020.8.22
       - name: Install Poetry
         run: pip install poetry==1.8.0
 
-      - name: Run Nox lint session
-        run: nox -s lint
+      - name: Install dependencies and run lint
+        run: poetry install && poetry run flake8 datagateway_api test util
 
   formatting:
     runs-on: ubuntu-24.04
@@ -160,13 +156,11 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
-      - name: Install Nox
-        run: pip install nox==2020.8.22
       - name: Install Poetry
         run: pip install poetry==1.8.0
 
-      - name: Run Nox black session
-        run: nox -s black
+      - name: Install dependencies and check formatting
+        run: poetry install && poetry run black --check datagateway_api test util
 
   generator-script-testing:
     runs-on: ubuntu-24.04

@@ -80,58 +80,46 @@ intricacies of this command:
 poetry add [PACKAGE-NAME]
 ```
 
-## Automated Testing & Other Development Helpers (Nox)
+## Development Tools
 
-When developing new features for the API, there are a number of Nox sessions that can be
-used to lint/format/test the code in the included `noxfile.py`. To install Nox, use Pip
-as shown below. Nox is not listed as a Poetry dependency because this has the potential
-to cause issues if Nox was executed inside Poetry (see
-[here](https://medium.com/@cjolowicz/nox-is-a-part-of-your-global-developer-environment-like-poetry-pre-commit-pyenv-or-pipx-1cdeba9198bd)
-for more detailed reasoning). When using the `--user` option, ensure your user's Python
-installation is added to the system `PATH` variable, remembering to reboot your system
-if you need to change the `PATH`. If you do choose to install these packages within a
-virtual environment, you do not need the `--user` option:
+When developing new features for the API, the following tools are used for code quality and testing:
 
-```bash
-pip install --user --upgrade nox
-```
+- [Black](https://black.readthedocs.io/en/stable/) - Code formatting
+- [flake8](https://flake8.pycqa.org/en/latest/) - Code linting (with additional plugins configured in `.flake8`)
+- [pytest](https://docs.pytest.org/en/stable/) - Testing framework
 
-To run the sessions defined in `nox.options.sessions` (see `noxfile.py`), simply run:
+All these tools are included as development dependencies in Poetry and can be run via Poetry or directly.
+
+### Running Development Tools
+
+Format code with Black:
 
 ```bash
-nox
+poetry run black datagateway_api test util
 ```
 
-To execute a specific nox session, the following will do that:
+Lint code with flake8:
 
 ```bash
-nox -s [SESSION/FUNCTION NAME]
+poetry run flake8 datagateway_api test util
 ```
 
-Currently, the following Nox sessions have been created:
+Run unit tests:
 
-- `black` - this uses [Black](https://black.readthedocs.io/en/stable/) to format Python
-  code to a pre-defined style.
-- `lint` - this uses [flake8](https://flake8.pycqa.org/en/latest/) with a number of
-  additional plugins (see the included `noxfile.py` to see which plugins are used) to
-  lint the code to keep it Pythonic. `.flake8` configures `flake8` and the plugins.
-- `unit_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
-  automated tests in `test/unit`, tests for Python ICAT, and non Python ICAT specific tests. More details about the tests themselves [here](#running-tests).
-- `integration_tests` - this uses [pytest](https://docs.pytest.org/en/stable/) to execute the
-  automated tests in `test/unit`, tests for Python ICAT, and non Python ICAT specific tests. Requires ICAT. More details about the tests themselves [here](#running-tests).
+```bash
+poetry run pytest test/unit --cov=datagateway_api --cov-report=xml
+```
 
-Each Nox session builds an environment using the repo's dependencies (defined using
-Poetry) using `install_with_constraints()`. This stores the dependencies in a
-`requirements.txt`-like format temporarily during this process, using the OS' default
-temporary location. These files are manually deleted in `noxfile.py` (as opposed to
-being automatically removed by Python) to minimise any potential permission-related
-issues as documented
-[here](https://github.com/bravoserver/bravo/issues/111#issuecomment-826990).
+Run integration tests:
+
+```bash
+poetry run pytest test/integration --cov=datagateway_api --cov-report=xml
+```
 
 ## Automated Checks during Git Commit (Pre Commit)
 
 To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
-is used. Like Nox, Pip is used to install this tool:
+is used. Pip is used to install this tool:
 
 ```bash
 pip install --user --upgrade pre-commit
@@ -176,9 +164,6 @@ source ~/.poetry/env
 
 # Install API's dependencies
 poetry install
-
-# Install Nox
-pip install --user --upgrade nox
 
 # Install Pre Commit
 pip install --user --upgrade pre-commit
@@ -299,7 +284,7 @@ There are two seperate test runners provided. The integration tests, and the uni
 The unit test do not require an ICAT stack to be setup to run. The integration tests do
 require an ICAT stack. In order to cover all the code you will need to run both tests.
 
-To run the unit test use `nox -s unit_tests`, and to run the integration tests use `nox -s integration_tests`
+To run the unit test use `poetry run pytest test/unit`, and to run the integration tests use `poetry run pytest test/integration`
 The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
 and quicker action runs these are additionally split into the unit and integration tests.
 The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and Python ICAT
@@ -310,31 +295,29 @@ The configuration file (`config.yaml`) contains two options that will be used du
 testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for your test environment, using `config.yaml.example` as a reference. The tests require a
 connection to an instance of ICAT, so set the rest of the config as needed.
 
-By default, this will execute the repo's tests in
-Python 3.11. For most cases, running the tests in a single Python
-version will be sufficient:
+By default, this will execute the repo's tests in Python 3.11:
 
 ```bash
-nox -p 3.11 -s unit_tests
-nox -p 3.11 -s integration
+poetry run pytest test/unit
+poetry run pytest test/integration
 ```
 
 This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to check how much of the codebase is covered by the tests in `test/`:
 
 ```bash
-nox -p 3.11 -s unit_tests -- --cov-report term --cov=./datagateway_api
-nox -p 3.11 -s integration_tests -- --cov-report term --cov=./datagateway_api
+poetry run pytest test/unit --cov-report term --cov=./datagateway_api
+poetry run pytest test/integration --cov-report term --cov=./datagateway_api
 ```
 
 With `pytest`, you can output the duration for each test, useful for showing the slower
-tests in the collection (sortest from slowest to fastest). The test duration is split
+tests in the collection (sorted from slowest to fastest). The test duration is split
 into setup, call and teardown to more easily understand where the tests are being slowed
 down:
 
 ```bash
-nox -p 3.11 -s unit_tests -- --durations=0
-nox -p 3.11 -s integration_tests -- --durations=0
+poetry run pytest test/unit -- --durations=0
+poetry run pytest test/integration -- --durations=0
 ```
 
 To test a specific test class (or even a specific test function), you will
