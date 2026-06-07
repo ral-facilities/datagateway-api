@@ -2,17 +2,17 @@ from unittest.mock import patch
 
 import pytest
 
-from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
-from datagateway_api.src.search_api.filters import (
+from datagateway_api.common.exceptions import FilterError, SearchAPIError
+from datagateway_api.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
     SearchAPIScoringFilter,
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
-from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
-from datagateway_api.src.search_api.query import SearchAPIQuery
-from datagateway_api.src.search_api.query_filter_factory import (
+from datagateway_api.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.search_api.query import SearchAPIQuery
+from datagateway_api.search_api.query_filter_factory import (
     SearchAPIQueryFilterFactory,
 )
 
@@ -1961,7 +1961,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].skip_value == expected_skip_value
 
     @patch(
-        "datagateway_api.src.common.config.Config.config.search_api.search_scoring.enabled",
+        "datagateway_api.common.config.Config.config.search_api.search_scoring.enabled",
         True,
     )
     def test_valid_scoring_filter(self):
@@ -1981,7 +1981,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].operation == "ilike"
 
     @patch(
-        "datagateway_api.src.common.config.Config.config.search_api.search_scoring.enabled",
+        "datagateway_api.common.config.Config.config.search_api.search_scoring.enabled",
         True,
     )
     @pytest.mark.parametrize(

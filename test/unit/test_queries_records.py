@@ -1,12 +1,12 @@
 from pydantic import ValidationError
 import pytest
 
-from datagateway_api.src.common.exceptions import (
+from datagateway_api.common.exceptions import (
     BadRequestError,
     FilterError,
     MissingRecordError,
 )
-from datagateway_api.src.common.helpers import queries_records
+from datagateway_api.common.helpers import queries_records
 
 
 class TestQueriesRecords:

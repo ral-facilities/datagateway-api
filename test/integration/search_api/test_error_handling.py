@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.common.exceptions import (
+from datagateway_api.common.exceptions import (
     ApiError,
     BadRequestError,
     FilterError,
@@ -8,8 +8,8 @@ from datagateway_api.src.common.exceptions import (
     ScoringAPIError,
     SearchAPIError,
 )
-from datagateway_api.src.search_api.helpers import search_api_error_handling
-from datagateway_api.src.search_api.models import Document
+from datagateway_api.search_api.helpers import search_api_error_handling
+from datagateway_api.search_api.models import Document
 
 
 class TestErrorHandling:

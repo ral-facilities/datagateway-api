@@ -2,8 +2,8 @@ from unittest.mock import patch
 
 import pytest
 
-from datagateway_api.src.common.exceptions import FilterError, SearchAPIError
-from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
+from datagateway_api.common.exceptions import FilterError, SearchAPIError
+from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
 
 
 class TestPaNOSCMappings:
@@ -30,7 +30,7 @@ class TestPaNOSCMappings:
             current_test_config = test_config_without_search_api
 
         with patch(
-            "datagateway_api.src.common.config.Config.config",
+            "datagateway_api.common.config.Config.config",
             current_test_config,
         ):
             if search_api_config_flag:

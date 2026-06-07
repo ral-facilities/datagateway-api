@@ -5,19 +5,19 @@ from typing import Generator
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.common.exceptions import MissingRecordError, PythonICATError
-from datagateway_api.src.datagateway_api.icat.filters import (
+from datagateway_api.common.config import APIConfig, Config
+from datagateway_api.common.exceptions import MissingRecordError, PythonICATError
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATOrderFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.src.datagateway_api.icat.helpers import (
+from datagateway_api.datagateway_api.icat.helpers import (
     get_data_with_filters,
     is_use_reader_for_performance_enabled,
 )
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
-from datagateway_api.src.datagateway_api.icat.reader_query_handler import (
+from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
+from datagateway_api.datagateway_api.icat.reader_query_handler import (
     ReaderQueryHandler,
 )
 

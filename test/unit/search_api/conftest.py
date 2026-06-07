@@ -3,7 +3,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
+from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
 
 
 @pytest.fixture()

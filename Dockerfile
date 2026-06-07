@@ -53,6 +53,6 @@ COPY docker/docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 
-CMD ["fastapi", "run", "datagateway_api/src/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["fastapi", "run", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
 
 EXPOSE 8000

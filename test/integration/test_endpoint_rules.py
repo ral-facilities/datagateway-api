@@ -1,7 +1,7 @@
 from fastapi.routing import APIRoute, Mount
 import pytest
 
-from datagateway_api.src.common.entity_endpoint_dict import endpoints
+from datagateway_api.common.entity_endpoint_dict import endpoints
 
 
 def collect_routes(app):

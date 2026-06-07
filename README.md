@@ -226,13 +226,13 @@ Ideally, the API would be run using the following command, the alternative (deta
 below) should only be used for development purposes.
 
 ```bash
-poetry run python -m datagateway_api.src.main
+poetry run python -m datagateway_api.main
 ```
 
 However, it can also be run with the `fastapi dev` command. This should only be used for development.
 
 ```bash
-fastapi dev datagateway_api/src/main.py --host 0.0.0.0 --port 5000
+fastapi dev datagateway_api/main.py --host 0.0.0.0 --port 5000
 ```
 
 If you get the following error when starting the API, changes need to be made to your
@@ -357,9 +357,9 @@ poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQ
 
 The project consists of 5 main packages:
 
-- `datagateway_api.src.datagateway_api` - code for DataGateway API, for Python ICAT
-- `datagateway_api.src.search_api` - Search API specific code e.g. `NestedWhereFilters` for the OR functionality for WHERE clauses
-- `datagateway_api.src.common` - code that is shared between DataGateway API and the search API
+- `datagateway_api.datagateway_api` - code for DataGateway API, for Python ICAT
+- `datagateway_api.search_api` - Search API specific code e.g. `NestedWhereFilters` for the OR functionality for WHERE clauses
+- `datagateway_api.common` - code that is shared between DataGateway API and the search API
 - `test` - mixture of automated unit and integration tests written using Pytest
 
 ## Main
@@ -381,7 +381,7 @@ datagateway_app.include_router(
 ## Models
 
 DataGateway API models are dynamically constructed at application startup using the
-[`build_datagateway_api_model()`](datagateway_api/src/datagateway_api/build_models.py) function. This function queries
+[`build_datagateway_api_model()`](datagateway_api/datagateway_api/build_models.py) function. This function queries
 the connected ICAT server for its schema and generates Pydantic models for all ICAT entities.
 
 For each ICAT entity, three models are generated:
@@ -433,7 +433,7 @@ of the router setup.
 
 ## Logging
 
-Logging configuration can be found in `datagateway_api.src.common.logger_setup`. This
+Logging configuration can be found in `datagateway_api.common.logger_setup`. This
 contains a typical dictionary-based config for the standard Python `logging` library
 that rotates files after they become 5MB in size.
 
@@ -446,7 +446,7 @@ file.
 
 This is a class containing static methods to deal with dates within the API. The date
 handler can be used to convert dates between string and datetime objects (using a format
-agreed in `datagateway_api.src.common.constants`) and uses a parser from `dateutil` to
+agreed in `datagateway_api.common.constants`) and uses a parser from `dateutil` to
 detect if an input contains a date. This is useful for determining if a JSON value given
 in a request body is a date, at which point it can be converted to a datetime object,
 ready for storing in ICAT.
@@ -454,7 +454,7 @@ ready for storing in ICAT.
 ## Exceptions & FastAPI Error Handling
 
 Exceptions custom to DataGateway API are defined in
-[datagateway_api.src.common.exceptions](datagateway_api/src/common/exceptions.py). Each exception has a status code and a default
+[datagateway_api.common.exceptions](datagateway_api/common/exceptions.py). Each exception has a status code and a default
 message (which can be changed when raising the exception in code).
 
 When the API is set up in `main.py`, custom exception handlers are registered using FastAPI's
@@ -466,12 +466,12 @@ are registered for both the DataGateway API and Search API applications.
 
 ## Filtering
 
-Filters available for use in the API are defined in `datagateway_api.src.common.filters`.
+Filters available for use in the API are defined in `datagateway_api.common.filters`.
 These filters are all based from `QueryFilter`, an asbtract class to define any filter
 for the API. Precedence is used to prioritise in which order filters should be applied,
 but is only needed for the Search API.
 
-Filtering logic is located in `datagateway_api.src.common.helpers`.
+Filtering logic is located in `datagateway_api.common.helpers`.
 `get_filters_from_query_string()` uses the request query parameters to form filters to
 be used within the API. A `QueryFilterFactory` is used to build filters for the Python ICAT and the static method within this class is called in
 `get_filters_from_query_string()`.
@@ -556,7 +556,7 @@ but allow for multiple session IDs to be used if required.
 
 ### ICATQuery
 
-The ICATQuery classed is in `datagateway_api.src.datagateway_api.icat.query`. This class
+The ICATQuery classed is in `datagateway_api.datagateway_api.icat.query`. This class
 stores a query created with Python ICAT
 ([documentation](https://python-icat.readthedocs.io/en/stable/query.html)). The
 `execute_query()` function executes the query and returns either results in either a
@@ -716,6 +716,7 @@ Version 11.1.0 of the API will introduce changes to the reader functionality, an
 ```bash
 python util/setup_v11_1_0.py --help
 ```
+
 ```
 usage: datagateway_api_setup [-h] [--url URL] [-a AUTHENTICATOR] -u USERNAME [-p PASSWORD_FILE] [--allow-existing]
 
