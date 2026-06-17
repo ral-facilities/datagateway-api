@@ -6,7 +6,7 @@ from icat.entity import Entity
 from icat.exception import ICATObjectExistsError
 from icat.query import Query
 
-from datagateway_api.src.common.config import Config
+from datagateway_api.common.config import Config
 
 
 def get_password(password_file: "str | None") -> str:

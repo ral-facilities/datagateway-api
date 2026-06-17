@@ -1,11 +1,11 @@
 from fastapi import Request
 
 
-from datagateway_api.src.common.exceptions import (
+from datagateway_api.common.exceptions import (
     AuthenticationError,
     MissingCredentialsError,
 )
-from datagateway_api.src.common.helpers import get_session_id_from_auth_header
+from datagateway_api.common.helpers import get_session_id_from_auth_header
 
 
 class TestGetSessionIDFromAuthHeader:

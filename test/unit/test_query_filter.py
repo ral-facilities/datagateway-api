@@ -1,4 +1,4 @@
-from datagateway_api.src.common.filters import QueryFilter
+from datagateway_api.common.filters import QueryFilter
 
 
 class TestQueryFilter:

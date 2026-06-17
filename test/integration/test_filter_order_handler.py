@@ -1,12 +1,12 @@
 import pytest
 
-from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.src.datagateway_api.icat.filters import (
+from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.src.search_api.filters import SearchAPIIncludeFilter
+from datagateway_api.search_api.filters import SearchAPIIncludeFilter
 
 
 class TestFilterOrderHandler:

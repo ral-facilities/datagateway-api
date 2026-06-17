@@ -8,9 +8,9 @@ from icat.client import Client
 import pytest
 
 
-from datagateway_api.src.common.config import APIConfig, Config
-from datagateway_api.src.datagateway_api.icat.models import Session
-from datagateway_api.src.main import app, register_common_handlers
+from datagateway_api.common.config import APIConfig, Config
+from datagateway_api.datagateway_api.icat.models import Session
+from datagateway_api.main import app, register_common_handlers
 
 
 @pytest.fixture(scope="package")

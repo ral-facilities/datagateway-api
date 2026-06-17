@@ -3,7 +3,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from datagateway_api.src.common.config import APIConfig, validate_extension
+from datagateway_api.common.config import APIConfig, validate_extension
 
 
 class TestAPIConfig:

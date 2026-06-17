@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.search_api.models import SearchAPIDatetime
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.search_api.models import SearchAPIDatetime
 
 
 class DateModel(BaseModel):
