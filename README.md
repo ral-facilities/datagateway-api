@@ -26,58 +26,24 @@ guide found online. It is assumed the commands shown in this part of the README 
 executed in the root directory of this repo once it has been cloned to your local
 machine.
 
-## API Dependency Management (Poetry)
+## API Dependency Management (uv)
 
-To maintain records of the API's dependencies,
-[Poetry](https://github.com/python-poetry/poetry) is used. To install, use the following
-command:
-
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-
-The installation requires the following to be added to your `~/.bashrc` file so the installation folder is on your path.
-
-```bash
-export PATH="~/.local/bin:$PATH"
-```
-
-Then run `source ~/.bashrc` or open a new terminal and check poetry works by running `poetry --version`
-
-If you encounter this error when installing poetry:
-
-```
-ERROR: No matching distribution found for poetry==1.8.0
-```
-
-You can try running the installer with python 3.11 with the command below:
-
-```bash
-curl -sSL https://install.python-poetry.org | python3.11 -
-```
-
-Or you can specify the version you want to install from the listed versions with the command below:
-
-```bash
-curl -sSL https://install.python-poetry.org | python3 - --version 1.8.0
-```
+This project uses [uv](https://github.com/astral-sh/uv) for dependency management. Ensure uv and Python are installed on your machine.
 
 The dependencies for this repo are stored in `pyproject.toml`, with a more detailed
-version of this data in `poetry.lock`. The lock file is used to maintain the exact
+version of this data in `uv.lock`. The lock file is used to maintain the exact
 versions of dependencies from system to system. To install the dependencies, execute the
-following command (add `--no-dev` if you don't want the dev dependencies):
+following command:
 
 ```bash
-poetry install
+uv sync
 ```
 
-To add a dependency to Poetry, run the following command (add `--dev` if it's a
-development related dependency). The
-[official docs](https://python-poetry.org/docs/cli/#add) give good detail regarding the
-intricacies of this command:
+To add a dependency to uv, run the following command (add `--dev` if it's a
+development related dependency):
 
 ```bash
-poetry add [PACKAGE-NAME]
+uv add [PACKAGE-NAME]
 ```
 
 ## Development Tools
@@ -88,88 +54,40 @@ When developing new features for the API, the following tools are used for code 
 - [flake8](https://flake8.pycqa.org/en/latest/) - Code linting (with additional plugins configured in `.flake8`)
 - [pytest](https://docs.pytest.org/en/stable/) - Testing framework
 
-All these tools are included as development dependencies in Poetry and can be run via Poetry or directly.
+All these tools are included as development dependencies in uv and can be run via uv or directly.
 
 ### Running Development Tools
 
 Format code with Black:
 
 ```bash
-poetry run black datagateway_api test util
+uv run black datagateway_api test util
 ```
 
 Lint code with flake8:
 
 ```bash
-poetry run flake8 datagateway_api test util
+uv run flake8 datagateway_api test util
 ```
 
 Run unit tests:
 
 ```bash
-poetry run pytest test/unit --cov=datagateway_api --cov-report=xml
+uv run pytest test/unit --cov=datagateway_api --cov-report=xml
 ```
 
 Run integration tests:
 
 ```bash
-poetry run pytest test/integration --cov=datagateway_api --cov-report=xml
-```
-
-## Automated Checks during Git Commit (Pre Commit)
-
-To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
-is used. Pip is used to install this tool:
-
-```bash
-pip install --user --upgrade pre-commit
-```
-
-This repo contains an existing config file for `pre-commit` (`.pre-commit-config.yaml`)
-which needs to be installed using:
-
-```bash
-pre-commit install
-```
-
-When you commit work on this repo, the configured commit hooks will be executed, but
-only on the changed files. This is good because it keeps the process of committing
-a simple one, but to run the hooks on all the files locally, execute the following
-command:
-
-```bash
-pre-commit run --all-files
+uv run pytest test/integration --cov=datagateway_api --cov-report=xml
 ```
 
 ## Summary
 
-As a summary, these are the steps needed to create a dev environment for this repo
-compressed into a single code block:
+Ensure Python & uv are installed, then run:
 
 ```bash
-# Install Python 3.11
-
-# Download and install Python 3.11 from the official Python website or use your system’s package manager (e.g., apt for Linux, Homebrew for macOS, or the installer for Windows).
-# Make sure Python is added to your system PATH.
-# Verify the installation by checking the version.
-
-# To verify the installation commands worked:
-python3 --version
-
-# Install Poetry
-curl -sSL https://install.python-poetry.org | python3 -
-
-# Apply changes made to file when installing Poetry
-source ~/.poetry/env
-
-# Install API's dependencies
-poetry install
-
-# Install Pre Commit
-pip install --user --upgrade pre-commit
-
-# Install commit hooks
-pre-commit install
+uv sync
 ```
 
 # Running DataGateway API
@@ -211,7 +129,7 @@ Ideally, the API would be run using the following command, the alternative (deta
 below) should only be used for development purposes.
 
 ```bash
-poetry run python -m datagateway_api.main
+uv run python -m datagateway_api.main
 ```
 
 However, it can also be run with the `fastapi dev` command. This should only be used for development.
@@ -221,7 +139,7 @@ fastapi dev datagateway_api/main.py --host 0.0.0.0 --port 5000
 ```
 
 If you get the following error when starting the API, changes need to be made to your
-Poetry environment:
+uv environment:
 
 ```python
 ModuleNotFoundError: No module named 'urlparse'
@@ -284,7 +202,7 @@ There are two seperate test runners provided. The integration tests, and the uni
 The unit test do not require an ICAT stack to be setup to run. The integration tests do
 require an ICAT stack. In order to cover all the code you will need to run both tests.
 
-To run the unit test use `poetry run pytest test/unit`, and to run the integration tests use `poetry run pytest test/integration`
+To run the unit test use `uv run pytest test/unit`, and to run the integration tests use `uv run pytest test/integration`
 The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
 and quicker action runs these are additionally split into the unit and integration tests.
 The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and Python ICAT
@@ -298,16 +216,16 @@ connection to an instance of ICAT, so set the rest of the config as needed.
 By default, this will execute the repo's tests in Python 3.11:
 
 ```bash
-poetry run pytest test/unit
-poetry run pytest test/integration
+uv run pytest test/unit
+uv run pytest test/integration
 ```
 
 This repository also utilises [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/)
 to check how much of the codebase is covered by the tests in `test/`:
 
 ```bash
-poetry run pytest test/unit --cov-report term --cov=./datagateway_api
-poetry run pytest test/integration --cov-report term --cov=./datagateway_api
+uv run pytest test/unit --cov-report term --cov=./datagateway_api
+uv run pytest test/integration --cov-report term --cov=./datagateway_api
 ```
 
 With `pytest`, you can output the duration for each test, useful for showing the slower
@@ -316,24 +234,24 @@ into setup, call and teardown to more easily understand where the tests are bein
 down:
 
 ```bash
-poetry run pytest test/unit -- --durations=0
-poetry run pytest test/integration -- --durations=0
+uv run pytest test/unit -- --durations=0
+uv run pytest test/integration -- --durations=0
 ```
 
 To test a specific test class (or even a specific test function), you will
-need to use pytest itself through poetry. If you want to change the python
-version use `poetry env use 3.11` which will generate a virtual env with that
+need to use pytest itself through uv. If you want to change the python
+version use `uv venv -p 3.11` which will generate a virtual env with that
 version.
 
 ```bash
 # Test a specific file
-poetry run pytest test/integration/datagateway_api/icat/test_query.py
+uv run pytest test/integration/datagateway_api/icat/test_query.py
 
 # Test a specific test class
-poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery
+uv run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery
 
 # Test a specific test function
-poetry run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
+uv run pytest test/integration/datagateway_api/icat/test_query.py::TestICATQuery::test_valid_query_exeuction
 ```
 
 # Project Structure
@@ -718,10 +636,7 @@ options:
 # API Versioning
 
 This repository uses semantic versioning as the standard for version number
-incrementing, with the version stored in `pyproject.toml`. We uses
-[python-semantic-release](https://github.com/relekang/python-semantic-release) to
-determine whether a release needs to be made, and if so, whether a major, minor or patch
-version bump should be made. This decision is made based on commit message content.
+incrementing, with the version stored in `pyproject.toml`.
 
 In a PR, at least one commit must follow the
 [Angular commit message format](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commit-message-format)
@@ -760,13 +675,6 @@ New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING C
 (major) commit type is found between the previous release and the most recent commit on
 main. When the version is bumped, a GitHub tag and release is made which contains the
 source code and the built versions of the API (sdist and wheel).
-
-To check how the version number will be impacted before merging a pull request, use the
-following command to show the version:
-
-```bash
-poetry run semantic-release print-version
-```
 
 # Updating README
 
