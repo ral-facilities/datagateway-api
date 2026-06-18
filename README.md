@@ -264,9 +264,7 @@ uv run pytest test/integration -- --durations=0
 ```
 
 To test a specific test class (or even a specific test function), you will
-need to use pytest itself through uv. If you want to change the python
-version use `uv venv -p 3.11` which will generate a virtual env with that
-version.
+need to use pytest itself through uv.
 
 ```bash
 # Test a specific file

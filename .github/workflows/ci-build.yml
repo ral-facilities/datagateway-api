@@ -46,7 +46,7 @@ jobs:
       - name: Create logging.ini
         run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       # Run Unit tests
-      - name: Install dependencies and run unit tests
+      - name: Run unit tests
         run: uv run pytest test/unit --cov=datagateway_api --cov-report=xml
 
       # ICAT Ansible clone and install dependencies
@@ -116,7 +116,7 @@ jobs:
           uv run python -m util.icat_db_generator
 
       # Run integration tests session, saves and uploads a coverage report to codecov
-      - name: Install dependencies and run integration tests
+      - name: Run integration tests
         run: uv run pytest test/integration --cov=datagateway_api --cov-report=xml
 
   linting:
@@ -134,7 +134,7 @@ jobs:
       - name: Install uv
         run: pip install uv
 
-      - name: Install dependencies and run lint
+      - name: Run linting
         run: uv run flake8 datagateway_api test util
 
   formatting:
