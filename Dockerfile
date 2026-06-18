@@ -2,11 +2,10 @@
 ########################################################################################################################
 # Base stage, includes uv
 ########################################################################################################################
-FROM python:3.11-alpine3.17 AS base
+FROM python:3.11-alpine3.24@sha256:77973666731a4983fa780d8e2ae8de654a8cb9f0919665681f7ec3bcab7ad0cb AS base
 
 # Copy uv + uvx binaries
-COPY --from=ghcr.io/astral-sh/uv:0.10.8 /uv /uvx /bin/
-
+COPY --from=ghcr.io/astral-sh/uv:0.11.21@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
 
 # Enable bytecode compilation
 ENV UV_COMPILE_BYTECODE=1
@@ -16,10 +15,8 @@ ENV UV_LINK_MODE=copy
 ENV UV_NO_MANAGED_PYTHON=1
 # Disable Python downloads so that the system interpreter is used across images
 ENV UV_PYTHON_DOWNLOADS=0
-# Add timezone configuration - https://github.com/regebro/tzlocal/issues/70
-ENV TZ=UTC
 
-WORKDIR /app
+WORKDIR /datagateway-api-run
 
 COPY pyproject.toml uv.lock README.md ./
 
@@ -41,7 +38,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked
 
 
-CMD ["fastapi", "dev", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/datagateway-api-run/.venv/bin/fastapi", "dev", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
 
 EXPOSE 8000
 
@@ -68,12 +65,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ########################################################################################################################
 # Minimal production-ready image
 ########################################################################################################################
-FROM python:3.11-alpine3.17 AS prod
+FROM python:3.11-alpine3.24@sha256:77973666731a4983fa780d8e2ae8de654a8cb9f0919665681f7ec3bcab7ad0cb AS prod
 
 WORKDIR /datagateway-api-run
 
 # Copy the application from the prod-build stage
-COPY --from=prod-build /app /datagateway-api-run
+COPY --from=prod-build /datagateway-api-run /datagateway-api-run
 
 
 RUN set -eux; \
@@ -99,6 +96,6 @@ ENV ICAT_CHECK_CERT="false"
 COPY docker/docker-entrypoint.sh /usr/local/bin/
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["fastapi", "run", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/datagateway-api-run/.venv/bin/fastapi", "run", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
 
 EXPOSE 8000
