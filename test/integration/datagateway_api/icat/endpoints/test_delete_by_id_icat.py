@@ -6,7 +6,7 @@ class TestDeleteByID:
         single_investigation_test_data,
     ):
         test_response = test_client.delete(
-            f'/datagateway-api/investigations/{single_investigation_test_data[0]["id"]}',
+            f"/datagateway-api/investigations/{single_investigation_test_data[0]['id']}",
             headers=valid_icat_credentials_header,
         )
 

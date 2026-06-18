@@ -729,8 +729,7 @@ class TestSearchAPISearchEndpoint:
                         "parameters": [],
                     },
                 ],
-                id="Search documents with datasets.parameters include and conditions"
-                " (between operator, A AND B AND C)",
+                id="Search documents with datasets.parameters include and conditions (between operator, A AND B AND C)",
             ),
             pytest.param(
                 "Datasets",
@@ -819,8 +818,7 @@ class TestSearchAPISearchEndpoint:
                                     {
                                         "name": "SAMPLE 4",
                                         "pid": "pid:4",
-                                        "description": "I read painting decade. Down"
-                                        " free attention recognize travel.",
+                                        "description": "I read painting decade. Down free attention recognize travel.",
                                         "datasets": [],
                                     },
                                 ],
@@ -839,8 +837,7 @@ class TestSearchAPISearchEndpoint:
                                     {
                                         "name": "SAMPLE 4",
                                         "pid": "pid:4",
-                                        "description": "I read painting decade. Down"
-                                        " free attention recognize travel.",
+                                        "description": "I read painting decade. Down free attention recognize travel.",
                                         "datasets": [],
                                     },
                                 ],

@@ -176,7 +176,6 @@ def update_attributes(old_entity, new_entity):
             ) from e
 
         try:
-
             related_object = new_entity[key]
             if key != "id":
                 entity_info = old_entity.getAttrInfo(old_entity.client, key)
@@ -557,7 +556,6 @@ def create_entities(client, entity_type, data):  # noqa: C901
         data = [data]
 
     for result in data:
-
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
@@ -577,7 +575,6 @@ def create_entities(client, entity_type, data):  # noqa: C901
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-
                         related_object = []
                         if entity_info.relType.lower() == "many":
                             related_object = build_related_entities(

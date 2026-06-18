@@ -1126,8 +1126,7 @@ def main():
         generate_all(i, generators, client)
 
     print(
-        f"Added {sum(generator.amount for generator in generators)} entities in"
-        f" {datetime.datetime.now() - start_time}",
+        f"Added {sum(generator.amount for generator in generators)} entities in {datetime.datetime.now() - start_time}",
     )
 
 

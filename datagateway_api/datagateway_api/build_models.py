@@ -129,7 +129,6 @@ def build_datagateway_api_model(**kwargs):
         post_name = f"{name}Post"
         patch_name = f"{name}Patch"
         for field in info.fields:
-
             if field.name in SYSTEM_FIELDS:
                 continue
 

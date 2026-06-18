@@ -364,8 +364,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                         )
                 else:
                     raise FilterError(
-                        "Include Filter: Inner field type (inside dictionary) not"
-                        " recognised, cannot interpret input",
+                        "Include Filter: Inner field type (inside dictionary) not recognised, cannot interpret input",
                     )
         elif isinstance(field, list):
             for element in field:

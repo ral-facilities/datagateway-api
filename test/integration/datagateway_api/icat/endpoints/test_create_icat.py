@@ -191,7 +191,7 @@ class TestICATCreateData:
         get_response = test_client.get(
             "/datagateway-api/investigations?where="  # noqa: B907
             '{"title": {"eq": "'
-            f'{request_body[0]["title"]}'
+            f"{request_body[0]['title']}"
             '"}}',
             headers=valid_icat_credentials_header,
         )

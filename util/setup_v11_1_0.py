@@ -81,7 +81,7 @@ def setup() -> None:
     parser.add_argument(
         "--allow-existing",
         action="store_true",
-        help=("Iterates over each Entity and if it already exists, suppresses the " "ICATObjectAlreadyExists error."),
+        help=("Iterates over each Entity and if it already exists, suppresses the ICATObjectAlreadyExists error."),
     )
     args = parser.parse_args()
 

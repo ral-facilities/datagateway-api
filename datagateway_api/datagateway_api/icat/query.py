@@ -163,7 +163,6 @@ class ICATQuery:
         include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
             if key in includes:
-
                 target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
                 includes_copy = includes.copy()

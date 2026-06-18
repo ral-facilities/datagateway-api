@@ -135,9 +135,7 @@ class ReaderQueryHandler:
             set[str]:
                 ICAT User.name of all InvestigationUsers associated with the Investigation with id `investigation_id`.
         """
-        query = (
-            f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
-        )
+        query = f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
         log.debug("Found %s as InvestigationUsers for investigation.id=%s", user_names, investigation_id)

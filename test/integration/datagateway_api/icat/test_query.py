@@ -56,8 +56,7 @@ def prepare_icat_data_for_assertion(
 
 class TestICATQuery:
     @pytest.mark.parametrize(
-        "input_conditions, input_aggregate, input_includes, expected_conditions,"
-        " expected_aggregate, expected_includes",
+        "input_conditions, input_aggregate, input_includes, expected_conditions, expected_aggregate, expected_includes",
         [
             pytest.param(
                 {"fullName": "like Bob"},
