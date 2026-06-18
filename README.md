@@ -82,6 +82,31 @@ Run integration tests:
 uv run pytest test/integration --cov=datagateway_api --cov-report=xml
 ```
 
+## Automated Checks during Git Commit (Pre Commit)
+
+To make use of Git's ability to run custom hooks, [pre-commit](https://pre-commit.com/)
+is used. Pip is used to install this tool:
+
+```bash
+pip install --user --upgrade pre-commit
+```
+
+This repo contains an existing config file for `pre-commit` (`.pre-commit-config.yaml`)
+which needs to be installed using:
+
+```bash
+pre-commit install
+```
+
+When you commit work on this repo, the configured commit hooks will be executed, but
+only on the changed files. This is good because it keeps the process of committing
+a simple one, but to run the hooks on all the files locally, execute the following
+command:
+
+```bash
+pre-commit run --all-files
+```
+
 ## Summary
 
 Ensure Python & uv are installed, then run:
