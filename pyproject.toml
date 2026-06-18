@@ -51,6 +51,7 @@ code-analysis = [
     "flake8-import-order>=0.18.2,<0.19",
     "flake8-logging-format>=1.0.0,<2",
     "pep8-naming>=0.14.1,<0.15",
+    "ruff>=0.15.16",
 ]
 
 test = [
@@ -69,6 +70,7 @@ dev = [
     { include-group = "code-analysis" },
     { include-group = "test" },
     { include-group = "scripts" },
+
 ]
 
 
@@ -76,7 +78,3 @@ dev = [
 omit = [
     "test/*",
 ]
-
-
-[tool.black]
-line-length = 120
