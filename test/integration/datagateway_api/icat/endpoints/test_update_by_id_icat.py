@@ -68,8 +68,7 @@ class TestUpdateByID:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """This test will attempt to put `icatdb` into an invalid state"""
-
+        """This test will attempt to put `icatdb` into an invalid state."""
         # DOI cannot be over 255 characters, which this string is
         invalid_update_json = {
             "doi": "_" * 256,

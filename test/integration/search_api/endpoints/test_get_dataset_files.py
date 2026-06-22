@@ -10,7 +10,6 @@ def prepare_data_for_assertion(response):
     removed for assertion.
     :param response: JSON response from the search api.
     """
-
     # Go through list and dicts to find dicts
     for data in response:
         if isinstance(response, dict):

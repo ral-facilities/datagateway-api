@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from dateutil.tz import tzlocal
 import pytest
+from dateutil.tz import tzlocal
 
 from datagateway_api.common.helpers import map_distinct_attributes_to_results
 

@@ -43,8 +43,7 @@ class TestUpdateMultipleEntities:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """Request body is a dictionary, not a list of dictionaries"""
-
+        """Request body is a dictionary, not a list of dictionaries."""
         expected_doi = "Test Data Identifier"
         expected_summary = "Test Summary"
 
@@ -73,8 +72,7 @@ class TestUpdateMultipleEntities:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """There should be an ID in the request body to know which entity to update"""
-
+        """There should be an ID in the request body to know which entity to update."""
         update_data_json = [
             {
                 "doi": "Test Data Identifier",
@@ -135,7 +133,6 @@ class TestUpdateMultipleEntities:
         will throw an ICAT related exception. At this point, the rollback behaviour
         should execute, restoring the state of the first record (i.e. un-updating it)
         """
-
         request_body = [
             {
                 "id": multiple_investigation_test_data[0]["id"],

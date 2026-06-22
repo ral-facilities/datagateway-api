@@ -18,6 +18,7 @@ def get_password(password_file: "str | None") -> str:
 
     Returns:
         str: The user's password
+
     """
     if password_file is None:
         return getpass()

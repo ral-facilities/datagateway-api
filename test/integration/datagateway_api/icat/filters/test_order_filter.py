@@ -1,5 +1,6 @@
+from collections import OrderedDict
+
 import pytest
-from typing_extensions import OrderedDict
 
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
@@ -8,7 +9,7 @@ from datagateway_api.datagateway_api.icat.filters import PythonICATOrderFilter
 
 class TestICATOrderFilter:
     def test_direction_is_uppercase(self, icat_query):
-        """Direction must be uppercase for Python ICAT to see the input as valid"""
+        """Direction must be uppercase for Python ICAT to see the input as valid."""
         test_filter = PythonICATOrderFilter("id", "asc")
 
         filter_handler = FilterOrderHandler()

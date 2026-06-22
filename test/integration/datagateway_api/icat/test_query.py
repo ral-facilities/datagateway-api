@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from icat.entity import Entity
 import pytest
+from icat.entity import Entity
 
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import PythonICATError
@@ -19,7 +19,7 @@ def prepare_icat_data_for_assertion(
 ):
     """
     Remove meta attributes from ICAT data. Meta attributes contain data about data
-    creation/modification, and should be removed to ensure correct assertion values
+    creation/modification, and should be removed to ensure correct assertion values.
 
     :param data: ICAT data containing meta attributes such as modTime
     :type data: :class:`list` or :class:`icat.entity.EntityList`
@@ -40,7 +40,7 @@ def prepare_icat_data_for_assertion(
                 for attr in meta_attributes:
                     entity[key].pop(attr)
 
-        for attr in entity.keys():
+        for attr in entity:
             if isinstance(entity[attr], datetime):
                 entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
 
@@ -113,7 +113,7 @@ class TestICATQuery:
     def test_valid_manual_count_flag_init(self, icat_client):
         """
         Flag required for distinct filters used on count endpoints should be initialised
-        in `__init__()` of ICATQuery`
+        in `__init__()` of ICATQuery`.
         """
         test_query = ICATQuery(icat_client, "User")
 
@@ -284,7 +284,7 @@ class TestICATQuery:
             return_json_formattable=return_json_format_flag,
         )
 
-        if test_query.query.aggregate != "COUNT" and test_query.query.aggregate != "DISTINCT":
+        if test_query.query.aggregate not in {"COUNT", "DISTINCT"}:
             query_data = prepare_icat_data_for_assertion(
                 query_data,
                 remove_id=True,

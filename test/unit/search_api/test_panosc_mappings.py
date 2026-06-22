@@ -24,10 +24,7 @@ class TestPaNOSCMappings:
         test_config_without_search_api,
         search_api_config_flag,
     ):
-        if search_api_config_flag:
-            current_test_config = test_config
-        else:
-            current_test_config = test_config_without_search_api
+        current_test_config = test_config if search_api_config_flag else test_config_without_search_api
 
         with patch(
             "datagateway_api.common.config.Config.config",

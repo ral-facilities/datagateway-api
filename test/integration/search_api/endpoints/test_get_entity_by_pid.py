@@ -1,6 +1,5 @@
 import pytest
 
-
 from test.integration.search_api.endpoints.test_get_dataset_files import (
     prepare_data_for_assertion,
 )

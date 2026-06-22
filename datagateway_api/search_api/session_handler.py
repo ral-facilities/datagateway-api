@@ -1,5 +1,5 @@
-from functools import wraps
 import logging
+from functools import wraps
 
 from icat.exception import ICATSessionError
 
@@ -13,7 +13,7 @@ class SessionHandler:
     """
     Class to store Python ICAT client to be used within the search API. As the API
     requires no authentication, the same client object can be used which logs in as the
-    anon user
+    anon user.
     """
 
     client = ICATClient(client_use="search_api")
@@ -23,7 +23,7 @@ def client_manager(method):
     """
     Decorator to manage the client object at the beginning of each request. This
     decorator checks if the client has a valid session, and if not, logs in as the anon
-    user
+    user.
 
     :param method: The function used to process an incoming request
     """

@@ -1,5 +1,5 @@
-from fastapi import Request
 import pytest
+from fastapi import Request
 
 from datagateway_api.common.helpers import get_filters_from_query_string
 from datagateway_api.datagateway_api.icat.filters import (

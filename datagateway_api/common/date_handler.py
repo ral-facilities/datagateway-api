@@ -24,7 +24,6 @@ class DateHandler:
         :type potential_date: :class:`str`
         :return: Boolean to signify whether `potential_date` is a date or not
         """
-
         text = potential_date.strip()
 
         # Reject if the string is just digits (like "5" or "20200101")
@@ -58,7 +57,6 @@ class DateHandler:
         :return: Date converted into a :class:`datetime` object
         :raises BadRequestError: If there is an issue with the date format
         """
-
         try:
             datetime_obj = helper.parse_attr_string(data, "Date")
         except ValueError as e:
@@ -69,7 +67,7 @@ class DateHandler:
     @staticmethod
     def datetime_object_to_str(datetime_obj):
         """
-        Convert a datetime object to a string so it can be outputted in JSON
+        Convert a datetime object to a string so it can be outputted in JSON.
 
         :param datetime_obj: Datetime object from data from an ICAT entity
         :type datetime_obj: :class:`datetime.datetime`

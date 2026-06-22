@@ -1,6 +1,5 @@
 import logging
 
-
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 

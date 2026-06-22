@@ -21,14 +21,11 @@ from datagateway_api.datagateway_api.icat.helpers import (
     update_entity_by_id,
 )
 
-
 log = logging.getLogger()
 
 
 class PythonICAT:
-    """
-    Class that contains functions to access and modify data in an ICAT database directly
-    """
+    """Class that contains functions to access and modify data in an ICAT database directly."""
 
     def ping(self, **kwargs):
         """

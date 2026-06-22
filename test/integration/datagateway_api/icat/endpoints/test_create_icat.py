@@ -75,8 +75,7 @@ class TestICATCreateData:
         test_client,
         valid_icat_credentials_header,
     ):
-        """Create a single investigation, as opposed to multiple"""
-
+        """Create a single investigation, as opposed to multiple."""
         create_investigation_json = [
             {
                 "name": f"{self.investigation_name_prefix} 0",
@@ -115,8 +114,7 @@ class TestICATCreateData:
         test_client,
         valid_icat_credentials_header,
     ):
-        """An investigation requires a minimum of: name, visitId, facility, type"""
-
+        """An investigation requires a minimum of: name, visitId, facility, type."""
         invalid_request_body = [
             {
                 "title": "Test Title for DataGateway API Python ICAT testing",
@@ -137,8 +135,7 @@ class TestICATCreateData:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """This test targets raising ICATObjectExistsError, causing a 400"""
-
+        """This test targets raising ICATObjectExistsError, causing a 400."""
         # entity.as_dict() removes details about facility and type, hence they're
         # hardcoded here instead of using sinle_investigation_test_data
         existing_object_json = [

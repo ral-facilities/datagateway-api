@@ -1,6 +1,6 @@
-from datetime import datetime
 import logging
-from typing import Annotated, Literal, Optional
+from datetime import datetime
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, Request, status
 from pydantic import BaseModel, ConfigDict, Field
@@ -14,7 +14,7 @@ log = logging.getLogger()
 class LoginRequest(BaseModel):
     username: str
     password: str
-    mechanism: Optional[str] = "simple"
+    mechanism: str | None = "simple"
 
 
 class SessionResponse(BaseModel):
@@ -33,13 +33,12 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
     """
     Generate a FastAPI APIRouter using python ICAT. In main.py
     these generated routers are included with the API e.g.
-    `app.include_router(session_endpoints(python_icat), prefix="/sessions")`
+    `app.include_router(session_endpoints(python_icat), prefix="/sessions")`.
 
     :param python_icat: The python ICAT instance used for processing requests
     :type python_icat: :class:`PythonICAT`
     :return: FastAPI APIRouter
     """
-
     router = APIRouter(prefix="/sessions", tags=["Sessions"])
 
     session_auth = SessionBearer()
@@ -61,7 +60,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
     def post(request: LoginRequest):
         """
         Generates a sessionID if the user has correct credentials
-        :return: String - SessionID
+        :return: String - SessionID.
         """
         return {"sessionID": python_icat.login(request.model_dump(), **kwargs)}
 
@@ -81,9 +80,8 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
     def delete(request: Request, _: Annotated[str, Depends(session_auth)]):
         """
         Deletes a users sessionID when they logout
-        :return: Blank response, 200
+        :return: Blank response, 200.
         """
-
         python_icat.logout(get_session_id_from_auth_header(request), **kwargs)
         return ""
 
@@ -112,7 +110,7 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
     def get(request: Request, _: Annotated[str, Depends(session_auth)]):
         """
         Gives details of a user's session
-        :return: Session details
+        :return: Session details.
         """
         return python_icat.get_session_details(get_session_id_from_auth_header(request), **kwargs)
 
@@ -132,9 +130,8 @@ def sessions_endpoints(python_icat, **kwargs) -> APIRouter:
     def put(request: Request, _: Annotated[str, Depends(session_auth)]):
         """
         Refreshes a user's session
-        :return: The session ID that has been refreshed
+        :return: The session ID that has been refreshed.
         """
-
         python_icat.refresh(get_session_id_from_auth_header(request), **kwargs)
         return ""
 

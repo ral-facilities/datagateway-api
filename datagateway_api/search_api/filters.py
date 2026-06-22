@@ -1,6 +1,6 @@
+import logging
 from copy import copy
 from datetime import datetime
-import logging
 
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.datagateway_api.icat.filters import (
@@ -109,9 +109,8 @@ class SearchAPIWhereFilter(PythonICATWhereFilter):
     def __str__(self):
         """
         String representation which is also used to apply WHERE filters that are inside
-        a `NestedWhereFilters` object
+        a `NestedWhereFilters` object.
         """
-
         if isinstance(self.search_api_query, SearchAPIQuery):
             # Making a copy of the filter because `apply_filter()` can only be executed
             # once per filter successfully

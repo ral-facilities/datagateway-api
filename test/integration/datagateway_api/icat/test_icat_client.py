@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
-from icat.client import Client
 import pytest
+from icat.client import Client
 
 from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
 
@@ -44,17 +44,19 @@ class TestICATClient:
                 Client.url = f"{url}/ICATService/ICAT?wsdl"
                 Client.checkCert = checkCert
 
-        with patch(
-            "datagateway_api.common.config.Config.config",
-            test_config,
-        ):
-            with patch(
+        with (
+            patch(
+                "datagateway_api.common.config.Config.config",
+                test_config,
+            ),
+            patch(
                 "icat.client.Client.__init__",
                 side_effect=MockClient.__init__,
-            ):
-                test_icat_client = ICATClient(client_use)
-                assert test_icat_client.url == expected_url
-                assert test_icat_client.checkCert == expected_check_cert
+            ),
+        ):
+            test_icat_client = ICATClient(client_use)
+            assert test_icat_client.url == expected_url
+            assert test_icat_client.checkCert == expected_check_cert
 
     def test_clean_up(self):
         test_icat_client = ICATClient()

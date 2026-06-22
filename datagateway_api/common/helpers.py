@@ -1,12 +1,11 @@
-from datetime import datetime
-from functools import wraps
 import json
 import logging
+from datetime import datetime
+from functools import wraps
 
+import requests
 from fastapi import Request
 from pydantic import ValidationError
-import requests
-
 
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
@@ -25,7 +24,7 @@ def queries_records(method):
     Decorator for endpoint resources that search for a record in a table
     :param method: The method for the endpoint
     :return: Will return a 404, "No such record" if a MissingRecordError is caught
-    :return: Will return a 400, "Error message" if other expected errors are caught
+    :return: Will return a 400, "Error message" if other expected errors are caught.
     """
 
     @wraps(method)
@@ -52,7 +51,7 @@ def get_session_id_from_auth_header(request: Request):
     """
     Gets the sessionID from the Authorization header of a request
     :request Request: FastAPI Request object containing the incoming headers
-    :return: String: SessionID
+    :return: String: SessionID.
     """
     log.info("Getting session Id from auth header")
 
@@ -75,7 +74,7 @@ def is_valid_json(string):
     """
     Determines if a string is valid JSON
     :param string: The string to be tested
-    :return: boolean representing if the string is valid JSON
+    :return: boolean representing if the string is valid JSON.
     """
     try:
         json.loads(string)
@@ -89,7 +88,7 @@ def is_valid_json(string):
 def get_filters_from_query_string(request: Request, api_type, entity_name=None):
     """
     Gets a list of filters from the query_strings arg,value pairs, and returns a list of
-    QueryFilter Objects
+    QueryFilter Objects.
 
     :request Request: FastAPI Request object containing the incoming headers
     :param api_type: Type of API this function is being used for i.e. DataGateway API or
@@ -135,7 +134,7 @@ def get_icat_properties(icat_url, icat_check_cert):
     """
     ICAT properties can be retrieved using Python ICAT's client object, however this
     requires the client object to be authenticated which may not always be the case
-    when requesting these properties, hence a HTTP request is sent as an alternative
+    when requesting these properties, hence a HTTP request is sent as an alternative.
     """
     properties_url = f"{icat_url}/icat/properties"
     r = requests.request("GET", properties_url, verify=icat_check_cert)
@@ -147,7 +146,7 @@ def get_icat_properties(icat_url, icat_check_cert):
 def map_distinct_attributes_to_results(distinct_attributes, query_result):
     """
     Maps the attribute names from a distinct filter onto the results given by the result
-    of a query
+    of a query.
 
     When selecting multiple (but not all) attributes in a database query, the results
     are returned in a list and not mapped to an entity object. This means the 'normal'
@@ -184,7 +183,7 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
 def map_nested_attrs(nested_dict, split_attr_name, query_data):
     """
     A function that can be called recursively to map attributes from related
-    entities to the associated data
+    entities to the associated data.
 
     :param nested_dict: Dictionary to insert data into
     :type nested_dict: :class:`dict`

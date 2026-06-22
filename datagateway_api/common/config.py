@@ -1,23 +1,22 @@
-from functools import cached_property
 import logging
-from pathlib import Path
 import sys
-from typing import Annotated, Optional, Self
+from functools import cached_property
+from pathlib import Path
+from typing import Annotated, Self
 
+import yaml
 from pydantic import (
     AfterValidator,
     BaseModel,
-    computed_field,
     Field,
-    model_validator,
     SecretStr,
     StrictBool,
     StrictInt,
     StrictStr,
     ValidationError,
+    computed_field,
+    model_validator,
 )
-import yaml
-
 
 log = logging.getLogger()
 
@@ -73,7 +72,7 @@ class DataGatewayAPI(BaseModel):
     extension: DataGatewayAPIExtension
     icat_check_cert: StrictBool
     icat_url: StrictStr
-    use_reader_for_performance: Optional[UseReaderForPerformance] = None
+    use_reader_for_performance: UseReaderForPerformance | None = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -131,14 +130,14 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
-    datagateway_api: Optional[DataGatewayAPI] = None
-    reload: Optional[StrictBool] = None
-    host: Optional[StrictStr] = None
-    port: Optional[StrictInt] = None
-    search_api: Optional[SearchAPI] = None
-    test_mechanism: Optional[StrictStr] = None
+    datagateway_api: DataGatewayAPI | None = None
+    reload: StrictBool | None = None
+    host: StrictStr | None = None
+    port: StrictInt | None = None
+    search_api: SearchAPI | None = None
+    test_mechanism: StrictStr | None = None
     url_prefix: DataGatewayAPIExtension
-    test_user_credentials: Optional[TestUserCredentials] = None
+    test_user_credentials: TestUserCredentials | None = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -172,7 +171,7 @@ class APIConfig(BaseModel):
                     )
 
                 return cls(**data)
-        except (IOError, ValidationError) as error:
+        except (OSError, ValidationError) as error:
             sys.exit(f"An error occurred while trying to load the config data: {error}")
 
     @staticmethod
@@ -204,6 +203,6 @@ class APIConfig(BaseModel):
 
 
 class Config:
-    """Class containing config as a class variable so it can mocked during testing"""
+    """Class containing config as a class variable so it can mocked during testing."""
 
     config = APIConfig.load()

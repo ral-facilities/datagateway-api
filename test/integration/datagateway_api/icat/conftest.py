@@ -1,10 +1,10 @@
-from datetime import datetime
 import json
 import uuid
+from datetime import datetime
 
+import pytest
 from dateutil.tz import tzlocal
 from icat.exception import ICATNoObjectError
-import pytest
 
 from test.integration.datagateway_api.icat.endpoints.test_create_icat import (
     TestICATCreateData,
@@ -112,14 +112,13 @@ def remove_test_created_investigation_data(
 ):
     """
     This is used to delete the data created inside `test_valid` test functions in
-    TestICATCreateData
+    TestICATCreateData.
 
     This is done by fetching the data which has been created in
     those functions (by using the investigation name prefix, as defined in the test
     class), extracting the IDs from the results, and iterating over those to perform
     DELETE by ID requests
     """
-
     yield
 
     where = {"name": {"like": TestICATCreateData.investigation_name_prefix}}

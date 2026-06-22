@@ -1,5 +1,5 @@
 import logging
-from typing import Annotated, Any, List
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel
@@ -135,7 +135,7 @@ def get_search_endpoint(
         "",
         summary=f"Get {entity_name}s",
         description=f"Retrieves a list of {entity_name} objects",
-        response_model=List[model],
+        response_model=list[model],
         responses={
             200: {"description": (f"Success - returns {entity_name}s that satisfy the filter")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -254,7 +254,7 @@ def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
         "/{pid}/files",
         summary=f"Get {entity_name}s for the given Dataset",
         description=(f"Retrieves a list of {entity_name} objects for a given Dataset object"),
-        response_model=List[search_api_models.File],
+        response_model=list[search_api_models.File],
         responses={
             200: {"description": (f"Success - returns {entity_name}s for the given Dataset")},
             400: {"description": "Bad request - Something was wrong with the request"},

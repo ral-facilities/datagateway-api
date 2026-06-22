@@ -15,7 +15,7 @@ class SearchScoring:
         :type query: :class:`str`
         :return: Returns the scores
         :raises ScoringAPIError: If an error occurs while interacting with the Search
-            Scoring API
+            Scoring API.
         """
         try:
             data = {
@@ -48,7 +48,7 @@ class SearchScoring:
         :type results: :class:`list`
         :param scores: List of items retrieved from the scoring application
         :type scores: :class:`list`
-        :return: Returns the results with scores
+        :return: Returns the results with scores.
         """
         for result in results:
             result["score"] = next(

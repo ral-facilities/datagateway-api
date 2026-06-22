@@ -17,7 +17,7 @@ if Config.config.search_api:
 log = logging.getLogger()
 
 
-class FilterOrderHandler(object):
+class FilterOrderHandler:
     """
     The FilterOrderHandler takes in filters, sorts them according to the order of
     operations, then applies them.
@@ -36,9 +36,7 @@ class FilterOrderHandler(object):
         self.filters.remove(query_filter)
 
     def sort_filters(self):
-        """
-        Sorts the filters according to the order of operations
-        """
+        """Sorts the filters according to the order of operations."""
         self.filters.sort(key=lambda x: x.precedence)
 
     def apply_filters(self, query):
@@ -84,7 +82,6 @@ class FilterOrderHandler(object):
         :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
         :type panosc_entity_name: :class:`str`
         """
-
         python_icat_include_filter = None
         icat_relations = []
         for filter_ in self.filters:
@@ -120,12 +117,11 @@ class FilterOrderHandler(object):
     ):
         """
         Retrieve ICAT relations and create a `PythonICATIncludeFilter` for these ICAT
-        relations
+        relations.
 
         :param panosc_entity_name: A PaNOSC entity name e.g. "Dataset"
         :type panosc_entity_name: :class:`str`
         """
-
         icat_relations = mappings.get_icat_relations_for_panosc_non_related_fields(
             panosc_entity_name,
         )
@@ -138,7 +134,7 @@ class FilterOrderHandler(object):
     def merge_python_icat_limit_skip_filters(self):
         """
         When there are both limit and skip filters in a request, merge them into the
-        limit filter and remove the skip filter from the instance
+        limit filter and remove the skip filter from the instance.
         """
         log.info("Merging a PythonICATSkipFilter and PythonICATLimitFilter together")
         skip_filter = None
@@ -177,14 +173,13 @@ class FilterOrderHandler(object):
         Utility function to call other functions in this class, used to manage filters
         when using the Python ICAT. These steps are the same with the different
         types of requests that utilise filters, therefore this function helps to reduce
-        code duplication
+        code duplication.
 
         :param filters: The list of filters that will be applied to the query
         :type filters: List of specific implementations :class:`QueryFilter`
         :param query: ICAT query which will fetch the data at a later stage
         :type query: :class:`icat.query.Query`
         """
-
         self.add_filters(filters)
         self.merge_python_icat_limit_skip_filters()
         self.clear_python_icat_order_filters()

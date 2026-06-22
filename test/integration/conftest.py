@@ -1,12 +1,11 @@
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
 from unittest.mock import mock_open, patch
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from icat.client import Client
-import pytest
-
 
 from datagateway_api.common.config import APIConfig, Config
 from datagateway_api.datagateway_api.icat.models import Session
@@ -38,10 +37,7 @@ def fixture_test_client() -> TestClient:
 
 @pytest.fixture(name="local_auth_client")
 def fixture_auth_test_client() -> TestClient:
-    """
-    Isolated TestClient for auth tests.
-    """
-
+    """Isolated TestClient for auth tests."""
     auth_app = FastAPI()
     register_common_handlers(auth_app)
     return TestClient(auth_app)

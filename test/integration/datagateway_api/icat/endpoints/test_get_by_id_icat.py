@@ -32,8 +32,7 @@ class TestICATGetByID:
         test_client,
         valid_icat_credentials_header,
     ):
-        """Request with a non-existent ID"""
-
+        """Request with a non-existent ID."""
         final_investigation_result = test_client.get(
             '/datagateway-api/investigations/findone?order="id DESC"',
             headers=valid_icat_credentials_header,

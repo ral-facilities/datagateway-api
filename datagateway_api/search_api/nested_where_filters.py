@@ -13,7 +13,7 @@ class NestedWhereFilters:
         """
         Class to represent nested conditions that use different boolean operators e.g.
         `(A OR B) AND (C OR D)`. This works by joining the two conditions with a boolean
-        operator
+        operator.
 
         :param lhs: Left hand side of the condition - either a string condition, WHERE
             filter or instance of this class
@@ -27,7 +27,6 @@ class NestedWhereFilters:
             `rhs` (e.g. `AND` or `OR`)
         :type joining_operator: :class:`str`
         """
-
         # Ensure each side is in a list for consistency for string conversion
         if not isinstance(lhs, list):
             lhs = [lhs]
@@ -49,7 +48,7 @@ class NestedWhereFilters:
     def set_search_api_query(query_filter, search_api_query):
         """
         Using recursion, set the search API query to each of the WHERE filters contained
-        within the top-level `NestedWhereFilters` object
+        within the top-level `NestedWhereFilters` object.
 
         :param query_filter: Search API where filter or an instance of this class
         :type query_filter: :class:`NestedWhereFilters` or an object inherited from
@@ -57,7 +56,6 @@ class NestedWhereFilters:
         :param search_api_query: Search API query object
         :type search_api_query: :class:`SearchAPIQuery`
         """
-
         log.debug(
             "Setting SearchAPIQuery for NestedWhereFilters. Query filter: %s, Search API query: %s",
             repr(query_filter),
@@ -91,7 +89,7 @@ class NestedWhereFilters:
     def __str__(self):
         """
         Join the condition on the left with the one on the right with the boolean
-        operator
+        operator.
         """
         boolean_algebra_list = [self.lhs, self.rhs]
         try:

@@ -1,9 +1,9 @@
 from datetime import datetime
 from unittest.mock import patch
 
+import pytest
 from dateutil.tz import tzlocal
 from icat.client import Client
-import pytest
 
 from datagateway_api.common.config import Config
 from datagateway_api.common.date_handler import DateHandler

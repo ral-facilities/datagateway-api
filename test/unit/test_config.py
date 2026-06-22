@@ -8,9 +8,8 @@ from datagateway_api.common.config import APIConfig, validate_extension
 
 class TestAPIConfig:
     def test_load_with_no_config_data(self):
-        with patch("builtins.open", mock_open(read_data="{}")):
-            with pytest.raises(SystemExit):
-                APIConfig.load("test/path")
+        with patch("builtins.open", mock_open(read_data="{}")), pytest.raises(SystemExit):
+            APIConfig.load("test/path")
 
     def test_load_with_missing_mandatory_config_data(self, test_config_data):
         del test_config_data["url_prefix"]

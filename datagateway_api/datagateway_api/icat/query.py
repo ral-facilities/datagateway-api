@@ -1,5 +1,5 @@
-from datetime import datetime
 import logging
+from datetime import datetime
 
 from icat.entity import Entity, EntityList
 from icat.exception import ICATInternalError, ICATValidationError
@@ -8,7 +8,6 @@ from icat.query import Query
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.common.helpers import map_distinct_attributes_to_results
-
 
 log = logging.getLogger()
 
@@ -23,7 +22,7 @@ class ICATQuery:
         includes=None,
     ):
         """
-        Create a Query object within Python ICAT
+        Create a Query object within Python ICAT.
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
@@ -42,7 +41,6 @@ class ICATQuery:
         :raises PythonICATError: If a ValueError is raised when creating a Query(), 500
             will be returned as a response
         """
-
         try:
             log.info("Creating ICATQuery for entity: %s", entity_name)
             self.query = Query(
@@ -62,7 +60,7 @@ class ICATQuery:
     def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
-        return_json_formattable flag
+        return_json_formattable flag.
 
         :param client: ICAT client containing an authenticated user
         :type client: :class:`icat.client.Client`
@@ -75,7 +73,6 @@ class ICATQuery:
         :return: Data (of type list) from the executed query
         :raises PythonICATError: If an error occurs during query execution
         """
-
         try:
             log.debug("Executing ICAT query: %s", self.query)
             query_result = client.search(self.query)
@@ -87,10 +84,9 @@ class ICATQuery:
         # If the query has a COUNT function applied to it, some of these steps can be
         # skipped
         count_query = False
-        if self.query.aggregate is not None:
-            if "COUNT" in self.query.aggregate:
-                count_query = True
-                log.debug("This ICATQuery is used for COUNT purposes")
+        if self.query.aggregate is not None and "COUNT" in self.query.aggregate:
+            count_query = True
+            log.debug("This ICATQuery is used for COUNT purposes")
 
         distinct_query = False
         if self.query.aggregate == "DISTINCT" and not count_query and not self.query.manual_count:
@@ -139,7 +135,7 @@ class ICATQuery:
     def entity_to_dict(self, entity, includes):
         """
         This expands on Python ICAT's implementation of `icat.entity.Entity.as_dict()`
-        to use set operators to create a version of the entity as a dictionary
+        to use set operators to create a version of the entity as a dictionary.
 
         Most of this function is dedicated to recursing over included fields from a
         query, since this is functionality isn't part of Python ICAT's `as_dict()`. This
@@ -156,7 +152,6 @@ class ICATQuery:
         :type includes: :class:`list`
         :return: ICAT Data (of type dictionary) ready to be serialised to JSON
         """
-
         d = {}
 
         # Verifying that `includes` only has fields which are related to the entity
@@ -195,7 +190,7 @@ class ICATQuery:
     def flatten_query_included_fields(self, includes):
         """
         This will take the set of fields included in an ICAT query, split up the fields
-        separated by dots, and flatten the resulting list
+        separated by dots, and flatten the resulting list.
 
         :param includes: Set of fields that have been included in the ICAT query. Where
             fields have a chain of relationships, they're a single element string
@@ -204,5 +199,4 @@ class ICATQuery:
         :return: Flattened list containing all the fields that have been included in the
             ICAT query
         """
-
         return [m for n in (field.split(".") for field in sorted(includes)) for m in n]

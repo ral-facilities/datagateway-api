@@ -9,7 +9,7 @@ log = logging.getLogger()
 
 
 class ICATClient(Client):
-    """Wrapper class to allow an object pool of client objects to be created"""
+    """Wrapper class to allow an object pool of client objects to be created."""
 
     def __init__(self, client_use="datagateway_api"):
         if client_use == "datagateway_api":
@@ -27,18 +27,17 @@ class ICATClient(Client):
     def clean_up(self):
         """
         Allows object pool to cleanup the client's resources, using the existing Python
-        ICAT functionality
+        ICAT functionality.
         """
         super().cleanup()
 
 
 def create_client_pool():
     """
-    Function to create an object pool for ICAT client objects
+    Function to create an object pool for ICAT client objects.
 
     The ObjectPool class uses the singleton design pattern
     """
-
     return ObjectPool(
         ICATClient,
         min_init=Config.config.datagateway_api.client_pool_init_size,

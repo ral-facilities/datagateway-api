@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
 import argparse
 import datetime
 import enum
+from abc import ABC, abstractmethod
 from multiprocessing import Process
 
 from faker import Faker
@@ -36,7 +36,8 @@ Faker.seed(SEED)
 
 def get_date_time():
     """
-    Generates a datetime
+    Generates a datetime.
+
     :return: the datetime
     """
     return faker.date_time_between_dates(
@@ -47,7 +48,8 @@ def get_date_time():
 
 def get_start_date(i):
     """
-    Generates a datetime from a number i
+    Generates a datetime from a number i.
+
     :param i:
     :return:
     """

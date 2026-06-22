@@ -4,10 +4,20 @@ from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATDistinctFieldFilter as DistinctFieldFilter,
+)
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATIncludeFilter as IncludeFilter,
+)
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATLimitFilter as LimitFilter,
+)
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATOrderFilter as OrderFilter,
+)
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATSkipFilter as SkipFilter,
+)
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATWhereFilter as WhereFilter,
 )
 
@@ -18,7 +28,7 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
     def get_query_filter(request_filter, entity_name=None):
         """
-        Given a filter, return a matching Query filter object
+        Given a filter, return a matching Query filter object.
 
         :param request_filter: The filter to create the QueryFilter for
         :type request_filter: :class:`dict`
@@ -30,7 +40,6 @@ class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
         :return: The QueryFilter object created
         :raises FilterError: If the filter name is not recognised
         """
-
         filter_name = list(request_filter)[0].lower()
         if filter_name == "where":
             field = list(request_filter[filter_name].keys())[0]

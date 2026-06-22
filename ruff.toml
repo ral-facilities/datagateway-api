@@ -11,7 +11,6 @@ select = [
     "I",  # Consistent import order 
     "UP", # pyupgrade - Ensures modern python syntax
     "PL", # pylint - Used on other repos
-    "D",  # pydocstyle - Enforces our comment style.
     # Additional useful flake8 plugins
     "SIM", # flake8-simplify - Suggests simplified code
     "C4",  # flake8-comprehensions - Suggests simplified list, set, dict comprehensions
@@ -25,13 +24,6 @@ select = [
 ]
 
 
-ignore = [
-    # Disable some pydocstyle rules to enforce our style
-    "D104", # undocumented-public-module - Don't need to comment every __init__.py
-    "D203", # incorrect-blank-line-before-class - Conflicts with blank-line-before-class (D211)
-    "D212", # multi-line-summary-first-line - Conflicts with multi-line-summary-second-line (D213)
-    "D401", # non-imperative-mood - Feels too specific, very limited choice of words that complies.
-]
 
 [lint.isort]
 known-first-party = ["datagateway_api"]

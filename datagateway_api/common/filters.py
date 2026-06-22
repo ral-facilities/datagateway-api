@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 
 from datagateway_api.common.exceptions import BadRequestError, FilterError
 

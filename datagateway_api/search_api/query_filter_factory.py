@@ -1,6 +1,6 @@
 import logging
 
-
+import datagateway_api.search_api.models as search_api_models
 from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
 from datagateway_api.common.config import Config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
@@ -11,7 +11,6 @@ from datagateway_api.search_api.filters import (
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
-import datagateway_api.search_api.models as search_api_models
 from datagateway_api.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.search_api.panosc_mappings import mappings
 from datagateway_api.search_api.query import SearchAPIQuery
@@ -23,7 +22,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
     def get_query_filter(request_filter, entity_name=None, related_entity_name=None):
         """
-        Given a filter, return a list of matching query filter objects
+        Given a filter, return a list of matching query filter objects.
 
         :param request_filter: The filter from which to create a list of query filter
             objects
@@ -103,7 +102,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
     def get_where_filter(where_filter_input, entity_name, related_entity_name=None):
         """
         Given a where filter input, return a list of `NestedWhereFilters` and/ or
-        `SearchAPIWhereFilter` objects
+        `SearchAPIWhereFilter` objects.
 
         `NestedWhereFilters` objects are created when there is an AND or OR inside the
         where filter input, otherwise `SearchAPIWhereFilter` objects are created. If
@@ -126,7 +125,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             created
         :raises SearchAPIError: If there are no text operator fields on the entity
         """
-
         where_filters = []
         if list(where_filter_input.keys())[0] == "and" or list(where_filter_input.keys())[0] == "or":
             log.debug("and/or operators found: %s", list(where_filter_input.keys())[0])
@@ -220,7 +218,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         """
         Given an include filter input, return a list of `SearchAPIIncludeFilter` and any
         `NestedWhereFilters` and/ or `SearchAPIWhereFilter` objects if there is a scope
-        filter inside the filter input
+        filter inside the filter input.
 
         Currently, we do not support limit and skip filters inside scope filters that
         are part of include filters.
@@ -240,7 +238,6 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             or `SearchAPIWhereFilter` objects created
         :raises FilterError: If scope filter has a limit or skip filter
         """
-
         query_filters = []
         included_entities = []
 
@@ -312,7 +309,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
     def get_condition_values(conditions_dict):
         """
         Given a simplified where filter input, return a field name, value and operation
-        as a tuple
+        as a tuple.
 
         :param conditions_dict: The filter from which to return a field name, value and
             operation
@@ -347,7 +344,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
         """
         Given a `NestedWhereFilters` or `SearchAPIWhereFilter` object, or a list of
         these objects, prefix the field attribute of the `SearchAPIWhereFilter` object
-        with the provided entity name
+        with the provided entity name.
 
         When dealing with `NestedWhereFilters`, this function is called recursively in
         order to drill down and get hold of the `SearchAPIWhereFilter` objects so that
