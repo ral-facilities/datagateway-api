@@ -88,7 +88,7 @@ class TestICATQuery:
             ),
         ],
     )
-    def test_valid_query_creation(  # noqa: PLR0913
+    def test_valid_query_creation(
         self,
         icat_client,
         input_conditions,
@@ -260,7 +260,7 @@ class TestICATQuery:
         ],
     )
     @pytest.mark.usefixtures("single_investigation_test_data")
-    def test_valid_query_execution(  # noqa: PLR0913
+    def test_valid_query_execution(
         self,
         icat_client,
         query_conditions,
