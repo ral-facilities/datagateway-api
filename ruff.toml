@@ -16,7 +16,6 @@ select = [
     "C4",  # flake8-comprehensions - Suggests simplified list, set, dict comprehensions
     "ARG", # flake8-unused-arguments
     "TID", # flake8-tidy-imports,   
-    "S",   # flake8-bandit
     "N",   # pep8-naming
     "A",   # flake8-builtins
     "G",   # flake8-logging-format

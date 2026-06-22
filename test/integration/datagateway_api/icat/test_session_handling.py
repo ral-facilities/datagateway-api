@@ -155,8 +155,7 @@ class TestSessionHandling:
     def test_expired_session(self):
         test_python_icat = PythonICAT()
         client_pool = create_client_pool()
-        with patch("icat.client.Client.getRemainingMinutes", return_value=-1):
-            with pytest.raises(AuthenticationError):
+        with patch("icat.client.Client.getRemainingMinutes", return_value=-1),pytest.raises(AuthenticationError):
                 test_python_icat.get_session_details(
                     "session id",
                     client_pool=client_pool,
