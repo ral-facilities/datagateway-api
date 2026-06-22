@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from test.integration.search_api.endpoints.test_get_dataset_files import (
     prepare_data_for_assertion,
@@ -881,10 +882,10 @@ class TestSearchAPISearchEndpoint:
     @pytest.mark.parametrize(
         "request_filter, expected_status_code",
         [
-            pytest.param('{"where": []}', 400, id="Bad where filter"),
-            pytest.param('{"limit": -1}', 400, id="Bad limit filter"),
-            pytest.param('{"skip": -100}', 400, id="Bad skip filter"),
-            pytest.param('{"include": ""}', 400, id="Bad include filter"),
+            pytest.param('{"where": []}', status.HTTP_400_BAD_REQUEST, id="Bad where filter"),
+            pytest.param('{"limit": -1}', status.HTTP_400_BAD_REQUEST, id="Bad limit filter"),
+            pytest.param('{"skip": -100}', status.HTTP_400_BAD_REQUEST, id="Bad skip filter"),
+            pytest.param('{"include": ""}', status.HTTP_400_BAD_REQUEST, id="Bad include filter"),
         ],
     )
     def test_invalid_search_endpoint(

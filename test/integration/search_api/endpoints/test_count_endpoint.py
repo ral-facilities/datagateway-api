@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 
 class TestSearchAPICountEndpoint:
@@ -84,7 +85,7 @@ class TestSearchAPICountEndpoint:
             f"/{endpoint_name}/count?where={request_filter}",
         )
 
-        assert test_response.status_code == 200
+        assert test_response.status_code == status.HTTP_200_OK
         assert test_response.json() == expected_json
 
     @pytest.mark.parametrize(
@@ -131,7 +132,7 @@ class TestSearchAPICountEndpoint:
             f"/{endpoint_name}/count?where={request_filter}",
         )
 
-        assert test_response.status_code == 200
+        assert test_response.status_code == status.HTTP_200_OK
         assert test_response.json() == expected_json
 
     @pytest.mark.parametrize(
@@ -153,4 +154,4 @@ class TestSearchAPICountEndpoint:
             f"/Datasets/count?where={request_filter}",
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST

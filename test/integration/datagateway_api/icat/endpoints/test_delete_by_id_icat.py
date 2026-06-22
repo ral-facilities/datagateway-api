@@ -1,3 +1,6 @@
+from fastapi import status
+
+
 class TestDeleteByID:
     def test_valid_delete_with_id(
         self,
@@ -10,7 +13,7 @@ class TestDeleteByID:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 204
+        assert test_response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_invalid_delete_with_id(
         self,
@@ -31,4 +34,4 @@ class TestDeleteByID:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.status_code == status.HTTP_404_NOT_FOUND

@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
@@ -86,7 +87,7 @@ class TestUpdateMultipleEntities:
             json=update_data_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     @pytest.mark.parametrize(
         "update_key, update_value",
@@ -156,6 +157,6 @@ class TestUpdateMultipleEntities:
         )
         get_response_json = prepare_icat_data_for_assertion([get_response.json()])
 
-        assert update_response.status_code == 500
+        assert update_response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         # RHS encased in a list as prepare_icat_data_for_assertion() always returns list
         assert get_response_json == [multiple_investigation_test_data[0]]

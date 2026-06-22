@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 from pydantic import ValidationError
 
 from datagateway_api.common.exceptions import (
@@ -13,17 +14,17 @@ class TestQueriesRecords:
     @pytest.mark.parametrize(
         "raised_exception, expected_exception, status_code",
         [
-            pytest.param(BadRequestError, BadRequestError, 400, id="bad request error"),
-            pytest.param(ValidationError, BadRequestError, 400, id="validation error"),
-            pytest.param(FilterError, FilterError, 400, id="invalid filter"),
+            pytest.param(BadRequestError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="bad request error"),
+            pytest.param(ValidationError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="validation error"),
+            pytest.param(FilterError, FilterError, status.HTTP_400_BAD_REQUEST, id="invalid filter"),
             pytest.param(
                 MissingRecordError,
                 MissingRecordError,
-                404,
+                status.HTTP_404_NOT_FOUND,
                 id="missing record",
             ),
-            pytest.param(TypeError, BadRequestError, 400, id="type error"),
-            pytest.param(ValueError, BadRequestError, 400, id="value error"),
+            pytest.param(TypeError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="type error"),
+            pytest.param(ValueError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="value error"),
         ],
     )
     def test_valid_error_raised(

@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from datagateway_api.common.exceptions import (
     ApiError,
@@ -16,21 +17,23 @@ class TestErrorHandling:
     @pytest.mark.parametrize(
         "raised_exception, expected_exception, status_code",
         [
-            pytest.param(BadRequestError, BadRequestError, 400, id="Bad request error"),
-            pytest.param(FilterError, FilterError, 400, id="Invalid filter"),
+            pytest.param(BadRequestError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="Bad request error"),
+            pytest.param(FilterError, FilterError, status.HTTP_400_BAD_REQUEST, id="Invalid filter"),
             pytest.param(
                 MissingRecordError,
                 MissingRecordError,
-                404,
+                status.HTTP_404_NOT_FOUND,
                 id="Missing record",
             ),
-            pytest.param(ScoringAPIError, SearchAPIError, 500, id="Scoring API error"),
-            pytest.param(SearchAPIError, SearchAPIError, 500, id="Search API error"),
-            pytest.param(TypeError, BadRequestError, 400, id="Type error"),
-            pytest.param(ValueError, BadRequestError, 400, id="Value error"),
-            pytest.param(AttributeError, BadRequestError, 400, id="Attribute error"),
-            pytest.param(ImportError, ImportError, 500, id="Import error"),
-            pytest.param(Document, SearchAPIError, 500, id="Validation error"),
+            pytest.param(
+                ScoringAPIError, SearchAPIError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="Scoring API error"
+            ),
+            pytest.param(SearchAPIError, SearchAPIError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="Search API error"),
+            pytest.param(TypeError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="Type error"),
+            pytest.param(ValueError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="Value error"),
+            pytest.param(AttributeError, BadRequestError, status.HTTP_400_BAD_REQUEST, id="Attribute error"),
+            pytest.param(ImportError, ImportError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="Import error"),
+            pytest.param(Document, SearchAPIError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="Validation error"),
         ],
     )
     def test_valid_error_raised(

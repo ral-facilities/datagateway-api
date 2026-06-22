@@ -62,7 +62,7 @@ def get_session_id_from_auth_header(request: Request):
 
     auth_header = auth_header_value.split(" ")
 
-    if len(auth_header) != 2 or auth_header[0] != "Bearer":
+    if len(auth_header) != 2 or auth_header[0] != "Bearer":  # noqa: PLR2004
         raise AuthenticationError(
             f"Could not authenticate consumer with auth header {auth_header}",
         )

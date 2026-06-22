@@ -3,6 +3,7 @@ from unittest.mock import patch
 
 import pytest
 from dateutil.tz import tzlocal
+from fastapi import status
 from icat.client import Client
 
 from datagateway_api.common.config import Config
@@ -32,8 +33,11 @@ class TestSessionHandling:
         time_diff = abs(session_expiry_datetime - current_datetime)
         time_diff_minutes = time_diff.seconds / 60
 
+        MAX_EXPECTED_MINUTES = 120
+        MIN_EXPECTED_MINUTES = 118
+
         # Allows a bit of leeway for slow test execution
-        assert time_diff_minutes < 120 and time_diff_minutes >= 118
+        assert MIN_EXPECTED_MINUTES <= time_diff_minutes < MAX_EXPECTED_MINUTES
 
         # Check username is correct
         test_mechanism = Config.config.test_mechanism
@@ -53,7 +57,7 @@ class TestSessionHandling:
             headers=bad_credentials_header,
         )
 
-        assert session_details.status_code == 403
+        assert session_details.status_code == status.HTTP_403_FORBIDDEN
 
     def test_refresh_session(self, valid_icat_credentials_header, test_client):
         pre_refresh_session_details = test_client.get(
@@ -71,7 +75,7 @@ class TestSessionHandling:
             headers=valid_icat_credentials_header,
         )
 
-        assert refresh_session.status_code == 200
+        assert refresh_session.status_code == status.HTTP_200_OK
 
         assert (
             pre_refresh_session_details.json()["expireDateTime"]
@@ -122,7 +126,7 @@ class TestSessionHandling:
 
         test_query = icat_client.search(icat_query)
 
-        assert test_query == [1] and login_response.status_code == 201
+        assert test_query == [1] and login_response.status_code == status.HTTP_201_CREATED
 
     @pytest.mark.parametrize(
         "request_body, expected_response_code",
@@ -133,7 +137,7 @@ class TestSessionHandling:
                     "password": "InvalidPassword",
                     "mechanism": Config.config.test_mechanism,
                 },
-                403,
+                status.HTTP_403_FORBIDDEN,
                 id="Invalid credentials",
             ),
             pytest.param({}, 422, id="Missing credentials"),
@@ -155,11 +159,11 @@ class TestSessionHandling:
     def test_expired_session(self):
         test_python_icat = PythonICAT()
         client_pool = create_client_pool()
-        with patch("icat.client.Client.getRemainingMinutes", return_value=-1),pytest.raises(AuthenticationError):
-                test_python_icat.get_session_details(
-                    "session id",
-                    client_pool=client_pool,
-                )
+        with patch("icat.client.Client.getRemainingMinutes", return_value=-1), pytest.raises(AuthenticationError):
+            test_python_icat.get_session_details(
+                "session id",
+                client_pool=client_pool,
+            )
 
     def test_valid_logout(self, test_client):
         client = Client(
@@ -177,7 +181,7 @@ class TestSessionHandling:
             headers=creds_header,
         )
 
-        assert logout_response.status_code == 200
+        assert logout_response.status_code == status.HTTP_200_OK
 
     def test_invalid_logout(self, bad_credentials_header, test_client):
         logout_response = test_client.delete(
@@ -185,4 +189,4 @@ class TestSessionHandling:
             headers=bad_credentials_header,
         )
 
-        assert logout_response.status_code == 403
+        assert logout_response.status_code == status.HTTP_403_FORBIDDEN

@@ -13,8 +13,8 @@ class TestAPIConfig:
 
     def test_load_with_missing_mandatory_config_data(self, test_config_data):
         del test_config_data["url_prefix"]
-        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))),pytest.raises(SystemExit):
-                APIConfig.load("test/path")
+        with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))), pytest.raises(SystemExit):
+            APIConfig.load("test/path")
 
     def test_load_with_datagateway_api_python_icat_and_missing_icat_config_data(
         self,

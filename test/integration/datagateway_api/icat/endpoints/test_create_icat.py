@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
@@ -127,7 +128,7 @@ class TestICATCreateData:
             json=invalid_request_body,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_invalid_existing_data_create(
         self,
@@ -154,7 +155,7 @@ class TestICATCreateData:
             json=existing_object_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_valid_rollback_behaviour(
         self,
@@ -194,5 +195,5 @@ class TestICATCreateData:
         )
         get_response_json = prepare_icat_data_for_assertion(get_response.json())
 
-        assert create_response.status_code == 400
+        assert create_response.status_code == status.HTTP_400_BAD_REQUEST
         assert get_response_json == []

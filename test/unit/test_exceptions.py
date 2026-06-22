@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from datagateway_api.common.exceptions import (
     ApiError,
@@ -53,17 +54,17 @@ class TestExceptions:
     @pytest.mark.parametrize(
         "exception_class, expected_status_code",
         [
-            pytest.param(ApiError, 500, id="ApiError"),
-            pytest.param(AuthenticationError, 403, id="AuthenticationError"),
-            pytest.param(BadRequestError, 400, id="BadRequestError"),
-            pytest.param(DatabaseError, 500, id="DatabaseError"),
-            pytest.param(FilterError, 400, id="FilterError"),
-            pytest.param(MissingCredentialsError, 401, id="MissingCredentialsError"),
-            pytest.param(MissingRecordError, 404, id="MissingRecordError"),
-            pytest.param(MultipleIncludeError, 400, id="MultipleIncludeError"),
-            pytest.param(PythonICATError, 500, id="PythonICATError"),
-            pytest.param(ScoringAPIError, 500, id="ScoringAPIError"),
-            pytest.param(SearchAPIError, 500, id="SearchAPIError"),
+            pytest.param(ApiError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="ApiError"),
+            pytest.param(AuthenticationError, status.HTTP_403_FORBIDDEN, id="AuthenticationError"),
+            pytest.param(BadRequestError, status.HTTP_400_BAD_REQUEST, id="BadRequestError"),
+            pytest.param(DatabaseError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="DatabaseError"),
+            pytest.param(FilterError, status.HTTP_400_BAD_REQUEST, id="FilterError"),
+            pytest.param(MissingCredentialsError, status.HTTP_401_UNAUTHORIZED, id="MissingCredentialsError"),
+            pytest.param(MissingRecordError, status.HTTP_404_NOT_FOUND, id="MissingRecordError"),
+            pytest.param(MultipleIncludeError, status.HTTP_400_BAD_REQUEST, id="MultipleIncludeError"),
+            pytest.param(PythonICATError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="PythonICATError"),
+            pytest.param(ScoringAPIError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="ScoringAPIError"),
+            pytest.param(SearchAPIError, status.HTTP_500_INTERNAL_SERVER_ERROR, id="SearchAPIError"),
         ],
     )
     def test_valid_exception_status_code(self, exception_class, expected_status_code):

@@ -62,7 +62,7 @@ class TestGetFiltersFromQueryString:
             @app.get("/test-multiple-filters/?limit=10&skip=4")
             def test_filters_route(request: Request):
                 filters = get_filters_from_query_string(request, "datagateway_api")
-                assert len(filters) == 2
+                assert len(filters) == 2  # noqa: PLR2004
 
             test_client.get("/test-multiple-filters/?limit=10&skip=4")
 
@@ -73,6 +73,6 @@ class TestGetFiltersFromQueryString:
             @app.get('/test-search_api-filters/?filter={"skip": 5, "limit": 10}')
             def test_filters_route(request: Request):
                 filters = get_filters_from_query_string(request, "search_api", "Dataset")
-                assert len(filters) == 2
+                assert len(filters) == 2  # noqa: PLR2004
 
             test_client.get('/test-search_api-filters/?filter={"skip": 5, "limit": 10}')

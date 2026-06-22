@@ -1,6 +1,7 @@
 from contextlib import suppress
 
 import pytest
+from fastapi import status
 
 
 def prepare_data_for_assertion(response):
@@ -157,25 +158,25 @@ class TestSearchAPIGetDatasetFilesEndpoint:
 
         response_data = prepare_data_for_assertion(test_response.json())
 
-        assert test_response.status_code == 200
+        assert test_response.status_code == status.HTTP_200_OK
         assert response_data == expected_json
 
     @pytest.mark.parametrize(
         "pid, request_filter, expected_status_code",
         [
-            pytest.param("0-8401-1070-7", '{"where": []}', 400, id="Bad where filter"),
-            pytest.param("0-8401-1070-7", '{"limit": -1}', 400, id="Bad limit filter"),
-            pytest.param("0-8401-1070-7", '{"skip": -100}', 400, id="Bad skip filter"),
+            pytest.param("0-8401-1070-7", '{"where": []}', status.HTTP_400_BAD_REQUEST, id="Bad where filter"),
+            pytest.param("0-8401-1070-7", '{"limit": -1}', status.HTTP_400_BAD_REQUEST, id="Bad limit filter"),
+            pytest.param("0-8401-1070-7", '{"skip": -100}', status.HTTP_400_BAD_REQUEST, id="Bad skip filter"),
             pytest.param(
                 "0-8401-1070-7",
                 '{"include": ""}',
-                400,
+                status.HTTP_400_BAD_REQUEST,
                 id="Bad include filter",
             ),
             pytest.param(
                 "my 404 test pid",
                 "{}",
-                404,
+                status.HTTP_404_NOT_FOUND,
                 id="Non-existent dataset pid",
                 # Skipped because this actually returns 200
                 marks=pytest.mark.skip,

@@ -33,7 +33,7 @@ class WhereFilter(QueryFilter):
                     f"When using the {self.operation} operation for a WHERE filter, the"
                     f" values must be in a list format e.g. [1, 2]",
                 )
-            if self.operation == "between" and len(self.value) != 2:
+            if self.operation == "between" and len(self.value) != 2:  # noqa: PLR2004
                 raise BadRequestError(
                     "When using the 'between' operation for a WHERE filter, the list"
                     "must contain two values e.g. [1, 2]",

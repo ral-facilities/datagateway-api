@@ -45,4 +45,4 @@ class TestICATGetByID:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.status_code == status.HTTP_404_NOT_FOUND
