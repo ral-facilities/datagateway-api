@@ -16,7 +16,7 @@ class TestFilterOrderHandler:
     found here.
     """
 
-    def test_add_filter(self, icat_query):
+    def test_add_filter(self, _icat_query):
         test_handler = FilterOrderHandler()
         test_filter = PythonICATWhereFilter("id", 2, "eq")
 

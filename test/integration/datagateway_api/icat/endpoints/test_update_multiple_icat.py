@@ -70,7 +70,7 @@ class TestUpdateMultipleEntities:
         self,
         test_client,
         valid_icat_credentials_header,
-        single_investigation_test_data,
+        _single_investigation_test_data,
     ):
         """There should be an ID in the request body to know which entity to update."""
         update_data_json = [

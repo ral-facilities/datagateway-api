@@ -20,7 +20,7 @@ class QueryFilter(ABC):
 class WhereFilter(QueryFilter):
     precedence = 1
 
-    def __init__(self, field, value, operation):
+    def __init__(self, _field, value, operation):
         # The field is set to None as a precaution but this should be set
         # when initialising Python ICAT
         self.field = None

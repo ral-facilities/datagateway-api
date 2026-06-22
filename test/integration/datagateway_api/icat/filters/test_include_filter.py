@@ -60,7 +60,7 @@ class TestICATIncludeFilter:
 
         assert icat_query.includes == expected_output
 
-    def test_invalid_type(self, icat_query):
+    def test_invalid_type(self, _icat_query):
         with pytest.raises(FilterError):
             PythonICATIncludeFilter({"datasets", "facility"})
 

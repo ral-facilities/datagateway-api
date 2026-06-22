@@ -27,6 +27,6 @@ class TestICATSkipFilter:
         "skip_value",
         [pytest.param(-375, id="extreme invalid"), pytest.param(-1, id="boundary")],
     )
-    def test_invalid_skip_value(self, icat_query, skip_value):
+    def test_invalid_skip_value(self, _icat_query, skip_value):
         with pytest.raises(FilterError):
             PythonICATSkipFilter(skip_value)

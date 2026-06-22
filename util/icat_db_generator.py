@@ -142,10 +142,10 @@ class DataCollectionGenerator(Generator):
     amount = 100
 
     def generate(self):
-        for i in range(1, self.amount):
-            DataCollectionGenerator.generate_data_collection(self, i)
+        for _ in range(1, self.amount):
+            DataCollectionGenerator.generate_data_collection(self)
 
-    def generate_data_collection(self, i):
+    def generate_data_collection(self):
         data_collection = self.client.new("dataCollection")
         data_collection.doi = faker.isbn10(separator="-")
         data_collection.create()
@@ -156,10 +156,10 @@ class FundingReferenceGenerator(Generator):
     amount = 100
 
     def generate(self):
-        for i in range(1, self.amount):
-            FundingReferenceGenerator.generate_funding_reference(self, i)
+        for _ in range(1, self.amount):
+            FundingReferenceGenerator.generate_funding_reference(self)
 
-    def generate_funding_reference(self, i):
+    def generate_funding_reference(self):
         funding_reference = self.client.new("fundingReference")
         funding_reference.funderIdentifier = faker.ssn()
         funding_reference.funderName = faker.company()
@@ -173,10 +173,10 @@ class TechniqueGenerator(Generator):
     amount = 100
 
     def generate(self):
-        for i in range(1, self.amount):
-            TechniqueGenerator.generate_technique(self, i)
+        for _ in range(1, self.amount):
+            TechniqueGenerator.generate_technique(self)
 
-    def generate_technique(self, i):
+    def generate_technique(self):
         technique = self.client.new("technique")
         technique.pid = faker.word()
         technique.description = faker.text()
@@ -690,10 +690,10 @@ class DataPublicationGenerator(Generator):
     amount = InvestigationGenerator.amount
 
     def generate(self):
-        for i in range(1, self.amount):
-            DataPublicationGenerator().generate_data_publication(i)
+        for _ in range(1, self.amount):
+            DataPublicationGenerator().generate_data_publication(self)
 
-    def generate_data_publication(self, i):
+    def generate_data_publication(self):
         data_publication = self.client.new("dataPublication")
         data_publication.title = faker.text()
         data_publication.description = faker.text()
@@ -767,10 +767,10 @@ class DataPublicationTypeGenerator(Generator):
     amount = 20
 
     def generate(self):
-        for i in range(1, self.amount):
-            DataPublicationTypeGenerator.generate_data_publication_type(self, i)
+        for _ in range(1, self.amount):
+            DataPublicationTypeGenerator.generate_data_publication_type(self)
 
-    def generate_data_publication_type(self, i):
+    def generate_data_publication_type(self):
         data_publication_type = self.client.new("dataPublicationType")
         data_publication_type.name = faker.word()
         data_publication_type.description = faker.text()

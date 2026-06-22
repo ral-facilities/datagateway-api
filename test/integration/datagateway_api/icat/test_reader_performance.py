@@ -172,7 +172,7 @@ class TestReaderPerformance:
     )
     def test_eligbility(
         self,
-        enable_reader_config: None,
+        _enable_reader_config: None,
         test_entity_type,
         test_query_filters,
         expected_eligbility,
@@ -185,7 +185,7 @@ class TestReaderPerformance:
         query_eligbility = test_handler.is_query_eligible_for_reader_performance()
         assert query_eligbility == expected_eligbility
 
-    def test_reader_client(self, enable_reader_config: None):
+    def test_reader_client(self, _enable_reader_config: None):
         ReaderQueryHandler("Datafile", [])
         reader_client = ReaderQueryHandler.reader_client
         assert isinstance(reader_client, ICATClient)
@@ -208,9 +208,9 @@ class TestReaderPerformance:
     )
     def test_execute_query_as_reader(
         self,
-        enable_reader_config: None,
-        enable_reader_permissions: None,
-        associate_icat_user: None,
+        _enable_reader_config: None,
+        _enable_reader_permissions: None,
+        _associate_icat_user: None,
         icat_user_client: Client,
         entity_type: str,
         filters: list[PythonICATWhereFilter],
@@ -228,9 +228,9 @@ class TestReaderPerformance:
     )
     def test_open_data(
         self,
-        enable_reader_config: None,
-        enable_reader_permissions: None,
-        associate_data_publication: None,
+        _enable_reader_config: None,
+        _enable_reader_permissions: None,
+        _associate_data_publication: None,
         icat_user_client: Client,
         filters: list[PythonICATWhereFilter],
         results_length: int,
@@ -247,9 +247,9 @@ class TestReaderPerformance:
     )
     def test_root_access(
         self,
-        enable_reader_config: None,
-        enable_reader_permissions: None,
-        associate_data_publication: None,
+        _enable_reader_config: None,
+        _enable_reader_permissions: None,
+        _associate_data_publication: None,
         icat_root_client: Client,
         entity_type: str,
         filters: list[PythonICATWhereFilter],
@@ -258,7 +258,7 @@ class TestReaderPerformance:
         results = get_data_with_filters(client=icat_root_client, entity_type=entity_type, filters=filters)
         assert len(results) == results_length
 
-    def test_refresh(self, enable_reader_config: None) -> None:
+    def test_refresh(self, _enable_reader_config: None) -> None:
         client = Client(
             url=Config.config.datagateway_api.icat_url,
             checkCert=Config.config.datagateway_api.icat_check_cert,
@@ -269,7 +269,7 @@ class TestReaderPerformance:
         current_time = time.time()
         assert current_time + 89 * 60 < ReaderQueryHandler.reader_client._next_refresh < current_time + 90 * 60
 
-    def test_refresh_failure(self, enable_reader_bad_config: None) -> None:
+    def test_refresh_failure(self, _enable_reader_bad_config: None) -> None:
         client = Client(
             url=Config.config.datagateway_api.icat_url,
             checkCert=Config.config.datagateway_api.icat_check_cert,
@@ -279,6 +279,6 @@ class TestReaderPerformance:
         with pytest.raises(PythonICATError, match="Internal error with reader account configuration"):
             ReaderQueryHandler.refresh()
 
-    def test_get_investigation_id_failure(self, enable_reader_config: None) -> None:
+    def test_get_investigation_id_failure(self, _enable_reader_config: None) -> None:
         with pytest.raises(expected_exception=MissingRecordError, match="No Dataset found for id=-1"):
             ReaderQueryHandler.get_investigation_id(dataset_id=-1)
