@@ -29,6 +29,12 @@ ignore = [
 ]
 
 
+[lint.per-file-ignores]
+"test/**/*.py" = [
+    "ARG002",  # unused function arguments (pytest fixtures used for setup)
+]
+
+
 [lint.isort]
 known-first-party = ["datagateway_api"]
 known-local-folder = ["test"]

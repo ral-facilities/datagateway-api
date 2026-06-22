@@ -8,7 +8,7 @@ from datagateway_api.datagateway_api.icat.filters import PythonICATOrderFilter
 
 
 class TestICATOrderFilter:
-    def test_direction_is_uppercase(self, _icat_query):
+    def test_direction_is_uppercase(self, icat_query):
         """Direction must be uppercase for Python ICAT to see the input as valid."""
         test_filter = PythonICATOrderFilter("id", "asc")
 
