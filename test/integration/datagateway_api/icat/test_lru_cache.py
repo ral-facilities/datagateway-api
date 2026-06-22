@@ -24,7 +24,7 @@ class TestLRUCache:
         test_cache.popitem = MagicMock(side_effect=test_cache.popitem)
 
         @cached(cache=test_cache)
-        def get_cached_client(cache_number, client_pool):
+        def get_cached_client(_cache_number, _client_pool):
             return test_client
 
         for cache_number in range(Config.config.datagateway_api.client_cache_size + 1):

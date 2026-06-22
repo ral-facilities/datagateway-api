@@ -145,7 +145,7 @@ def get_search_endpoint(
     @search_api_error_handling
     def get(
         request: Request,
-        filter_: str = FilterQuery,  # pylint:disable=unused-argument
+        filter_: str = FilterQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(
             request,
@@ -191,7 +191,7 @@ def get_single_endpoint(
     def get(
         request: Request,
         pid: Annotated[str, Path(description="The pid of the entity to retrieve")],
-        filter_: str = FilterQuery,  # pylint:disable=unused-argument
+        filter_: str = FilterQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(
             request,
@@ -230,7 +230,7 @@ def get_number_count_endpoint(
     @search_api_error_handling
     def get(
         request: Request,
-        where: Any = WhereQuery,  # pylint:disable=unused-argument
+        where: Any = WhereQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(
             request,
@@ -265,7 +265,7 @@ def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
     def get(
         request: Request,
         pid: Annotated[str, Path(description="The pid of the entity to retrieve")],
-        filter_: str = FilterQuery,  # pylint:disable=unused-argument
+        filter_: str = FilterQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(
             request,
@@ -306,7 +306,7 @@ def get_number_count_files_endpoint(
     def get(
         request: Request,
         pid: Annotated[str, Path(description="The pid of the entity to retrieve")],
-        where: Any = WhereQuery,  # pylint:disable=unused-argument
+        where: Any = WhereQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(
             request,

@@ -205,12 +205,12 @@ def get_endpoint(
     )
     def get(
         request: Request,
-        where: list[Json] = WhereQuery,  # pylint:disable=unused-argument
-        order: list[str] = OrderQuery,  # pylint:disable=unused-argument
-        limit: int = LimitQuery,  # pylint:disable=unused-argument
-        skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: list[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        order: list[str] = OrderQuery,  # noqa: ARG001
+        limit: int = LimitQuery,  # noqa: ARG001
+        skip: int = SkipQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         return python_icat.get_with_filters(
             get_session_id_from_auth_header(request),
@@ -408,9 +408,9 @@ def get_count_endpoint(
     )
     def get(
         request: Request,
-        where: list[Json] = WhereQuery,  # pylint:disable=unused-argument
-        distinct: list[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 
@@ -458,12 +458,12 @@ def get_find_one_endpoint(
     )
     def get(
         request: Request,
-        where: list[Json] = WhereQuery,  # pylint:disable=unused-argument
-        order: list[str] = OrderQuery,  # pylint:disable=unused-argument
-        limit: int = LimitQuery,  # pylint:disable=unused-argument
-        skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: list[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        order: list[str] = OrderQuery,  # noqa: ARG001
+        limit: int = LimitQuery,  # noqa: ARG001
+        skip: int = SkipQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 

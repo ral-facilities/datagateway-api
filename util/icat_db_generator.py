@@ -1105,7 +1105,7 @@ class DatafileParameterGenerator(Generator):
         datafile_param.create()
 
 
-def generate_all(i, generators, client):
+def generate_all(i, generators, _client):
     processes = []
     for generator in generators:
         if generator.tier == i:

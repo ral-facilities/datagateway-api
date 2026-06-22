@@ -29,7 +29,6 @@ def get_password(password_file: "str | None") -> str:
 
 def create(
     entity: Entity,
-    allow_existing: bool = False,
     fetch_existing: bool = False,
 ) -> Entity:
     try:
@@ -118,7 +117,7 @@ def setup() -> None:
 
     if args.allow_existing:
         for entity in entities:
-            create(entity=entity, allow_existing=args.allow_existing)
+            create(entity=entity)
     else:
         client.createMany(entities)
 
