@@ -11,8 +11,8 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
-      - id: black
-        name: black
-        entry: poetry run black
+      - id: formatter
+        name: ruff
+        entry: uv run ruff format
         language: system
         types: [python]
