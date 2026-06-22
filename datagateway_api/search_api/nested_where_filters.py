@@ -92,7 +92,7 @@ class NestedWhereFilters:
         operator.
         """
         boolean_algebra_list = [self.lhs, self.rhs]
-        try:
+        try:  # noqa: SIM105
             boolean_algebra_list.remove([None])
         except ValueError:
             # If neither side contains `None`, we should continue as normal

@@ -30,7 +30,7 @@ class SearchAPIICATQuery(ICATQuery):
     contains features required for the search API.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         client,
         entity_name,

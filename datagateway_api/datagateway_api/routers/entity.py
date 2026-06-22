@@ -203,7 +203,7 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def get(
+    def get(  # noqa: PLR0913
         request: Request,
         where: list[Json] = WhereQuery,  # noqa: ARG001
         order: list[str] = OrderQuery,  # noqa: ARG001
@@ -456,7 +456,7 @@ def get_find_one_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def get(
+    def get(  # noqa: PLR0913
         request: Request,
         where: list[Json] = WhereQuery,  # noqa: ARG001
         order: list[str] = OrderQuery,  # noqa: ARG001

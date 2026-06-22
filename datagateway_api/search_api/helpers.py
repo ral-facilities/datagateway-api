@@ -58,7 +58,7 @@ def search_api_error_handling(method):
         try:
             # If no status code exists (for non-API defined exceptions), assign a status
             # code
-            e.status_code
+            e.status_code  # noqa: B018
         except AttributeError:
             e.status_code = status_code
 

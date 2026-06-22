@@ -152,7 +152,7 @@ class PaNOSCAttribute(ABC, BaseModel):
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:
-                    required_related_field = required_related_field.split(".")
+                    required_related_field = required_related_field.split(".")  # noqa: PLW2901
                     if len(required_related_field) > 1 and entity_field_alias in required_related_field:
                         required_related_fields_for_next_entity.extend(
                             required_related_field[1:],
@@ -172,7 +172,7 @@ class PaNOSCAttribute(ABC, BaseModel):
             entity_data[entity_field_alias] = field_value
 
         for required_related_field in required_related_fields:
-            required_related_field = required_related_field.split(".")[0]
+            required_related_field = required_related_field.split(".")[0]  # noqa: PLW2901
 
             if (
                 required_related_field in entity_fields

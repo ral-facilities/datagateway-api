@@ -11,15 +11,15 @@ def prepare_data_for_assertion(response):
     removed for assertion.
     :param response: JSON response from the search api.
     """
-    # Go through list and dicts to find dicts
-    for data in response:
-        if isinstance(response, dict):
-            data = response[data]
 
-        if type(data) in [dict, list]:
-            # Pass list and dicts back to the function to
+    # Go through list and dicts to find dicts
+    for item in response:
+        value = response[item] if isinstance(response, dict) else item
+
+        if isinstance(value, (dict, list)):
+            # Pass lists and dicts back to the function to
             # loop through nested lists or dictionaries
-            prepare_data_for_assertion(data)
+            prepare_data_for_assertion(value)
 
     # This handles dictionaries passed to the function
     # Even if the dictionary doesn't contain creationDate

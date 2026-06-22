@@ -26,7 +26,7 @@ log = logging.getLogger()
 
 class DataGatewayAPIQueryFilterFactory(QueryFilterFactory):
     @staticmethod
-    def get_query_filter(request_filter, entity_name=None):
+    def get_query_filter(request_filter, _entity_name=None):
         """
         Given a filter, return a matching Query filter object.
 

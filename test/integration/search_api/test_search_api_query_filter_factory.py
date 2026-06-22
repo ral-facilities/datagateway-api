@@ -1815,7 +1815,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
         ],
     )
-    def test_valid_include_filter_with_where_filter_in_scope(
+    def test_valid_include_filter_with_where_filter_in_scope(  # noqa: PLR0913
         self,
         test_request_filter,
         test_entity_name,
@@ -2103,7 +2103,7 @@ class TestSearchAPIQueryFilterFactory:
             ),
         ],
     )
-    def test_valid_filter_input_with_all_filters(
+    def test_valid_filter_input_with_all_filters(  # noqa: PLR0913
         self,
         test_request_filter,
         test_entity_name,

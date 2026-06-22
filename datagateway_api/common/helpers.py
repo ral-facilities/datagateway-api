@@ -101,11 +101,11 @@ def get_filters_from_query_string(request: Request, api_type, entity_name=None):
     :return: The list of filters
     """
     if api_type == "search_api":
-        from datagateway_api.search_api.query_filter_factory import (
+        from datagateway_api.search_api.query_filter_factory import (  # noqa: PLC0415
             SearchAPIQueryFilterFactory as QueryFilterFactory,
         )
     elif api_type == "datagateway_api":
-        from datagateway_api.datagateway_api.query_filter_factory import (
+        from datagateway_api.datagateway_api.query_filter_factory import (  # noqa: PLC0415
             DataGatewayAPIQueryFilterFactory as QueryFilterFactory,
         )
     else:
@@ -168,7 +168,7 @@ def map_distinct_attributes_to_results(distinct_attributes, query_result):
         split_attr_name = attr_name.split(".")
 
         if isinstance(data, datetime):
-            data = DateHandler.datetime_object_to_str(data)
+            data = DateHandler.datetime_object_to_str(data)  # noqa: PLW2901
 
         # Attribute name is from the 'origin' entity (i.e. not a related entity)
         if len(split_attr_name) == 1:

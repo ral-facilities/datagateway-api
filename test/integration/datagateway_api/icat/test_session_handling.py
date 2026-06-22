@@ -33,11 +33,11 @@ class TestSessionHandling:
         time_diff = abs(session_expiry_datetime - current_datetime)
         time_diff_minutes = time_diff.seconds / 60
 
-        MAX_EXPECTED_MINUTES = 120
-        MIN_EXPECTED_MINUTES = 118
+        max_expected_minutes = 120
+        min_expected_minutes = 118
 
         # Allows a bit of leeway for slow test execution
-        assert MIN_EXPECTED_MINUTES <= time_diff_minutes < MAX_EXPECTED_MINUTES
+        assert min_expected_minutes <= time_diff_minutes < max_expected_minutes
 
         # Check username is correct
         test_mechanism = Config.config.test_mechanism

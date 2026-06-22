@@ -24,33 +24,34 @@ def prepare_icat_data_for_assertion(
     :param data: ICAT data containing meta attributes such as modTime
     :type data: :class:`list` or :class:`icat.entity.EntityList`
     """
+
     assertable_data = []
     meta_attributes = Entity.MetaAttr
 
     for entity in data:
         # Convert to dictionary if an ICAT entity object
-        if isinstance(entity, Entity):
-            entity = entity.as_dict()
+        entity_dict = entity.as_dict() if isinstance(entity, Entity) else entity
 
         for attr in meta_attributes:
-            entity.pop(attr)
+            entity_dict.pop(attr)
 
-        for key in entity:
-            if isinstance(entity[key], dict):
+        for key in entity_dict:
+            if isinstance(entity_dict[key], dict):
                 for attr in meta_attributes:
-                    entity[key].pop(attr)
+                    entity_dict[key].pop(attr)
 
-        for attr in entity:
-            if isinstance(entity[attr], datetime):
-                entity[attr] = DateHandler.datetime_object_to_str(entity[attr])
+        for attr in entity_dict:
+            if isinstance(entity_dict[attr], datetime):
+                entity_dict[attr] = DateHandler.datetime_object_to_str(entity_dict[attr])
 
         # meta_attributes is immutable
         if remove_id:
-            entity.pop("id")
+            entity_dict.pop("id")
         if remove_visit_id:
-            entity.pop("visitId")
+            entity_dict.pop("visitId")
 
-        assertable_data.append(entity)
+        assertable_data.append(entity_dict)
+
     return assertable_data
 
 
@@ -87,7 +88,7 @@ class TestICATQuery:
             ),
         ],
     )
-    def test_valid_query_creation(
+    def test_valid_query_creation(  # noqa: PLR0913
         self,
         icat_client,
         input_conditions,
@@ -259,7 +260,7 @@ class TestICATQuery:
         ],
     )
     @pytest.mark.usefixtures("single_investigation_test_data")
-    def test_valid_query_execution(
+    def test_valid_query_execution(  # noqa: PLR0913
         self,
         icat_client,
         query_conditions,

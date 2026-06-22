@@ -495,7 +495,8 @@ def update_entities(client, entity_type, data_to_update):
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(
-                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to update",
+                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to "
+                "update",
             ) from e
 
     # This separates the local data updates from pushing these updates to icatdb
@@ -563,7 +564,7 @@ def create_entities(client, entity_type, data):  # noqa: C901
                     # Short circuiting ensures is_str_date() will only be executed if
                     # value is a string
                     if isinstance(value, str) and DateHandler.is_str_a_date(value):
-                        value = DateHandler.str_to_datetime_object(value)
+                        value = DateHandler.str_to_datetime_object(value)  # noqa: PLW2901
 
                     setattr(new_entity, attribute_name, value)
                 else:

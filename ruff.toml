@@ -23,6 +23,11 @@ select = [
 ]
 
 
+ignore = [
+    "PLR0912",  # too-many-branches - allows complex functions without forcing excessive refactoring
+    "PLR0913",  # too-many-arguments - allows functions/methods with many parameters (common in APIs/tests)
+]
+
 
 [lint.isort]
 known-first-party = ["datagateway_api"]

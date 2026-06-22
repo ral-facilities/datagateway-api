@@ -1,3 +1,5 @@
+from fastapi import status
+
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )

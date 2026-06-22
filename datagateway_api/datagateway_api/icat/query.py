@@ -112,7 +112,7 @@ class ICATQuery:
                     # list as `map_distinct_attributes_to_results()` assumes a list as
                     # input
                     if not isinstance(result, tuple):
-                        result = [result]
+                        result = [result]  # noqa: PLW2901
 
                     # Map distinct attributes and result
                     data.append(

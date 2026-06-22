@@ -133,7 +133,7 @@ def build_datagateway_api_model(**kwargs):
 
             if field.relType == "ATTRIBUTE":
                 field_type = TYPE_MAP.get(field.type, str)
-                optional_field_type = Optional[field_type]
+                optional_field_type = Optional[field_type]  # noqa: UP045
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
@@ -151,7 +151,7 @@ def build_datagateway_api_model(**kwargs):
                     rel_type_str = f"{rel_model_name!r}"
                     post_type = int
 
-                optional_type = Optional[post_type]
+                optional_type = Optional[post_type]  # noqa: UP045
                 rel_type_str = f"Optional[{rel_type_str}]"
 
                 description = getattr(field, "comment", None)

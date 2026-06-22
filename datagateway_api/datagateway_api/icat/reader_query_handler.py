@@ -210,11 +210,10 @@ class ReaderQueryHandler:
         (using `get_where_filter_for_entity_id_check()`).
         """
         log.info("Checking whether query is eligible to go via reader account")
-        if self.entity_type in ReaderQueryHandler.entity_filter_check:
-            if self.get_where_filter_for_entity_id_check():
-                return True
 
-        return False
+        return (
+            self.entity_type in ReaderQueryHandler.entity_filter_check and self.get_where_filter_for_entity_id_check()
+        )
 
     def is_query_eligible_for_reader_performance(self) -> bool:
         """Getter that returns a boolean regarding query eligibility."""
