@@ -27,8 +27,7 @@ class TestICATGetWithFilters:
     ):
         test_response = test_client.get(
             '/datagateway-api/investigations?where={"title": {"eq": "This filter should cause a 404 for testing '
-            "purposes"
-            '..."}}',
+            'purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 
