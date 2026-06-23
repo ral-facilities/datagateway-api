@@ -72,29 +72,13 @@ WORKDIR /datagateway-api-run
 # Copy the application from the prod-build stage
 COPY --from=prod-build /datagateway-api-run /datagateway-api-run
 
-
 RUN set -eux; \
-    \
-    # Create config.yaml and search_api_mapping.json from their .example files \
-    cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
-    cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
-    cp datagateway_api/logging.example.ini datagateway_api/logging.ini; \
     \
     # Create a non-root user to run as \
     addgroup -S datagateway-api; \
-    adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api; \
-    \
-    # Change ownership of settings location - the entrypoint script will need to edit it \
-    chown -R datagateway-api:datagateway-api datagateway_api/
+    adduser -S -D -G datagateway-api -H -h /datagateway-api-run datagateway-api;
 
-    
 USER datagateway-api
-
-ENV ICAT_URL="http://localhost"
-ENV ICAT_CHECK_CERT="false"
-
-COPY docker/docker-entrypoint.sh /usr/local/bin/
-ENTRYPOINT ["docker-entrypoint.sh"]
 
 CMD ["/datagateway-api-run/.venv/bin/fastapi", "run", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
 
