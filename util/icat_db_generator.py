@@ -691,7 +691,7 @@ class DataPublicationGenerator(Generator):
 
     def generate(self):
         for _ in range(1, self.amount):
-            DataPublicationGenerator().generate_data_publication(self)
+            DataPublicationGenerator.generate_data_publication(self)
 
     def generate_data_publication(self):
         data_publication = self.client.new("dataPublication")
@@ -1105,7 +1105,7 @@ class DatafileParameterGenerator(Generator):
         datafile_param.create()
 
 
-def generate_all(i, generators, _client):
+def generate_all(i, generators):
     processes = []
     for generator in generators:
         if generator.tier == i:
