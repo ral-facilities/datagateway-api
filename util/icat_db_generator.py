@@ -1120,12 +1120,12 @@ def generate_all(i, generators):
 
 
 def main():
-    client = icat_client()
+    icat_client()
     start_time = datetime.datetime.now()
     generators = [generator() for generator in Generator.__subclasses__()]
     tiers = 7
     for i in range(tiers):
-        generate_all(i, generators, client)
+        generate_all(i, generators)
 
     print(
         f"Added {sum(generator.amount for generator in generators)} entities in {datetime.datetime.now() - start_time}",
