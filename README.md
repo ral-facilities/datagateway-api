@@ -169,37 +169,42 @@ uv environment:
 ModuleNotFoundError: No module named 'urlparse'
 ```
 
-Please use Payara 5 on the ICAT stack which the API is being
+Please use Payara 7 on the ICAT stack which the API is being
 pointed at. There is a known issue when making HTTPS connections to Payara (via Python
 ICAT).
 
 It is also possible to run the API inside Docker. The `Dockerfile` can be used to build
-a Docker image which in turn can be used to create a container. The `Dockerfile` is
-configured to create a production image and runs a FastAPI run on port `5000` when a
-container is started. Environment variables have also been defined in the `Dockerfile`
-to allow for values to be passed at runtime to future running containers. These values
-are used by the `docker/docker-entrypoint.sh` script to update the config values in the
-`config.yaml` file. The environment varialbes are:
+a Docker image which can then be used to create a container. The image is configured
+to run the FastAPI application on port `8000`.
 
-- `ICAT_URL` (Default value: `http://localhost`)
-- `ICAT_CHECK_CERT` (Default value: `false`)
+Configuration is handled entirely via files and must be provided at runtime using
+mounted volumes. This ensures predictable behaviour and avoids modifying configuration
+inside the container.
 
-To build an image, run:
+The following configuration files are required:
+
+- `config.yaml`
+- `logging.ini`
+- `search_api_mapping.json`
+
+---
+
+### Build the Docker image
 
 ```bash
 docker build -t datagateway_api_image .
 ```
 
-To start a container on port `8000` from the image that you just built, run:
+### Run the Prod image
 
 ```bash
-docker run -p 8000:8000 --name datagateway_api_container datagateway_api_image
-```
 
-If you want to pass values for the environment variables then instead run:
-
-```bash
-docker run -p 8000:8000 --name datagateway_api_container --env ICAT_URL=https://127.0.0.1:8181 --env ICAT_CHECK_CERT=true datagateway_api_image
+docker run -p 8000:8000 \
+  --name datagateway_api_container \
+  -v ./datagateway_api/config.yaml:/datagateway-api-run/datagateway_api/config.yaml \
+  -v ./datagateway_api/logging.ini:/datagateway-api-run/datagateway_api/logging.ini \
+  -v ./datagateway_api/search_api_mapping.json:/datagateway-api-run/datagateway_api/search_api_mapping.json \
+  datagateway_api_image
 ```
 
 ## DataGateway API Authentication
