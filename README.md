@@ -202,9 +202,9 @@ docker build -t datagateway_api_image .
 
 docker run -p 8000:8000 \
   --name datagateway_api_container \
-  -v $(pwd)/datagateway_api/config.yaml:/datagateway-api-run/datagateway_api/config.yaml \
-  -v $(pwd)/datagateway_api/logging.ini:/datagateway-api-run/datagateway_api/logging.ini \
-  -v $(pwd)/datagateway_api/search_api_mapping.json:/datagateway-api-run/datagateway_api/search_api_mapping.json \
+  -v ./datagateway_api/config.yaml:/datagateway-api-run/datagateway_api/config.yaml \
+  -v ./datagateway_api/logging.ini:/datagateway-api-run/datagateway_api/logging.ini \
+  -v ./datagateway_api/search_api_mapping.json:/datagateway-api-run/datagateway_api/search_api_mapping.json \
   datagateway_api_image
 ```
 
