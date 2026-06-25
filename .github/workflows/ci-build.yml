@@ -28,20 +28,13 @@ jobs:
           python-version: "3.11"
           architecture: x64
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.21"
+
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
-
-      # Install Poetry and API's dependencies
-      - name: Install Poetry
-        run: pip install poetry==1.8.0
-      # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
-      # We will not be facing this issue when we upgrade to a newer Poetry version.
-      - name: Install Requests
-        run: pip install 'requests<2.30'
-
-      # Install dependencies
-      - name: Install dependencies
-        run: poetry install
 
       # Prep for using the API for tests
       - name: Configure datagateway extension
@@ -55,7 +48,7 @@ jobs:
         run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
       # Run Unit tests
       - name: Run unit tests
-        run: poetry run pytest test/unit --cov=datagateway_api --cov-report=xml
+        run: uv run pytest test/unit --cov=datagateway_api --cov-report=xml
 
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
@@ -119,16 +112,13 @@ jobs:
       - name: Create logging.ini
         run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
 
-      - name: Install dependencies
-        run: poetry install
-
       - name: Add dummy data to icatdb
         run: |
-          poetry run python -m util.icat_db_generator
+          uv run python -m util.icat_db_generator
 
       # Run integration tests session, saves and uploads a coverage report to codecov
       - name: Run integration tests
-        run: poetry run pytest test/integration --cov=datagateway_api --cov-report=xml
+        run: uv run pytest test/integration --cov=datagateway_api --cov-report=xml
 
   linting:
     runs-on: ubuntu-24.04
@@ -142,11 +132,13 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
-      - name: Install Poetry
-        run: pip install poetry==1.8.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.21"
 
-      - name: Install dependencies and run lint
-        run: poetry install && poetry run flake8 datagateway_api test util
+      - name: Run linting
+        run: uv run flake8 datagateway_api test util
 
   formatting:
     runs-on: ubuntu-24.04
@@ -160,11 +152,12 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
-      - name: Install Poetry
-        run: pip install poetry==1.8.0
-
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.21"
       - name: Install dependencies and check formatting
-        run: poetry install && poetry run black --check datagateway_api test util
+        run: uv run black --check datagateway_api test util
 
   generator-script-testing:
     runs-on: ubuntu-24.04
@@ -181,6 +174,10 @@ jobs:
           python-version: "3.11"
           architecture: x64
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.21"
       # ICAT Ansible clone and install dependencies
       - name: Checkout icat-ansible
         uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
@@ -227,18 +224,8 @@ jobs:
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
       - name: Create logging.ini
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-      - name: Install Poetry
-        run: pip install poetry==1.8.0
-      # This fixes the issue with cachecontrol (https://github.com/psf/cachecontrol/issues/292).
-      # We will not be facing this issue when we upgrade to a newer Poetry version.
-      - name: Install Requests
-        run: pip install 'requests<2.30'
-
-      - name: Install dependencies
-        run: poetry install
-
       - name: Add dummy data to icatdb
-        run: poetry run python -m util.icat_db_generator
+        run: uv run python -m util.icat_db_generator
       - name: Drop modTime and createTime
         run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
       - name: Get SQL dump of dummy data
@@ -258,7 +245,7 @@ jobs:
 
       - name: Add (new) dummy data to icatdb
         run: |
-          cd /home/runner/work/datagateway-api/datagateway-api; poetry run python -m util.icat_db_generator
+          cd /home/runner/work/datagateway-api/datagateway-api; uv run python -m util.icat_db_generator
       - name: Drop modTime and createTime
         run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
       - name: Get SQL dump of new dummy data
@@ -290,11 +277,9 @@ jobs:
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
       - name: Create logging.ini
         run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-      - name: Install dependencies
-        run: poetry install
 
       - name: Add dummy data to icatdb
-        run: poetry run python -m util.icat_db_generator
+        run: uv run python -m util.icat_db_generator
       - name: Drop modTime and createTime
         run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
       - name: Get SQL dump of dummy data from main's generator script
