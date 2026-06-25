@@ -138,7 +138,7 @@ jobs:
           version: "0.11.21"
 
       - name: Run linting
-        run: uv run flake8 datagateway_api test util
+        run: uv run ruff check
 
   formatting:
     runs-on: ubuntu-24.04
@@ -157,7 +157,7 @@ jobs:
         with:
           version: "0.11.21"
       - name: Install dependencies and check formatting
-        run: uv run black --check datagateway_api test util
+        run: uv run ruff format
 
   generator-script-testing:
     runs-on: ubuntu-24.04

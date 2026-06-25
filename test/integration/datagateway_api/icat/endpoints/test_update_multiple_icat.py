@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
@@ -43,8 +44,7 @@ class TestUpdateMultipleEntities:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """Request body is a dictionary, not a list of dictionaries"""
-
+        """Request body is a dictionary, not a list of dictionaries."""
         expected_doi = "Test Data Identifier"
         expected_summary = "Test Summary"
 
@@ -73,8 +73,7 @@ class TestUpdateMultipleEntities:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """There should be an ID in the request body to know which entity to update"""
-
+        """There should be an ID in the request body to know which entity to update."""
         update_data_json = [
             {
                 "doi": "Test Data Identifier",
@@ -88,7 +87,7 @@ class TestUpdateMultipleEntities:
             json=update_data_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     @pytest.mark.parametrize(
         "update_key, update_value",
@@ -135,7 +134,6 @@ class TestUpdateMultipleEntities:
         will throw an ICAT related exception. At this point, the rollback behaviour
         should execute, restoring the state of the first record (i.e. un-updating it)
         """
-
         request_body = [
             {
                 "id": multiple_investigation_test_data[0]["id"],
@@ -159,6 +157,6 @@ class TestUpdateMultipleEntities:
         )
         get_response_json = prepare_icat_data_for_assertion([get_response.json()])
 
-        assert update_response.status_code == 500
+        assert update_response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         # RHS encased in a list as prepare_icat_data_for_assertion() always returns list
         assert get_response_json == [multiple_investigation_test_data[0]]

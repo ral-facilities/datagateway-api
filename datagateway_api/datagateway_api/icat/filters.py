@@ -12,7 +12,6 @@ from datagateway_api.common.filters import (
 )
 from datagateway_api.common.helpers import get_icat_properties
 
-
 log = logging.getLogger()
 
 
@@ -32,7 +31,7 @@ class PythonICATWhereFilter(WhereFilter):
 
     def create_filter(self):
         """
-        Create what's needed for a where filter dependent on the operation provided
+        Create what's needed for a where filter dependent on the operation provided.
 
         The logic in this function has been abstracted away from `apply_filter()` to
         make that function used for its named purpose, and no more.
@@ -41,7 +40,6 @@ class PythonICATWhereFilter(WhereFilter):
             object
         :raises FilterError: If the operation provided to the instance isn't valid
         """
-
         # TODO - need to add support for the rest of search API operators
         # For things like inq, think we just call this function again with the DG API
         # version. This will prevent a breaking change from occurring
@@ -128,7 +126,7 @@ class PythonICATWhereFilter(WhereFilter):
     def create_condition(attribute_name, operator, value):
         """
         Construct and return a Python dictionary containing conditions to be used in a
-        Query object
+        Query object.
 
         :param attribute_name: Attribute name to search
         :type attribute_name: :class:`str`
@@ -139,7 +137,6 @@ class PythonICATWhereFilter(WhereFilter):
         :return: Condition (of type :class:`dict`) ready to be added to a Python ICAT
             Query object
         """
-
         conditions = {}
 
         # Handle unary operators (IS NULL, IS NOT NULL)
@@ -173,7 +170,7 @@ class PythonICATDistinctFieldFilter(DistinctFieldFilter):
 
             # These aggregate keywords not currently used in the API, but conditional
             # present in case they're used in the future
-            if query.aggregate == "AVG" or query.aggregate == "SUM":
+            if query.aggregate in {"AVG", "SUM"}:
                 # Distinct can be combined with other aggregate functions
                 query.setAggregate(f"{query.aggregate}:DISTINCT")
             elif query.aggregate == "COUNT":
@@ -273,7 +270,7 @@ class PythonICATLimitFilter(LimitFilter):
 
 def icat_set_limit(query, skip_number, limit_number):
     """
-    Add limit (utilising skip and count) to an ICAT query
+    Add limit (utilising skip and count) to an ICAT query.
 
     :param query: ICAT Query object to execute within Python ICAT
     :type query: :class:`icat.query.Query`
@@ -303,7 +300,7 @@ class PythonICATIncludeFilter(IncludeFilter):
         Using recursion, go through the fields and add them to the filter's instance.
         This means that lists within dictionaries, dictionaries within dictionaries are
         supported. Where dictionaries are involved, '.' are used to join the fields
-        together
+        together.
 
         Some (but not all) fields require the plural to be accepted in the include of a
         Python ICAT query - e.g. 'userGroups' is valid (plural required), but 'dataset'
@@ -364,8 +361,7 @@ class PythonICATIncludeFilter(IncludeFilter):
                         )
                 else:
                     raise FilterError(
-                        "Include Filter: Inner field type (inside dictionary) not"
-                        " recognised, cannot interpret input",
+                        "Include Filter: Inner field type (inside dictionary) not recognised, cannot interpret input",
                     )
         elif isinstance(field, list):
             for element in field:

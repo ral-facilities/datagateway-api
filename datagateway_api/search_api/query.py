@@ -27,7 +27,7 @@ class SearchAPIICATQuery(ICATQuery):
     """
     Class which has identical functionality to `ICATQuery` but uses a different
     `__init__` to call `ConditionSettingQuery` instead of the base `Query`. That class
-    contains features required for the search API
+    contains features required for the search API.
     """
 
     def __init__(

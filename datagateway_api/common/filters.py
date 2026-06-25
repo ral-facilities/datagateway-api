@@ -1,5 +1,5 @@
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 
 from datagateway_api.common.exceptions import BadRequestError, FilterError
 
@@ -20,7 +20,7 @@ class QueryFilter(ABC):
 class WhereFilter(QueryFilter):
     precedence = 1
 
-    def __init__(self, field, value, operation):
+    def __init__(self, _field, value, operation):
         # The field is set to None as a precaution but this should be set
         # when initialising Python ICAT
         self.field = None
@@ -33,7 +33,7 @@ class WhereFilter(QueryFilter):
                     f"When using the {self.operation} operation for a WHERE filter, the"
                     f" values must be in a list format e.g. [1, 2]",
                 )
-            if self.operation == "between" and len(self.value) != 2:
+            if self.operation == "between" and len(self.value) != 2:  # noqa: PLR2004
                 raise BadRequestError(
                     "When using the 'between' operation for a WHERE filter, the list"
                     "must contain two values e.g. [1, 2]",

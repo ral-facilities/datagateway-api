@@ -1,7 +1,7 @@
+import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
-import sys
-from typing import Annotated, ClassVar, List, Literal, Optional, Union
+from typing import Annotated, ClassVar, Literal, Optional
 
 from pydantic import (
     BaseModel,
@@ -79,7 +79,7 @@ def _get_icat_field_value(icat_field_name, icat_data):
 
 
 class PaNOSCAttribute(ABC, BaseModel):
-    _datetime_field_names: ClassVar[List[str]] = [
+    _datetime_field_names: ClassVar[list[str]] = [
         "creationDate",
         "startDate",
         "endDate",
@@ -152,7 +152,7 @@ class PaNOSCAttribute(ABC, BaseModel):
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:
-                    required_related_field = required_related_field.split(".")
+                    required_related_field = required_related_field.split(".")  # noqa: PLW2901
                     if len(required_related_field) > 1 and entity_field_alias in required_related_field:
                         required_related_fields_for_next_entity.extend(
                             required_related_field[1:],
@@ -172,7 +172,7 @@ class PaNOSCAttribute(ABC, BaseModel):
             entity_data[entity_field_alias] = field_value
 
         for required_related_field in required_related_fields:
-            required_related_field = required_related_field.split(".")[0]
+            required_related_field = required_related_field.split(".")[0]  # noqa: PLW2901
 
             if (
                 required_related_field in entity_fields
@@ -201,35 +201,35 @@ class PaNOSCAttribute(ABC, BaseModel):
 
 
 class Affiliation(PaNOSCAttribute):
-    """Information about which facility a member is located at"""
+    """Information about which facility a member is located at."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["members"]
-    _text_operator_fields: ClassVar[List[str]] = []
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = ["members"]
+    _text_operator_fields: ClassVar[list[str]] = []
 
-    name: Optional[str] = None
-    id_: Annotated[Optional[str], Field(alias="id")]
-    address: Optional[str] = None
-    city: Optional[str] = None
-    country: Optional[str] = None
+    name: str | None = None
+    id_: Annotated[str | None, Field(alias="id")]
+    address: str | None = None
+    city: str | None = None
+    country: str | None = None
 
-    members: Optional[List["Member"]] = []
+    members: list["Member"] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Affiliation, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Dataset(PaNOSCAttribute):
     """
     Information about an experimental run, including optional File, Sample, Instrument
-    and Technique
+    and Technique.
     """
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = [
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = [
         "documents",
         "techniques",
     ]
-    _text_operator_fields: ClassVar[List[str]] = ["title"]
+    _text_operator_fields: ClassVar[list[str]] = ["title"]
 
     pid: SearchAPIPid
     title: str
@@ -237,27 +237,25 @@ class Dataset(PaNOSCAttribute):
     # returned by it is public
     is_public: Literal[True] = Field(True, alias="isPublic")
     creation_date: SearchAPIDatetime = Field(alias="creationDate")
-    size: Optional[int] = None
+    size: int | None = None
 
-    documents: List["Document"] = []
-    techniques: List["Technique"] = []
+    documents: list["Document"] = []
+    techniques: list["Technique"] = []
     instrument: Optional["Instrument"] = None
-    files: Optional[List["File"]] = []
-    parameters: Optional[List["Parameter"]] = []
-    samples: Optional[List["Sample"]] = []
+    files: list["File"] | None = []
+    parameters: list["Parameter"] | None = []
+    samples: list["Sample"] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Dataset, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Document(PaNOSCAttribute):
-    """
-    Proposal which includes the dataset or published paper which references the dataset
-    """
+    """Proposal which includes the dataset or published paper which references the dataset."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["datasets"]
-    _text_operator_fields: ClassVar[List[str]] = ["title", "summary"]
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = ["datasets"]
+    _text_operator_fields: ClassVar[list[str]] = ["title", "summary"]
 
     pid: SearchAPIPid
     # Hardcoding this to True because anon user is used for querying so all data
@@ -265,74 +263,74 @@ class Document(PaNOSCAttribute):
     is_public: Literal[True] = Field(True, alias="isPublic")
     type_: str = Field(alias="type")
     title: str
-    summary: Optional[str] = None
-    doi: Optional[str] = None
-    start_date: Optional[SearchAPIDatetime] = Field(None, alias="startDate")
-    end_date: Optional[SearchAPIDatetime] = Field(None, alias="endDate")
-    release_date: Optional[SearchAPIDatetime] = Field(None, alias="releaseDate")
-    license_: Optional[str] = Field(None, alias="license")
-    keywords: Optional[List[str]] = []
+    summary: str | None = None
+    doi: str | None = None
+    start_date: SearchAPIDatetime | None = Field(None, alias="startDate")
+    end_date: SearchAPIDatetime | None = Field(None, alias="endDate")
+    release_date: SearchAPIDatetime | None = Field(None, alias="releaseDate")
+    license_: str | None = Field(None, alias="license")
+    keywords: list[str] | None = []
 
-    datasets: List[Dataset] = []
-    members: Optional[List["Member"]] = []
-    parameters: Optional[List["Parameter"]] = []
+    datasets: list[Dataset] = []
+    members: list["Member"] | None = []
+    parameters: list["Parameter"] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Document, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class File(PaNOSCAttribute):
-    """Name of file and optionally location"""
+    """Name of file and optionally location."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["dataset"]
-    _text_operator_fields: ClassVar[List[str]] = ["name"]
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = ["dataset"]
+    _text_operator_fields: ClassVar[list[str]] = ["name"]
 
     id_: SearchAPIId
     name: str
-    path: Optional[str] = None
-    size: Optional[int] = None
+    path: str | None = None
+    size: int | None = None
 
-    dataset: Optional[Dataset] = None
+    dataset: Dataset | None = None
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(File, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Instrument(PaNOSCAttribute):
-    """Beam line where experiment took place"""
+    """Beam line where experiment took place."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
-    _text_operator_fields: ClassVar[List[str]] = ["name", "facility"]
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = []
+    _text_operator_fields: ClassVar[list[str]] = ["name", "facility"]
 
     pid: SearchAPIPid
     name: str
     facility: str
 
-    datasets: Optional[List[Dataset]] = []
+    datasets: list[Dataset] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Instrument, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Member(PaNOSCAttribute):
-    """Proposal team member or paper co-author"""
+    """Proposal team member or paper co-author."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = ["document"]
-    _text_operator_fields: ClassVar[List[str]] = []
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = ["document"]
+    _text_operator_fields: ClassVar[list[str]] = []
 
     id_: SearchAPIId
-    role: Optional[str] = Field(None, alias="role")
+    role: str | None = Field(None, alias="role")
 
-    document: Optional[Document] = None
+    document: Document | None = None
     person: Optional["Person"] = None
-    affiliation: Optional[Affiliation] = None
+    affiliation: Affiliation | None = None
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Member, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Parameter(PaNOSCAttribute):
@@ -341,16 +339,16 @@ class Parameter(PaNOSCAttribute):
     Note: a parameter is either related to a dataset or a document, but not both.
     """
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
-    _text_operator_fields: ClassVar[List[str]] = []
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = []
+    _text_operator_fields: ClassVar[list[str]] = []
 
     id_: SearchAPIId
     name: str
-    value: Union[float, int, str]
-    unit: Optional[str] = None
+    value: float | int | str
+    unit: str | None = None
 
-    dataset: Optional[Dataset] = None
-    document: Optional[Document] = None
+    dataset: Dataset | None = None
+    document: Document | None = None
 
     """
     Validator commented as it was decided to be disabled for the time being. The Data
@@ -376,60 +374,60 @@ class Parameter(PaNOSCAttribute):
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Parameter, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Person(PaNOSCAttribute):
-    """Human who carried out experiment"""
+    """Human who carried out experiment."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
-    _text_operator_fields: ClassVar[List[str]] = []
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = []
+    _text_operator_fields: ClassVar[list[str]] = []
 
     id_: SearchAPIId
     full_name: str = Field(alias="fullName")
-    orcid: Optional[str] = None
-    researcher_id: Optional[str] = Field(None, alias="researcherId")
-    first_name: Optional[str] = Field(None, alias="firstName")
-    last_name: Optional[str] = Field(None, alias="lastName")
+    orcid: str | None = None
+    researcher_id: str | None = Field(None, alias="researcherId")
+    first_name: str | None = Field(None, alias="firstName")
+    last_name: str | None = Field(None, alias="lastName")
 
-    members: Optional[List[Member]] = []
+    members: list[Member] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Person, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Sample(PaNOSCAttribute):
-    """Extract of material used in the experiment"""
+    """Extract of material used in the experiment."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
-    _text_operator_fields: ClassVar[List[str]] = ["name", "description"]
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = []
+    _text_operator_fields: ClassVar[list[str]] = ["name", "description"]
 
     name: str
     pid: SearchAPIPid
-    description: Optional[str] = None
+    description: str | None = None
 
-    datasets: Optional[List[Dataset]] = []
+    datasets: list[Dataset] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Sample, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class Technique(PaNOSCAttribute):
-    """Common name of scientific method used"""
+    """Common name of scientific method used."""
 
-    _related_fields_with_min_cardinality_one: ClassVar[List[str]] = []
-    _text_operator_fields: ClassVar[List[str]] = ["name"]
+    _related_fields_with_min_cardinality_one: ClassVar[list[str]] = []
+    _text_operator_fields: ClassVar[list[str]] = ["name"]
 
     pid: SearchAPIPid
     name: str
 
-    datasets: Optional[List[Dataset]] = []
+    datasets: list[Dataset] | None = []
 
     @classmethod
     def from_icat(cls, icat_data, required_related_fields):
-        return super(Technique, cls).from_icat(icat_data, required_related_fields)
+        return super().from_icat(icat_data, required_related_fields)
 
 
 class CountResponse(BaseModel):

@@ -1,5 +1,5 @@
-from icat.query import Query
 import pytest
+from icat.query import Query
 
 from datagateway_api.common.exceptions import SearchAPIError
 from datagateway_api.datagateway_api.icat.query import ICATQuery

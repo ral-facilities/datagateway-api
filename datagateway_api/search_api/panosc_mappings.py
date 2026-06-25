@@ -1,7 +1,7 @@
 import json
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
 from datagateway_api.common.config import Config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
@@ -11,8 +11,7 @@ log = logging.getLogger()
 
 class PaNOSCMappings:
     def __init__(self, path=None):
-        """Load contents of `search_api_mapping.json` into this class"""
-
+        """Load contents of `search_api_mapping.json` into this class."""
         if path is None:
             path = Path(__file__).parent.parent / "search_api_mapping.json"
 
@@ -20,7 +19,7 @@ class PaNOSCMappings:
             with open(path, encoding="utf-8") as target:
                 log.info("Loading PaNOSC to ICAT mappings from %s", path)
                 self.mappings = json.load(target)
-        except IOError as e:
+        except OSError as e:
             # The API shouldn't exit if there's an exception (e.g. file not found) if
             # the user is only using DataGateway API and not the search API
             if Config.config.search_api:
@@ -44,7 +43,6 @@ class PaNOSCMappings:
             mapping/translation from the PaNOSC data model
         :raises FilterError: If a valid mapping cannot be found
         """
-
         log.info(
             "Searching mapping file to find ICAT translation for %s",
             f"{panosc_entity_name}.{field_name}",
@@ -77,7 +75,7 @@ class PaNOSCMappings:
     ):
         """
         For a given related field name (e.g. "files"), get the entity name version of
-        this (e.g. "File")
+        this (e.g. "File").
 
         :param panosc_entity_name: Entity name used as an entrypoint into the mapping
         :type panosc_entity_name: :class:`str`
@@ -87,7 +85,6 @@ class PaNOSCMappings:
         :return: Entity name for the given related field name
         :raises SearchAPIError: If a suitable mapping cannot be found
         """
-
         panosc_related_entity_name = ""
         try:
             panosc_related_entity_name = list(
@@ -122,9 +119,7 @@ class PaNOSCMappings:
         for mapping_key, mapping_value in entity_mappings.items():
             # The mappings for the non-related fields are of type `str` and sometimes
             # `list' whereas for the related fields, they are of type `dict`.
-            if mapping_key != "base_icat_entity" and (
-                isinstance(mapping_value, str) or isinstance(mapping_value, list)
-            ):
+            if mapping_key != "base_icat_entity" and (isinstance(mapping_value, (str, list))):
                 non_related_field_names.append(mapping_key)
 
         return non_related_field_names

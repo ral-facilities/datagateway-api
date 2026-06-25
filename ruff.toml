@@ -1,0 +1,40 @@
+# We prefer a longer line length than the default
+line-length = 120
+
+[lint]
+select = [
+    # Ruff default
+    "E",
+    "F",
+    # General recommended plugins
+    "B",  # flake8-bugbear - Bugs and bad patterns
+    "I",  # Consistent import order 
+    "UP", # pyupgrade - Ensures modern python syntax
+    "PL", # pylint - Used on other repos
+    # Additional useful flake8 plugins
+    "SIM", # flake8-simplify - Suggests simplified code
+    "C4",  # flake8-comprehensions - Suggests simplified list, set, dict comprehensions
+    "ARG", # flake8-unused-arguments
+    "TID", # flake8-tidy-imports,   
+    "N",   # pep8-naming
+    "A",   # flake8-builtins
+    "G",   # flake8-logging-format
+    "ISC", # line breaks
+]
+
+
+ignore = [
+    "PLR0912",  # too-many-branches - allows complex functions without forcing excessive refactoring
+    "PLR0913",  # too-many-arguments - allows functions/methods with many parameters (common in APIs/tests)
+]
+
+
+[lint.per-file-ignores]
+"test/**/*.py" = [
+    "ARG002",  # unused function arguments (pytest fixtures used for setup)
+]
+
+
+[lint.isort]
+known-first-party = ["datagateway_api"]
+known-local-folder = ["test"]

@@ -1,4 +1,5 @@
 import pytest
+from fastapi import status
 
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
@@ -75,8 +76,7 @@ class TestICATCreateData:
         test_client,
         valid_icat_credentials_header,
     ):
-        """Create a single investigation, as opposed to multiple"""
-
+        """Create a single investigation, as opposed to multiple."""
         create_investigation_json = [
             {
                 "name": f"{self.investigation_name_prefix} 0",
@@ -115,8 +115,7 @@ class TestICATCreateData:
         test_client,
         valid_icat_credentials_header,
     ):
-        """An investigation requires a minimum of: name, visitId, facility, type"""
-
+        """An investigation requires a minimum of: name, visitId, facility, type."""
         invalid_request_body = [
             {
                 "title": "Test Title for DataGateway API Python ICAT testing",
@@ -129,7 +128,7 @@ class TestICATCreateData:
             json=invalid_request_body,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_invalid_existing_data_create(
         self,
@@ -137,8 +136,7 @@ class TestICATCreateData:
         valid_icat_credentials_header,
         single_investigation_test_data,
     ):
-        """This test targets raising ICATObjectExistsError, causing a 400"""
-
+        """This test targets raising ICATObjectExistsError, causing a 400."""
         # entity.as_dict() removes details about facility and type, hence they're
         # hardcoded here instead of using sinle_investigation_test_data
         existing_object_json = [
@@ -157,7 +155,7 @@ class TestICATCreateData:
             json=existing_object_json,
         )
 
-        assert test_response.status_code == 400
+        assert test_response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_valid_rollback_behaviour(
         self,
@@ -191,11 +189,11 @@ class TestICATCreateData:
         get_response = test_client.get(
             "/datagateway-api/investigations?where="  # noqa: B907
             '{"title": {"eq": "'
-            f'{request_body[0]["title"]}'
+            f"{request_body[0]['title']}"
             '"}}',
             headers=valid_icat_credentials_header,
         )
         get_response_json = prepare_icat_data_for_assertion(get_response.json())
 
-        assert create_response.status_code == 400
+        assert create_response.status_code == status.HTTP_400_BAD_REQUEST
         assert get_response_json == []

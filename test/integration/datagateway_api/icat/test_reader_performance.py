@@ -1,9 +1,9 @@
-from datetime import datetime
 import time
-from typing import Generator
+from collections.abc import Generator
+from datetime import datetime
 
-from icat.client import Client
 import pytest
+from icat.client import Client
 
 from datagateway_api.common.config import APIConfig, Config
 from datagateway_api.common.exceptions import MissingRecordError, PythonICATError

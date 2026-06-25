@@ -1,9 +1,9 @@
-from pydantic import ValidationError
 import pytest
+from pydantic import ValidationError
 
-import datagateway_api.search_api.models as models
+from datagateway_api.search_api import models
+
 from test.unit.search_api.utlis import normalise_date
-
 
 AFFILIATION_ICAT_DATA = {
     "id": 1,

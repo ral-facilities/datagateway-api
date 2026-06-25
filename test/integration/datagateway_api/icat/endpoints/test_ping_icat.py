@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
-from icat.exception import ICATError
 import pytest
+from icat.exception import ICATError
 
 from datagateway_api.common.constants import Constants
 from datagateway_api.common.exceptions import PythonICATError

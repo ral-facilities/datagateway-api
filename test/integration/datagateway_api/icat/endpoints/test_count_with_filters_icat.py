@@ -38,8 +38,8 @@ class TestICATCountWithFilters:
         valid_icat_credentials_header,
     ):
         test_response = test_client.get(
-            '/datagateway-api/investigations/count?where={"title": {"like": "This filter should cause 0 results to be found '
-            'for testing purposes..."}}',
+            '/datagateway-api/investigations/count?where={"title": {"like": "This filter should cause 0 results to be '
+            'found for testing purposes..."}}',
             headers=valid_icat_credentials_header,
         )
 

@@ -18,6 +18,7 @@ def get_password(password_file: "str | None") -> str:
 
     Returns:
         str: The user's password
+
     """
     if password_file is None:
         return getpass()
@@ -28,7 +29,6 @@ def get_password(password_file: "str | None") -> str:
 
 def create(
     entity: Entity,
-    allow_existing: bool = False,
     fetch_existing: bool = False,
 ) -> Entity:
     try:
@@ -81,7 +81,7 @@ def setup() -> None:
     parser.add_argument(
         "--allow-existing",
         action="store_true",
-        help=("Iterates over each Entity and if it already exists, suppresses the " "ICATObjectAlreadyExists error."),
+        help=("Iterates over each Entity and if it already exists, suppresses the ICATObjectAlreadyExists error."),
     )
     args = parser.parse_args()
 
@@ -117,7 +117,7 @@ def setup() -> None:
 
     if args.allow_existing:
         for entity in entities:
-            create(entity=entity, allow_existing=args.allow_existing)
+            create(entity=entity)
     else:
         client.createMany(entities)
 

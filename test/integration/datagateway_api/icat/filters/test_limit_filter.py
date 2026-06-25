@@ -5,9 +5,9 @@ import pytest
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.datagateway_api.icat.filters import (
-    icat_set_limit,
     PythonICATLimitFilter,
     PythonICATSkipFilter,
+    icat_set_limit,
 )
 
 
@@ -46,7 +46,7 @@ class TestICATLimitFilter:
     def test_limit_and_skip_merge_correctly(self, icat_query, skip_value, limit_value):
         """
         Skip and limit values are set together in Python ICAT, limit value should match
-        max entities allowed in one transaction in ICAT as defined in ICAT properties
+        max entities allowed in one transaction in ICAT as defined in ICAT properties.
         """
         skip_filter = PythonICATSkipFilter(skip_value)
         limit_filter = PythonICATLimitFilter(limit_value)
@@ -61,11 +61,13 @@ class TestICATLimitFilter:
     def test_invalid_icat_set_limit(self, icat_query):
         """
         The validity of this function is tested when applying a limit filter, an explict
-        invalid test case is required to cover when invalid arguments are given
+        invalid test case is required to cover when invalid arguments are given.
         """
-        with patch(
-            "icat.query.Query.setLimit",
-            side_effect=TypeError("Mocked Exception"),
+        with (
+            patch(
+                "icat.query.Query.setLimit",
+                side_effect=TypeError("Mocked Exception"),
+            ),
+            pytest.raises(FilterError),
         ):
-            with pytest.raises(FilterError):
-                icat_set_limit(icat_query, 50, 50)
+            icat_set_limit(icat_query, 50, 50)

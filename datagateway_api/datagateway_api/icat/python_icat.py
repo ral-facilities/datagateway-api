@@ -21,14 +21,11 @@ from datagateway_api.datagateway_api.icat.helpers import (
     update_entity_by_id,
 )
 
-
 log = logging.getLogger()
 
 
 class PythonICAT:
-    """
-    Class that contains functions to access and modify data in an ICAT database directly
-    """
+    """Class that contains functions to access and modify data in an ICAT database directly."""
 
     def ping(self, **kwargs):
         """
@@ -102,7 +99,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def logout(self, session_id, **kwargs):
+    def logout(self, _session_id, **kwargs):
         """
         Logs a user out.
         :param session_id: The user's session ID.
@@ -112,7 +109,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def get_with_filters(self, session_id, entity_type, filters, **kwargs):
+    def get_with_filters(self, _session_id, entity_type, filters, **kwargs):
         """
         Given a list of filters supplied in JSON format, returns entities that match
         the filters for the given entity type.
@@ -125,7 +122,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def create(self, session_id, entity_type, data, **kwargs):
+    def create(self, _session_id, entity_type, data, **kwargs):
         """
         Create one or more entities, from the given list containing JSON. Each entity
         must not contain its ID.
@@ -138,7 +135,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def update(self, session_id, entity_type, data, **kwargs):
+    def update(self, _session_id, entity_type, data, **kwargs):
         """
         Update one or more entities, from the given list containing JSON. Each entity
         must contain its ID.
@@ -151,7 +148,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def get_one_with_filters(self, session_id, entity_type, filters, **kwargs):
+    def get_one_with_filters(self, _session_id, entity_type, filters, **kwargs):
         """
         Returns the first entity that matches a given filter, for a given entity type.
         :param session_id: The session ID of the requesting user.
@@ -163,7 +160,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def count_with_filters(self, session_id, entity_type, filters, **kwargs):
+    def count_with_filters(self, _session_id, entity_type, filters, **kwargs):
         """
         Returns the count of the entities that match a given filter for a given entity
         type.
@@ -176,7 +173,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, entity_type, id_, **kwargs):
+    def get_with_id(self, _session_id, entity_type, id_, **kwargs):
         """
         Gets the entity matching the given ID for the given entity type.
         :param session_id: The session ID of the requesting user.
@@ -188,7 +185,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def delete_with_id(self, session_id, entity_type, id_, **kwargs):
+    def delete_with_id(self, _session_id, entity_type, id_, **kwargs):
         """
         Deletes the row matching the given ID for the given entity type.
         :param session_id: The session ID of the requesting user.
@@ -199,7 +196,7 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def update_with_id(self, session_id, entity_type, id_, data, **kwargs):
+    def update_with_id(self, _session_id, entity_type, id_, data, **kwargs):
         """
         Updates the row matching the given ID for the given entity type.
         :param session_id: The session ID of the requesting user.

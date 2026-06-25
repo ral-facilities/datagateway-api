@@ -24,10 +24,7 @@ class TestPaNOSCMappings:
         test_config_without_search_api,
         search_api_config_flag,
     ):
-        if search_api_config_flag:
-            current_test_config = test_config
-        else:
-            current_test_config = test_config_without_search_api
+        current_test_config = test_config if search_api_config_flag else test_config_without_search_api
 
         with patch(
             "datagateway_api.common.config.Config.config",
@@ -255,10 +252,8 @@ class TestPaNOSCMappings:
         test_entity_relation,
         expected_icat_relations,
     ):
-        icat_relations = (
-            test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
-                test_panosc_entity_name,
-                test_entity_relation,
-            )
+        icat_relations = test_panosc_mappings.get_icat_relations_for_non_related_fields_of_panosc_relation(  # noqa: B950
+            test_panosc_entity_name,
+            test_entity_relation,
         )
         assert icat_relations == expected_icat_relations

@@ -1,7 +1,7 @@
 from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
 from datagateway_api.search_api.session_handler import (
-    client_manager,
     SessionHandler,
+    client_manager,
 )
 
 

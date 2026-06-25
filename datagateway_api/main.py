@@ -1,10 +1,9 @@
 import logging
 
-
+import uvicorn
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import uvicorn
 
 from datagateway_api.common.config import Config
 from datagateway_api.common.exceptions import ApiError
@@ -15,18 +14,18 @@ datagateway_api_enabled = Config.config.datagateway_api is not None
 search_api_enabled = Config.config.search_api is not None
 
 if datagateway_api_enabled:
+    from datagateway_api.auth.session_bearer import SessionBearer
+    from datagateway_api.common.entity_endpoint_dict import endpoints
     from datagateway_api.datagateway_api.build_models import build_datagateway_api_model
     from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
     from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
     from datagateway_api.datagateway_api.routers.entity import create_collection_router
     from datagateway_api.datagateway_api.routers.ping import ping_endpoint
     from datagateway_api.datagateway_api.routers.sessions import sessions_endpoints
-    from datagateway_api.auth.session_bearer import SessionBearer
-    from datagateway_api.common.entity_endpoint_dict import endpoints
 
 if search_api_enabled:
-    from datagateway_api.search_api.routers.entity import create_search_collection_router
     from datagateway_api.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
+    from datagateway_api.search_api.routers.entity import create_search_collection_router
 
 setup_logger()
 logger = logging.getLogger()
@@ -48,9 +47,7 @@ async def custom_api_error_handler(_: Request, exc: ApiError) -> JSONResponse:
 
 # catch-all for unexpected exceptions
 async def custom_general_exception_handler(_: Request, exc: Exception) -> JSONResponse:
-    """
-    Handles all uncaught exceptions to prevent internal server errors from leaking.
-    """
+    """Handles all uncaught exceptions to prevent internal server errors from leaking."""
     logger.exception(exc)
     return JSONResponse(
         status_code=500,

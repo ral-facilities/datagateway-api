@@ -1,9 +1,9 @@
 import decimal
 import logging
-from typing import Annotated, List, Optional, Union
+from typing import Annotated, Optional, Union
 
 from icat.exception import ICATError
-from pydantic import AwareDatetime, BaseModel, create_model, Field
+from pydantic import AwareDatetime, BaseModel, Field, create_model
 
 from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.datagateway_api.icat.helpers import get_cached_client
@@ -47,14 +47,14 @@ SYSTEM_FIELDS = {
 
 
 class ICATId(BaseModel):
-    id_: Annotated[Optional[int], Field(None, alias="id")]
+    id_: Annotated[int | None, Field(None, alias="id")]
 
 
 class ICATBaseEntity(ICATId):
-    create_id: Annotated[Optional[str], Field(None, alias="createId")]
-    create_time: Annotated[Optional[AwareDatetime], Field(None, alias="createTime")]
-    mod_id: Annotated[Optional[str], Field(None, alias="modId")]
-    mod_time: Annotated[Optional[AwareDatetime], Field(None, alias="modTime")]
+    create_id: Annotated[str | None, Field(None, alias="createId")]
+    create_time: Annotated[AwareDatetime | None, Field(None, alias="createTime")]
+    mod_id: Annotated[str | None, Field(None, alias="modId")]
+    mod_time: Annotated[AwareDatetime | None, Field(None, alias="modTime")]
 
 
 def build_datagateway_api_model(**kwargs):
@@ -109,7 +109,6 @@ def build_datagateway_api_model(**kwargs):
     - The POST and PATCH models differ by optionality and update semantics.
 
     """
-
     log.info("Building datagateway models")
 
     datagateway_api_models = {}
@@ -129,13 +128,12 @@ def build_datagateway_api_model(**kwargs):
         post_name = f"{name}Post"
         patch_name = f"{name}Patch"
         for field in info.fields:
-
             if field.name in SYSTEM_FIELDS:
                 continue
 
             if field.relType == "ATTRIBUTE":
                 field_type = TYPE_MAP.get(field.type, str)
-                optional_field_type = Optional[field_type]
+                optional_field_type = Optional[field_type]  # noqa: UP045
 
                 description = getattr(field, "comment", None)
                 field_metadata = Field(description=description)
@@ -153,7 +151,7 @@ def build_datagateway_api_model(**kwargs):
                     rel_type_str = f"{rel_model_name!r}"
                     post_type = int
 
-                optional_type = Optional[post_type]
+                optional_type = Optional[post_type]  # noqa: UP045
                 rel_type_str = f"Optional[{rel_type_str}]"
 
                 description = getattr(field, "comment", None)
@@ -173,7 +171,7 @@ def build_datagateway_api_model(**kwargs):
     for model in datagateway_api_models.values():
         types_namespace = {
             **datagateway_api_models,
-            "List": List,
+            "List": list,
             "Optional": Optional,
             "Union": Union,
         }

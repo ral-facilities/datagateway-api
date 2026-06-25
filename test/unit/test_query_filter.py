@@ -3,8 +3,7 @@ from datagateway_api.common.filters import QueryFilter
 
 class TestQueryFilter:
     def test_abstract_class(self):
-        """Test the `QueryFilter` class has all required abstract methods"""
-
+        """Test the `QueryFilter` class has all required abstract methods."""
         QueryFilter.__abstractmethods__ = set()
 
         class DummyQueryFilter(QueryFilter):

@@ -1,6 +1,6 @@
+import logging
 from datetime import datetime, timedelta
 from functools import wraps
-import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
@@ -82,7 +82,7 @@ def requires_session_id(method):
 def get_cached_client(session_id, client_pool):
     """
     Get a client from cache using session ID as the cache parameter (client_pool will
-    always be given the same object, so won't impact on argument hashing)
+    always be given the same object, so won't impact on argument hashing).
 
     An available client is fetched from the object pool, given a session ID, and kept
     around in this cache until it becomes 'least recently used'. At this point, the
@@ -94,7 +94,6 @@ def get_cached_client(session_id, client_pool):
     :param client_pool: Client object pool used to fetch an unused client
     :type client_pool: :class:`ObjectPool`
     """
-
     # Get a client from the pool
     client, stats = client_pool._get_resource()
 
@@ -109,7 +108,7 @@ def get_cached_client(session_id, client_pool):
 
 def get_session_details_helper(client):
     """
-    Retrieve details regarding the current session within `client`
+    Retrieve details regarding the current session within `client`.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -129,7 +128,7 @@ def get_session_details_helper(client):
 
 def logout_icat_client(client):
     """
-    Logout a user of the currently authenticated user within `client`
+    Logout a user of the currently authenticated user within `client`.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -139,7 +138,7 @@ def logout_icat_client(client):
 
 def refresh_client_session(client):
     """
-    Refresh the session of the currently authenticated user within `client`
+    Refresh the session of the currently authenticated user within `client`.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -150,7 +149,7 @@ def refresh_client_session(client):
 def update_attributes(old_entity, new_entity):
     """
     Updates the attribute(s) of a given object which is a record of an entity from
-    Python ICAT
+    Python ICAT.
 
     :param old_entity: An existing entity record from Python ICAT
     :type object: :class:`icat.entities.ENTITY` (implementation of
@@ -176,7 +175,6 @@ def update_attributes(old_entity, new_entity):
             ) from e
 
         try:
-
             related_object = new_entity[key]
             if key != "id":
                 entity_info = old_entity.getAttrInfo(old_entity.client, key)
@@ -214,7 +212,7 @@ def get_entity_by_id(
     return_related_entities=False,
 ):
     """
-    Gets a record of a given ID from the specified entity
+    Gets a record of a given ID from the specified entity.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -259,7 +257,7 @@ def get_entity_by_id(
 
 def delete_entity_by_id(client, entity_type, id_):
     """
-    Deletes a record of a given ID of the specified entity
+    Deletes a record of a given ID of the specified entity.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -275,7 +273,7 @@ def delete_entity_by_id(client, entity_type, id_):
 
 def update_entity_by_id(client, entity_type, id_, new_data):
     """
-    Gets a record of a given ID of the specified entity
+    Gets a record of a given ID of the specified entity.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -309,7 +307,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
 
 def get_entity_with_filters(client, entity_type, filters):
     """
-    Gets all the records of a given entity, based on the filters provided in the request
+    Gets all the records of a given entity, based on the filters provided in the request.
 
     :param client: ICAT client containing an authenticated user
     :type client: :class:`icat.client.Client`
@@ -354,14 +352,13 @@ def get_data_with_filters(client, entity_type, filters, aggregate=None):
     Gets all the records of a given entity, based on the filters and an optional
     aggregate provided in the request. This function is called by
     `get_entity_with_filters()` and `get_count_with_filters()` that deal with GET entity
-    and GET /count entity endpoints respectively
+    and GET /count entity endpoints respectively.
 
     This function uses the reader performance query functionality IF it is enabled in
     the config. Checks are done to see whether this functionality has been enabled and
     whether the query is suitable to be completed with the reader account. There are
     more details about the inner workings in ReaderQueryHandler
     """
-
     if is_use_reader_for_performance_enabled():
         # See if this query is eligible to benefit from running faster using the reader account
         reader_query = ReaderQueryHandler(entity_type, filters)
@@ -395,9 +392,8 @@ def get_data_with_filters(client, entity_type, filters, aggregate=None):
 def execute_entity_query(client, entity_type, filters, aggregate=None):
     """
     Assemble a query object with the user's query filters and execute the query by
-    passing it to ICAT, returning them in this function
+    passing it to ICAT, returning them in this function.
     """
-
     query = ICATQuery(client, entity_type, aggregate=aggregate)
 
     filter_handler = FilterOrderHandler()
@@ -415,21 +411,18 @@ def execute_entity_query(client, entity_type, filters, aggregate=None):
 def is_use_reader_for_performance_enabled() -> bool:
     """
     Returns true is the 'use_reader_for_performance' section is present in the
-    config file and 'enabled' in that section is set to true
+    config file and 'enabled' in that section is set to true.
     """
     reader_config = Config.config.datagateway_api.use_reader_for_performance
     if not reader_config:
         return False
-    if not reader_config.enabled:
-        return False
-
-    return True
+    return reader_config.enabled
 
 
 def get_first_result_with_filters(client, entity_type, filters):
     """
     Using filters in the request, get results of the given entity, but only show the
-    first one to the user
+    first one to the user.
 
     Since only one result will be outputted, inserting a `PythonICATLimitFilter` in the
     query will make Python ICAT's data fetching more snappy and prevent a 500 being
@@ -464,7 +457,7 @@ def get_first_result_with_filters(client, entity_type, filters):
 def update_entities(client, entity_type, data_to_update):
     """
     Update one or more results for the given entity using the JSON provided in
-    `data_to_update`
+    `data_to_update`.
 
     If an exception occurs while sending data to icatdb, an attempt will be made to
     restore a backup of the data made before making the update.
@@ -502,7 +495,8 @@ def update_entities(client, entity_type, data_to_update):
             updated_icat_data.append(updated_entity_data)
         except KeyError as e:
             raise BadRequestError(
-                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to update",
+                "The new data in the request body must contain the ID (using the key: 'id') of the entity you wish to "
+                "update",
             ) from e
 
     # This separates the local data updates from pushing these updates to icatdb
@@ -531,7 +525,7 @@ def update_entities(client, entity_type, data_to_update):
 
 def create_entities(client, entity_type, data):  # noqa: C901
     """
-    Add one or more results for the given entity using the JSON provided in `data`
+    Add one or more results for the given entity using the JSON provided in `data`.
 
     `created_icat_data` is data of `icat.entity.Entity` type that is collated to be
     pushed to ICAT at the end of the function - this avoids confusion over which data
@@ -557,7 +551,6 @@ def create_entities(client, entity_type, data):  # noqa: C901
         data = [data]
 
     for result in data:
-
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
@@ -571,13 +564,12 @@ def create_entities(client, entity_type, data):  # noqa: C901
                     # Short circuiting ensures is_str_date() will only be executed if
                     # value is a string
                     if isinstance(value, str) and DateHandler.is_str_a_date(value):
-                        value = DateHandler.str_to_datetime_object(value)
+                        value = DateHandler.str_to_datetime_object(value)  # noqa: PLW2901
 
                     setattr(new_entity, attribute_name, value)
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-
                         related_object = []
                         if entity_info.relType.lower() == "many":
                             related_object = build_related_entities(
@@ -631,10 +623,7 @@ def build_related_entities(
     value: list | None,
     parent_entity_type: str | None = None,
 ):
-    """
-    Build related ICAT entities recursively, preserving cascade logic.
-    """
-
+    """Build related ICAT entities recursively, preserving cascade logic."""
     if not value:
         return []
     related_objects = []

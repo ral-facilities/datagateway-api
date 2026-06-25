@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 import pytest
+from fastapi import status
 from requests import RequestException
 
 from datagateway_api.common.config import Config
@@ -86,7 +87,7 @@ class TestHelpers:
             "group": Config.config.search_api.search_scoring.group,
             "limit": Config.config.search_api.search_scoring.limit,
         }
-        post_mock.return_value.status_code = 200
+        post_mock.return_value.status_code = status.HTTP_200_OK
         post_mock.return_value.json.return_value = SEARCH_SCORING_API_SCORES_DATA
 
         scores = SearchScoring.get_score(scoring_query_filter_value)

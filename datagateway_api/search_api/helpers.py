@@ -1,6 +1,6 @@
-from functools import wraps
 import json
 import logging
+from functools import wraps
 
 from pydantic import ValidationError
 
@@ -11,17 +11,16 @@ from datagateway_api.common.exceptions import (
     SearchAPIError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.search_api import models
 from datagateway_api.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPIWhereFilter,
 )
-import datagateway_api.search_api.models as models
 from datagateway_api.search_api.query import SearchAPIQuery
 from datagateway_api.search_api.session_handler import (
-    client_manager,
     SessionHandler,
+    client_manager,
 )
-
 
 log = logging.getLogger()
 
@@ -30,7 +29,7 @@ def search_api_error_handling(method):
     """
     Decorator (similar to `queries_records`) to handle exceptions and present in a way
     required for the search API. The decorator should be applied to search API endpoint
-    resources
+    resources.
 
     :param method: The method for the endpoint
     :raises: Any exception caught by the execution of `method`
@@ -59,7 +58,7 @@ def search_api_error_handling(method):
         try:
             # If no status code exists (for non-API defined exceptions), assign a status
             # code
-            e.status_code
+            e.status_code  # noqa: B018
         except AttributeError:
             e.status_code = status_code
 
@@ -79,7 +78,7 @@ def search_api_error_handling(method):
 def get_search(entity_name, filters):
     """
     Search for data on the given entity, using filters from the request to restrict the
-    query
+    query.
 
     :param entity_name: Name of the entity requested to query against
     :type entity_name: :class:`str`
@@ -88,7 +87,6 @@ def get_search(entity_name, filters):
     :return: List of records (in JSON serialisable format) of the given entity for the
         query constructed from that and the request's filters
     """
-
     log.info("Searching for %s using request's filters", entity_name)
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
@@ -128,7 +126,7 @@ def get_search(entity_name, filters):
 @client_manager
 def get_with_pid(entity_name, pid, filters):
     """
-    Get a particular record of data from the specified entity
+    Get a particular record of data from the specified entity.
 
     These will only be called with entity names of Dataset, Document and Instrument.
     Each of these entities have a PID attribute, so we can assume the identifier will be
@@ -143,7 +141,6 @@ def get_with_pid(entity_name, pid, filters):
     :return: The (in JSON serialisable format) record of the specified PID
     :raises MissingRecordError: If no results can be found for the query
     """
-
     log.info("Getting %s from ID %s", entity_name, pid)
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
@@ -160,7 +157,7 @@ def get_with_pid(entity_name, pid, filters):
 def get_count(entity_name, filters):
     """
     Get the number of results of a given entity, with filters provided in the request to
-    restrict the search
+    restrict the search.
 
     :param entity_name: Name of the entity requested to query against
     :type entity_name: :class:`str`
@@ -168,7 +165,6 @@ def get_count(entity_name, filters):
     :type filters: List of specific implementation :class:`QueryFilter`
     :return: Dict containing the number of records returned from the query
     """
-
     log.info("Getting number of results for %s, using request's filters", entity_name)
     log.debug("Entity Name: %s, Filters: %s", entity_name, filters)
 
@@ -190,7 +186,7 @@ def get_count(entity_name, filters):
 @client_manager
 def get_files(entity_name, pid, filters):
     """
-    Using the PID of a dataset, find all of its associated files and return them
+    Using the PID of a dataset, find all of its associated files and return them.
 
     :param entity_name: Name of the entity requested to query against
     :type entity_name: :class:`str`
@@ -200,7 +196,6 @@ def get_files(entity_name, pid, filters):
     :type filters: List of specific implementation :class:`QueryFilter`
     :return: List of file records for the dataset given by PID
     """
-
     log.info("Getting files of dataset (PID: %s), using request's filters", pid)
     log.debug(
         "Entity Name: %s, Filters: %s",
@@ -215,7 +210,7 @@ def get_files(entity_name, pid, filters):
 @client_manager
 def get_files_count(entity_name, filters, pid):
     """
-    Using the PID of a dataset, find the number of associated files
+    Using the PID of a dataset, find the number of associated files.
 
     :param entity_name: Name of the entity requested to query against
     :type entity_name: :class:`str`
@@ -225,7 +220,6 @@ def get_files_count(entity_name, filters, pid):
     :type filters: List of specific implementation :class:`QueryFilter`
     :return: Dict containing the number of files for the dataset given by PID
     """
-
     log.info(
         "Getting number of files for dataset (PID: %s), using request's filters",
         pid,

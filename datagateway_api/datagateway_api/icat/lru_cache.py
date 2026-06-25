@@ -10,7 +10,7 @@ log = logging.getLogger()
 class ExtendedLRUCache(LRUCache):
     """
     An extension to cachetools' LRUCache class to allow client objects to be pushed back
-    into the pool
+    into the pool.
 
     This version of LRU cache was chosen instead of the builtin LRU cache as it allows
     for addtional actions to be added when an item leaves the cache (controlled by

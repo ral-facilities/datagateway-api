@@ -1,5 +1,4 @@
-from typing import Annotated, Any, List, Type
-
+from typing import Annotated, Any
 
 from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel, Json
@@ -172,7 +171,7 @@ def get_endpoint(
     router: APIRouter,
     endpoint_name: str,
     entity_name: str,
-    dg_models: dict[str, Type[BaseModel]],
+    dg_models: dict[str, type[BaseModel]],
     python_icat: PythonICAT,
     **kwargs,
 ) -> None:
@@ -194,7 +193,7 @@ def get_endpoint(
         "",
         summary=f"Get {endpoint_name}",
         description=f"Retrieves a list of {entity_name} objects",
-        response_model=List[dg_models[entity_name]],
+        response_model=list[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
             200: {"description": f"Success - returns {entity_name} that satisfy the filters"},
@@ -206,12 +205,12 @@ def get_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
-        order: List[str] = OrderQuery,  # pylint:disable=unused-argument
-        limit: int = LimitQuery,  # pylint:disable=unused-argument
-        skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        order: list[str] = OrderQuery,  # noqa: ARG001
+        limit: int = LimitQuery,  # noqa: ARG001
+        skip: int = SkipQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         return python_icat.get_with_filters(
             get_session_id_from_auth_header(request),
@@ -224,7 +223,7 @@ def get_endpoint(
         "",
         summary=f"Create new {endpoint_name}",
         description=(f"Creates new {entity_name} object(s) with details provided in the request body"),
-        response_model=List[dg_models[entity_name]],
+        response_model=list[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the created object"},
@@ -234,7 +233,7 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def post(body: List[dg_models[f"{entity_name}Post"]], request: Request):  # noqa: F821
+    def post(body: list[dg_models[f"{entity_name}Post"]], request: Request):  # noqa: F821
         return python_icat.create(
             get_session_id_from_auth_header(request),
             entity_name,
@@ -246,7 +245,7 @@ def get_endpoint(
         "",
         summary=f"Update {endpoint_name}",
         description=(f"Updates {entity_name} object(s) with details provided in the request body"),
-        response_model=List[dg_models[entity_name]],
+        response_model=list[dg_models[entity_name]],
         response_model_exclude_unset=True,
         responses={
             200: {"description": "Success - returns the updated object(s)"},
@@ -256,7 +255,7 @@ def get_endpoint(
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
     )
-    def patch(body: List[dg_models[f"{entity_name}Patch"]], request: Request):  # noqa: F821
+    def patch(body: list[dg_models[f"{entity_name}Patch"]], request: Request):  # noqa: F821
         return python_icat.update(
             get_session_id_from_auth_header(request),
             entity_name,
@@ -269,7 +268,7 @@ def get_id_endpoint(
     router: APIRouter,
     endpoint_name: str,
     entity_name: str,
-    dg_models: dict[str, Type[BaseModel]],
+    dg_models: dict[str, type[BaseModel]],
     python_icat: PythonICAT,
     **kwargs,
 ) -> None:
@@ -409,9 +408,9 @@ def get_count_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
-        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 
@@ -426,7 +425,7 @@ def get_count_endpoint(
 def get_find_one_endpoint(
     router: APIRouter,
     entity_name: str,
-    dg_models: dict[str, Type[BaseModel]],
+    dg_models: dict[str, type[BaseModel]],
     python_icat: PythonICAT,
     **kwargs,
 ) -> None:
@@ -459,12 +458,12 @@ def get_find_one_endpoint(
     )
     def get(
         request: Request,
-        where: List[Json] = WhereQuery,  # pylint:disable=unused-argument
-        order: List[str] = OrderQuery,  # pylint:disable=unused-argument
-        limit: int = LimitQuery,  # pylint:disable=unused-argument
-        skip: int = SkipQuery,  # pylint:disable=unused-argument
-        distinct: List[str] = DistinctQuery,  # pylint:disable=unused-argument
-        include: Any = IncludeQuery,  # pylint:disable=unused-argument
+        where: list[Json] = WhereQuery,  # noqa: ARG001
+        order: list[str] = OrderQuery,  # noqa: ARG001
+        limit: int = LimitQuery,  # noqa: ARG001
+        skip: int = SkipQuery,  # noqa: ARG001
+        distinct: list[str] = DistinctQuery,  # noqa: ARG001
+        include: Any = IncludeQuery,  # noqa: ARG001
     ):
         filters = get_filters_from_query_string(request, "datagateway_api")
 
@@ -479,7 +478,7 @@ def get_find_one_endpoint(
 def create_collection_router(
     endpoint_name: str,
     entity_name: str,
-    dg_models: dict[str, Type[BaseModel]],
+    dg_models: dict[str, type[BaseModel]],
     python_icat: PythonICAT,
     **kwargs,
 ) -> APIRouter:

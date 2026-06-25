@@ -50,24 +50,23 @@ uv add [PACKAGE-NAME]
 
 When developing new features for the API, the following tools are used for code quality and testing:
 
-- [Black](https://black.readthedocs.io/en/stable/) - Code formatting
-- [flake8](https://flake8.pycqa.org/en/latest/) - Code linting (with additional plugins configured in `.flake8`)
+- [Ruff](https://docs.astral.sh/ruff/) - Code formatting and linting
 - [pytest](https://docs.pytest.org/en/stable/) - Testing framework
 
 All these tools are included as development dependencies in uv and can be run via uv or directly.
 
 ### Running Development Tools
 
-Format code with Black:
+Format code with ruff:
 
 ```bash
-uv run black datagateway_api test util
+uv run ruff format
 ```
 
-Lint code with flake8:
+Lint code with ruff:
 
 ```bash
-uv run flake8 datagateway_api test util
+uv run ruff check
 ```
 
 Run unit tests:

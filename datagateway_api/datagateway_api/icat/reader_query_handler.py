@@ -1,6 +1,5 @@
-from datetime import datetime, timezone
 import logging
-from typing import List, Optional
+from datetime import UTC, datetime
 
 from cachetools.func import ttl_cache
 from icat.exception import ICATSessionError
@@ -51,7 +50,7 @@ class ReaderQueryHandler:
         maxsize = Config.config.datagateway_api.use_reader_for_performance.maxsize
         ttl = Config.config.datagateway_api.use_reader_for_performance.ttl
 
-    def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
+    def __init__(self, entity_type: str, filters: list[QueryFilter]) -> None:
         self.entity_type = entity_type
         self.filters = filters
         log.debug(
@@ -67,7 +66,7 @@ class ReaderQueryHandler:
         """
         Create a new client (assigning it as a class variable) and login using the
         reader's credentials. If the credentials aren't valid, a PythonICATError is
-        raised (resulting in a 500). The client object is returned
+        raised (resulting in a 500). The client object is returned.
         """
         log.info("Creating reader_client")
         cls.reader_client = ICATClient("datagateway_api")
@@ -114,6 +113,7 @@ class ReaderQueryHandler:
 
         Returns:
             int: ICAT id of the Dataset's parent Investigation.
+
         """
         query = f"SELECT d.investigation.id FROM Dataset d WHERE d.id={dataset_id}"  # noqa: S608
         cls.refresh()
@@ -134,10 +134,9 @@ class ReaderQueryHandler:
         Returns:
             set[str]:
                 ICAT User.name of all InvestigationUsers associated with the Investigation with id `investigation_id`.
+
         """
-        query = (
-            f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
-        )
+        query = f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
         log.debug("Found %s as InvestigationUsers for investigation.id=%s", user_names, investigation_id)
@@ -153,6 +152,7 @@ class ReaderQueryHandler:
         Returns:
             set[str]:
                 ICAT User.name of all InstrumentScientists associated with the Investigation with id `investigation_id`.
+
         """
         query = (
             "SELECT s.user.name FROM InstrumentScientist s "  # noqa: S608
@@ -172,6 +172,7 @@ class ReaderQueryHandler:
 
         Returns:
             bool: If `user_name` has an association with `investigation_id` allowing read access.
+
         """
         return user_name in cls.get_investigation_users(
             investigation_id=investigation_id,
@@ -186,6 +187,7 @@ class ReaderQueryHandler:
 
         Returns:
             bool: Whether the Dataset with `dataset_id` has been made open/public.
+
         """
         query = (
             "SELECT dp.publicationDate FROM DataPublication dp JOIN dp.content c "  # noqa: S608
@@ -193,7 +195,7 @@ class ReaderQueryHandler:
         )
         cls.refresh()
         for publication_date in cls.reader_client.search(query):
-            if publication_date < datetime.now(tz=timezone.utc):
+            if publication_date < datetime.now(tz=UTC):
                 log.debug("dataset.id=%s is open", dataset_id)
                 return True
 
@@ -205,28 +207,24 @@ class ReaderQueryHandler:
         This function checks whether the input query can be executed as a 'reader
         performance query'. The entity of the query needs to be in `entity_filter_check`
         and an appropriate WHERE filter needs to be sought
-        (using `get_where_filter_for_entity_id_check()`)
+        (using `get_where_filter_for_entity_id_check()`).
         """
         log.info("Checking whether query is eligible to go via reader account")
-        if self.entity_type in ReaderQueryHandler.entity_filter_check.keys():
-            if self.get_where_filter_for_entity_id_check():
-                return True
 
-        return False
+        return self.entity_type in ReaderQueryHandler.entity_filter_check and bool(
+            self.get_where_filter_for_entity_id_check()
+        )
 
     def is_query_eligible_for_reader_performance(self) -> bool:
-        """
-        Getter that returns a boolean regarding query eligibility
-        """
+        """Getter that returns a boolean regarding query eligibility."""
         return self.reader_query_eligible
 
-    def get_where_filter_for_entity_id_check(self) -> Optional[PythonICATWhereFilter]:
+    def get_where_filter_for_entity_id_check(self) -> PythonICATWhereFilter | None:
         """
         Iterate through the instance's query filters and return a WHERE filter for a
         relevant parent entity (e.g. dataset.id or datafile.id). The WHERE filter must
-        use the 'eq' operator
+        use the 'eq' operator.
         """
-
         for query_filter in self.filters:
             if (
                 isinstance(query_filter, PythonICATWhereFilter)
@@ -247,7 +245,7 @@ class ReaderQueryHandler:
         This function checks whether the user is authorised to see a parent entity (e.g.
         if they query /datafiles, whether they can see a particular dataset). A query is
         created and sent to ICAT for execution - the query is performed using the
-        session ID provided in the request
+        session ID provided in the request.
         """
         user_name = client.getUserName()
         id_field = ReaderQueryHandler.entity_filter_check[self.entity_type]

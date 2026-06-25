@@ -1,3 +1,5 @@
+from fastapi import status
+
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
@@ -11,7 +13,8 @@ class TestICATFindone:
         single_investigation_test_data,
     ):
         test_response = test_client.get(
-            '/datagateway-api/investigations/findone?where={"title": {"like": "Test data for Python ICAT on DataGateway API"}}',
+            '/datagateway-api/investigations/findone?where={"title": {"like": "Test data for Python ICAT on '
+            'DataGateway API"}}',
             headers=valid_icat_credentials_header,
         )
         response_json = prepare_icat_data_for_assertion([test_response.json()])
@@ -29,4 +32,4 @@ class TestICATFindone:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.status_code == status.HTTP_404_NOT_FOUND

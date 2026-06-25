@@ -9,13 +9,12 @@ def ping_endpoint(python_icat, **kwargs) -> APIRouter:
     """
     Generate a FastAPI router using python ICAT.
     In main.py these routers are included e.g.
-    `app.include_router(ping_endpoint(python_icat), prefix="/ping")`
+    `app.include_router(ping_endpoint(python_icat), prefix="/ping")`.
 
     :param python_icat: The python ICAT instance used for processing requests
     :type python_icat: PythonICAT
     :return: FastAPI APIRouter
     """
-
     router = APIRouter(prefix="/ping", tags=["Ping"])
 
     @router.get(

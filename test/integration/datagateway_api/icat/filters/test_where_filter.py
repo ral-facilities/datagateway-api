@@ -95,7 +95,7 @@ class TestICATWhereFilter:
             test_filter.apply_filter(icat_query)
 
     def test_valid_internal_icat_value(self, icat_query):
-        """Check that values that point to other values in the schema are applied"""
+        """Check that values that point to other values in the schema are applied."""
         test_filter = PythonICATWhereFilter("startDate", "o.endDate", "lt")
         test_filter.apply_filter(icat_query)
 

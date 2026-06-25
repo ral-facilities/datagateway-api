@@ -1,3 +1,5 @@
+from fastapi import status
+
 from test.integration.datagateway_api.icat.test_query import (
     prepare_icat_data_for_assertion,
 )
@@ -32,8 +34,7 @@ class TestICATGetByID:
         test_client,
         valid_icat_credentials_header,
     ):
-        """Request with a non-existent ID"""
-
+        """Request with a non-existent ID."""
         final_investigation_result = test_client.get(
             '/datagateway-api/investigations/findone?order="id DESC"',
             headers=valid_icat_credentials_header,
@@ -46,4 +47,4 @@ class TestICATGetByID:
             headers=valid_icat_credentials_header,
         )
 
-        assert test_response.status_code == 404
+        assert test_response.status_code == status.HTTP_404_NOT_FOUND

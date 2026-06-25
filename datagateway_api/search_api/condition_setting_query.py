@@ -4,10 +4,10 @@ from icat.query import Query
 class ConditionSettingQuery(Query):
     """
     Custom Query class to support the getting and setting of WHERE clauses outside of
-    the typical `Query.conditions` dict
+    the typical `Query.conditions` dict.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         client,
         entity_name,
@@ -33,9 +33,8 @@ class ConditionSettingQuery(Query):
     def where_clause(self):
         """
         Overriding Python ICAT's implementation to support the creation of WHERE clauses
-        within the search API
+        within the search API.
         """
-
         if self._str_conditions:
             return f"WHERE {self._str_conditions}"
         else:

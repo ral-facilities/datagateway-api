@@ -1,5 +1,5 @@
-from fastapi.routing import APIRoute, Mount
 import pytest
+from fastapi.routing import APIRoute, Mount
 
 from datagateway_api.common.entity_endpoint_dict import endpoints
 
@@ -34,7 +34,7 @@ class TestEndpointRules:
     def test_entity_endpoints(self, test_client, endpoint_ending, expected_methods):
         all_routes = collect_routes(test_client.app)
 
-        for endpoint_entity in endpoints.keys():
+        for endpoint_entity in endpoints:
             endpoint_name = f"/{endpoint_entity.lower()}{endpoint_ending}"
             matching_routes = [methods for path, methods in all_routes if path == endpoint_name]
 

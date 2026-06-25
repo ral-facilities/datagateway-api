@@ -1,14 +1,14 @@
 from unittest.mock import patch
 
-from icat.exception import ICATInternalError
 import pytest
+from icat.exception import ICATInternalError
 
 from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.datagateway_api.icat.helpers import push_data_updates_to_icat
 
 
 class TestICATHelpers:
-    """Testing the helper functions which aren't covered in the endpoint tests"""
+    """Testing the helper functions which aren't covered in the endpoint tests."""
 
     def test_invalid_update_pushes(self, icat_client):
         with patch(

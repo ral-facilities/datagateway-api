@@ -1,8 +1,8 @@
 import json
 from unittest.mock import mock_open, patch
 
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
 
 from datagateway_api.common.config import Config
 from datagateway_api.main import create_search_api_app

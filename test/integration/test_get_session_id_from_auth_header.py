@@ -1,5 +1,4 @@
-from fastapi import Request
-
+from fastapi import Request, status
 
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -38,4 +37,4 @@ class TestGetSessionIDFromAuthHeader:
             assert session_id == get_session_id_from_auth_header(request)
 
         response = local_auth_client.get("/", headers=valid_credentials_header)
-        assert response.status_code == 200
+        assert response.status_code == status.HTTP_200_OK
