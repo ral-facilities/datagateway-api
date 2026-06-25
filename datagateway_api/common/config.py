@@ -7,6 +7,7 @@ from typing import Annotated, Optional, Self
 from pydantic import (
     AfterValidator,
     BaseModel,
+    PositiveInt,
     computed_field,
     Field,
     model_validator,
@@ -46,11 +47,10 @@ def validate_extension(extension):
 DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
 
 
-class UseReaderForPerformance(BaseModel):
-    enabled: StrictBool
-    reader_mechanism: StrictStr
-    reader_username: StrictStr
-    reader_password: SecretStr
+class ReaderConfig(BaseModel):
+    mechanism: StrictStr
+    username: StrictStr
+    password: SecretStr
     maxsize: int = Field(
         default=128,
         description="Each cacheable function will store up to this many results in memory.",
@@ -61,22 +61,39 @@ class UseReaderForPerformance(BaseModel):
     )
 
 
+class IcatConfig(BaseModel):
+    url: StrictStr
+    check_cert: StrictBool
+    client_cache_size: StrictInt
+    client_pool_init_size: StrictInt
+    client_pool_max_size: StrictInt
+    reader: ReaderConfig | None = None
+
+
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: StrictInt
-    client_pool_init_size: StrictInt
-    client_pool_max_size: StrictInt
     extension: DataGatewayAPIExtension
-    icat_check_cert: StrictBool
-    icat_url: StrictStr
-    use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
     def __getitem__(self, item):
         return getattr(self, item)
+
+
+class LimitConfig(BaseModel):
+    default: PositiveInt = 100
+    maximum: PositiveInt = 100
+
+    @model_validator(mode="after")
+    def _validate(self) -> Self:
+        if self.default > self.maximum:
+            raise ValueError("default limit cannot exceed maximum limit")
+
+
+class ReadOnlyAPI(DataGatewayAPI):
+    limit: LimitConfig = LimitConfig()
 
 
 class SearchScoring(BaseModel):
@@ -94,8 +111,6 @@ class SearchAPI(BaseModel):
     """
 
     extension: DataGatewayAPIExtension
-    icat_check_cert: StrictBool
-    icat_url: StrictStr
     mechanism: StrictStr
     username: StrictStr
     password: StrictStr
@@ -131,7 +146,9 @@ class APIConfig(BaseModel):
     API startup so any missing options will be caught quickly.
     """
 
+    icat: IcatConfig
     datagateway_api: Optional[DataGatewayAPI] = None
+    read_only_api: DataGatewayAPI | None = None
     reload: Optional[StrictBool] = None
     host: Optional[StrictStr] = None
     port: Optional[StrictInt] = None

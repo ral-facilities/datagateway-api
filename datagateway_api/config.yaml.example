@@ -1,20 +1,20 @@
 ---
-datagateway_api:
-  extension: "/datagateway-api"
+icat:
+  url: "https://localhost:8181"
+  check_cert: false
   client_cache_size: 5
   client_pool_init_size: 2
   client_pool_max_size: 5
-  icat_url: "https://localhost:8181"
-  icat_check_cert: false
-  use_reader_for_performance:
-    enabled: false
-    reader_mechanism: simple
-    reader_username: reader
-    reader_password: readerpw
+#   reader:
+#     mechanism: simple
+#     username: reader
+#     password: readerpw
+datagateway_api:
+  extension: "/datagateway-api"
+read_only_api:
+  extension: "/read-only-api"
 search_api:
   extension: "/search-api"
-  icat_url: "https://localhost:8181"
-  icat_check_cert: false
   mechanism: "anon"
   username: ""
   password: ""

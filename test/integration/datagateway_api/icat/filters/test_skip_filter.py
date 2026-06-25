@@ -18,8 +18,8 @@ class TestICATSkipFilter:
         assert icat_query.limit == (
             skip_value,
             get_icat_properties(
-                Config.config.datagateway_api.icat_url,
-                Config.config.datagateway_api.icat_check_cert,
+                Config.config.icat.url,
+                Config.config.icat.check_cert,
             )["maxEntities"],
         )
 

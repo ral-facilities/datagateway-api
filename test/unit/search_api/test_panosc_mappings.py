@@ -1,9 +1,17 @@
-from unittest.mock import patch
+from typing import Generator
 
 import pytest
 
+from datagateway_api.common.config import APIConfig, Config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
+
+
+@pytest.fixture(scope="function")
+def disable_search_api() -> Generator[None, None, None]:
+    Config.config.search_api = None
+    yield
+    Config.config = APIConfig.load()
 
 
 class TestPaNOSCMappings:
@@ -11,34 +19,12 @@ class TestPaNOSCMappings:
         test_mappings = PaNOSCMappings()
         assert test_mappings.mappings == test_panosc_mappings.mappings
 
-    @pytest.mark.parametrize(
-        "search_api_config_flag",
-        [
-            pytest.param(True, id="Search API config present"),
-            pytest.param(False, id="No search API config"),
-        ],
-    )
-    def test_invalid_load_mappings(
-        self,
-        test_config,
-        test_config_without_search_api,
-        search_api_config_flag,
-    ):
-        if search_api_config_flag:
-            current_test_config = test_config
-        else:
-            current_test_config = test_config_without_search_api
+    def test_panosc_mappings_enabled_bad_path(self) -> None:
+        with pytest.raises(SystemExit, match="An error occurred while trying to load the PaNOSC mappings:"):
+            PaNOSCMappings("bad/path")
 
-        with patch(
-            "datagateway_api.common.config.Config.config",
-            current_test_config,
-        ):
-            if search_api_config_flag:
-                with pytest.raises(SystemExit):
-                    PaNOSCMappings("bad/path")
-            else:
-                # Shouldn't SysExit if a user isn't using the search API
-                PaNOSCMappings("bad/path")
+    def test_panosc_mappings_disabled_bad_path(self, disable_search_api: None) -> None:
+        PaNOSCMappings("bad/path")  # Shouldn't SysExit if a user isn't using the search API
 
     @pytest.mark.parametrize(
         "panosc_entity_name, field_name, expected_panosc_entity_name, expected_icat_field_name",

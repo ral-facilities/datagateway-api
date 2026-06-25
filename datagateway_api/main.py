@@ -9,9 +9,11 @@ import uvicorn
 from datagateway_api.common.config import Config
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
+from datagateway_api.read_only_api.routers.my_data import my_data_endpoints
 
 # Check which APIs are enabled
 datagateway_api_enabled = Config.config.datagateway_api is not None
+read_only_api_enabled = Config.config.read_only_api is not None
 search_api_enabled = Config.config.search_api is not None
 
 if datagateway_api_enabled:
@@ -107,6 +109,18 @@ def create_datagateway_app() -> FastAPI | None:
     return None
 
 
+def create_read_only_app() -> FastAPI | None:
+    read_only_app = FastAPI(title="Read Only API")
+    enable_cors(read_only_app)
+    register_common_handlers(read_only_app)
+    python_icat = PythonICAT()
+    icat_client_pool = create_client_pool()
+    read_only_app.include_router(my_data_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
+    return read_only_app
+
+
 def create_search_api_app() -> FastAPI | None:
     if search_api_enabled:
         search_api_app = FastAPI(
@@ -137,12 +151,18 @@ if Config.config.multi_api_count > 1:
     )
     if datagateway_api_enabled:
         app.mount(path=Config.config.datagateway_api.extension, app=create_datagateway_app())
+    if read_only_api_enabled:
+        app.mount(path=Config.config.read_only_api.extension, app=create_read_only_app())
     if search_api_enabled:
         app.mount(path=Config.config.search_api.extension, app=create_search_api_app())
 
 elif datagateway_api_enabled:
     app = create_datagateway_app()
     app.root_path = f"{Config.config.url_prefix}{Config.config.datagateway_api.extension}"
+
+elif read_only_api_enabled:
+    app = create_read_only_app()
+    app.root_path = f"{Config.config.url_prefix}{Config.config.read_only_api.extension}"
 
 elif search_api_enabled:
     app = create_search_api_app()
