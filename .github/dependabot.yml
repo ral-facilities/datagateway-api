@@ -1,9 +1,76 @@
 version: 2
 updates:
+  # Maintain Dockerfile dependencies on the `develop` branch
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "08:00"
+      timezone: "Europe/London"
+    cooldown:
+      default-days: 7
+    target-branch: "develop"
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          ["version-update:semver-major", "version-update:semver-minor"]
 
-  # Maintain dependencies for GitHub Actions
+  # Maintain Dockerfile dependencies on the `main` branch
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "08:00"
+      timezone: "Europe/London"
+    cooldown:
+      default-days: 7
+    target-branch: "main"
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          ["version-update:semver-major", "version-update:semver-minor"]
+
+  # Maintain GitHub Actions dependencies on the `develop` branch
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      # Check for updates every week
       interval: "weekly"
+    cooldown:
+      default-days: 7
+    target-branch: "develop"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Maintain GitHub Actions dependencies on the `main` branch
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    target-branch: "main"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+
+  # Maintain uv dependencies on the `develop` branch
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    target-branch: "develop"
+    groups:
+      uv:
+        patterns:
+          - "*"
+        # Dependabot can check the lockfile, but cannot update these detected in pyproject.toml. As updates are grouped
+        # this causes all updates within the group to be skipped.
+        # E.g. `Skipping change to group uv in directory /: Previous version was not provided for: 'uv-build'`
+        exclude-patterns:
+          - "uv-build"
+          - "datagateway-api"
