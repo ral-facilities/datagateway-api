@@ -21,7 +21,6 @@ from datagateway_api.datagateway_api.icat.helpers import (
     update_entity_by_id,
 )
 
-
 log = logging.getLogger()
 
 
