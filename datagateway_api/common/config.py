@@ -18,7 +18,6 @@ from pydantic import (
 )
 import yaml
 
-
 log = logging.getLogger()
 
 
