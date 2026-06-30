@@ -7,7 +7,7 @@ max-line-length = 120
 application-import-names = datagateway_api,test,util
 import-order-style = google
 per-file-ignores =
-  test/*: S101
+  test/*: S101,S105
   util/icat_db_generator.py: S311
   datagateway_api/wsgi.py:E402,F401
   datagateway_api/datagateway_api/icat/models.py: N815,A003
