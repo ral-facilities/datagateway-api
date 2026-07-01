@@ -1,6 +1,6 @@
 [project]
 name = "datagateway-api"
-version = "11.0.0"
+version = "11.1.0"
 description = "ICAT API to interface with the DataGateway"
 authors = [{ name = "Joshua Kitenge", email = "joshua.kitenge@stfc.ac.uk" },
            { name = "Matthew Richards", email = "matthew.richards@stfc.ac.uk" }]
