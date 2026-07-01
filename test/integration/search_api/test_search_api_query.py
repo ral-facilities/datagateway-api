@@ -1,10 +1,10 @@
 from icat.query import Query
 import pytest
 
-from datagateway_api.src.common.exceptions import SearchAPIError
-from datagateway_api.src.datagateway_api.icat.query import ICATQuery
-from datagateway_api.src.search_api.query import SearchAPIICATQuery, SearchAPIQuery
-from datagateway_api.src.search_api.session_handler import SessionHandler
+from datagateway_api.common.exceptions import SearchAPIError
+from datagateway_api.datagateway_api.icat.query import ICATQuery
+from datagateway_api.search_api.query import SearchAPIICATQuery, SearchAPIQuery
+from datagateway_api.search_api.session_handler import SessionHandler
 
 
 class TestSearchAPIQuery:

@@ -1,7 +1,7 @@
 import pytest
 
-from datagateway_api.src.common.exceptions import FilterError
-from datagateway_api.src.search_api.filters import SearchAPILimitFilter
+from datagateway_api.common.exceptions import FilterError
+from datagateway_api.search_api.filters import SearchAPILimitFilter
 
 
 class TestSearchAPILimitFilter:

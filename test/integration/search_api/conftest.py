@@ -4,10 +4,10 @@ from unittest.mock import mock_open, patch
 from fastapi.testclient import TestClient
 import pytest
 
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.main import create_search_api_app
-from datagateway_api.src.search_api.panosc_mappings import PaNOSCMappings
-from datagateway_api.src.search_api.query import SearchAPIQuery
+from datagateway_api.common.config import Config
+from datagateway_api.main import create_search_api_app
+from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
+from datagateway_api.search_api.query import SearchAPIQuery
 
 
 @pytest.fixture()

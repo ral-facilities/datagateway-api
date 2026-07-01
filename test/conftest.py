@@ -4,7 +4,7 @@ from unittest.mock import mock_open, patch
 from icat.query import Query
 import pytest
 
-from datagateway_api.src.common.config import APIConfig
+from datagateway_api.common.config import APIConfig
 
 
 @pytest.fixture()

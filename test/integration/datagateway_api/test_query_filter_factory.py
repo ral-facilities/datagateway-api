@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.src.datagateway_api.icat.filters import (
+from datagateway_api.datagateway_api.icat.filters import (
     PythonICATDistinctFieldFilter,
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -8,7 +8,7 @@ from datagateway_api.src.datagateway_api.icat.filters import (
     PythonICATSkipFilter,
     PythonICATWhereFilter,
 )
-from datagateway_api.src.datagateway_api.query_filter_factory import (
+from datagateway_api.datagateway_api.query_filter_factory import (
     DataGatewayAPIQueryFilterFactory,
 )
 

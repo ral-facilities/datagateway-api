@@ -5,12 +5,12 @@ from dateutil.tz import tzlocal
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.common.exceptions import AuthenticationError
-from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.src.datagateway_api.icat.python_icat import PythonICAT
+from datagateway_api.common.config import Config
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.exceptions import AuthenticationError
+from datagateway_api.datagateway_api.icat.filters import PythonICATWhereFilter
+from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
+from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
 
 
 class TestSessionHandling:
