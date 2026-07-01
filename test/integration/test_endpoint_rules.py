@@ -1,7 +1,7 @@
 from fastapi.routing import APIRoute, Mount
 import pytest
 
-from datagateway_api.src.common.entity_endpoint_dict import endpoints
+from datagateway_api.common.entity_endpoint_dict import endpoints
 
 
 def collect_routes(app):
@@ -17,6 +17,9 @@ def collect_routes(app):
         elif isinstance(route, Mount):
             sub_app = route.app
             routes.extend(collect_routes(sub_app))
+        elif hasattr(route, "original_router"):
+            router = route.original_router
+            routes.extend(collect_routes(router))
 
     return routes
 

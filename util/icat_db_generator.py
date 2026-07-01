@@ -8,7 +8,7 @@ from faker import Faker
 from icat.client import Client
 from icat.query import Query
 
-from datagateway_api.src.common.config import Config
+from datagateway_api.common.config import Config
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

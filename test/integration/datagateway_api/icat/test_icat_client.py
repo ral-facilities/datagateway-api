@@ -3,7 +3,7 @@ from unittest.mock import patch
 from icat.client import Client
 import pytest
 
-from datagateway_api.src.datagateway_api.icat.icat_client_pool import ICATClient
+from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
 
 
 class TestICATClient:
@@ -45,7 +45,7 @@ class TestICATClient:
                 Client.checkCert = checkCert
 
         with patch(
-            "datagateway_api.src.common.config.Config.config",
+            "datagateway_api.common.config.Config.config",
             test_config,
         ):
             with patch(

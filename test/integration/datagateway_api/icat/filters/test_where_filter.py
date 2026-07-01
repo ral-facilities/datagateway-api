@@ -1,8 +1,8 @@
 import pytest
 
-from datagateway_api.src.common.exceptions import BadRequestError, FilterError
-from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.src.datagateway_api.icat.filters import PythonICATWhereFilter
+from datagateway_api.common.exceptions import BadRequestError, FilterError
+from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.datagateway_api.icat.filters import PythonICATWhereFilter
 
 
 class TestICATWhereFilter:

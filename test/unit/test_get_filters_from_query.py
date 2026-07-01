@@ -1,8 +1,8 @@
 import pytest
 from starlette.datastructures import QueryParams
 
-from datagateway_api.src.common.exceptions import ApiError
-from datagateway_api.src.common.helpers import get_filters_from_query_string
+from datagateway_api.common.exceptions import ApiError
+from datagateway_api.common.helpers import get_filters_from_query_string
 
 
 # Dummy Request object to mimic FastAPI Request

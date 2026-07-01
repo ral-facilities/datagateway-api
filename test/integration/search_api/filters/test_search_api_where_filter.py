@@ -1,10 +1,10 @@
 import pytest
 
-from datagateway_api.src.common.date_handler import DateHandler
-from datagateway_api.src.common.filter_order_handler import FilterOrderHandler
-from datagateway_api.src.search_api.filters import SearchAPIWhereFilter
-from datagateway_api.src.search_api.nested_where_filters import NestedWhereFilters
-from datagateway_api.src.search_api.query import SearchAPIQuery
+from datagateway_api.common.date_handler import DateHandler
+from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.search_api.filters import SearchAPIWhereFilter
+from datagateway_api.search_api.nested_where_filters import NestedWhereFilters
+from datagateway_api.search_api.query import SearchAPIQuery
 
 
 class TestSearchAPIWhereFilter:

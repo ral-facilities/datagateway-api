@@ -1,4 +1,4 @@
-from datagateway_api.src.common.base_query_filter_factory import QueryFilterFactory
+from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
 
 
 class TestBaseQueryFilterFactory:

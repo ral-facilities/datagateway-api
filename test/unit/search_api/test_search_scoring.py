@@ -3,9 +3,9 @@ from unittest.mock import patch
 import pytest
 from requests import RequestException
 
-from datagateway_api.src.common.config import Config
-from datagateway_api.src.common.exceptions import ScoringAPIError
-from datagateway_api.src.search_api.search_scoring import SearchScoring
+from datagateway_api.common.config import Config
+from datagateway_api.common.exceptions import ScoringAPIError
+from datagateway_api.search_api.search_scoring import SearchScoring
 
 SEARCH_SCORING_API_SCORES_DATA = {
     "request": {
