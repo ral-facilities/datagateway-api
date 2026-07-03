@@ -10,12 +10,12 @@ license = "Apache-2.0"
 dependencies = [
     "PyYAML>=6.0,<7",
     "python-icat>=1.0.0",
-    "suds-community>=0.8.4,<0.9",
+    "suds-community>=1.2.0,<1.3",
     "py-object-pool>=1.1,<2",
-    "cachetools>=4.2.1,<5",
+    "cachetools>=7.1.4,<8",
     "requests>=2.25.1,<3",
     "python-dateutil>=2.8.1,<3",
-    "fastapi[all]>=0.115.4",
+    "fastapi[all]>=0.138.0",
 ]
 
 [project.urls]
@@ -38,22 +38,22 @@ build-backend = "uv_build"
 [dependency-groups]
 code-analysis = [
     { include-group = "test" },
-    "black>=26.3.1,<27",
+    "black>=26.5.1,<27",
     "flake8>=7.1.1,<8",
     "flake8-bandit>=4.1.1,<5",
     "flake8-black>=0.4.0,<0.5",
     "flake8-broken-line>=1.0.0,<2",
-    "flake8-bugbear>=24.8.19,<25",
-    "flake8-builtins>=2.5.0,<3",
+    "flake8-bugbear>=25.11.29,<26",
+    "flake8-builtins>=3.1.0,<4",
     "flake8-commas>=4.0.0,<5",
     "flake8-comprehensions>=3.15.0,<4",
-    "pep8-naming>=0.14.1,<0.15",
+    "pep8-naming>=0.15.1,<0.16",
 ]
 
 test = [
-    "pytest>=9.0.3,<10",
+    "pytest>=9.1.1,<10",
     "coverage>=7.6.4,<8",
-    "pytest-cov>=5.0.0,<6",
+    "pytest-cov>=7.1.0,<8",
     "pytest-icdiff>=0.9,<0.10",
 ]
 

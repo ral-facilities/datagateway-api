@@ -3,65 +3,74 @@ class ApiError(Exception):
 
 
 class MissingRecordError(ApiError):
-    def __init__(self, msg="No such record in table", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 404
+    status_code = 404
+
+    def __init__(self, msg="No such record in table", *args):
+        super().__init__(msg, *args)
 
 
 class FilterError(ApiError):
-    def __init__(self, msg="Invalid filter requested", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 400
+    status_code = 400
+
+    def __init__(self, msg="Invalid filter requested", *args):
+        super().__init__(msg, *args)
 
 
 class MultipleIncludeError(FilterError):
+    status_code = 400
+
     def __init__(
         self,
         msg="Bad request, only one include filter may be given per request",
         *args,
-        **kwargs,
     ):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 400
+        super().__init__(msg, *args)
 
 
 class AuthenticationError(ApiError):
-    def __init__(self, msg="Authentication error", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 403
+    status_code = 403
+
+    def __init__(self, msg="Authentication error", *args):
+        super().__init__(msg, *args)
 
 
 class MissingCredentialsError(AuthenticationError):
-    def __init__(self, msg="No credentials provided in auth header", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 401
+    status_code = 401
+
+    def __init__(self, msg="No credentials provided in auth header", *args):
+        super().__init__(msg, *args)
 
 
 class BadRequestError(ApiError):
-    def __init__(self, msg="Bad request", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 400
+    status_code = 400
+
+    def __init__(self, msg="Bad request", *args):
+        super().__init__(msg, *args)
 
 
 class DatabaseError(ApiError):
-    def __init__(self, msg="Database error", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 500
+    status_code = 500
+
+    def __init__(self, msg="Database error", *args):
+        super().__init__(msg, *args)
 
 
 class PythonICATError(ApiError):
-    def __init__(self, msg="Python ICAT error", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 500
+    status_code = 500
+
+    def __init__(self, msg="Python ICAT error", *args):
+        super().__init__(msg, *args)
 
 
 class SearchAPIError(ApiError):
-    def __init__(self, msg="Search API error", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 500
+    status_code = 500
+
+    def __init__(self, msg="Search API error", *args):
+        super().__init__(msg, *args)
 
 
 class ScoringAPIError(ApiError):
-    def __init__(self, msg="Scoring API error", *args, **kwargs):
-        super().__init__(msg, *args, **kwargs)
-        self.status_code = 500
+    status_code = 500
+
+    def __init__(self, msg="Scoring API error", *args):
+        super().__init__(msg, *args)
