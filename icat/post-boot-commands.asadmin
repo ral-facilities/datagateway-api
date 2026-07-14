@@ -1,0 +1,3 @@
+set resources.jdbc-connection-pool.icat.property.url=jdbc:mysql://icat_mariadb_container:3306/icatdb
+set resources.jdbc-connection-pool.icat.property.user=icatdbuser
+set resources.jdbc-connection-pool.icat.property.password=icatdbuserpw

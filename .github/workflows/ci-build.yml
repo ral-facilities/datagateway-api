@@ -17,375 +17,177 @@ jobs:
     strategy:
       fail-fast: false
     name: Build & Tests
+
     steps:
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-
-      # Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: "3.11"
-          architecture: x64
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-          version: "0.11.21"
-
       - name: Checkout DataGateway API
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      # Prep for using the API for tests
-      - name: Configure datagateway extension
-        run: echo "`yq \
-          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
-      - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-      # Run Unit tests
+      - name: Create coverage file
+        run: touch coverage.xml
+
       - name: Run unit tests
-        run: uv run pytest test/unit --cov=datagateway_api --cov-report=xml
+        run: docker compose run unit-tests
 
-      # ICAT Ansible clone and install dependencies
-      - name: Checkout icat-ansible
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: icatproject-contrib/icat-ansible
-          ref: payara7
-          path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+      - name: Start test dependencies
+        run: docker compose --profile dependencies up -d
 
-      # Prep for running the playbook
-      - name: Create hosts file
-        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-      - name: Prepare vault pass
-        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-      - name: Move vault to directory it'll get detected by Ansible
-        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-      - name: Replace default payara user with Actions user
-        run: |
-          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Wait for test data generation
+        run: docker wait dg_api_testdata
 
-      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-      - name: Change hostname to localhost
-        run: sudo hostname -b localhost
-
-      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
-      - name: Remove existing mysql
-        run: |
-          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-          sudo apt-get remove --purge "mysql*"
-          sudo rm -rf /var/lib/mysql* /etc/mysql
-
-      # Create local instance of ICAT
-      - name: Run ICAT Ansible Playbook
-        run: |
-          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
-
-      # rootUserNames needs editing as anon/anon is used in search API and required to pass endpoint tests
-      - name: Add anon user to rootUserNames
-        run: |
-          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
-      - name: Apply rootUserNames change
-        run: |
-          mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
-      - name: Reinstall ICAT Server
-        run: |
-          cd /home/runner/install/icat.server/ && ./setup -vv install
-
-      - name: Checkout DataGateway API
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      # Prep for using the API for tests
-      - name: Configure datagateway extension
-        run: echo "`yq \
-          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
-      - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-
-      - name: Add dummy data to icatdb
-        run: |
-          uv run python -m util.icat_db_generator
-
-      # Run integration tests session, saves and uploads a coverage report to codecov
       - name: Run integration tests
-        run: uv run pytest test/integration --cov=datagateway_api --cov-report=xml
+        run: docker compose run integration-tests
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Cleanup
+        if: always()
+        run: docker compose --profile dependencies down
 
   linting:
     runs-on: ubuntu-24.04
     name: Linting
+
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: "3.11"
-          architecture: x64
       - name: Checkout DataGateway API
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-          version: "0.11.21"
-
       - name: Run linting
-        run: uv run flake8 datagateway_api test util
+        run: docker compose run lint
 
   formatting:
     runs-on: ubuntu-24.04
     name: Code Formatting
+
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: "3.11"
-          architecture: x64
       - name: Checkout DataGateway API
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-          version: "0.11.21"
-      - name: Install dependencies and check formatting
-        run: uv run black --check datagateway_api test util
+      - name: Run formatting checks
+        run: docker compose run format
 
   generator-script-testing:
     runs-on: ubuntu-24.04
     continue-on-error: true
     name: icatdb Generator Script Consistency Test
+
     steps:
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-
-      # Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: "3.11"
-          architecture: x64
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-          version: "0.11.21"
-      # ICAT Ansible clone and install dependencies
-      - name: Checkout icat-ansible
+      - name: Checkout PR branch
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          repository: icatproject-contrib/icat-ansible
-          ref: payara7
-          path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
+          path: pr
 
-      # Prep for running the playbook
-      - name: Create hosts file
-        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-      - name: Prepare vault pass
-        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-      - name: Move vault to directory it'll get detected by Ansible
-        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-      - name: Replace default payara user with Actions user
-        run: |
-          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
+      - name: Start dependencies
+        working-directory: pr
+        run: docker compose --profile dependencies up -d
 
-      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-      - name: Change hostname to localhost
-        run: sudo hostname -b localhost
+      - name: Wait for test data generation
+        run: docker wait dg_api_testdata
 
-      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
-      - name: Remove existing mysql
-        run: |
-          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-          sudo apt-get remove --purge "mysql*"
-          sudo rm -rf /var/lib/mysql* /etc/mysql
-
-      # Create local instance of ICAT
-      - name: Run ICAT Ansible Playbook
-        run: |
-          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
-
-      - name: Checkout DataGateway API
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-
-      - name: Create config.yaml
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-      - name: Add dummy data to icatdb
-        run: uv run python -m util.icat_db_generator
       - name: Drop modTime and createTime
-        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
+        run: |
+          docker exec -i icat_mariadb_container \
+            mysql -picatdbuserpw -uicatdbuser icatdb \
+            < pr/util/columns_to_drop.sql
+
       - name: Get SQL dump of dummy data
-        run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_1.sql
-
-      # Drop and re-create icatdb to remove generated data
-      - name: Drop icatdb
-        run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
-      - name: Create icatdb
-        run: mysql -picatdbuserpw -uicatdbuser -e 'CREATE DATABASE icatdb;'
-      # Regenerate table structure of icatdb
-      - name: Reinstall ICAT Server
-        run: cd /home/runner/install/icat.server; ./setup -vv install
-
-      - name: Add ICAT 5 triggers
-        run: cd /home/runner/install/icat.server; sudo mysql -uroot -D icatdb < create_triggers_mysql_5_0.sql
-
-      - name: Add (new) dummy data to icatdb
         run: |
-          cd /home/runner/work/datagateway-api/datagateway-api; uv run python -m util.icat_db_generator
+          docker exec icat_mariadb_container \
+            mysqldump \
+            -picatdbuserpw \
+            -uicatdbuser \
+            --skip-comments \
+            icatdb > generator_script_dump_1.sql
+
+      - name: Recreate ICAT environment
+        working-directory: pr
+        run: |
+          docker compose --profile dependencies down
+          docker compose --profile dependencies up -d
+
+      - name: Wait for regenerated test data
+        run: docker wait dg_api_testdata
+
       - name: Drop modTime and createTime
-        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
-      - name: Get SQL dump of new dummy data
-        run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_2.sql
+        run: |
+          docker exec -i icat_mariadb_container \
+            mysql -picatdbuserpw -uicatdbuser icatdb \
+            < pr/util/columns_to_drop.sql
 
-      # Tests that the generator script produces consistent data over two separate runs
+      - name: Get SQL dump of regenerated data
+        run: |
+          docker exec icat_mariadb_container \
+            mysqldump \
+            -picatdbuserpw \
+            -uicatdbuser \
+            --skip-comments \
+            icatdb > generator_script_dump_2.sql
+
       - name: Diff SQL dumps
-        run: diff -s ~/generator_script_dump_1.sql ~/generator_script_dump_2.sql
+        run: diff -s generator_script_dump_1.sql generator_script_dump_2.sql
 
-      # Drop and re-create icatdb to remove generated data
-      - name: Drop icatdb
-        run: mysql -picatdbuserpw -uicatdbuser -e 'DROP DATABASE icatdb;'
-      - name: Create icatdb
-        run: mysql -picatdbuserpw -uicatdbuser -e 'CREATE DATABASE icatdb;'
-      # Regenerate table structure of icatdb
-      - name: Reinstall ICAT Server
-        run: cd /home/runner/install/icat.server; ./setup -vv install
-      - name: Add ICAT 5 triggers
-        run: cd /home/runner/install/icat.server; sudo mysql -uroot -D icatdb < create_triggers_mysql_5_0.sql
+      - name: Shutdown PR stack
+        working-directory: pr
+        run: docker compose --profile dependencies down
 
-      - name: Checkout DataGateway API (default branch)
+      - name: Checkout default branch
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.event.repository.default_branch }}
+          path: main
 
-      - name: Create config.yaml
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cd /home/runner/work/datagateway-api/datagateway-api; cp datagateway_api/logging.example.ini datagateway_api/logging.ini
+      - name: Start default branch dependencies
+        working-directory: main
+        run: docker compose --profile dependencies up -d
 
-      - name: Add dummy data to icatdb
-        run: uv run python -m util.icat_db_generator
+      - name: Wait for test data generation
+        run: docker wait dg_api_testdata
+
       - name: Drop modTime and createTime
-        run: mysql -picatdbuserpw -uicatdbuser icatdb < /home/runner/work/datagateway-api/datagateway-api/util/columns_to_drop.sql
-      - name: Get SQL dump of dummy data from main's generator script
-        run: mysqldump -picatdbuserpw -uicatdbuser --skip-comments icatdb > ~/generator_script_dump_main.sql
+        run: |
+          docker exec -i icat_mariadb_container \
+            mysql -picatdbuserpw -uicatdbuser icatdb \
+            < main/util/columns_to_drop.sql
 
-      # Tests that the generator script produces the same data as is produced with main's version
+      - name: Get SQL dump of dummy data from default branch generator
+        run: |
+          docker exec icat_mariadb_container \
+            mysqldump \
+            -picatdbuserpw \
+            -uicatdbuser \
+            --skip-comments \
+            icatdb > generator_script_dump_main.sql
 
-      # NOTE: If a delibrate change is made to the script that will change the data generated,
-      # the diff (and therefore this job) will fail. If this is the case, don't be alarmed.
-      # The `continue-on-error` keyword has been added to this job so the workflow should
-      # pass when the PR is merged in, even if this job fails.
-      # But, if you didn't mean to change the output of the script, there is likely a
-      # problem with the changes made that will make the generator script's data
-      # different to SciGateway preprod
-      - name: Diff SQL dumps
-        run: diff -s ~/generator_script_dump_main.sql ~/generator_script_dump_1.sql
+      # NOTE: If a deliberate change is made to the script that changes
+      # generated data, this comparison may fail. The job remains
+      # continue-on-error to avoid blocking merges.
+      - name: Compare current branch output with default branch
+        run: diff -s generator_script_dump_main.sql generator_script_dump_1.sql
+
+      - name: Cleanup
+        if: always()
+        working-directory: main
+        run: docker compose --profile dependencies down
 
   pip-install-testing:
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
     name: Pip Install Test
+
     steps:
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-      # Checkout DataGateway API and setup Python
-      - name: Check out repo
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v3.5.3
-      - name: Add apt repo
-        run: sudo add-apt-repository universe
-      # Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with:
-          python-version: "3.11"
-          architecture: x64
-        # ICAT Ansible clone and install dependencies
-      - name: Checkout icat-ansible
+      - name: Checkout DataGateway API
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          repository: icatproject-contrib/icat-ansible
-          ref: payara7
-          path: icat-ansible
-      - name: Install Ansible
-        run: pip install -r icat-ansible/requirements.txt
-      # Prep for running the playbook
-      - name: Create hosts file
-        run: echo -e "[icatdb_minimal_hosts]\nlocalhost ansible_connection=local" > icat-ansible/hosts
-      - name: Prepare vault pass
-        run: echo -e "icattravispw" > icat-ansible/vault_pass.txt
-      - name: Move vault to directory it'll get detected by Ansible
-        run: mv icat-ansible/vault.yml icat-ansible/group_vars/all
-      - name: Replace default payara user with Actions user
-        run: |
-          sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" icat-ansible/group_vars/all/vars.yml
 
-      # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-      - name: Change hostname to localhost
-        run: sudo hostname -b localhost
+      - name: Start test dependencies
+        run: docker compose --profile dependencies up -d
 
-      # Remove existing MySQL installation so it doesn't interfere with GitHub Actions
-      - name: Remove existing mysql
-        run: |
-          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-          sudo apt-get remove --purge "mysql*"
-          sudo rm -rf /var/lib/mysql* /etc/mysql
-
-      # Create local instance of ICAT
-      - name: Run ICAT Ansible Playbook
-        run: |
-          ansible-playbook icat-ansible/icatdb_minimal_hosts.yml -i icat-ansible/hosts --vault-password-file icat-ansible/vault_pass.txt -vv
-
-      # rootUserNames needs editing as anon/anon is used in search API and required to pass endpoint tests
-      - name: Add anon user to rootUserNames
-        run: |
-          awk -F" =" '/rootUserNames/{$2="= simple/root anon/anon";print;next}1' /home/runner/install/icat.server/run.properties > /home/runner/install/icat.server/run.properties.tmp
-      - name: Apply rootUserNames change
-        run: |
-          mv -f /home/runner/install/icat.server/run.properties.tmp /home/runner/install/icat.server/run.properties
-      - name: Reinstall ICAT Server
-        run: |
-          cd /home/runner/install/icat.server/ && ./setup -vv install
-
-        # Create virtual environment and install DataGateway API
-      - name: Create and activate virtual environment
-        run: |
-          python3 -m venv dg-api-venv
-          source dg-api-venv/bin/activate
-      - name: Install DataGateway API via pip
-        run: pip install .
-
-      # Prep for using the API for tests
-      - name: Configure datagateway extension
-        run: echo "`yq \
-          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
-      - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
-
-      # Launch API to see if it starts correctly or has a startup issue
-      # Code logic used from https://stackoverflow.com/a/63643845
-      - name: Start API
-        run: timeout 10 python -m datagateway_api.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+      - name: Run pip install test
+        run: docker compose run pip-install-test
 
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.

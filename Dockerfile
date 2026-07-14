@@ -20,6 +20,34 @@ WORKDIR /datagateway-api-run
 
 COPY pyproject.toml uv.lock README.md ./
 
+
+########################################################################################################################
+# Stage for testing, linting and formatting development
+########################################################################################################################
+FROM base AS test
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    set -eux; \
+    # Lock and install all dependencies but do not install the project \
+    uv sync --locked --no-install-project
+
+COPY datagateway_api/ datagateway_api/
+COPY util/ util/
+COPY test/ test/
+COPY .flake8 .flake8
+
+# Create local config files from examples only if they do not already exist.
+# This avoids overwriting repository or environment-specific settings.
+RUN if [ ! -f datagateway_api/config.yaml ]; then \
+        cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
+    fi && \
+    if [ ! -f datagateway_api/logging.ini ]; then \
+        cp datagateway_api/logging.example.ini datagateway_api/logging.ini; \
+    fi && \
+    if [ ! -f datagateway_api/search_api_mapping.json ]; then \
+        cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
+    fi
+
 ########################################################################################################################
 # Stage for local development
 ########################################################################################################################
