@@ -28,6 +28,8 @@ services:
   # The ICAT server, available at https://localhost:18181/icat/version
   icat_payara:
     restart: always
+    # This image was built manually from https://github.com/icatproject-contrib/icat-cloud-native-migration/blob/main/icat/Dockerfile.
+    # This was necessary because the image needs anon/anon included in rootUserNames.
     image: harbor.stfc.ac.uk/icat/icat_6:dg-api
     container_name: icat_payara_container
     depends_on:
