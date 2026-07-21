@@ -15,7 +15,7 @@ LARGE_INVESTIGATION_POST = {
     "investigationFacilityCycles": [{"facilityCycle": 1}],
     "investigationUsers": [{"role": "string", "user": 1}],
     "summary": "string",
-    "name": "string",
+    "name": "Test Data for API Testing, Data Creation 3",
     "doi": "string",
     "visitId": "test large",
     "facility": 1,

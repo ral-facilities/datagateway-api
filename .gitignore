@@ -6,5 +6,6 @@ search_api_mapping.json*
 .vscode/
 .coverage
 coverage.xml
+.env.harbor
 
 datagateway_api/logging.ini

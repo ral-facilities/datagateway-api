@@ -1,0 +1,176 @@
+services:
+  # Database needed to store the test data
+  icat_mariadb:
+    restart: always
+    # note: the latest version does not support the SQL connector needed by icat
+    image: mariadb:10.10
+    container_name: icat_mariadb_container
+    # note: in the case that something else is already running on 3306 locally,
+    # this can be changed or removed without affecting the tests which connect
+    # directly to the icat_mariadb service without using port forwarding
+    # ports:
+    #   - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: pw
+      MARIADB_DATABASE: icatdb
+      MARIADB_USER: icatdbuser
+      MARIADB_PASSWORD: icatdbuserpw
+    # the health check will tell us when data is in the DB
+    healthcheck:
+      test: '/usr/bin/mysql --database=$$MARIADB_DATABASE --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD --execute "SHOW TABLES;"'
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    networks:
+      - dg_network
+    profiles: [dependencies, tests, full]
+
+  # The ICAT server, available at https://localhost:18181/icat/version
+  icat_payara:
+    restart: always
+    # This image was built manually from https://github.com/icatproject-contrib/icat-cloud-native-migration/blob/main/icat/Dockerfile.
+    # This was necessary because the image needs anon/anon included in rootUserNames.
+    image: harbor.stfc.ac.uk/icat/icat_6:dg-api
+    container_name: icat_payara_container
+    depends_on:
+      icat_mariadb:
+        condition: service_healthy
+    ports:
+      - "14747:4848" # payara port
+      - "18181:8181" # https port
+      - "18080:8080" # https port
+    volumes:
+      - ./icat/post-boot-commands.asadmin:/config/post-boot-commands.asadmin
+    environment:
+      - POSTBOOT_COMMANDS=/config/post-boot-commands.asadmin
+    healthcheck:
+      test: curl --fail http://localhost:8080/icat/version || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    networks:
+      - dg_network
+    profiles: [dependencies, tests, full]
+
+  auth_simple:
+    restart: unless-stopped
+    image: harbor.stfc.ac.uk/icat/icat_auth_simple:latest
+    container_name: auth_simple_container
+    ports:
+      - "28181:8181"
+      - "24747:4848"
+    networks:
+      - dg_network
+    profiles: [dependencies, tests, full]
+
+  auth_anon:
+    restart: unless-stopped
+    image: harbor.stfc.ac.uk/icat/icat_auth_anon:latest
+    container_name: auth_anon_container
+    ports:
+      - "29181:8181"
+      - "25747:4848"
+    networks:
+      - dg_network
+    profiles: [dependencies, tests, full]
+
+  testdata:
+    container_name: dg_api_testdata
+    build:
+      context: .
+      target: test
+    depends_on:
+      icat_payara:
+        condition: service_healthy
+    volumes:
+      - ./util:/datagateway-api-run/util
+    command: uv run python -m util.icat_db_generator
+    restart: "no"
+    networks:
+      - dg_network
+    profiles: [dependencies, tests, full]
+
+  format:
+    container_name: dg_api_format
+    build:
+      context: .
+      target: test
+    volumes:
+      - ./datagateway_api:/datagateway-api-run/datagateway_api
+      - ./test:/datagateway-api-run/test
+      - ./util:/datagateway-api-run/util
+    command: uv run black datagateway_api test util
+    profiles: [format, checks]
+
+  lint:
+    container_name: dg_api_lint
+    build:
+      context: .
+      target: test
+    volumes:
+      - ./datagateway_api:/datagateway-api-run/datagateway_api
+      - ./test:/datagateway-api-run/test
+      - ./util:/datagateway-api-run/util
+    command: uv run flake8 datagateway_api test util
+    profiles: [lint, checks]
+
+  unit-tests:
+    container_name: dg_api_unit_tests
+    build:
+      context: .
+      target: test
+    volumes:
+      # use for local development
+      # - ./datagateway_api:/datagateway-api-run/datagateway_api
+      # - ./test:/datagateway-api-run/test
+      - ./coverage.xml:/datagateway-api-run/coverage.xml
+    command: uv run pytest test/unit --cov=datagateway_api --cov-report=xml
+    profiles: [tests]
+
+  integration-tests:
+    container_name: dg_api_integration-tests
+    build:
+      context: .
+      target: test
+    depends_on:
+      icat_payara:
+        condition: service_healthy
+      auth_simple:
+        condition: service_started
+      auth_anon:
+        condition: service_started
+      testdata:
+        condition: service_completed_successfully
+
+    volumes:
+      # use for local development
+      # - ./datagateway_api:/datagateway-api-run/datagateway_api
+      # - ./test:/datagateway-api-run/test
+      - ./coverage.xml:/datagateway-api-run/coverage.xml
+    command: uv run pytest test/integration  --cov=datagateway_api --cov-report=xml
+    networks:
+      - dg_network
+    profiles: [tests]
+
+  # Build the api from the local docker image
+  # available at http://localhost:5000/docs
+  dg_api:
+    build:
+      context: .
+      target: dev
+    container_name: dg_api_container
+    depends_on:
+      icat_payara:
+        condition: service_healthy
+
+    volumes:
+      - ./datagateway_api:/datagateway-api-run/datagateway_api
+
+    ports:
+      - "5000:8000"
+    networks:
+      - dg_network
+    profiles: [full]
+
+networks:
+  dg_network:

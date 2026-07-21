@@ -43,6 +43,29 @@ CMD ["/datagateway-api-run/.venv/bin/fastapi", "dev", "datagateway_api/main.py",
 EXPOSE 8000
 
 ########################################################################################################################
+# Stage for testing, linting and formatting development
+########################################################################################################################
+FROM dev AS test
+
+COPY util/ util/
+COPY test/ test/
+COPY .flake8 .flake8
+
+# Create local config files from examples only if they do not already exist.
+# This avoids overwriting repository or environment-specific settings.
+RUN if [ ! -f datagateway_api/config.yaml ]; then \
+        cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
+    fi && \
+    if [ ! -f datagateway_api/logging.ini ]; then \
+        cp datagateway_api/logging.example.ini datagateway_api/logging.ini; \
+    fi && \
+    if [ ! -f datagateway_api/search_api_mapping.json ]; then \
+        cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
+    fi
+
+CMD []
+
+########################################################################################################################
 # Stage for production-ready build of the project
 ########################################################################################################################
 FROM base AS prod-build
