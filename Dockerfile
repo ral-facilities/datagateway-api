@@ -2,7 +2,7 @@
 ########################################################################################################################
 # Base stage, includes uv
 ########################################################################################################################
-FROM python:3.11-alpine3.24@sha256:cf0253107a1e77e63c814a05428308965a47eb44a2d62fc828564c4a8c839fab AS base
+FROM python:3.11-alpine3.24@sha256:25976e9d34a0fab1f278cae931f34c8303d97bf0c0d7f85b6b4dcf641d7702a4 AS base
 
 # Copy uv + uvx binaries
 COPY --from=ghcr.io/astral-sh/uv:0.11.21@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
@@ -88,7 +88,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ########################################################################################################################
 # Minimal production-ready image
 ########################################################################################################################
-FROM python:3.11-alpine3.24@sha256:cf0253107a1e77e63c814a05428308965a47eb44a2d62fc828564c4a8c839fab AS prod
+FROM python:3.11-alpine3.24@sha256:25976e9d34a0fab1f278cae931f34c8303d97bf0c0d7f85b6b4dcf641d7702a4 AS prod
 
 WORKDIR /datagateway-api-run
 
