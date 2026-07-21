@@ -183,11 +183,39 @@ jobs:
       - name: Checkout DataGateway API
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.11"
+          architecture: x64
+
       - name: Start test dependencies
         run: docker compose --profile dependencies up -d
 
-      - name: Run pip install test
-        run: docker compose run pip-install-test
+      - name: Create and activate virtual environment
+        run: |
+          python3 -m venv dg-api-venv
+          source dg-api-venv/bin/activate
+      - name: Install DataGateway API via pip
+        run: pip install .
+
+        # Prep for using the API for tests
+      - name: Configure datagateway extension
+        run: echo "`yq \
+          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
+      - name: Create config.yaml
+        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
+      - name: Replace ICAT URL in config
+        run: sed -i 's#http://icat_payara_container:8080#https://localhost:18181#g' datagateway_api/config.yaml
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      - name: Create logging.ini
+        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
+
+      # Launch API to see if it starts correctly or has a startup issue
+      # Code logic used from https://stackoverflow.com/a/63643845
+      - name: Start API
+        run: timeout 10 python -m datagateway_api.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
 
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.

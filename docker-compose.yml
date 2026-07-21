@@ -43,7 +43,6 @@ services:
       - ./icat/post-boot-commands.asadmin:/config/post-boot-commands.asadmin
     environment:
       - POSTBOOT_COMMANDS=/config/post-boot-commands.asadmin
-      - ROOT_USERS="simple/root anon/anon"
     healthcheck:
       test: curl --fail http://localhost:8080/icat/version || exit 1
       interval: 10s
@@ -149,31 +148,6 @@ services:
       # - ./test:/datagateway-api-run/test
       - ./coverage.xml:/datagateway-api-run/coverage.xml
     command: uv run pytest test/integration  --cov=datagateway_api --cov-report=xml
-    networks:
-      - dg_network
-    profiles: [tests]
-
-  pip-install-test:
-    container_name: dg_api_pip-install-test
-    build:
-      context: .
-      target: test
-
-    command:
-      - sh
-      - -c
-      - |
-        timeout 10 uv run python -m datagateway_api.main || code=$?
-        if [ "${code:-0}" -ne 124 ] && [ "${code:-0}" -ne 0 ]; then
-          exit "${code:-1}"
-        fi
-
-    # volumes:
-    ## use for local development
-    # - ./datagateway_api:/datagateway-api-run/datagateway_api
-    depends_on:
-      icat_payara:
-        condition: service_healthy
     networks:
       - dg_network
     profiles: [tests]
