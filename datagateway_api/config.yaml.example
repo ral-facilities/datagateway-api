@@ -1,6 +1,6 @@
 ---
 icat:
-  url: "https://localhost:8181"
+  url: "http://icat_payara_container:8080"
   check_cert: false
   client_cache_size: 5
   client_pool_init_size: 2

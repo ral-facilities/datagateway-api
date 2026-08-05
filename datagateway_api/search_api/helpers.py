@@ -22,7 +22,6 @@ from datagateway_api.search_api.session_handler import (
     SessionHandler,
 )
 
-
 log = logging.getLogger()
 
 

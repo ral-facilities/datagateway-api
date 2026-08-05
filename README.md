@@ -20,11 +20,82 @@ if they only require one of the products.
 
 # Creating Dev Environment and API Setup
 
-The recommended development environment for this API has taken lots of inspiration from
-the [Hypermodern Python](https://cjolowicz.github.io/posts/hypermodern-python-01-setup/)
-guide found online. It is assumed the commands shown in this part of the README are
-executed in the root directory of this repo once it has been cloned to your local
-machine.
+## Docker Compose (Recommended)
+
+Docker Compose is the preferred way to run the API and its supporting services for
+most development and testing setups. It provides a consistent environment for the
+ICAT stack, authentication services, test data population, and the API itself. The
+existing local development workflow remains available below for users who prefer to
+work directly with Python and uv.
+
+### Quick Start
+
+Prerequisites:
+
+- Docker Engine
+- Docker Compose plugin
+
+From the repository root, start the full stack with:
+
+```bash
+docker compose --profile full up --build -d
+```
+
+This will build the API image and start:
+
+- MariaDB for ICAT
+- the ICAT/Payara server
+- simple and anonymous authentication services
+- test data population
+- the API on http://localhost:5000
+
+The Swagger UI is available at:
+
+- http://localhost:5000/datagateway-api/docs
+- http://localhost:5000/search-api/docs
+
+To stop the stack:
+
+```bash
+docker compose --profile full down
+```
+
+### Running Checks and Tests with Docker
+
+The repository includes Docker services for formatting, linting, and testing:
+
+Format code with Black:
+
+```bash
+docker compose run --rm format
+```
+
+Lint code with flake8:
+
+```bash
+docker compose run --rm lint
+```
+
+Run unit tests:
+
+```bash
+docker compose run --rm unit-tests
+```
+
+Run integration tests:
+
+```bash
+docker compose run --rm integration-tests
+```
+
+## Local Development with uv
+
+If you prefer to work outside Docker, this project also supports uv. Ensure uv and
+Python are installed, then install dependencies from the repository root:
+
+```bash
+uv sync
+```
 
 ## API Dependency Management (uv)
 
@@ -109,10 +180,10 @@ pre-commit run --all-files
 
 ## Summary
 
-Ensure Python & uv are installed, then run:
+For the simplest and most consistent setup, use Docker Compose:
 
 ```bash
-uv sync
+docker compose --profile full up --build -d
 ```
 
 # Running DataGateway API
@@ -150,14 +221,15 @@ so the anon/anon user will have the relevant permissions to not show embargoed d
 
 ## API Startup
 
-Ideally, the API would be run using the following command, the alternative (detailed
-below) should only be used for development purposes.
+When using Docker, the API is started automatically as part of the compose stack
+shown above. This is the preferred option for most use cases. If you want to run the
+application locally instead, use one of the following commands:
 
 ```bash
 uv run python -m datagateway_api.main
 ```
 
-However, it can also be run with the `fastapi dev` command. This should only be used for development.
+Alternatively, it can be run with the `fastapi dev` command for local development:
 
 ```bash
 fastapi dev datagateway_api/main.py --host 0.0.0.0 --port 5000
@@ -228,22 +300,27 @@ For DataGateway API, the Swagger interface is designed to be compatible with the
 
 # Running Tests
 
-There are two seperate test runners provided. The integration tests, and the unit tests.
-The unit test do not require an ICAT stack to be setup to run. The integration tests do
-require an ICAT stack. In order to cover all the code you will need to run both tests.
-
-To run the unit test use `uv run pytest test/unit`, and to run the integration tests use `uv run pytest test/integration`
-The repository contains a variety of tests, to test the functionality of the API works as intended, for convenience
-and quicker action runs these are additionally split into the unit and integration tests.
-The tests are split into 2 main sections: non Python ICAT specific (testing features such as the date handler) and Python ICAT
-tests (containing tests for the specific components, including tests for the
-different types of endpoints).
+Docker Compose is the preferred way to run the test suites. The unit tests and
+integration tests both have dedicated compose services, and the integration suite uses
+the ICAT stack started by the compose profile.
 
 The configuration file (`config.yaml`) contains two options that will be used during the
 testing of the API. Set `test_user_credentials` and `test_mechanism` appropriately for your test environment, using `config.yaml.example` as a reference. The tests require a
 connection to an instance of ICAT, so set the rest of the config as needed.
 
-By default, this will execute the repo's tests in Python 3.11:
+Run the unit tests:
+
+```bash
+docker compose run --rm unit-tests
+```
+
+Run the integration tests:
+
+```bash
+docker compose run --rm integration-tests
+```
+
+If you prefer to run the tests locally with uv, the equivalent commands are:
 
 ```bash
 uv run pytest test/unit

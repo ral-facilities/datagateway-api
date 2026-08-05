@@ -4,7 +4,6 @@ import pytest
 import datagateway_api.search_api.models as models
 from test.unit.search_api.utlis import normalise_date
 
-
 AFFILIATION_ICAT_DATA = {
     "id": 1,
     "name": "Test name",

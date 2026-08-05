@@ -12,7 +12,6 @@ from datagateway_api.common.filters import (
 )
 from datagateway_api.common.helpers import get_icat_properties
 
-
 log = logging.getLogger()
 
 
