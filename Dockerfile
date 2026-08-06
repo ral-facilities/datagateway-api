@@ -2,7 +2,7 @@
 ########################################################################################################################
 # Base stage, includes uv
 ########################################################################################################################
-FROM python:3.11-alpine3.24@sha256:77973666731a4983fa780d8e2ae8de654a8cb9f0919665681f7ec3bcab7ad0cb AS base
+FROM python:3.11-alpine3.24@sha256:25976e9d34a0fab1f278cae931f34c8303d97bf0c0d7f85b6b4dcf641d7702a4 AS base
 
 # Copy uv + uvx binaries
 COPY --from=ghcr.io/astral-sh/uv:0.11.21@sha256:ff07b86af50d4d9391d9daf4ff89ce427bc544f9aae87057e69a1cc0aa369946 /uv /uvx /bin/
@@ -43,6 +43,29 @@ CMD ["/datagateway-api-run/.venv/bin/fastapi", "dev", "datagateway_api/main.py",
 EXPOSE 8000
 
 ########################################################################################################################
+# Stage for testing, linting and formatting development
+########################################################################################################################
+FROM dev AS test
+
+COPY util/ util/
+COPY test/ test/
+COPY .flake8 .flake8
+
+# Create local config files from examples only if they do not already exist.
+# This avoids overwriting repository or environment-specific settings.
+RUN if [ ! -f datagateway_api/config.yaml ]; then \
+        cp datagateway_api/config.yaml.example datagateway_api/config.yaml; \
+    fi && \
+    if [ ! -f datagateway_api/logging.ini ]; then \
+        cp datagateway_api/logging.example.ini datagateway_api/logging.ini; \
+    fi && \
+    if [ ! -f datagateway_api/search_api_mapping.json ]; then \
+        cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
+    fi
+
+CMD []
+
+########################################################################################################################
 # Stage for production-ready build of the project
 ########################################################################################################################
 FROM base AS prod-build
@@ -65,7 +88,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ########################################################################################################################
 # Minimal production-ready image
 ########################################################################################################################
-FROM python:3.11-alpine3.24@sha256:77973666731a4983fa780d8e2ae8de654a8cb9f0919665681f7ec3bcab7ad0cb AS prod
+FROM python:3.11-alpine3.24@sha256:25976e9d34a0fab1f278cae931f34c8303d97bf0c0d7f85b6b4dcf641d7702a4 AS prod
 
 WORKDIR /datagateway-api-run
 

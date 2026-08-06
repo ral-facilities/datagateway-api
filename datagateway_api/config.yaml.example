@@ -4,7 +4,7 @@ datagateway_api:
   client_cache_size: 5
   client_pool_init_size: 2
   client_pool_max_size: 5
-  icat_url: "https://localhost:8181"
+  icat_url: "http://icat_payara_container:8080"
   icat_check_cert: false
   use_reader_for_performance:
     enabled: false
@@ -13,7 +13,7 @@ datagateway_api:
     reader_password: readerpw
 search_api:
   extension: "/search-api"
-  icat_url: "https://localhost:8181"
+  icat_url: "http://icat_payara_container:8080"
   icat_check_cert: false
   mechanism: "anon"
   username: ""
