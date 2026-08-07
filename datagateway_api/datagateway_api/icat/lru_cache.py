@@ -19,7 +19,7 @@ class ExtendedLRUCache(LRUCache):
     """
 
     def __init__(self):
-        super().__init__(maxsize=Config.config.datagateway_api.client_cache_size)
+        super().__init__(maxsize=Config.config.icat.client_cache_size)
 
     def popitem(self):
         key, client = super().popitem()

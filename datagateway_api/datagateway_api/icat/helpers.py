@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from functools import wraps
 import logging
+from typing import Literal
 
 from cachetools import cached
 from dateutil.tz import tzlocal
@@ -58,9 +59,13 @@ def requires_session_id(method):
     def wrapper_requires_session(*args, **kwargs):
         try:
             client_pool = kwargs.get("client_pool")
+            if "session_id" in kwargs:
+                session_id = kwargs["session_id"]
+            else:
+                session_id = args[1]
 
-            client = get_cached_client(args[1], client_pool)
-            client.sessionId = args[1]
+            client = get_cached_client(session_id=session_id, client_pool=client_pool)
+            client.sessionId = session_id
             # Client object put into kwargs so it can be accessed by
             # python ICAT functions
             kwargs["client"] = client
@@ -211,7 +216,7 @@ def get_entity_by_id(
     entity_type,
     id_,
     return_json_formattable_data,
-    return_related_entities=False,
+    includes: Literal["1"] | list[str] | None = None,
 ):
     """
     Gets a record of a given ID from the specified entity
@@ -227,26 +232,24 @@ def get_entity_by_id(
         data will be used as a response for an API call) or whether to leave the data in
         a Python ICAT format
     :type return_json_formattable_data: :class:`bool`
-    :param return_related_entities: Flag to determine whether related entities should
-        automatically be returned or not. Returning related entities used as a bug fix
-        for an `IcatException` where ICAT attempts to set a field to null because said
-        field hasn't been included in the updated data
+    :param includes: List of include strings, "1" (shorthand for include 1:1 relationships) or None.
+        Returning related entities used as a bug fix for an `IcatException` where ICAT attempts to set a field to null
+        because said field hasn't been included in the updated data
     :type return_related_entities: :class:`bool`
     :return: The record of the specified ID from the given entity
     :raises: MissingRecordError: If Python ICAT cannot find a record of the specified ID
     """
     log.info("Getting %s of the ID %s", entity_type, id_)
-    log.debug("Return related entities set to: %s", return_related_entities)
+    log.debug("includes set to: %s", includes)
 
     # Set query condition for the selected ID
     id_condition = PythonICATWhereFilter.create_condition("id", "=", id_)
 
-    includes_value = "1" if return_related_entities else None
     id_query = ICATQuery(
         client,
         entity_type,
         conditions=id_condition,
-        includes=includes_value,
+        includes=includes,
     )
     entity_by_id_data = id_query.execute_query(client, return_json_formattable_data)
 
@@ -294,7 +297,7 @@ def update_entity_by_id(client, entity_type, id_, new_data):
         entity_type,
         id_,
         False,
-        return_related_entities=True,
+        includes="1",
     )
     # There will only ever be one record associated with a single ID - if a record with
     # the specified ID cannot be found, it'll be picked up by the MissingRecordError in
@@ -417,13 +420,7 @@ def is_use_reader_for_performance_enabled() -> bool:
     Returns true is the 'use_reader_for_performance' section is present in the
     config file and 'enabled' in that section is set to true
     """
-    reader_config = Config.config.datagateway_api.use_reader_for_performance
-    if not reader_config:
-        return False
-    if not reader_config.enabled:
-        return False
-
-    return True
+    return Config.config.icat.reader is not None
 
 
 def get_first_result_with_filters(client, entity_type, filters):
@@ -494,7 +491,7 @@ def update_entities(client, entity_type, data_to_update):
                 entity_type,
                 entity_request["id"],
                 False,
-                return_related_entities=True,
+                includes="1",
             )
             icat_data_backup.append(entity_data.copy())
 

@@ -8,7 +8,7 @@ from datagateway_api.search_api.session_handler import (
 class TestSessionHandler:
     def setup_method(self):
         # Recreate client before each test
-        SessionHandler.client = ICATClient(client_use="search_api")
+        SessionHandler.client = ICATClient()
 
     def test_session_handler_class(self):
         assert isinstance(SessionHandler.client, ICATClient)

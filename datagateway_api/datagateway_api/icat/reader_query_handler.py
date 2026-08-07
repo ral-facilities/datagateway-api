@@ -47,9 +47,9 @@ class ReaderQueryHandler:
     reader_client = None
     maxsize = 128  # cachetools default value
     ttl = 600  # seconds, cachetools default value
-    if Config.config.datagateway_api.use_reader_for_performance is not None:
-        maxsize = Config.config.datagateway_api.use_reader_for_performance.maxsize
-        ttl = Config.config.datagateway_api.use_reader_for_performance.ttl
+    if Config.config.icat.reader is not None:
+        maxsize = Config.config.icat.reader.maxsize
+        ttl = Config.config.icat.reader.ttl
 
     def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
         self.entity_type = entity_type
@@ -70,15 +70,13 @@ class ReaderQueryHandler:
         raised (resulting in a 500). The client object is returned
         """
         log.info("Creating reader_client")
-        cls.reader_client = ICATClient("datagateway_api")
+        cls.reader_client = ICATClient()
         try:
             cls.reader_client.login(
-                auth=Config.config.datagateway_api.use_reader_for_performance.reader_mechanism,
+                auth=Config.config.icat.reader.mechanism,
                 credentials={
-                    "username": Config.config.datagateway_api.use_reader_for_performance.reader_username,
-                    "password": (
-                        Config.config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value()
-                    ),
+                    "username": Config.config.icat.reader.username,
+                    "password": Config.config.icat.reader.password.get_secret_value(),
                 },
             )
         except ICATSessionError as e:

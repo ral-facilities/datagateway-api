@@ -5,7 +5,7 @@ from typing import Generator
 from icat.client import Client
 import pytest
 
-from datagateway_api.common.config import APIConfig, Config
+from datagateway_api.common.config import APIConfig, Config, ReaderConfig
 from datagateway_api.common.exceptions import MissingRecordError, PythonICATError
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
@@ -103,29 +103,28 @@ def associate_data_publication(icat_client: Client) -> Generator[None, None, Non
 
 @pytest.fixture(scope="class")
 def icat_user_client() -> Client:
-    client = Client(url=Config.config.datagateway_api.icat_url, checkCert=Config.config.datagateway_api.icat_check_cert)
+    client = Client(url=Config.config.icat.url, checkCert=Config.config.icat.check_cert)
     client.login(auth="simple", credentials={"username": "icatuser", "password": "icatuserpw"})
     return client
 
 
 @pytest.fixture(scope="class")
 def icat_root_client() -> Client:
-    client = Client(url=Config.config.datagateway_api.icat_url, checkCert=Config.config.datagateway_api.icat_check_cert)
+    client = Client(url=Config.config.icat.url, checkCert=Config.config.icat.check_cert)
     client.login(auth="simple", credentials={"username": "root", "password": "pw"})
     return client
 
 
 @pytest.fixture(scope="function")
 def enable_reader_config() -> Generator[None, None, None]:
-    Config.config.datagateway_api.use_reader_for_performance.enabled = True
+    Config.config.icat.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")
     yield
     Config.config = APIConfig.load()
 
 
 @pytest.fixture(scope="function")
 def enable_reader_bad_config() -> Generator[None, None, None]:
-    Config.config.datagateway_api.use_reader_for_performance.enabled = True
-    Config.config.datagateway_api.use_reader_for_performance.reader_mechanism = "bad"
+    Config.config.icat.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")
     yield
     Config.config = APIConfig.load()
 
@@ -190,7 +189,7 @@ class TestReaderPerformance:
         reader_client = ReaderQueryHandler.reader_client
         assert isinstance(reader_client, ICATClient)
         assert reader_client.getUserName() == (
-            f"{Config.config.datagateway_api.use_reader_for_performance.reader_mechanism}/{Config.config.datagateway_api.use_reader_for_performance.reader_username}"
+            f"{Config.config.icat.reader.mechanism}/{Config.config.icat.reader.username}"
         )
 
     @pytest.mark.parametrize(
@@ -260,8 +259,8 @@ class TestReaderPerformance:
 
     def test_refresh(self, enable_reader_config: None) -> None:
         client = Client(
-            url=Config.config.datagateway_api.icat_url,
-            checkCert=Config.config.datagateway_api.icat_check_cert,
+            url=Config.config.icat.url,
+            checkCert=Config.config.icat.check_cert,
         )
         client._next_refresh = 0
         ReaderQueryHandler.reader_client = client
@@ -271,8 +270,8 @@ class TestReaderPerformance:
 
     def test_refresh_failure(self, enable_reader_bad_config: None) -> None:
         client = Client(
-            url=Config.config.datagateway_api.icat_url,
-            checkCert=Config.config.datagateway_api.icat_check_cert,
+            url=Config.config.icat.url,
+            checkCert=Config.config.icat.check_cert,
         )
         client._next_refresh = 0
         ReaderQueryHandler.reader_client = client
