@@ -9,7 +9,7 @@ import uvicorn
 from datagateway_api.common.config import Config
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
-from datagateway_api.read_only_api.routers.my_data import my_data_endpoints
+from datagateway_api.read_only_api.routers.entities import my_data_endpoints
 
 # Check which APIs are enabled
 datagateway_api_enabled = Config.config.datagateway_api is not None

@@ -90,6 +90,8 @@ class LimitConfig(BaseModel):
         if self.default > self.maximum:
             raise ValueError("default limit cannot exceed maximum limit")
 
+        return self
+
 
 class ReadOnlyAPI(DataGatewayAPI):
     limit: LimitConfig = LimitConfig()
@@ -147,7 +149,7 @@ class APIConfig(BaseModel):
 
     icat: IcatConfig
     datagateway_api: Optional[DataGatewayAPI] = None
-    read_only_api: DataGatewayAPI | None = None
+    read_only_api: ReadOnlyAPI | None = None
     reload: Optional[StrictBool] = None
     host: Optional[StrictStr] = None
     port: Optional[StrictInt] = None

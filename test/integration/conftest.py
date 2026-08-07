@@ -26,6 +26,11 @@ def icat_client():
     return client
 
 
+@pytest.fixture(scope="package")
+def valid_icat_credentials_header(icat_client: Client) -> dict[str, str]:
+    return {"Authorization": f"Bearer {icat_client.sessionId}"}
+
+
 @pytest.fixture(name="test_client")
 def fixture_test_client() -> TestClient:
     """
