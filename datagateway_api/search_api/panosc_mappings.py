@@ -1,9 +1,9 @@
 import json
 import logging
-from pathlib import Path
 import sys
+from pathlib import Path
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
 
 log = logging.getLogger()
@@ -23,7 +23,7 @@ class PaNOSCMappings:
         except IOError as e:
             # The API shouldn't exit if there's an exception (e.g. file not found) if
             # the user is only using DataGateway API and not the search API
-            if Config.config.search_api:
+            if config.search_api:
                 sys.exit(
                     f"An error occurred while trying to load the PaNOSC mappings: {e}",
                 )

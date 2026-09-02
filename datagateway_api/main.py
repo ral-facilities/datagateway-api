@@ -1,32 +1,35 @@
 import logging
 
-
+import uvicorn
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-import uvicorn
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
 
 # Check which APIs are enabled
-datagateway_api_enabled = Config.config.datagateway_api is not None
-search_api_enabled = Config.config.search_api is not None
+datagateway_api_enabled = config.datagateway_api is not None
+search_api_enabled = config.search_api is not None
 
 if datagateway_api_enabled:
+    from datagateway_api.auth.session_bearer import SessionBearer
+    from datagateway_api.common.entity_endpoint_dict import endpoints
     from datagateway_api.datagateway_api.build_models import build_datagateway_api_model
     from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
     from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
     from datagateway_api.datagateway_api.routers.entity import create_collection_router
     from datagateway_api.datagateway_api.routers.ping import ping_endpoint
     from datagateway_api.datagateway_api.routers.sessions import sessions_endpoints
-    from datagateway_api.auth.session_bearer import SessionBearer
-    from datagateway_api.common.entity_endpoint_dict import endpoints
 
 if search_api_enabled:
-    from datagateway_api.search_api.routers.entity import create_search_collection_router
-    from datagateway_api.common.search_api_entity_endpoint_dict import search_api_entity_endpoints
+    from datagateway_api.common.search_api_entity_endpoint_dict import (
+        search_api_entity_endpoints,
+    )
+    from datagateway_api.search_api.routers.entity import (
+        create_search_collection_router,
+    )
 
 setup_logger()
 logger = logging.getLogger()
@@ -66,10 +69,10 @@ def register_common_handlers(fastapi_app: FastAPI) -> None:
 def enable_cors(fastapi_app: FastAPI) -> None:
     fastapi_app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=config.api.allowed_cors_origins,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=config.api.allowed_cors_methods,
+        allow_headers=config.api.allowed_cors_headers,
     )
 
 
@@ -129,31 +132,31 @@ def create_search_api_app() -> FastAPI | None:
     return None
 
 
-if Config.config.multi_api_count > 1:
+if config.multi_api_count > 1:
     app = FastAPI(
         title="DataGateway",
-        root_path=Config.config.url_prefix,
+        root_path=config.api.url_prefix,
         separate_input_output_schemas=False,
     )
     if datagateway_api_enabled:
-        app.mount(path=Config.config.datagateway_api.extension, app=create_datagateway_app())
+        app.mount(path=config.datagateway_api.extension, app=create_datagateway_app())
     if search_api_enabled:
-        app.mount(path=Config.config.search_api.extension, app=create_search_api_app())
+        app.mount(path=config.search_api.extension, app=create_search_api_app())
 
 elif datagateway_api_enabled:
     app = create_datagateway_app()
-    app.root_path = f"{Config.config.url_prefix}{Config.config.datagateway_api.extension}"
+    app.root_path = f"{config.api.url_prefix}{config.datagateway_api.extension}"
 
 elif search_api_enabled:
     app = create_search_api_app()
-    app.root_path = f"{Config.config.url_prefix}{Config.config.search_api.extension}"
+    app.root_path = f"{config.api.url_prefix}{config.search_api.extension}"
 
 
 if __name__ == "__main__":
     uvicorn.run(
         "datagateway_api.main:app",
-        host=Config.config.host,
-        port=Config.config.port,
-        reload=Config.config.reload,
+        host=config.api.host,
+        port=config.api.port,
+        reload=config.api.reload,
         log_config=LOGGING_CONFIG_FILE_PATH,
     )

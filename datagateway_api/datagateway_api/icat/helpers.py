@@ -1,6 +1,6 @@
+import logging
 from datetime import datetime, timedelta
 from functools import wraps
-import logging
 
 from cachetools import cached
 from dateutil.tz import tzlocal
@@ -13,7 +13,7 @@ from icat.exception import (
     ICATValidationError,
 )
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import (
     AuthenticationError,
@@ -176,7 +176,6 @@ def update_attributes(old_entity, new_entity):
             ) from e
 
         try:
-
             related_object = new_entity[key]
             if key != "id":
                 entity_info = old_entity.getAttrInfo(old_entity.client, key)
@@ -417,7 +416,7 @@ def is_use_reader_for_performance_enabled() -> bool:
     Returns true is the 'use_reader_for_performance' section is present in the
     config file and 'enabled' in that section is set to true
     """
-    reader_config = Config.config.datagateway_api.use_reader_for_performance
+    reader_config = config.datagateway_api.use_reader_for_performance
     if not reader_config:
         return False
     if not reader_config.enabled:
@@ -557,7 +556,6 @@ def create_entities(client, entity_type, data):  # noqa: C901
         data = [data]
 
     for result in data:
-
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
@@ -577,7 +575,6 @@ def create_entities(client, entity_type, data):  # noqa: C901
                 else:
                     # This means the attribute has a relationship with another object
                     try:
-
                         related_object = []
                         if entity_info.relType.lower() == "many":
                             related_object = build_related_entities(
