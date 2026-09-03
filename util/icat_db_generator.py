@@ -1,14 +1,14 @@
-from abc import ABC, abstractmethod
 import argparse
 import datetime
 import enum
+from abc import ABC, abstractmethod
 from multiprocessing import Process
 
 from faker import Faker
 from icat.client import Client
 from icat.query import Query
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -95,12 +95,12 @@ def apply_common_parameter_attributes(entity, i, client):
 
 def icat_client():
     client = Client(
-        Config.config.datagateway_api.icat_url,
-        checkCert=Config.config.datagateway_api.icat_check_cert,
+        config.datagateway_api.icat_url,
+        checkCert=config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism,
-        Config.config.test_user_credentials.model_dump(),
+        config.test.mechanism,
+        config.test.user_credentials.model_dump(),
     )
     return client
 

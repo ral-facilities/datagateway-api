@@ -204,17 +204,16 @@ jobs:
         run: pip install .
 
         # Prep for using the API for tests
-      - name: Configure datagateway extension
-        run: echo "`yq \
-          '.datagateway_api.extension="/datagateway-api"' datagateway_api/config.yaml.example`" > datagateway_api/config.yaml.example
-      - name: Create config.yaml
-        run: cp datagateway_api/config.yaml.example datagateway_api/config.yaml
-      - name: Replace ICAT URL in config
-        run: sed -i 's#http://icat_payara_container:8080#https://localhost:18181#g' datagateway_api/config.yaml
+      - name: Create .env
+        run: cp .env.example .env
+      - name: Replace ICAT URLs in .env
+        run: |
+          sed -i 's#DATAGATEWAY_API__ICAT_URL=http://icat_payara_container:8080#DATAGATEWAY_API__ICAT_URL=https://localhost:18181#g' .env
+          sed -i 's#SEARCH_API__ICAT_URL=http://icat_payara_container:8080#SEARCH_API__ICAT_URL=https://localhost:18181#g' .env
       - name: Create search_api_mapping.json
         run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
       - name: Create logging.ini
-        run: cp datagateway_api/logging.example.ini datagateway_api/logging.ini
+        run: cp logging.example.ini logging.ini
 
       # Launch API to see if it starts correctly or has a startup issue
       # Code logic used from https://stackoverflow.com/a/63643845

@@ -1,14 +1,13 @@
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
 from unittest.mock import mock_open, patch
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from icat.client import Client
-import pytest
 
-
-from datagateway_api.common.config import APIConfig, Config
+from datagateway_api.common.config import APIConfig, config
 from datagateway_api.datagateway_api.icat.models import Session
 from datagateway_api.main import app, register_common_handlers
 
@@ -16,12 +15,12 @@ from datagateway_api.main import app, register_common_handlers
 @pytest.fixture(scope="package")
 def icat_client():
     client = Client(
-        Config.config.datagateway_api.icat_url,
-        checkCert=Config.config.datagateway_api.icat_check_cert,
+        config.datagateway_api.icat_url,
+        checkCert=config.datagateway_api.icat_check_cert,
     )
     client.login(
-        Config.config.test_mechanism,
-        Config.config.test_user_credentials.model_dump(),
+        config.test.mechanism,
+        config.test.user_credentials.model_dump(),
     )
     return client
 

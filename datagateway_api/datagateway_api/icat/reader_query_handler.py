@@ -1,11 +1,11 @@
-from datetime import datetime, timezone
 import logging
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from cachetools.func import ttl_cache
 from icat.exception import ICATSessionError
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import MissingRecordError, PythonICATError
 from datagateway_api.common.filters import QueryFilter
 from datagateway_api.datagateway_api.icat.filters import PythonICATWhereFilter
@@ -47,9 +47,9 @@ class ReaderQueryHandler:
     reader_client = None
     maxsize = 128  # cachetools default value
     ttl = 600  # seconds, cachetools default value
-    if Config.config.datagateway_api.use_reader_for_performance is not None:
-        maxsize = Config.config.datagateway_api.use_reader_for_performance.maxsize
-        ttl = Config.config.datagateway_api.use_reader_for_performance.ttl
+    if config.datagateway_api.use_reader_for_performance is not None:
+        maxsize = config.datagateway_api.use_reader_for_performance.maxsize
+        ttl = config.datagateway_api.use_reader_for_performance.ttl
 
     def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
         self.entity_type = entity_type
@@ -73,12 +73,10 @@ class ReaderQueryHandler:
         cls.reader_client = ICATClient("datagateway_api")
         try:
             cls.reader_client.login(
-                auth=Config.config.datagateway_api.use_reader_for_performance.reader_mechanism,
+                auth=config.datagateway_api.use_reader_for_performance.reader_mechanism,
                 credentials={
-                    "username": Config.config.datagateway_api.use_reader_for_performance.reader_username,
-                    "password": (
-                        Config.config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value()
-                    ),
+                    "username": config.datagateway_api.use_reader_for_performance.reader_username,
+                    "password": (config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value()),
                 },
             )
         except ICATSessionError as e:
@@ -121,7 +119,11 @@ class ReaderQueryHandler:
         if len(investigation_ids) == 0:
             raise MissingRecordError(f"No Dataset found for id={dataset_id}")
 
-        log.debug("Found investigation.id=%s for dataset.id=%s", investigation_ids[0], dataset_id)
+        log.debug(
+            "Found investigation.id=%s for dataset.id=%s",
+            investigation_ids[0],
+            dataset_id,
+        )
         return investigation_ids[0]
 
     @classmethod
@@ -140,7 +142,11 @@ class ReaderQueryHandler:
         )
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
-        log.debug("Found %s as InvestigationUsers for investigation.id=%s", user_names, investigation_id)
+        log.debug(
+            "Found %s as InvestigationUsers for investigation.id=%s",
+            user_names,
+            investigation_id,
+        )
         return set(user_names)
 
     @classmethod
@@ -160,7 +166,11 @@ class ReaderQueryHandler:
         )
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
-        log.debug("Found %s as InstrumentScientists for investigation.id=%s", user_names, investigation_id)
+        log.debug(
+            "Found %s as InstrumentScientists for investigation.id=%s",
+            user_names,
+            investigation_id,
+        )
         return set(user_names)
 
     @classmethod
@@ -251,11 +261,19 @@ class ReaderQueryHandler:
         """
         user_name = client.getUserName()
         id_field = ReaderQueryHandler.entity_filter_check[self.entity_type]
-        log.info("Checking to see if user '%s' can see %s=%s", user_name, id_field, self.where_filter_entity_id)
+        log.info(
+            "Checking to see if user '%s' can see %s=%s",
+            user_name,
+            id_field,
+            self.where_filter_entity_id,
+        )
 
         if self.entity_type == "Dataset":
             if ReaderQueryHandler.is_user_allowed(user_name=user_name, investigation_id=self.where_filter_entity_id):
-                log.debug("User is authorised to see investigation.id=%s", self.where_filter_entity_id)
+                log.debug(
+                    "User is authorised to see investigation.id=%s",
+                    self.where_filter_entity_id,
+                )
                 return True
 
         elif self.entity_type == "Datafile":
@@ -264,7 +282,10 @@ class ReaderQueryHandler:
                 user_name=user_name,
                 investigation_id=investigation_id,
             ) or ReaderQueryHandler.is_dataset_open(dataset_id=self.where_filter_entity_id):
-                log.debug("User is authorised to see dataset.id=%s", self.where_filter_entity_id)
+                log.debug(
+                    "User is authorised to see dataset.id=%s",
+                    self.where_filter_entity_id,
+                )
                 return True
 
         log.debug("User not authorised to see %s=%s", id_field, self.where_filter_entity_id)
