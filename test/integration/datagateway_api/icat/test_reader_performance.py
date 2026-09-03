@@ -117,14 +117,14 @@ def icat_root_client() -> Client:
 
 @pytest.fixture(scope="function")
 def enable_reader_config() -> Generator[None, None, None]:
-    Config.config.icat.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")
+    Config.config.icat.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")  # noqa: S106
     yield
     Config.config = APIConfig.load()
 
 
 @pytest.fixture(scope="function")
 def enable_reader_bad_config() -> Generator[None, None, None]:
-    Config.config.icat.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")
+    Config.config.icat.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")  # noqa: S106
     yield
     Config.config = APIConfig.load()
 

@@ -1,7 +1,4 @@
-from unittest.mock import patch
-
 from icat.client import Client
-import pytest
 
 from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
 
