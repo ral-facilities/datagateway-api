@@ -35,6 +35,10 @@ services:
     depends_on:
       icat_mariadb:
         condition: service_healthy
+      auth_anon:
+        condition: service_started
+      auth_simple:
+        condition: service_started
     ports:
       - "14747:4848" # payara port
       - "18181:8181" # https port

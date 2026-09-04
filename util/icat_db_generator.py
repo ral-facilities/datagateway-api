@@ -6,6 +6,7 @@ from multiprocessing import Process
 
 from faker import Faker
 from icat.client import Client
+from icat.exception import ICATNoObjectError
 from icat.query import Query
 
 from datagateway_api.common.config import Config
@@ -95,8 +96,8 @@ def apply_common_parameter_attributes(entity, i, client):
 
 def icat_client():
     client = Client(
-        Config.config.datagateway_api.icat_url,
-        checkCert=Config.config.datagateway_api.icat_check_cert,
+        Config.config.icat.url,
+        checkCert=Config.config.icat.check_cert,
     )
     client.login(
         Config.config.test_mechanism,
@@ -1119,6 +1120,13 @@ def generate_all(i, generators, client):
 
 def main():
     client = icat_client()
+    try:
+        client.get("Facility", 1)
+        print("Test data already exists, exiting")
+        return
+    except ICATNoObjectError:
+        pass  # Indicates database empty, continue
+
     start_time = datetime.datetime.now()
     generators = [generator() for generator in Generator.__subclasses__()]
     tiers = 7

@@ -16,14 +16,19 @@ from datagateway_api.main import app, register_common_handlers
 @pytest.fixture(scope="package")
 def icat_client():
     client = Client(
-        Config.config.datagateway_api.icat_url,
-        checkCert=Config.config.datagateway_api.icat_check_cert,
+        Config.config.icat.url,
+        checkCert=Config.config.icat.check_cert,
     )
     client.login(
         Config.config.test_mechanism,
         Config.config.test_user_credentials.model_dump(),
     )
     return client
+
+
+@pytest.fixture(scope="package")
+def valid_icat_credentials_header(icat_client: Client) -> dict[str, str]:
+    return {"Authorization": f"Bearer {icat_client.sessionId}"}
 
 
 @pytest.fixture(name="test_client")

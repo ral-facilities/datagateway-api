@@ -23,8 +23,8 @@ class TestSearchAPISkipFilter:
         assert search_api_query_document.icat_query.query.limit == (
             int(skip_value),
             get_icat_properties(
-                Config.config.search_api.icat_url,
-                Config.config.search_api.icat_check_cert,
+                Config.config.icat.url,
+                Config.config.icat.check_cert,
             )["maxEntities"],
         )
 
