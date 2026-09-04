@@ -277,7 +277,7 @@ class TestMyData:
         test_client: TestClient,
         valid_icat_credentials_header: dict[str, str],
         includes: int,
-        included_body: int,
+        included_body: dict,
     ) -> None:
         response = test_client.get(
             url="/read-only-api/investigations/1",
