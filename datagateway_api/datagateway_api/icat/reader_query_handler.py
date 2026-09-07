@@ -76,12 +76,14 @@ class ReaderQueryHandler:
                 auth=config.datagateway_api.use_reader_for_performance.reader_mechanism,
                 credentials={
                     "username": config.datagateway_api.use_reader_for_performance.reader_username,
-                    "password": (config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value()),
+                    "password": config.datagateway_api.use_reader_for_performance.reader_password.get_secret_value(),
                 },
             )
         except ICATSessionError as e:
             log.error("User credentials for reader account aren't valid")
-            raise PythonICATError("Internal error with reader account configuration") from e
+            raise PythonICATError(
+                "Internal error with reader account configuration"
+            ) from e
 
         return cls.reader_client
 
@@ -137,9 +139,7 @@ class ReaderQueryHandler:
             set[str]:
                 ICAT User.name of all InvestigationUsers associated with the Investigation with id `investigation_id`.
         """
-        query = (
-            f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
-        )
+        query = f"SELECT iu.user.name FROM InvestigationUser iu WHERE iu.investigation.id={investigation_id}"  # noqa: S608
         cls.refresh()
         user_names = cls.reader_client.search(query=query)
         log.debug(
@@ -185,7 +185,9 @@ class ReaderQueryHandler:
         """
         return user_name in cls.get_investigation_users(
             investigation_id=investigation_id,
-        ) or user_name in cls.get_instrument_scientists(investigation_id=investigation_id)
+        ) or user_name in cls.get_instrument_scientists(
+            investigation_id=investigation_id
+        )
 
     @classmethod
     @ttl_cache(maxsize=maxsize, ttl=ttl)
@@ -240,7 +242,8 @@ class ReaderQueryHandler:
         for query_filter in self.filters:
             if (
                 isinstance(query_filter, PythonICATWhereFilter)
-                and query_filter.field == ReaderQueryHandler.entity_filter_check[self.entity_type]
+                and query_filter.field
+                == ReaderQueryHandler.entity_filter_check[self.entity_type]
                 and query_filter.operation == "eq"
             ):
                 log.debug(
@@ -269,7 +272,9 @@ class ReaderQueryHandler:
         )
 
         if self.entity_type == "Dataset":
-            if ReaderQueryHandler.is_user_allowed(user_name=user_name, investigation_id=self.where_filter_entity_id):
+            if ReaderQueryHandler.is_user_allowed(
+                user_name=user_name, investigation_id=self.where_filter_entity_id
+            ):
                 log.debug(
                     "User is authorised to see investigation.id=%s",
                     self.where_filter_entity_id,
@@ -277,16 +282,22 @@ class ReaderQueryHandler:
                 return True
 
         elif self.entity_type == "Datafile":
-            investigation_id = ReaderQueryHandler.get_investigation_id(dataset_id=self.where_filter_entity_id)
+            investigation_id = ReaderQueryHandler.get_investigation_id(
+                dataset_id=self.where_filter_entity_id
+            )
             if ReaderQueryHandler.is_user_allowed(
                 user_name=user_name,
                 investigation_id=investigation_id,
-            ) or ReaderQueryHandler.is_dataset_open(dataset_id=self.where_filter_entity_id):
+            ) or ReaderQueryHandler.is_dataset_open(
+                dataset_id=self.where_filter_entity_id
+            ):
                 log.debug(
                     "User is authorised to see dataset.id=%s",
                     self.where_filter_entity_id,
                 )
                 return True
 
-        log.debug("User not authorised to see %s=%s", id_field, self.where_filter_entity_id)
+        log.debug(
+            "User not authorised to see %s=%s", id_field, self.where_filter_entity_id
+        )
         return False

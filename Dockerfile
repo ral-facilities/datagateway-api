@@ -50,14 +50,12 @@ FROM dev AS test
 COPY util/ util/
 COPY test/ test/
 COPY .flake8 .flake8
-COPY .env.example .env.example 
-COPY logging.example.ini logging.example.ini  
+COPY .env.example .env 
+COPY logging.example.ini logging.ini  
 
 # Create local config files from examples only if they do not already exist.
 # This avoids overwriting repository or environment-specific settings.
-RUN cp .env.example .env && \
-    cp logging.example.ini logging.ini && \
-    if [ ! -f datagateway_api/search_api_mapping.json ]; then \
+RUN if [ ! -f datagateway_api/search_api_mapping.json ]; then \
         cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json; \
     fi
 
