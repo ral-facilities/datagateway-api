@@ -217,5 +217,3 @@ class Config(BaseSettings):
 
 
 config = Config()
-
-print(config.model_dump_json())
