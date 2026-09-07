@@ -1,20 +1,21 @@
 import logging
-import sys
 from functools import cached_property
-from pathlib import Path
 from typing import Annotated, Optional, Self
 
-import yaml
 from pydantic import (
     AfterValidator,
     BaseModel,
     Field,
     SecretStr,
-    ValidationError,
     computed_field,
     model_validator,
 )
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    YamlConfigSettingsSource,
+)
 
 log = logging.getLogger()
 
@@ -138,7 +139,7 @@ class Config(BaseSettings):
 
     It includes attributes for the API, authentication and database configurations. The class inherits from
     `BaseSettings` and automatically reads environment variables. If values are not passed in form of system environment
-    variables at runtime, it will attempt to read them from the .env file.
+    variables at runtime, it will attempt to read them from the .env file and then from the config.yaml file.
     """
 
     api: APIConfig
@@ -153,33 +154,6 @@ class Config(BaseSettings):
     @cached_property
     def multi_api_count(self) -> int:
         return (self.datagateway_api is not None) + (self.search_api is not None)
-
-    @classmethod
-    def load(cls, path=None):
-        """
-        Loads the config data from the JSON file and returns it as a APIConfig pydantic
-        model. Exits the application if it fails to locate the JSON config file or
-        the APIConfig model validation fails.
-
-        :param cls: :class:`APIConfig` pointer
-        :param path: path to the configuration file
-        :return: APIConfig model object that contains the config data
-        """
-        if path is None:
-            path = Path(__file__).parent.parent / "config.yaml"
-
-        try:
-            with open(path, encoding="utf-8") as target:
-                data = yaml.safe_load(target)
-
-                if "datagateway_api" not in data and "search_api" not in data:
-                    log.warning(
-                        "There is no API specified in the configuration file",
-                    )
-
-                return cls(**data)
-        except (OSError, ValidationError) as error:
-            sys.exit(f"An error occurred while trying to load the config data: {error}")
 
     @staticmethod
     def _validate_api_extension(
@@ -212,8 +186,35 @@ class Config(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         env_nested_delimiter="__",
+        yaml_file="config.yaml",
+        yaml_file_encoding="utf-8",
         hide_input_in_errors=True,
     )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """
+        Adds config.yaml as a config source, in addition to the sources pydantic provides by default.
+
+        The sources are returned in order of decreasing priority, so a value set as an environment variable takes
+        precedence over the same value set in .env, which in turn takes precedence over the value set in config.yaml.
+        Sources are merged rather than replaced, so the config can be spread across them (e.g. secrets as environment
+        variables, everything else in config.yaml).
+        """
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            YamlConfigSettingsSource(settings_cls),
+            file_secret_settings,
+        )
 
 
 config = Config()
