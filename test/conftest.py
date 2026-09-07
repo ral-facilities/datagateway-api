@@ -1,10 +1,5 @@
-import json
-from unittest.mock import mock_open, patch
-
 import pytest
 from icat.query import Query
-
-from datagateway_api.common.config import APIConfig
 
 
 @pytest.fixture()
@@ -67,10 +62,3 @@ def test_config_data():
             },
         },
     }
-
-
-@pytest.fixture()
-def test_config_without_search_api(test_config_data):
-    del test_config_data["search_api"]
-    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-        return APIConfig.load("test/path")

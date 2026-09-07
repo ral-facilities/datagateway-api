@@ -134,7 +134,8 @@ def create_search_api_app() -> FastAPI | None:
 
 if config.multi_api_count > 1:
     app = FastAPI(
-        title="DataGateway",
+        title=config.api.title,
+        description=config.api.description,
         root_path=config.api.url_prefix,
         separate_input_output_schemas=False,
     )
