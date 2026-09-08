@@ -1,5 +1,4 @@
 from datetime import datetime
-from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 from unittest.mock import patch
 
 import pytest
@@ -12,6 +11,7 @@ from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.datagateway_api.icat.filters import PythonICATWhereFilter
 from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 
 class TestSessionHandling:
@@ -90,7 +90,7 @@ class TestSessionHandling:
                 id="Normal request body",
             ),
             pytest.param(
-                dict(TEST_USER_CREDENTIALS),
+                TEST_USER_CREDENTIALS,
                 id="Missing mechanism in request body",
             ),
         ],
@@ -163,7 +163,7 @@ class TestSessionHandling:
             config.datagateway_api.icat_url,
             checkCert=config.datagateway_api.icat_check_cert,
         )
-        client.login(TEST_MECHANISM, dict(TEST_USER_CREDENTIALS))
+        client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = test_client.delete(

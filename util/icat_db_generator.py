@@ -3,13 +3,13 @@ import datetime
 import enum
 from abc import ABC, abstractmethod
 from multiprocessing import Process
-from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 from faker import Faker
 from icat.client import Client
 from icat.query import Query
 
 from datagateway_api.common.config import config
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -99,7 +99,7 @@ def icat_client():
         config.datagateway_api.icat_url,
         checkCert=config.datagateway_api.icat_check_cert,
     )
-    client.login(TEST_MECHANISM, dict(TEST_USER_CREDENTIALS))
+    client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
     return client
 
 
