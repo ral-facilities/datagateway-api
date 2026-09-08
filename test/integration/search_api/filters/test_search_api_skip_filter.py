@@ -1,6 +1,6 @@
 import pytest
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.helpers import get_icat_properties
 from datagateway_api.search_api.filters import SearchAPISkipFilter
@@ -23,8 +23,8 @@ class TestSearchAPISkipFilter:
         assert search_api_query_document.icat_query.query.limit == (
             int(skip_value),
             get_icat_properties(
-                Config.config.search_api.icat_url,
-                Config.config.search_api.icat_check_cert,
+                config.search_api.icat_url,
+                config.search_api.icat_check_cert,
             )["maxEntities"],
         )
 

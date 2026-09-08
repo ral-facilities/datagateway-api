@@ -1,22 +1,21 @@
-from functools import cached_property
 import logging
-from pathlib import Path
-import sys
+from functools import cached_property
 from typing import Annotated, Optional, Self
 
 from pydantic import (
     AfterValidator,
     BaseModel,
-    computed_field,
     Field,
-    model_validator,
     SecretStr,
-    StrictBool,
-    StrictInt,
-    StrictStr,
-    ValidationError,
+    computed_field,
+    model_validator,
 )
-import yaml
+from pydantic_settings import (
+    BaseSettings,
+    PydanticBaseSettingsSource,
+    SettingsConfigDict,
+    YamlConfigSettingsSource,
+)
 
 log = logging.getLogger()
 
@@ -42,13 +41,29 @@ def validate_extension(extension):
     return extension
 
 
-DataGatewayAPIExtension = Annotated[StrictStr, AfterValidator(validate_extension)]
+DataGatewayAPIExtension = Annotated[str, AfterValidator(validate_extension)]
+
+
+class APIConfig(BaseModel):
+    """
+    Configuration model for the API.
+    """
+
+    title: str = "Datagateway API"
+    description: str = "This is the API for the Datagateway"
+    url_prefix: DataGatewayAPIExtension
+    reload: bool | None = None
+    host: str | None = None
+    port: int | None = None
+    allowed_cors_headers: list[str]
+    allowed_cors_origins: list[str]
+    allowed_cors_methods: list[str]
 
 
 class UseReaderForPerformance(BaseModel):
-    enabled: StrictBool
-    reader_mechanism: StrictStr
-    reader_username: StrictStr
+    enabled: bool
+    reader_mechanism: str
+    reader_username: str
     reader_password: SecretStr
     maxsize: int = Field(
         default=128,
@@ -66,12 +81,12 @@ class DataGatewayAPI(BaseModel):
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: StrictInt
-    client_pool_init_size: StrictInt
-    client_pool_max_size: StrictInt
+    client_cache_size: int
+    client_pool_init_size: int
+    client_pool_max_size: int
     extension: DataGatewayAPIExtension
-    icat_check_cert: StrictBool
-    icat_url: StrictStr
+    icat_check_cert: bool
+    icat_url: str
     use_reader_for_performance: Optional[UseReaderForPerformance] = None
 
     def __getitem__(self, item):
@@ -79,11 +94,11 @@ class DataGatewayAPI(BaseModel):
 
 
 class SearchScoring(BaseModel):
-    enabled: StrictBool
-    api_url: StrictStr
-    api_request_timeout: StrictInt
-    group: StrictStr
-    limit: StrictInt
+    enabled: bool
+    api_url: str
+    api_request_timeout: int
+    group: str
+    limit: int
 
 
 class SearchAPI(BaseModel):
@@ -93,51 +108,29 @@ class SearchAPI(BaseModel):
     """
 
     extension: DataGatewayAPIExtension
-    icat_check_cert: StrictBool
-    icat_url: StrictStr
-    mechanism: StrictStr
-    username: StrictStr
-    password: StrictStr
+    icat_check_cert: bool
+    icat_url: str
+    mechanism: str
+    username: str
+    password: str
     search_scoring: SearchScoring
 
     def __getitem__(self, item):
         return getattr(self, item)
 
 
-class TestUserCredentials(BaseModel):
-    username: StrictStr
-    password: StrictStr
-
-
-class APIConfig(BaseModel):
+class Config(BaseSettings):
     """
-    Configuration model class that implements pydantic's BaseModel class to allow for
-    validation of the API config data using Python type annotations. It ensures that
-    all required config options exist before getting too far into the setup of the API.
+    Overall configuration model for the application.
 
-    If a mandatory config option is missing or misspelled, or has a wrong value type,
-    Pydantic raises a validation error with a breakdown of what was wrong and the
-    application is exited.
-
-    Config options used for testing are not checked here as they should only be used
-    during tests, not in the typical running of the API.
-
-    Some options used when running the API (host, reload etc.) aren't mandatory
-    when running the API in production (these options aren't used in the `wsgi.py`
-    entrypoint). As a result, they're not present in `config_keys`. However, they
-    are required when using `main.py` as an entrypoint. In any case of these
-    specific missing config options when using that entrypoint, they are checked at
-    API startup so any missing options will be caught quickly.
+    It includes attributes for the API, authentication and database configurations. The class inherits from
+    `BaseSettings` and automatically reads environment variables. If values are not passed in form of system environment
+    variables at runtime, it will attempt to read them from the .env file and then from the config.yaml file.
     """
 
-    datagateway_api: Optional[DataGatewayAPI] = None
-    reload: Optional[StrictBool] = None
-    host: Optional[StrictStr] = None
-    port: Optional[StrictInt] = None
-    search_api: Optional[SearchAPI] = None
-    test_mechanism: Optional[StrictStr] = None
-    url_prefix: DataGatewayAPIExtension
-    test_user_credentials: Optional[TestUserCredentials] = None
+    api: APIConfig
+    datagateway_api: DataGatewayAPI | None = None
+    search_api: SearchAPI | None = None
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -146,33 +139,6 @@ class APIConfig(BaseModel):
     @cached_property
     def multi_api_count(self) -> int:
         return (self.datagateway_api is not None) + (self.search_api is not None)
-
-    @classmethod
-    def load(cls, path=None):
-        """
-        Loads the config data from the JSON file and returns it as a APIConfig pydantic
-        model. Exits the application if it fails to locate the JSON config file or
-        the APIConfig model validation fails.
-
-        :param cls: :class:`APIConfig` pointer
-        :param path: path to the configuration file
-        :return: APIConfig model object that contains the config data
-        """
-        if path is None:
-            path = Path(__file__).parent.parent / "config.yaml"
-
-        try:
-            with open(path, encoding="utf-8") as target:
-                data = yaml.safe_load(target)
-
-                if "datagateway_api" not in data and "search_api" not in data:
-                    log.warning(
-                        "There is no API specified in the configuration file",
-                    )
-
-                return cls(**data)
-        except (IOError, ValidationError) as error:
-            sys.exit(f"An error occurred while trying to load the config data: {error}")
 
     @staticmethod
     def _validate_api_extension(
@@ -192,8 +158,8 @@ class APIConfig(BaseModel):
         An error is raised, at which point the application exits, if the extensions are the same.
         """
         extensions = set()
-        APIConfig._validate_api_extension(extensions=extensions, sub_api_config=self.datagateway_api)
-        APIConfig._validate_api_extension(extensions=extensions, sub_api_config=self.search_api)
+        Config._validate_api_extension(extensions=extensions, sub_api_config=self.datagateway_api)
+        Config._validate_api_extension(extensions=extensions, sub_api_config=self.search_api)
         if self.multi_api_count == 0:
             raise ValueError("At least 1 API must be enabled.")
         elif self.multi_api_count > 1 and "" in extensions:
@@ -201,8 +167,39 @@ class APIConfig(BaseModel):
 
         return self
 
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        env_nested_delimiter="__",
+        yaml_file="config.yaml",
+        yaml_file_encoding="utf-8",
+        hide_input_in_errors=True,
+    )
 
-class Config:
-    """Class containing config as a class variable so it can mocked during testing"""
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls: type[BaseSettings],
+        init_settings: PydanticBaseSettingsSource,
+        env_settings: PydanticBaseSettingsSource,
+        dotenv_settings: PydanticBaseSettingsSource,
+        file_secret_settings: PydanticBaseSettingsSource,
+    ) -> tuple[PydanticBaseSettingsSource, ...]:
+        """
+        Adds config.yaml as a config source, in addition to the sources pydantic provides by default.
 
-    config = APIConfig.load()
+        The sources are returned in order of decreasing priority, so a value set as an environment variable takes
+        precedence over the same value set in .env, which in turn takes precedence over the value set in config.yaml.
+        Sources are merged rather than replaced, so the config can be spread across them (e.g. secrets as environment
+        variables, everything else in config.yaml).
+        """
+        return (
+            init_settings,
+            env_settings,
+            dotenv_settings,
+            YamlConfigSettingsSource(settings_cls),
+            file_secret_settings,
+        )
+
+
+config = Config()

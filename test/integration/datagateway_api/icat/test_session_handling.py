@@ -1,16 +1,17 @@
 from datetime import datetime
 from unittest.mock import patch
 
+import pytest
 from dateutil.tz import tzlocal
 from icat.client import Client
-import pytest
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.date_handler import DateHandler
 from datagateway_api.common.exceptions import AuthenticationError
 from datagateway_api.datagateway_api.icat.filters import PythonICATWhereFilter
 from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
 from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 
 class TestSessionHandling:
@@ -36,9 +37,8 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
         # Check username is correct
-        test_mechanism = Config.config.test_mechanism
-        test_username = Config.config.test_user_credentials.username
-        assert session_details.json()["username"] == f"{test_mechanism}/{test_username}"
+        test_username = TEST_USER_CREDENTIALS["username"]
+        assert session_details.json()["username"] == f"{TEST_MECHANISM}/{test_username}"
 
         # Check session ID matches the header from the request
         assert session_details.json()["id"] == valid_icat_credentials_header["Authorization"].split()[1]
@@ -84,17 +84,13 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": Config.config.test_user_credentials.username,
-                    "password": Config.config.test_user_credentials.password,
-                    "mechanism": Config.config.test_mechanism,
+                    **TEST_USER_CREDENTIALS,
+                    "mechanism": TEST_MECHANISM,
                 },
                 id="Normal request body",
             ),
             pytest.param(
-                {
-                    "username": Config.config.test_user_credentials.username,
-                    "password": Config.config.test_user_credentials.password,
-                },
+                TEST_USER_CREDENTIALS,
                 id="Missing mechanism in request body",
             ),
         ],
@@ -131,7 +127,7 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": Config.config.test_mechanism,
+                    "mechanism": TEST_MECHANISM,
                 },
                 403,
                 id="Invalid credentials",
@@ -164,13 +160,10 @@ class TestSessionHandling:
 
     def test_valid_logout(self, test_client):
         client = Client(
-            Config.config.datagateway_api.icat_url,
-            checkCert=Config.config.datagateway_api.icat_check_cert,
+            config.datagateway_api.icat_url,
+            checkCert=config.datagateway_api.icat_check_cert,
         )
-        client.login(
-            Config.config.test_mechanism,
-            Config.config.test_user_credentials.model_dump(),
-        )
+        client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = test_client.delete(
