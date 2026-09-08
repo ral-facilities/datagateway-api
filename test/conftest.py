@@ -54,11 +54,4 @@ def test_config_data():
                 "limit": 1000,
             },
         },
-        "test": {
-            "mechanism": "simple",
-            "user_credentials": {
-                "username": "root",
-                "password": "pw",
-            },
-        },
     }

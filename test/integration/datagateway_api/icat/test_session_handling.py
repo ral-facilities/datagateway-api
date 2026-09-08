@@ -1,4 +1,5 @@
 from datetime import datetime
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 from unittest.mock import patch
 
 import pytest
@@ -36,9 +37,8 @@ class TestSessionHandling:
         assert time_diff_minutes < 120 and time_diff_minutes >= 118
 
         # Check username is correct
-        test_mechanism = config.test.mechanism
-        test_username = config.test.user_credentials.username
-        assert session_details.json()["username"] == f"{test_mechanism}/{test_username}"
+        test_username = TEST_USER_CREDENTIALS["username"]
+        assert session_details.json()["username"] == f"{TEST_MECHANISM}/{test_username}"
 
         # Check session ID matches the header from the request
         assert session_details.json()["id"] == valid_icat_credentials_header["Authorization"].split()[1]
@@ -84,17 +84,13 @@ class TestSessionHandling:
         [
             pytest.param(
                 {
-                    "username": config.test.user_credentials.username,
-                    "password": config.test.user_credentials.password,
-                    "mechanism": config.test.mechanism,
+                    **TEST_USER_CREDENTIALS,
+                    "mechanism": TEST_MECHANISM,
                 },
                 id="Normal request body",
             ),
             pytest.param(
-                {
-                    "username": config.test.user_credentials.username,
-                    "password": config.test.user_credentials.password,
-                },
+                dict(TEST_USER_CREDENTIALS),
                 id="Missing mechanism in request body",
             ),
         ],
@@ -131,7 +127,7 @@ class TestSessionHandling:
                 {
                     "username": "Invalid Username",
                     "password": "InvalidPassword",
-                    "mechanism": config.test.mechanism,
+                    "mechanism": TEST_MECHANISM,
                 },
                 403,
                 id="Invalid credentials",
@@ -167,10 +163,7 @@ class TestSessionHandling:
             config.datagateway_api.icat_url,
             checkCert=config.datagateway_api.icat_check_cert,
         )
-        client.login(
-            config.test.mechanism,
-            config.test.user_credentials.model_dump(),
-        )
+        client.login(TEST_MECHANISM, dict(TEST_USER_CREDENTIALS))
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 
         logout_response = test_client.delete(

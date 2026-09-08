@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 import pytest
 from fastapi import FastAPI
@@ -16,10 +17,7 @@ def icat_client():
         config.datagateway_api.icat_url,
         checkCert=config.datagateway_api.icat_check_cert,
     )
-    client.login(
-        config.test.mechanism,
-        config.test.user_credentials.model_dump(),
-    )
+    client.login(TEST_MECHANISM, dict(TEST_USER_CREDENTIALS))
     return client
 
 

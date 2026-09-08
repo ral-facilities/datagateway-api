@@ -60,20 +60,6 @@ class APIConfig(BaseModel):
     allowed_cors_methods: list[str]
 
 
-class TestUserCredentials(BaseModel):
-    username: str
-    password: str
-
-
-class TestConfig(BaseModel):
-    """
-    Configuration model for the tests
-    """
-
-    mechanism: str | None = None
-    user_credentials: TestUserCredentials | None = None
-
-
 class UseReaderForPerformance(BaseModel):
     enabled: bool
     reader_mechanism: str
@@ -145,7 +131,6 @@ class Config(BaseSettings):
     api: APIConfig
     datagateway_api: DataGatewayAPI | None = None
     search_api: SearchAPI | None = None
-    test: TestConfig | None = None
 
     def __getitem__(self, item):
         return getattr(self, item)
