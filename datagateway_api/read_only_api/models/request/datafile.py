@@ -4,13 +4,16 @@ from typing import Annotated
 from pydantic import AfterValidator, Field
 
 from datagateway_api.read_only_api.models.request.common import (
-    ORDER_DESCRIPTION,
-    WHERE_DESCRIPTION,
     AnyFilter,
     CommonFilters,
     CommonWhereFilter,
+    order_description,
     validate_order,
+    where_description,
 )
+
+DATAFILE_QUERYABLE_FIELDS = ("name", "location", "datafileCreateTime")
+DATAFILE_ORDERABLE_FIELDS = ("name", "location", "fileSize", "datafileCreateTime")
 
 
 class DatafileOrderEnum(StrEnum):
@@ -30,13 +33,8 @@ class DatafileWhereFilter(CommonWhereFilter):
 
 
 class DatafileFilters(CommonFilters):
-    where: list[DatafileWhereFilter] = Field(
-        default=[],
-        description=WHERE_DESCRIPTION.format(queryable_fields="'name', 'location', and 'datafileCreateTime'"),
-    )
+    where: list[DatafileWhereFilter] = Field(default=[], description=where_description(DATAFILE_QUERYABLE_FIELDS))
     order: Annotated[list[DatafileOrderEnum], AfterValidator(validate_order)] = Field(
         default=[],
-        description=ORDER_DESCRIPTION.format(
-            orderable_fields="'name', 'location', 'fileSize', and 'datafileCreateTime'",
-        ),
+        description=order_description(DATAFILE_ORDERABLE_FIELDS),
     )

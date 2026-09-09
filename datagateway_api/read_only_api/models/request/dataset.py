@@ -4,16 +4,19 @@ from typing import Annotated
 from pydantic import AfterValidator, Field
 
 from datagateway_api.read_only_api.models.request.common import (
-    INCLUDE_DESCRIPTION,
-    ORDER_DESCRIPTION,
-    WHERE_DESCRIPTION,
     AnyFilter,
     CommonAndIncludeFilters,
     CommonWhereFilter,
+    include_description,
+    order_description,
     validate_order,
+    where_description,
 )
 
-DATASET_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(includable_paths="'type'")
+DATASET_QUERYABLE_FIELDS = ("name", "createTime", "modTime")
+DATASET_ORDERABLE_FIELDS = ("name", "fileCount", "fileSize", "createTime", "modTime")
+DATASET_INCLUDABLE_PATHS = ("type",)
+DATASET_INCLUDE_DESCRIPTION = include_description(DATASET_INCLUDABLE_PATHS)
 
 
 class DatasetOrderEnum(StrEnum):
@@ -39,14 +42,9 @@ class DatasetIncludeEnum(StrEnum):
 
 
 class DatasetFilters(CommonAndIncludeFilters):
-    where: list[DatasetWhereFilter] = Field(
-        default=[],
-        description=WHERE_DESCRIPTION.format(queryable_fields="'name', 'createTime', and 'modTime'"),
-    )
+    where: list[DatasetWhereFilter] = Field(default=[], description=where_description(DATASET_QUERYABLE_FIELDS))
     order: Annotated[list[DatasetOrderEnum], AfterValidator(validate_order)] = Field(
         default=[],
-        description=ORDER_DESCRIPTION.format(
-            orderable_fields="'name', 'fileCount', 'fileSize', 'createTime', and 'modTime'",
-        ),
+        description=order_description(DATASET_ORDERABLE_FIELDS),
     )
     include: list[DatasetIncludeEnum] = Field(default=[], description=DATASET_INCLUDE_DESCRIPTION)

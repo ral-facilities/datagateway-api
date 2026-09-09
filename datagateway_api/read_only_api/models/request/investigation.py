@@ -5,21 +5,33 @@ from pydantic import AfterValidator, BaseModel, Field, model_serializer
 
 from datagateway_api.datagateway_api.icat.filters import PythonICATDistinctFieldFilter
 from datagateway_api.read_only_api.models.request.common import (
-    INCLUDE_DESCRIPTION,
-    ORDER_DESCRIPTION,
-    WHERE_DESCRIPTION,
+    DISTINCT_DESCRIPTION,
     AnyFilter,
     CommonAndIncludeFilters,
     CommonWhereFilter,
+    include_description,
+    order_description,
     validate_order,
+    where_description,
 )
 
-INVESTIGATION_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(
-    includable_paths=(
-        "'investigationInstruments.instrument', 'investigationUsers.user', 'samples.type', 'parameters.type', "
-        "and 'publications'"
-    ),
+INVESTIGATION_QUERYABLE_FIELDS = (
+    "name",
+    "title",
+    "visitId",
+    "startDate",
+    "endDate",
+    "investigationInstruments.instrument.name",
 )
+INVESTIGATION_ORDERABLE_FIELDS = ("name", "title", "visitId", "fileSize", "startDate", "endDate")
+INVESTIGATION_INCLUDABLE_PATHS = (
+    "investigationInstruments.instrument",
+    "investigationUsers.user",
+    "samples.type",
+    "parameters.type",
+    "publications",
+)
+INVESTIGATION_INCLUDE_DESCRIPTION = include_description(INVESTIGATION_INCLUDABLE_PATHS)
 
 
 class InvestigationDistinctEnum(StrEnum):
@@ -79,23 +91,14 @@ class InvestigationIncludeEnum(StrEnum):
 
 
 class InvestigationFilters(CommonAndIncludeFilters):
-    distinct: list[InvestigationDistinctEnum] = Field(
-        default=[],
-        description="Return distinct value(s) of the specified fields. Only these fields will be returned.",
-    )
+    distinct: list[InvestigationDistinctEnum] = Field(default=[], description=DISTINCT_DESCRIPTION)
     where: list[InvestigationWhereFilter] = Field(
         default=[],
-        description=WHERE_DESCRIPTION.format(
-            queryable_fields=(
-                "'name', 'title', 'visitId', 'startDate', 'endDate', and 'investigationInstruments.instrument.name'",
-            ),
-        ),
+        description=where_description(INVESTIGATION_QUERYABLE_FIELDS),
     )
     order: Annotated[list[InvestigationOrderEnum], AfterValidator(validate_order)] = Field(
         default=[],
-        description=ORDER_DESCRIPTION.format(
-            orderable_fields="'name', 'title', 'visitId', 'fileSize', 'startDate', and 'endDate'",
-        ),
+        description=order_description(INVESTIGATION_ORDERABLE_FIELDS),
     )
     include: list[InvestigationIncludeEnum] = Field(default=[], description=INVESTIGATION_INCLUDE_DESCRIPTION)
 
