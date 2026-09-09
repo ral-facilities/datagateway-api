@@ -1,3 +1,4 @@
+from collections.abc import Iterable, Sequence
 from enum import StrEnum
 import json
 from typing import Any
@@ -13,18 +14,70 @@ from datagateway_api.datagateway_api.icat.filters import (
     PythonICATWhereFilter,
 )
 
-WHERE_DESCRIPTION = (
-    "Apply conditions to specified fields.\n\nQueryable fields are: {queryable_fields}.\n\nPossible operators are: "
-    "'eq' (equals), 'neq'/'ne' (not equals), 'isnull', 'like' (includes), 'ilike' (case-insensitive includes), "
-    "'nlike' (does not include), 'lt' (less than), 'lte' (less than or equals), 'gt' (greater than), "
-    "'gte' (greater than or equals), 'in'/'inq', 'nin' (not in), 'between', 'regexp' (regular expression pattern).\n\n"
-    "The format of a condition should be {{field: {{operator: value}}}}."
+SKIP_DESCRIPTION = "Skip the first results returned by the query. Used alongside `limit` for pagination."
+LIMIT_DESCRIPTION = "Return at most this many results per request."
+DISTINCT_DESCRIPTION = (
+    "Return distinct value(s) of the specified field(s).\n\nOnly the specified fields are returned in the response."
 )
-ORDER_DESCRIPTION = (
-    "Order results by the value of the specified field(s) in ascending or descending order.\n\n"
-    "Orderable fields are: {orderable_fields}.\n\nThe format of an order should be 'field asc' or 'field desc'."
+
+# Each entry maps the aliases accepted for an operator to a description of what it matches
+WHERE_OPERATORS: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("eq",), "equal to the value"),
+    (("neq", "ne"), "not equal to the value"),
+    (("isnull",), "null when `true`, not null when `false`"),
+    (("like",), "includes the value"),
+    (("ilike",), "includes the value, ignoring case"),
+    (("nlike",), "does not include the value"),
+    (("nilike",), "does not include the value, ignoring case"),
+    (("lt",), "less than the value"),
+    (("lte",), "less than or equal to the value"),
+    (("gt",), "greater than the value"),
+    (("gte",), "greater than or equal to the value"),
+    (("in", "inq"), "equal to any value in the given list"),
+    (("nin",), "not equal to any value in the given list"),
+    (("between",), "within the range of the two given values"),
+    (("regexp",), "matches the given regular expression"),
 )
-INCLUDE_DESCRIPTION = "Include related entities.\n\nPossible includes are: {includable_paths}"
+
+
+def _code_list(values: Iterable[str]) -> str:
+    """Render values as a comma separated list of inline code spans."""
+    return ", ".join(f"`{value}`" for value in values)
+
+
+def where_description(queryable_fields: Sequence[str]) -> str:
+    """Build the Markdown description of the `where` filter for the given queryable fields."""
+    operators = "\n".join(
+        f"- {' / '.join('`' + alias + '`' for alias in aliases)} - {meaning}"
+        for aliases, meaning in WHERE_OPERATORS
+    )
+    example = '{"' + queryable_fields[0] + '": {"eq": "value"}}'
+
+    return (
+        "Apply conditions to the specified fields.\n\n"
+        f"**Queryable fields:** {_code_list(queryable_fields)}\n\n"
+        '**Format:** `{"field": {"operator": value}}`\n\n'
+        f"**Example:** `{example}`\n\n"
+        f"**Operators:**\n\n{operators}"
+    )
+
+
+def order_description(orderable_fields: Sequence[str]) -> str:
+    """Build the Markdown description of the `order` filter for the given orderable fields."""
+    return (
+        "Order results by the value of the specified field(s), in ascending or descending order.\n\n"
+        f"**Orderable fields:** {_code_list(orderable_fields)}\n\n"
+        "**Format:** `field asc` or `field desc`\n\n"
+        "Multiple orders are applied in the order they are given. A field can only be ordered on once."
+    )
+
+
+def include_description(includable_paths: Sequence[str]) -> str:
+    """Build the Markdown description of the `include` filter for the given related entity paths."""
+    return (
+        "Include related entities in the response.\n\n"
+        f"**Includable paths:** {_code_list(includable_paths)}"
+    )
 
 
 class EqualFilter(BaseModel):
@@ -134,14 +187,11 @@ class CommonFilters(BaseModel):
     # where: list[BaseModel]
     where: list[CommonWhereFilter]
     order: list[StrEnum]
-    skip: NonNegativeInt = Field(
-        default=0,
-        description="Skip the first results returned by the query. Used for pagination.",
-    )
+    skip: NonNegativeInt = Field(default=0, description=SKIP_DESCRIPTION)
     limit: PositiveInt = Field(
         default=Config.config.read_only_api.limit.default if Config.config.read_only_api is not None else 100,
         le=Config.config.read_only_api.limit.maximum if Config.config.read_only_api is not None else 100,
-        description="Return at most this many results per request.",
+        description=LIMIT_DESCRIPTION,
     )
 
     @model_serializer(mode="plain")
