@@ -1,7 +1,7 @@
 import requests
 from requests import RequestException
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import ScoringAPIError
 
 
@@ -20,15 +20,15 @@ class SearchScoring:
         try:
             data = {
                 "query": query,
-                "group": Config.config.search_api.search_scoring.group,
-                "limit": Config.config.search_api.search_scoring.limit,
+                "group": config.search_api.search_scoring.group,
+                "limit": config.search_api.search_scoring.limit,
                 # With itemIds, scoring server returns a 400 error. No idea why.
                 # "itemIds": list(map(lambda entity: (entity["pid"]), entities)),  #
             }
             response = requests.post(
-                Config.config.search_api.search_scoring.api_url,
+                config.search_api.search_scoring.api_url,
                 json=data,
-                timeout=Config.config.search_api.search_scoring.api_request_timeout,
+                timeout=config.search_api.search_scoring.api_request_timeout,
             )
             response.raise_for_status()
             return response.json()["scores"]

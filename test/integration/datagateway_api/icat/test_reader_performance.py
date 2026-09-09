@@ -1,11 +1,11 @@
-from datetime import datetime
 import time
+from datetime import datetime
 from typing import Generator
 
-from icat.client import Client
 import pytest
+from icat.client import Client
 
-from datagateway_api.common.config import APIConfig, Config, ReaderConfig
+from datagateway_api.common.config import config, ReaderConfig
 from datagateway_api.common.exceptions import MissingRecordError, PythonICATError
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
@@ -34,16 +34,36 @@ def enable_reader_permissions(icat_client: Client) -> Generator[None, None, None
             beans=[
                 icat_client.new("UserGroup", user=user, grouping=grouping),
                 icat_client.new(obj="Rule", crudFlags="R", what="User", grouping=grouping),
-                icat_client.new(obj="Rule", crudFlags="R", what="InvestigationUser", grouping=grouping),
-                icat_client.new(obj="Rule", crudFlags="R", what="InstrumentScientist", grouping=grouping),
+                icat_client.new(
+                    obj="Rule",
+                    crudFlags="R",
+                    what="InvestigationUser",
+                    grouping=grouping,
+                ),
+                icat_client.new(
+                    obj="Rule",
+                    crudFlags="R",
+                    what="InstrumentScientist",
+                    grouping=grouping,
+                ),
                 icat_client.new(obj="Rule", crudFlags="R", what="Instrument", grouping=grouping),
-                icat_client.new(obj="Rule", crudFlags="R", what="InvestigationInstrument", grouping=grouping),
+                icat_client.new(
+                    obj="Rule",
+                    crudFlags="R",
+                    what="InvestigationInstrument",
+                    grouping=grouping,
+                ),
                 icat_client.new(obj="Rule", crudFlags="R", what="Investigation", grouping=grouping),
                 icat_client.new(obj="Rule", crudFlags="R", what="Dataset", grouping=grouping),
                 icat_client.new(obj="Rule", crudFlags="R", what="Datafile", grouping=grouping),
                 icat_client.new(obj="Rule", crudFlags="R", what="DataPublication", grouping=grouping),
                 icat_client.new(obj="Rule", crudFlags="R", what="DataCollection", grouping=grouping),
-                icat_client.new(obj="Rule", crudFlags="R", what="DataCollectionDataset", grouping=grouping),
+                icat_client.new(
+                    obj="Rule",
+                    crudFlags="R",
+                    what="DataCollectionDataset",
+                    grouping=grouping,
+                ),
             ],
         )
         yield
@@ -59,12 +79,26 @@ def associate_icat_user(icat_client: Client) -> Generator[None, None, None]:
             obj="User",
             name="simple/icatuser",
             investigationUsers=[
-                icat_client.new(obj="InvestigationUser", role="", investigation=icat_client.get("Investigation", 2)),
-                icat_client.new(obj="InvestigationUser", role="", investigation=icat_client.get("Investigation", 3)),
+                icat_client.new(
+                    obj="InvestigationUser",
+                    role="",
+                    investigation=icat_client.get("Investigation", 2),
+                ),
+                icat_client.new(
+                    obj="InvestigationUser",
+                    role="",
+                    investigation=icat_client.get("Investigation", 3),
+                ),
             ],
             instrumentScientists=[
-                icat_client.new(obj="InstrumentScientist", instrument=icat_client.get("Instrument", 13)),
-                icat_client.new(obj="InstrumentScientist", instrument=icat_client.get("Instrument", 14)),
+                icat_client.new(
+                    obj="InstrumentScientist",
+                    instrument=icat_client.get("Instrument", 13),
+                ),
+                icat_client.new(
+                    obj="InstrumentScientist",
+                    instrument=icat_client.get("Instrument", 14),
+                ),
             ],
         )
         user.create()
@@ -103,30 +137,30 @@ def associate_data_publication(icat_client: Client) -> Generator[None, None, Non
 
 @pytest.fixture(scope="class")
 def icat_user_client() -> Client:
-    client = Client(url=Config.config.icat.url, checkCert=Config.config.icat.check_cert)
+    client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
     client.login(auth="simple", credentials={"username": "icatuser", "password": "icatuserpw"})
     return client
 
 
 @pytest.fixture(scope="class")
 def icat_root_client() -> Client:
-    client = Client(url=Config.config.icat.url, checkCert=Config.config.icat.check_cert)
+    client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
     client.login(auth="simple", credentials={"username": "root", "password": "pw"})
     return client
 
 
 @pytest.fixture(scope="function")
 def enable_reader_config() -> Generator[None, None, None]:
-    Config.config.icat.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")  # noqa: S106
+    config.icat.reader = ReaderConfig(mechanism="simple", username="reader", password="readerpw")  # noqa: S106
     yield
-    Config.config = APIConfig.load()
+    config.icat.reader = None
 
 
 @pytest.fixture(scope="function")
 def enable_reader_bad_config() -> Generator[None, None, None]:
-    Config.config.icat.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")  # noqa: S106
+    config.icat.reader = ReaderConfig(mechanism="bad", username="reader", password="readerpw")  # noqa: S106
     yield
-    Config.config = APIConfig.load()
+    config.icat.reader = None
 
 
 class TestReaderPerformance:
@@ -188,9 +222,7 @@ class TestReaderPerformance:
         ReaderQueryHandler("Datafile", [])
         reader_client = ReaderQueryHandler.reader_client
         assert isinstance(reader_client, ICATClient)
-        assert reader_client.getUserName() == (
-            f"{Config.config.icat.reader.mechanism}/{Config.config.icat.reader.username}"
-        )
+        assert reader_client.getUserName() == f"{config.icat.reader.mechanism}/{config.icat.reader.username}"
 
     @pytest.mark.parametrize(
         ["entity_type", "filters", "results_length"],
@@ -221,8 +253,16 @@ class TestReaderPerformance:
     @pytest.mark.parametrize(
         ["filters", "results_length"],
         [
-            pytest.param([PythonICATWhereFilter("dataset.id", 6, "eq")], 16, id="Dataset in a DataPublication"),
-            pytest.param([PythonICATWhereFilter("dataset.id", 7, "eq")], 0, id="Dataset not in a DataPublication"),
+            pytest.param(
+                [PythonICATWhereFilter("dataset.id", 6, "eq")],
+                16,
+                id="Dataset in a DataPublication",
+            ),
+            pytest.param(
+                [PythonICATWhereFilter("dataset.id", 7, "eq")],
+                0,
+                id="Dataset not in a DataPublication",
+            ),
         ],
     )
     def test_open_data(
@@ -258,10 +298,7 @@ class TestReaderPerformance:
         assert len(results) == results_length
 
     def test_refresh(self, enable_reader_config: None) -> None:
-        client = Client(
-            url=Config.config.icat.url,
-            checkCert=Config.config.icat.check_cert,
-        )
+        client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
         client._next_refresh = 0
         ReaderQueryHandler.reader_client = client
         ReaderQueryHandler.refresh()
@@ -269,10 +306,7 @@ class TestReaderPerformance:
         assert current_time + 89 * 60 < ReaderQueryHandler.reader_client._next_refresh < current_time + 90 * 60
 
     def test_refresh_failure(self, enable_reader_bad_config: None) -> None:
-        client = Client(
-            url=Config.config.icat.url,
-            checkCert=Config.config.icat.check_cert,
-        )
+        client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
         client._next_refresh = 0
         ReaderQueryHandler.reader_client = client
         with pytest.raises(PythonICATError, match="Internal error with reader account configuration"):

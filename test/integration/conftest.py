@@ -1,28 +1,20 @@
 from datetime import datetime, timedelta
-import json
-from unittest.mock import mock_open, patch
 
+import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from icat.client import Client
-import pytest
 
-
-from datagateway_api.common.config import APIConfig, Config
+from datagateway_api.common.config import config
 from datagateway_api.datagateway_api.icat.models import Session
 from datagateway_api.main import app, register_common_handlers
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 
 @pytest.fixture(scope="package")
 def icat_client():
-    client = Client(
-        Config.config.icat.url,
-        checkCert=Config.config.icat.check_cert,
-    )
-    client.login(
-        Config.config.test_mechanism,
-        Config.config.test_user_credentials.model_dump(),
-    )
+    client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
+    client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
     return client
 
 
@@ -61,16 +53,3 @@ def valid_credentials_header():
     )
 
     yield {"Authorization": f"Bearer {session.id}"}
-
-
-@pytest.fixture()
-def test_config(test_config_data):
-    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-        return APIConfig.load("test/path")
-
-
-@pytest.fixture()
-def test_config_without_search_api(test_config_data):
-    del test_config_data["search_api"]
-    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-        return APIConfig.load("test/path")

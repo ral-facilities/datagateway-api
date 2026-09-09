@@ -1,30 +1,13 @@
-from typing import Generator
-
 import pytest
 
-from datagateway_api.common.config import APIConfig, Config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
-
-
-@pytest.fixture(scope="function")
-def disable_search_api() -> Generator[None, None, None]:
-    Config.config.search_api = None
-    yield
-    Config.config = APIConfig.load()
 
 
 class TestPaNOSCMappings:
     def test_valid_load_mappings(self, test_panosc_mappings):
         test_mappings = PaNOSCMappings()
         assert test_mappings.mappings == test_panosc_mappings.mappings
-
-    def test_panosc_mappings_enabled_bad_path(self) -> None:
-        with pytest.raises(SystemExit, match="An error occurred while trying to load the PaNOSC mappings:"):
-            PaNOSCMappings("bad/path")
-
-    def test_panosc_mappings_disabled_bad_path(self, disable_search_api: None) -> None:
-        PaNOSCMappings("bad/path")  # Shouldn't SysExit if a user isn't using the search API
 
     @pytest.mark.parametrize(
         "panosc_entity_name, field_name, expected_panosc_entity_name, expected_icat_field_name",

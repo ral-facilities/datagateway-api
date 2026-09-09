@@ -1,7 +1,7 @@
-from abc import ABC, abstractmethod
 import argparse
 import datetime
 import enum
+from abc import ABC, abstractmethod
 from multiprocessing import Process
 
 from faker import Faker
@@ -9,7 +9,8 @@ from icat.client import Client
 from icat.exception import ICATNoObjectError
 from icat.query import Query
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
+from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -95,14 +96,8 @@ def apply_common_parameter_attributes(entity, i, client):
 
 
 def icat_client():
-    client = Client(
-        Config.config.icat.url,
-        checkCert=Config.config.icat.check_cert,
-    )
-    client.login(
-        Config.config.test_mechanism,
-        Config.config.test_user_credentials.model_dump(),
-    )
+    client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
+    client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
     return client
 
 

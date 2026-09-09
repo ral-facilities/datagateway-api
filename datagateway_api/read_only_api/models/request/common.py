@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field, NonNegativeInt, PositiveInt, model_serializer, model_validator
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -139,8 +139,8 @@ class CommonFilters(BaseModel):
         description="Skip the first results returned by the query. Used for pagination.",
     )
     limit: PositiveInt = Field(
-        default=Config.config.read_only_api.limit.default if Config.config.read_only_api is not None else 100,
-        le=Config.config.read_only_api.limit.maximum if Config.config.read_only_api is not None else 100,
+        default=config.read_only_api.limit.default if config.read_only_api is not None else 100,
+        le=config.read_only_api.limit.maximum if config.read_only_api is not None else 100,
         description="Return at most this many results per request.",
     )
 
