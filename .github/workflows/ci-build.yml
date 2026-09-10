@@ -183,8 +183,7 @@ jobs:
     runs-on: ubuntu-24.04
     name: Pip Install Test
     env:
-      DATAGATEWAY_API__ICAT_URL: https://localhost:18181
-      SEARCH_API__ICAT_URL: https://localhost:18181
+      ICAT__URL: https://localhost:18181
 
     steps:
       - name: Checkout DataGateway API
