@@ -323,7 +323,7 @@ class TestMyData:
         included_body: dict,
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/investigations/1/datasets/1",
+            url="/read-only-api/datasets/1",
             params={"include": includes},
             headers=valid_icat_credentials_header,
         )
@@ -332,7 +332,7 @@ class TestMyData:
 
     def test_get_datafiles(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
         response = test_client.get(
-            url="/read-only-api/investigations/1/datasets/1/datafiles",
+            url="/read-only-api/datasets/1/datafiles",
             params={
                 "where": json.dumps(
                     {"name": {"like": "1"}, "location": {"ilike": "JPG"}, "datafileCreateTime": {"isnull": False}},
@@ -350,7 +350,7 @@ class TestMyData:
         valid_icat_credentials_header: dict[str, str],
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/investigations/1/datasets/1/datafiles/1190",
+            url="/read-only-api/datafiles/1190",
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text

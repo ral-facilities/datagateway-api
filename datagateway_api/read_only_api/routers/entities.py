@@ -112,7 +112,7 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
         )
 
     @router.get(
-        "/investigations/{investigation_id}/datasets/{dataset_id}",
+        "/datasets/{dataset_id}",
         summary="Get a single Dataset",
         description="Get a single Dataset and related Entities based on the provided id.",
         response_model=Dataset,
@@ -127,7 +127,6 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
     )
     def get_dataset(
         session_id: SessionId,
-        investigation_id: PositiveInt,
         dataset_id: PositiveInt,
         include: Annotated[list[DatasetIncludeEnum], Query(description=DATASET_INCLUDE_DESCRIPTION)] = [],  # noqa: B006
     ) -> Dataset:
@@ -140,7 +139,7 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
         )
 
     @router.get(
-        "/investigations/{investigation_id}/datasets/{dataset_id}/datafiles",
+        "/datasets/{dataset_id}/datafiles",
         summary="Get Datafiles",
         description="Get Datafiles based on the provided filters.",
         response_model=list[Datafile],
@@ -155,7 +154,6 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
     )
     def get_datafiles(
         session_id: SessionId,
-        investigation_id: PositiveInt,
         dataset_id: PositiveInt,
         datafile_filters: Annotated[DatafileFilters, Query()],
     ) -> list[Datafile]:
@@ -170,7 +168,7 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
         )
 
     @router.get(
-        "/investigations/{investigation_id}/datasets/{dataset_id}/datafiles/{datafile_id}",
+        "/datafiles/{datafile_id}",
         summary="Get a single Datafile",
         description="Get a single Datafile based on the provided id.",
         response_model=Datafile,
@@ -184,8 +182,6 @@ def my_data_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIRo
         },
     )
     def get_datafile(
-        investigation_id: PositiveInt,
-        dataset_id: PositiveInt,
         datafile_id: PositiveInt,
         session_id: SessionId,
     ) -> Datafile:
