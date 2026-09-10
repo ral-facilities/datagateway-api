@@ -169,6 +169,8 @@ services:
 
     volumes:
       - ./datagateway_api:/datagateway-api-run/datagateway_api
+      - ./.env:/datagateway-api-run/.env
+      - ./logging.ini:/datagateway-api-run/logging.ini
 
     ports:
       - "5000:8000"
