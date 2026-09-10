@@ -159,10 +159,7 @@ class TestSessionHandling:
                 )
 
     def test_valid_logout(self, test_client):
-        client = Client(
-            config.datagateway_api.icat_url,
-            checkCert=config.datagateway_api.icat_check_cert,
-        )
+        client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
         client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
         creds_header = {"Authorization": f"Bearer {client.sessionId}"}
 

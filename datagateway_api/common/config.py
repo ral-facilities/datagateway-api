@@ -1,10 +1,11 @@
 import logging
 from functools import cached_property
-from typing import Annotated, Optional, Self
+from typing import Annotated, Self
 
 from pydantic import (
     AfterValidator,
     BaseModel,
+    PositiveInt,
     Field,
     SecretStr,
     computed_field,
@@ -41,7 +42,7 @@ def validate_extension(extension):
     return extension
 
 
-DataGatewayAPIExtension = Annotated[str, AfterValidator(validate_extension)]
+BaseAPIExtension = Annotated[str, AfterValidator(validate_extension)]
 
 
 class APIConfig(BaseModel):
@@ -51,7 +52,7 @@ class APIConfig(BaseModel):
 
     title: str = "Datagateway API"
     description: str = "This is the API for the Datagateway"
-    url_prefix: DataGatewayAPIExtension
+    url_prefix: BaseAPIExtension
     reload: bool | None = None
     host: str | None = None
     port: int | None = None
@@ -60,11 +61,10 @@ class APIConfig(BaseModel):
     allowed_cors_methods: list[str]
 
 
-class UseReaderForPerformance(BaseModel):
-    enabled: bool
-    reader_mechanism: str
-    reader_username: str
-    reader_password: SecretStr
+class ReaderConfig(BaseModel):
+    mechanism: str
+    username: str
+    password: SecretStr
     maxsize: int = Field(
         default=128,
         description="Each cacheable function will store up to this many results in memory.",
@@ -75,22 +75,41 @@ class UseReaderForPerformance(BaseModel):
     )
 
 
+class IcatConfig(BaseModel):
+    url: str
+    check_cert: bool
+    client_cache_size: int
+    client_pool_init_size: int
+    client_pool_max_size: int
+    reader: ReaderConfig | None = None
+
+
 class DataGatewayAPI(BaseModel):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
     validation of the DataGatewayAPI config data using Python type annotations.
     """
 
-    client_cache_size: int
-    client_pool_init_size: int
-    client_pool_max_size: int
-    extension: DataGatewayAPIExtension
-    icat_check_cert: bool
-    icat_url: str
-    use_reader_for_performance: Optional[UseReaderForPerformance] = None
+    extension: BaseAPIExtension
 
     def __getitem__(self, item):
         return getattr(self, item)
+
+
+class LimitConfig(BaseModel):
+    default: PositiveInt = 100
+    maximum: PositiveInt = 100
+
+    @model_validator(mode="after")
+    def _validate(self) -> Self:
+        if self.default > self.maximum:
+            raise ValueError("default limit cannot exceed maximum limit")
+
+        return self
+
+
+class ReadOnlyAPI(DataGatewayAPI):
+    limit: LimitConfig = LimitConfig()
 
 
 class SearchScoring(BaseModel):
@@ -101,15 +120,12 @@ class SearchScoring(BaseModel):
     limit: int
 
 
-class SearchAPI(BaseModel):
+class SearchAPI(DataGatewayAPI):
     """
     Configuration model class that implements pydantic's BaseModel class to allow for
     validation of the SearchAPI config data using Python type annotations.
     """
 
-    extension: DataGatewayAPIExtension
-    icat_check_cert: bool
-    icat_url: str
     mechanism: str
     username: str
     password: str
@@ -129,7 +145,9 @@ class Config(BaseSettings):
     """
 
     api: APIConfig
+    icat: IcatConfig
     datagateway_api: DataGatewayAPI | None = None
+    read_only_api: ReadOnlyAPI | None = None
     search_api: SearchAPI | None = None
 
     def __getitem__(self, item):
@@ -142,9 +160,9 @@ class Config(BaseSettings):
 
     @staticmethod
     def _validate_api_extension(
-        extensions: set[DataGatewayAPIExtension],
-        sub_api_config: DataGatewayAPI | SearchAPI,
-    ) -> bool:
+        extensions: set[BaseAPIExtension],
+        sub_api_config: DataGatewayAPI | None,
+    ) -> None:
         if sub_api_config is not None:
             if sub_api_config.extension in extensions:
                 raise ValueError("All api extensions must be unique.")
@@ -159,6 +177,7 @@ class Config(BaseSettings):
         """
         extensions = set()
         Config._validate_api_extension(extensions=extensions, sub_api_config=self.datagateway_api)
+        Config._validate_api_extension(extensions=extensions, sub_api_config=self.read_only_api)
         Config._validate_api_extension(extensions=extensions, sub_api_config=self.search_api)
         if self.multi_api_count == 0:
             raise ValueError("At least 1 API must be enabled.")

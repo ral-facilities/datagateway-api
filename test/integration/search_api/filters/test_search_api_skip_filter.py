@@ -22,10 +22,7 @@ class TestSearchAPISkipFilter:
 
         assert search_api_query_document.icat_query.query.limit == (
             int(skip_value),
-            get_icat_properties(
-                config.search_api.icat_url,
-                config.search_api.icat_check_cert,
-            )["maxEntities"],
+            get_icat_properties(icat_url=config.icat.url, icat_check_cert=config.icat.check_cert)["maxEntities"],
         )
 
     @pytest.mark.parametrize(

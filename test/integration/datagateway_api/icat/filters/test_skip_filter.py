@@ -17,10 +17,7 @@ class TestICATSkipFilter:
 
         assert icat_query.limit == (
             skip_value,
-            get_icat_properties(
-                config.datagateway_api.icat_url,
-                config.datagateway_api.icat_check_cert,
-            )["maxEntities"],
+            get_icat_properties(icat_url=config.icat.url, icat_check_cert=config.icat.check_cert)["maxEntities"],
         )
 
     @pytest.mark.parametrize(

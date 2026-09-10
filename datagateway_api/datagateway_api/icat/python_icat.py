@@ -1,4 +1,5 @@
 import logging
+from typing import Literal
 
 from icat.exception import ICATError, ICATSessionError
 
@@ -175,15 +176,16 @@ class PythonICAT:
 
     @requires_session_id
     @queries_records
-    def get_with_id(self, session_id, entity_type, id_, **kwargs):
+    def get_with_id(self, session_id, entity_type, id_, includes: Literal["1"] | list[str] | None = None, **kwargs):
         """
         Gets the entity matching the given ID for the given entity type.
         :param session_id: The session ID of the requesting user.
         :param entity_type: The type of entity.
         :param id_: The ID of the record to find.
+        :param includes: List of include strings, "1" (shorthand for include 1:1 relationships) or None.
         :return: The entity retrieved.
         """
-        return get_entity_by_id(kwargs.get("client"), entity_type, id_, True)
+        return get_entity_by_id(kwargs.get("client"), entity_type, id_, True, includes=includes)
 
     @requires_session_id
     @queries_records

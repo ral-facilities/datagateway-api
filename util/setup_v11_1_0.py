@@ -96,8 +96,7 @@ def setup() -> None:
 
     (grouping,) = client.search(
         query=(
-            "SELECT ug.grouping FROM UserGroup ug WHERE ug.user.name = "  # noqa: S608
-            f"{config.datagateway_api.use_reader_for_performance.reader_username!r}"
+            f"SELECT ug.grouping FROM UserGroup ug WHERE ug.user.name = {config.icat.reader.username!r}"  # noqa: S608
         ),
     )
 

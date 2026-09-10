@@ -11,16 +11,8 @@ log = logging.getLogger()
 class ICATClient(Client):
     """Wrapper class to allow an object pool of client objects to be created"""
 
-    def __init__(self, client_use="datagateway_api"):
-        if client_use == "datagateway_api":
-            icat_url = config.datagateway_api.icat_url
-            icat_check_cert = config.datagateway_api.icat_check_cert
-        else:
-            # Search API use cases
-            icat_url = config.search_api.icat_url
-            icat_check_cert = config.search_api.icat_check_cert
-
-        super().__init__(icat_url, checkCert=icat_check_cert)
+    def __init__(self):
+        super().__init__(config.icat.url, checkCert=config.icat.check_cert)
         # When clients are cleaned up, sessions won't be logged out
         self.autoLogout = False
 
@@ -41,8 +33,8 @@ def create_client_pool():
 
     return ObjectPool(
         ICATClient,
-        min_init=config.datagateway_api.client_pool_init_size,
-        max_capacity=config.datagateway_api.client_pool_max_size,
+        min_init=config.icat.client_pool_init_size,
+        max_capacity=config.icat.client_pool_max_size,
         max_reusable=0,
         expires=0,
     )

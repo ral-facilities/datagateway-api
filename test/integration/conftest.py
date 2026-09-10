@@ -13,12 +13,14 @@ from test.mock_data import TEST_MECHANISM, TEST_USER_CREDENTIALS
 
 @pytest.fixture(scope="package")
 def icat_client():
-    client = Client(
-        config.datagateway_api.icat_url,
-        checkCert=config.datagateway_api.icat_check_cert,
-    )
+    client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
     client.login(TEST_MECHANISM, TEST_USER_CREDENTIALS)
     return client
+
+
+@pytest.fixture(scope="package")
+def valid_icat_credentials_header(icat_client: Client) -> dict[str, str]:
+    return {"Authorization": f"Bearer {icat_client.sessionId}"}
 
 
 @pytest.fixture(name="test_client")
