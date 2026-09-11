@@ -1,10 +1,5 @@
-import json
-from unittest.mock import mock_open, patch
-
-from icat.query import Query
 import pytest
-
-from datagateway_api.common.config import APIConfig
+from icat.query import Query
 
 
 @pytest.fixture()
@@ -25,6 +20,17 @@ def invalid_credentials_header():
 @pytest.fixture()
 def test_config_data():
     return {
+        "api": {
+            "title": "Datagateway API",
+            "description": "This is the API for the Datagateway",
+            "url_prefix": "",
+            "reload": False,
+            "host": "127.0.0.1",
+            "port": 5000,
+            "allowed_cors_headers": ["*"],
+            "allowed_cors_origins": ["*"],
+            "allowed_cors_methods": ["*"],
+        },
         "datagateway_api": {
             "extension": "/datagateway-api",
             "client_cache_size": 5,
@@ -48,23 +54,4 @@ def test_config_data():
                 "limit": 1000,
             },
         },
-        "reload": False,
-        "host": "127.0.0.1",
-        "port": 5000,
-        "test_user_credentials": {"username": "root", "password": "pw"},
-        "test_mechanism": "simple",
-        "url_prefix": "",
     }
-
-
-@pytest.fixture()
-def test_config(test_config_data):
-    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-        return APIConfig.load("test/path")
-
-
-@pytest.fixture()
-def test_config_without_search_api(test_config_data):
-    del test_config_data["search_api"]
-    with patch("builtins.open", mock_open(read_data=json.dumps(test_config_data))):
-        return APIConfig.load("test/path")

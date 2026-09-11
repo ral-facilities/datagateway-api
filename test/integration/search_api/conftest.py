@@ -1,10 +1,10 @@
 import json
 from unittest.mock import mock_open, patch
 
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.main import create_search_api_app
 from datagateway_api.search_api.panosc_mappings import PaNOSCMappings
 from datagateway_api.search_api.query import SearchAPIQuery
@@ -143,5 +143,5 @@ def fixture_test_client() -> TestClient:
     :return: The test client.
     """
     app = create_search_api_app()
-    app.root_path = f"{Config.config.url_prefix}{Config.config.search_api.extension}"
+    app.root_path = f"{config.api.url_prefix}{config.search_api.extension}"
     return TestClient(app)

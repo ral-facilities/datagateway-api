@@ -1,3 +1,4 @@
+.venv
 venv/
 .idea/
 *.pyc
@@ -7,5 +8,5 @@ search_api_mapping.json*
 .coverage
 coverage.xml
 .env.harbor
-
-datagateway_api/logging.ini
+.env
+logging.ini
