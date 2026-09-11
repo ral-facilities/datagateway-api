@@ -59,7 +59,7 @@ test = [
 
 scripts = [
     "pip-tools>=7.6.0",
-    "Faker>=8.5.1",
+    "Faker==8.5.1",
 ]
 
 dev = [
