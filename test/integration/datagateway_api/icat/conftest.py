@@ -14,11 +14,6 @@ from test.integration.datagateway_api.icat.test_query import (
 )
 
 
-@pytest.fixture()
-def valid_icat_credentials_header(icat_client):
-    return {"Authorization": f"Bearer {icat_client.sessionId}"}
-
-
 def create_investigation_test_data(client, num_entities=1):
     test_data = []
 

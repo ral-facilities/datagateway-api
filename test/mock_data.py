@@ -1,3 +1,6 @@
+TEST_MECHANISM = "simple"
+TEST_USER_CREDENTIALS = {"username": "root", "password": "pw"}
+
 LARGE_INVESTIGATION_POST = {
     "publications": [
         {

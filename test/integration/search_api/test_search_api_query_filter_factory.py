@@ -1961,7 +1961,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].skip_value == expected_skip_value
 
     @patch(
-        "datagateway_api.common.config.Config.config.search_api.search_scoring.enabled",
+        "datagateway_api.common.config.config.search_api.search_scoring.enabled",
         True,
     )
     def test_valid_scoring_filter(self):
@@ -1981,7 +1981,7 @@ class TestSearchAPIQueryFilterFactory:
         assert filters[0].operation == "ilike"
 
     @patch(
-        "datagateway_api.common.config.Config.config.search_api.search_scoring.enabled",
+        "datagateway_api.common.config.config.search_api.search_scoring.enabled",
         True,
     )
     @pytest.mark.parametrize(
