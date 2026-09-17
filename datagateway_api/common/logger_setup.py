@@ -6,7 +6,7 @@ import logging
 import logging.config
 from pathlib import Path
 
-LOGGING_CONFIG_FILE_PATH = Path(__file__).parent.parent / "logging.ini"
+LOGGING_CONFIG_FILE_PATH = Path(__file__).parent.parent.parent / "logging.ini"
 
 
 def setup_logger() -> None:

@@ -3,7 +3,7 @@ from unittest.mock import patch
 import pytest
 from requests import RequestException
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import ScoringAPIError
 from datagateway_api.search_api.search_scoring import SearchScoring
 
@@ -83,8 +83,8 @@ class TestHelpers:
         scoring_query_filter_value = "My test query"
         post_request_data = {
             "query": scoring_query_filter_value,
-            "group": Config.config.search_api.search_scoring.group,
-            "limit": Config.config.search_api.search_scoring.limit,
+            "group": config.search_api.search_scoring.group,
+            "limit": config.search_api.search_scoring.limit,
         }
         post_mock.return_value.status_code = 200
         post_mock.return_value.json.return_value = SEARCH_SCORING_API_SCORES_DATA
@@ -92,9 +92,9 @@ class TestHelpers:
         scores = SearchScoring.get_score(scoring_query_filter_value)
 
         post_mock.assert_called_once_with(
-            Config.config.search_api.search_scoring.api_url,
+            config.search_api.search_scoring.api_url,
             json=post_request_data,
-            timeout=Config.config.search_api.search_scoring.api_request_timeout,
+            timeout=config.search_api.search_scoring.api_request_timeout,
         )
         assert scores == SEARCH_SCORING_API_SCORES_DATA["scores"]
 

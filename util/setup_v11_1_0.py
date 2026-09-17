@@ -6,7 +6,7 @@ from icat.entity import Entity
 from icat.exception import ICATObjectExistsError
 from icat.query import Query
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 
 
 def get_password(password_file: "str | None") -> str:
@@ -96,8 +96,7 @@ def setup() -> None:
 
     (grouping,) = client.search(
         query=(
-            "SELECT ug.grouping FROM UserGroup ug WHERE ug.user.name = "  # noqa: S608
-            f"{Config.config.datagateway_api.use_reader_for_performance.reader_username!r}"
+            f"SELECT ug.grouping FROM UserGroup ug WHERE ug.user.name = {config.icat.reader.username!r}"  # noqa: S608
         ),
     )
 

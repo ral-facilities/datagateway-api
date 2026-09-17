@@ -161,9 +161,8 @@ class ICATQuery:
         # Verifying that `includes` only has fields which are related to the entity
         include_set = (entity.InstRel | entity.InstMRel) & set(includes)
         for key in entity.InstAttr | entity.MetaAttr | include_set:
+            entity_data = getattr(entity, key)
             if key in includes:
-
-                target = getattr(entity, key)
                 # Copy and remove don't return values so must be done separately
                 includes_copy = includes.copy()
                 try:
@@ -173,23 +172,26 @@ class ICATQuery:
                         "Key couldn't be found to remove from include list, this could"
                         " cause an issue further on in the request",
                     )
-                if isinstance(target, Entity):
-                    d[key] = self.entity_to_dict(target, includes_copy)
+                if isinstance(entity_data, Entity):
+                    d[key] = self.entity_to_dict(entity_data, includes_copy)
+                    continue
                 # Related fields with one-many relationships are stored as EntityLists
-                elif isinstance(target, EntityList):
+                elif isinstance(entity_data, EntityList):
                     d[key] = []
-                    for e in target:
+                    for e in entity_data:
                         d[key].append(self.entity_to_dict(e, includes_copy))
+                    continue
+                # May not actually be an Entity(ies), e.g. type may be in the includes but is also sometimes a str field
+                # Fall through to usual behaviour below
 
             # Add actual piece of data to the dictionary
-            else:
-                entity_data = getattr(entity, key)
-                # Convert datetime objects to strings ready to be outputted as JSON
-                if isinstance(entity_data, datetime):
-                    # Remove timezone data which isn't utilised in ICAT
-                    entity_data = DateHandler.datetime_object_to_str(entity_data)
+            # Convert datetime objects to strings ready to be outputted as JSON
+            if isinstance(entity_data, datetime):
+                # Remove timezone data which isn't utilised in ICAT
+                entity_data = DateHandler.datetime_object_to_str(entity_data)
 
-                d[key] = entity_data
+            d[key] = entity_data
+
         return d
 
     def flatten_query_included_fields(self, includes):

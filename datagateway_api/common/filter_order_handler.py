@@ -1,6 +1,6 @@
 import logging
 
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
@@ -8,7 +8,7 @@ from datagateway_api.datagateway_api.icat.filters import (
     PythonICATSkipFilter,
 )
 
-if Config.config.search_api:
+if config.search_api:
     from datagateway_api.search_api.filters import SearchAPIIncludeFilter
     from datagateway_api.search_api.panosc_mappings import mappings
     from datagateway_api.search_api.query import SearchAPIQuery
@@ -54,7 +54,7 @@ class FilterOrderHandler(object):
             # the code to catch objects that inherit from the class e.g.
             # `SearchAPIIncludeFilter`
             if (
-                Config.config.search_api
+                config.search_api
                 and type(query_filter) is PythonICATIncludeFilter
                 and isinstance(query, SearchAPIQuery)
             ):

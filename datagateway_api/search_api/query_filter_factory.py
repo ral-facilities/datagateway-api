@@ -1,8 +1,8 @@
 import logging
 
-
+import datagateway_api.search_api.models as search_api_models
 from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
-from datagateway_api.common.config import Config
+from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
 from datagateway_api.search_api.filters import (
     SearchAPIIncludeFilter,
@@ -11,7 +11,6 @@ from datagateway_api.search_api.filters import (
     SearchAPISkipFilter,
     SearchAPIWhereFilter,
 )
-import datagateway_api.search_api.models as search_api_models
 from datagateway_api.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.search_api.panosc_mappings import mappings
 from datagateway_api.search_api.query import SearchAPIQuery
@@ -68,11 +67,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                 elif filter_name == "skip":
                     log.info("skip JSON object found")
                     query_filters.append(SearchAPISkipFilter(filter_input))
-                elif (
-                    filter_name == "query"
-                    and entity_name == "Document"
-                    and Config.config.search_api.search_scoring.enabled
-                ):
+                elif filter_name == "query" and entity_name == "Document" and config.search_api.search_scoring.enabled:
                     # We are only supporting scoring on the Document entity/ endpoint
                     # so the query filter is not accepted on other entities/ endpoints.
                     # Scoring must be enabled in order for the query filter to be
