@@ -280,6 +280,64 @@ docker run -p 8000:8000 \
   datagateway_api_image
 ```
 
+## Docker Image Vulnerability Scanning
+
+The production image is scanned with [Trivy](https://trivy.dev/) by the
+`Docker Image Vulnerability Scan` job in `.github/workflows/ci-build.yml`. The job builds
+the `prod` target of the Dockerfile and scans it twice, because the two scans do
+different jobs:
+
+1. A report scan covering every severity, uploaded to the repository's Security tab under
+   the `trivy-image` category. This never fails the build.
+2. A gate scan limited to HIGH and CRITICAL vulnerabilities that have a fix available.
+
+The gate runs `ignore-unfixed`, so it only reports vulnerabilities that can actually be
+resolved by rebuilding against newer packages. Issues with no upstream fix yet are still
+reported to the Security tab, but they will not block anyone on a schedule we do not
+control.
+
+### When the scan blocks a merge
+
+The scan runs on every push and pull request, but only _blocks_ pull requests that merge
+into `main`:
+
+- **Pull request into `main`** - the job fails. These must be resolved before merging.
+- **Anywhere else** - the step is marked as a warning and the job passes.
+
+Findings are frequently in the Alpine base image rather than in our own dependencies.
+Those are usually fixed by bumping the pinned base image digest in the Dockerfile, or by
+upgrading the affected packages in the `prod` stage.
+
+### Running the scan locally
+
+```bash
+docker build --target prod -t datagateway-api:scan .
+
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v "$PWD:/repo" -w /repo \
+  aquasec/trivy:latest image \
+  --scanners vuln \
+  --severity HIGH,CRITICAL \
+  --ignore-unfixed \
+  --ignorefile .trivyignore \
+  --table-mode detailed \
+  datagateway-api:scan
+```
+
+### Ignoring a vulnerability
+
+`.trivyignore` excludes specific CVEs from the gate. Only add an entry once it has been
+triaged and found not to be exploitable in this image, and always record why along with an
+expiry date so entries get revisited instead of accumulating:
+
+```
+# Only affects the CLI entry point, which this image never invokes.
+CVE-2024-12345 exp:2026-01-01
+```
+
+Unfixed vulnerabilities do not need listing, as the gate already skips them.
+
 ## DataGateway API Authentication
 
 Each request requires a valid session ID to be provided in the Authorization header.
