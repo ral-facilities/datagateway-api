@@ -260,11 +260,6 @@ jobs:
           sarif_file: trivy-results.sarif
           category: trivy-image
 
-      # Reports HIGH/CRITICAL vulnerabilities that have a fix available, i.e. ones that can
-      # actually be resolved by rebuilding against newer packages. This runs everywhere so
-      # the findings are always visible, but only blocks pull requests that merge into main.
-      # Elsewhere continue-on-error marks the step as a warning and lets the job pass, so
-      # feature work targeting develop is not held up by base image CVEs.
       - name: Scan image with Trivy (fixable HIGH/CRITICAL)
         continue-on-error: ${{ !(github.event_name == 'pull_request' && github.base_ref == 'main') }}
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0

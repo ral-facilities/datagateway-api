@@ -305,8 +305,7 @@ into `main`:
 - **Anywhere else** - the step is marked as a warning and the job passes.
 
 Findings are frequently in the Alpine base image rather than in our own dependencies.
-Those are usually fixed by bumping the pinned base image digest in the Dockerfile, or by
-upgrading the affected packages in the `prod` stage.
+Those are usually fixed by bumping the pinned base image digest in the Dockerfile.
 
 ### Running the scan locally
 
