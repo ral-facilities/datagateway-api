@@ -1,0 +1,10 @@
+# Vulnerabilities listed here are excluded from the Trivy image scan that gates CI
+# (see the "Docker Image Vulnerability Scan" job in .github/workflows/ci-build.yml).
+#
+# Only add a CVE here when it has been triaged and found not to be exploitable in this
+# image, and always record why plus an expiry date so entries get revisited, e.g.
+#
+#   # Only affects the CLI entry point, which this image never invokes.
+#   CVE-2024-12345 exp:2026-01-01
+#
+# Unfixed vulnerabilities do not need to be listed; the scan already ignores them.
