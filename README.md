@@ -797,30 +797,23 @@ reported to the Security tab.
 
 ## When the scan blocks a merge
 
-The scan only _blocks_ pull requests that merge into `main`:
-
-- **Pull request into `main`** - the job fails. These must be resolved before merging.
-- **Anywhere else** - the step is marked as a warning and the job passes.
+The scan only _blocks_ pull requests that merge into `main`
 
 Findings are frequently in the Alpine base image rather than in our own dependencies.
 Those are usually fixed by bumping the pinned base image digest in the Dockerfile.
 
 ## Running the scan locally
 
-```bash
-docker build --target prod -t datagateway-api:scan .
+The `scan` profile in `docker-compose.yml` reproduces the trivy vulnerability scan. The `prod_image`
+service builds and tags the `prod` target, and the `trivy` service scans it with the same
+options used in CI:
 
-docker run --rm \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v "$PWD:/repo" -w /repo \
-  aquasec/trivy:latest image \
-  --scanners vuln \
-  --severity HIGH,CRITICAL \
-  --ignore-unfixed \
-  --ignorefile .trivyignore \
-  --table-mode detailed \
-  datagateway-api:scan
+```bash
+docker compose --profile scan run --build --rm trivy
 ```
+
+`--build` rebuilds the production image before scanning, so the results always reflect the
+current working tree.
 
 ## Ignoring a vulnerability
 

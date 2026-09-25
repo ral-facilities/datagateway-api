@@ -261,7 +261,7 @@ jobs:
           category: trivy-image
 
       - name: Scan image with Trivy (fixable HIGH/CRITICAL)
-        continue-on-error: ${{ !(github.event_name == 'pull_request' && github.base_ref == 'main') }}
+        if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: datagateway-api:scan
