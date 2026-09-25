@@ -178,5 +178,33 @@ services:
       - dg_network
     profiles: [full]
 
+  # Builds and tags the production image so the trivy service has something to scan
+  prod_image:
+    image: datagateway-api:scan
+    container_name: dg_api_prod_image
+    build:
+      context: .
+      target: prod
+    # the image only needs building, it is never run, so do nothing and exit
+    command: /bin/true
+    restart: "no"
+    profiles: [scan]
+
+  # Scans the production image with the same options as the gate in the
+  # Docker Image Vulnerability Scan job in .github/workflows/ci-build.yml
+  trivy:
+    image: aquasec/trivy:latest
+    container_name: dg_api_trivy
+    depends_on:
+      prod_image:
+        condition: service_completed_successfully
+    volumes:
+      # the socket gives trivy access to the image built by the prod_image service
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./.trivyignore:/.trivyignore
+    command: image --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --ignorefile /.trivyignore --table-mode detailed --exit-code 1 datagateway-api:scan
+    restart: "no"
+    profiles: [scan]
+
 networks:
   dg_network:

@@ -781,6 +781,53 @@ New releases are only made when a `fix:` (patch), `feat:` (minor) or `BREAKING C
 main. When the version is bumped, a GitHub tag and release is made which contains the
 source code and the built versions of the API (sdist and wheel).
 
+# Docker Image Vulnerability Scanning
+
+The production image is scanned with [Trivy](https://trivy.dev/) by the
+`Docker Image Vulnerability Scan` job in `.github/workflows/ci-build.yml`. The job builds
+the `prod` target of the Dockerfile and scans it twice:
+
+1. A report scan covering every severity, uploaded to the repository's Security tab under
+   the `trivy-image` category.
+2. A gate scan limited to HIGH and CRITICAL vulnerabilities that have a fix available.
+
+The gate runs `ignore-unfixed`, so it only reports vulnerabilities that can actually be
+resolved by rebuilding against newer packages. Issues with no upstream fix yet are still
+reported to the Security tab.
+
+## When the scan blocks a merge
+
+The scan only _blocks_ pull requests that merge into `main`
+
+Findings are frequently in the Alpine base image rather than in our own dependencies.
+Those are usually fixed by bumping the pinned base image digest in the Dockerfile.
+
+## Running the scan locally
+
+The `scan` profile in `docker-compose.yml` reproduces the trivy vulnerability scan. The `prod_image`
+service builds and tags the `prod` target, and the `trivy` service scans it with the same
+options used in CI:
+
+```bash
+docker compose --profile scan run --build --rm trivy
+```
+
+`--build` rebuilds the production image before scanning, so the results always reflect the
+current working tree.
+
+## Ignoring a vulnerability
+
+`.trivyignore` excludes specific CVEs from the gate. Only add an entry once it has been
+triaged and found not to be exploitable in this image, and always record why along with an
+expiry date so entries get revisited instead of accumulating:
+
+```
+# Only affects the CLI entry point, which this image never invokes.
+CVE-2024-12345 exp:2026-01-01
+```
+
+Unfixed vulnerabilities do not need listing, as the gate already skips them.
+
 # Updating README
 
 Like the codebase, this README file follows a 120 character per line formatting approach.
