@@ -785,11 +785,11 @@ source code and the built versions of the API (sdist and wheel).
 
 The production image is scanned with [Trivy](https://trivy.dev/) by the
 `Docker Image Vulnerability Scan` job in `.github/workflows/ci-build.yml`. The job builds
-the `prod` target of the Dockerfile and scans it twice:
+the `prod` target of the Dockerfile:
 
 1. A report scan covering every severity, uploaded to the repository's Security tab under
    the `trivy-image` category.
-2. A gate scan limited to HIGH and CRITICAL vulnerabilities that have a fix available.
+2. A gate scan limited to HIGH and CRITICAL vulnerabilities that have a fix available. Only ran on merges into main.
 
 The gate runs `ignore-unfixed`, so it only reports vulnerabilities that can actually be
 resolved by rebuilding against newer packages. Issues with no upstream fix yet are still
