@@ -1,9 +1,17 @@
+from concurrent.futures import ThreadPoolExecutor
+
 import pytest
 from typing_extensions import OrderedDict
 
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.datagateway_api.icat.filters import PythonICATOrderFilter
+
+ORDER = [
+    '"id asc"',
+    '"name asc"',
+    '"title asc"',
+]
 
 
 class TestICATOrderFilter:
@@ -103,3 +111,22 @@ class TestICATOrderFilter:
         filter_handler.add_filter(test_filter)
         with pytest.raises(FilterError):
             filter_handler.apply_filters(icat_query)
+
+    def test_concurrent_multi_column_sorts(
+        self, test_client, valid_icat_credentials_header
+    ):
+        def make_request(_):
+            return test_client.get(
+                "/datagateway-api/investigations",
+                params={"order": ORDER, "limit": 5},
+                headers=valid_icat_credentials_header,
+            )
+
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            responses = list(executor.map(make_request, range(12)))
+
+        for response in responses:
+            assert response.status_code == 200
+
+            ids = [item["id"] for item in response.json()]
+            assert ids == sorted(ids)
