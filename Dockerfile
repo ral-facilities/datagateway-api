@@ -88,6 +88,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 FROM python:3.11-alpine3.24@sha256:0d55920083f1ce1e38ac292e2772f924b4f8bb4188d336c79bf66963039e6146 AS prod
 
 WORKDIR /datagateway-api-run
+ENV WORKERS=1
 
 # Copy the application from the prod-build stage
 COPY --from=prod-build /datagateway-api-run /datagateway-api-run
@@ -100,6 +101,6 @@ RUN set -eux; \
 
 USER datagateway-api
 
-CMD ["/datagateway-api-run/.venv/bin/fastapi", "run", "datagateway_api/main.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD exec /datagateway-api-run/.venv/bin/fastapi run datagateway_api/main.py --workers=$WORKERS --host=0.0.0.0 --port=8000
 
 EXPOSE 8000
