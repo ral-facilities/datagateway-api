@@ -128,6 +128,7 @@ def create_search_api_app() -> FastAPI:
 
     return search_api_app
 
+
 def create_app() -> FastAPI | None:
     app = None
     if config.multi_api_count > 1:
