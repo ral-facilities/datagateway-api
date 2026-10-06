@@ -78,41 +78,30 @@ def enable_cors(fastapi_app: FastAPI) -> None:
     )
 
 
-def create_datagateway_app() -> FastAPI | None:
-    if datagateway_api_enabled:
-        datagateway_app = FastAPI(
-            title="DataGateway API",
-            separate_input_output_schemas=False,
+def create_datagateway_app() -> FastAPI:
+    datagateway_app = FastAPI(title="DataGateway API", separate_input_output_schemas=False)
+    enable_cors(datagateway_app)
+    register_common_handlers(datagateway_app)
+    python_icat = PythonICAT()
+    icat_client_pool = create_client_pool()
+    dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
+    for endpoint_name, entity_name in endpoints.items():
+        router = create_collection_router(
+            endpoint_name,
+            entity_name,
+            dg_models,
+            python_icat,
+            client_pool=icat_client_pool,
         )
+        datagateway_app.include_router(router, dependencies=[Depends(SessionBearer())])
 
-        enable_cors(datagateway_app)
-        register_common_handlers(datagateway_app)
+    datagateway_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
+    datagateway_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
 
-        python_icat = PythonICAT()
-        icat_client_pool = create_client_pool()
-        dg_models = build_datagateway_api_model(client_pool=icat_client_pool)
-
-        for endpoint_name, entity_name in endpoints.items():
-            router = create_collection_router(
-                endpoint_name,
-                entity_name,
-                dg_models,
-                python_icat,
-                client_pool=icat_client_pool,
-            )
-            datagateway_app.include_router(
-                router,
-                dependencies=[Depends(SessionBearer())],
-            )
-
-        datagateway_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
-        datagateway_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
-
-        return datagateway_app
-    return None
+    return datagateway_app
 
 
-def create_read_only_app() -> FastAPI | None:
+def create_read_only_app() -> FastAPI:
     read_only_app = FastAPI(title="Read Only API")
     enable_cors(read_only_app)
     register_common_handlers(read_only_app)
@@ -121,56 +110,56 @@ def create_read_only_app() -> FastAPI | None:
     read_only_app.include_router(my_data_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
     read_only_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
     read_only_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
+
     return read_only_app
 
 
-def create_search_api_app() -> FastAPI | None:
-    if search_api_enabled:
-        search_api_app = FastAPI(
-            title="Search API",
+def create_search_api_app() -> FastAPI:
+    search_api_app = FastAPI(title="Search API", separate_input_output_schemas=False)
+    enable_cors(search_api_app)
+    register_common_handlers(search_api_app)
+    for endpoint_name, entity_name in search_api_entity_endpoints.items():
+        router = create_search_collection_router(
+            entity_name,
+            endpoint_name,
+            add_file_endpoints=(entity_name == "Dataset"),
+        )
+        search_api_app.include_router(router)
+
+    return search_api_app
+
+def create_app() -> FastAPI | None:
+    app = None
+    if config.multi_api_count > 1:
+        app = FastAPI(
+            title=config.api.title,
+            description=config.api.description,
+            root_path=config.api.url_prefix,
             separate_input_output_schemas=False,
         )
+        if datagateway_api_enabled:
+            app.mount(path=config.datagateway_api.extension, app=create_datagateway_app())
+        if read_only_api_enabled:
+            app.mount(path=config.read_only_api.extension, app=create_read_only_app())
+        if search_api_enabled:
+            app.mount(path=config.search_api.extension, app=create_search_api_app())
 
-        enable_cors(search_api_app)
-        register_common_handlers(search_api_app)
+    elif datagateway_api_enabled:
+        app = create_datagateway_app()
+        app.root_path = f"{config.api.url_prefix}{config.datagateway_api.extension}"
 
-        for endpoint_name, entity_name in search_api_entity_endpoints.items():
-            router = create_search_collection_router(
-                entity_name,
-                endpoint_name,
-                add_file_endpoints=(entity_name == "Dataset"),
-            )
-            search_api_app.include_router(router)
+    elif read_only_api_enabled:
+        app = create_read_only_app()
+        app.root_path = f"{config.api.url_prefix}{config.read_only_api.extension}"
 
-        return search_api_app
-    return None
+    elif search_api_enabled:
+        app = create_search_api_app()
+        app.root_path = f"{config.api.url_prefix}{config.search_api.extension}"
+
+    return app
 
 
-if config.multi_api_count > 1:
-    app = FastAPI(
-        title=config.api.title,
-        description=config.api.description,
-        root_path=config.api.url_prefix,
-        separate_input_output_schemas=False,
-    )
-    if datagateway_api_enabled:
-        app.mount(path=config.datagateway_api.extension, app=create_datagateway_app())
-    if read_only_api_enabled:
-        app.mount(path=config.read_only_api.extension, app=create_read_only_app())
-    if search_api_enabled:
-        app.mount(path=config.search_api.extension, app=create_search_api_app())
-
-elif datagateway_api_enabled:
-    app = create_datagateway_app()
-    app.root_path = f"{config.api.url_prefix}{config.datagateway_api.extension}"
-
-elif read_only_api_enabled:
-    app = create_read_only_app()
-    app.root_path = f"{config.api.url_prefix}{config.read_only_api.extension}"
-
-elif search_api_enabled:
-    app = create_search_api_app()
-    app.root_path = f"{config.api.url_prefix}{config.search_api.extension}"
+app = create_app()
 
 
 if __name__ == "__main__":
@@ -180,4 +169,4 @@ if __name__ == "__main__":
         port=config.api.port,
         reload=config.api.reload,
         log_config=LOGGING_CONFIG_FILE_PATH,
-    )
+    )  # pragma: no cover

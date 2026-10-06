@@ -33,9 +33,6 @@ def ping_endpoint(python_icat, **kwargs) -> APIRouter:
         },
     )
     def ping():
-        try:
-            return python_icat.ping(**kwargs)
-        except Exception as exc:
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
+        return python_icat.ping(**kwargs)
 
     return router

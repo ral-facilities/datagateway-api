@@ -1,12 +1,11 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
-from icat.exception import ICATError
+from fastapi.testclient import TestClient
 import pytest
 
 from datagateway_api.common.constants import Constants
 from datagateway_api.common.exceptions import PythonICATError
-from datagateway_api.datagateway_api.icat.icat_client_pool import create_client_pool
-from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
+from datagateway_api.main import logger
 
 
 class TestICATPing:
@@ -15,12 +14,28 @@ class TestICATPing:
 
         assert test_response.json() == Constants.PING_OK_RESPONSE
 
-    def test_invalid_ping(self):
-        with patch(
-            "icat.client.Client.getEntityNames",
-            side_effect=ICATError("Mocked Exception"),
+    def test_invalid_ping_api_error(self, test_client: TestClient) -> None:
+        with patch("icat.client.Client.getEntityNames", side_effect=PythonICATError("Mocked Exception")):
+            test_response = test_client.get("/datagateway-api/ping")
+
+        assert test_response.status_code == 500
+        assert test_response.json() == {"message": "Mocked Exception"}
+
+    def test_invalid_ping_generic_error(self, test_client: TestClient) -> None:
+        """
+        Note that as per https://starlette.dev/exceptions/#errors-and-handled-exceptions, 500 codes or instances of
+        Exception seem to "bubble through the entire middleware stack as exceptions", i.e. need to be caught with
+        `pytest.raises` when calling `test_client.get`. We can still assert that `custom_general_exception_handler` was
+        called, by checking the logging within it is called even if we can't assert on the return value like we can for
+        an API error, as in the above test.
+        """
+        mocked = MagicMock(side_effect=logger.exception)
+        exception = Exception("Mocked Exception")
+        with (
+            patch("icat.client.Client.getEntityNames", side_effect=exception),
+            patch.object(logger, "exception", new=mocked),
+            pytest.raises(Exception, match="Mocked Exception"),
         ):
-            python_icat = PythonICAT()
-            client_pool = create_client_pool()
-            with pytest.raises(PythonICATError):
-                python_icat.ping(client_pool=client_pool)
+            test_client.get("/datagateway-api/ping")
+
+        mocked.assert_called_once_with(exception)
