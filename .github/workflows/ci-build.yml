@@ -32,6 +32,11 @@ jobs:
       - name: Run unit tests
         run: docker compose run unit-tests
 
+      - name: Upload code coverage from unit tests
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Start test dependencies
         run: docker compose --profile dependencies up -d
 
@@ -41,7 +46,7 @@ jobs:
       - name: Run integration tests
         run: docker compose run integration-tests
 
-      - name: Upload code coverage
+      - name: Upload code coverage from integration tests
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
