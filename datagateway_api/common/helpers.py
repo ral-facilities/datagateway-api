@@ -4,7 +4,6 @@ import json
 import logging
 
 from fastapi import Request
-from pydantic import ValidationError
 import requests
 
 
@@ -35,14 +34,8 @@ def queries_records(method):
         except ApiError as e:
             log.exception(msg=e.args)
             raise e
-        except ValueError as e:
+        except (ValueError, TypeError) as e:
             log.exception(msg=e.args)
-            raise BadRequestError() from e
-        except TypeError as e:
-            log.exception(e.args)
-            raise BadRequestError() from e
-        except ValidationError as e:
-            log.exception(e.args)
             raise BadRequestError() from e
 
     return wrapper_gets_records
