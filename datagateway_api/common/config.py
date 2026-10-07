@@ -92,9 +92,6 @@ class DataGatewayAPI(BaseModel):
 
     extension: BaseAPIExtension
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
 
 class LimitConfig(BaseModel):
     default: PositiveInt = 100
@@ -131,9 +128,6 @@ class SearchAPI(DataGatewayAPI):
     password: str
     search_scoring: SearchScoring
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
 
 class Config(BaseSettings):
     """
@@ -149,9 +143,6 @@ class Config(BaseSettings):
     datagateway_api: DataGatewayAPI | None = None
     read_only_api: ReadOnlyAPI | None = None
     search_api: SearchAPI | None = None
-
-    def __getitem__(self, item):
-        return getattr(self, item)
 
     @computed_field
     @cached_property
