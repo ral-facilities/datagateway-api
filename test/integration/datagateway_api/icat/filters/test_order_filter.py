@@ -34,6 +34,12 @@ class TestICATOrderFilter:
 
         assert icat_query.order == OrderedDict([("id", "%s ASC"), ("title", "%s DESC")])
 
+    def test_duplicated_order(self, icat_query):
+        filter_handler = FilterOrderHandler()
+        filter_handler.add_filters([PythonICATOrderFilter("id", "ASC"), PythonICATOrderFilter("id", "DESC")])
+        with pytest.raises(expected_exception=FilterError, match="Cannot add id more than once"):
+            filter_handler.apply_filters(icat_query)
+
     def test_join_specs_added(self, icat_query):
         pid_filter = PythonICATOrderFilter("studyInvestigations.study.pid", "ASC")
         name_filter = PythonICATOrderFilter(

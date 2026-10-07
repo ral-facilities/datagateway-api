@@ -204,6 +204,10 @@ class PythonICATOrderFilter(OrderFilter):
         super().__init__(field, direction.upper())
 
     def apply_filter(self, query: Query):
+        if self.field in query.order:
+            # Usually this is raised within `setOrder` but we have to pass orders one at a time so do it explicitly
+            raise FilterError(f"Cannot add {self.field} more than once")
+
         old_order = query.order.copy()  # May already have some ordering applied
 
         try:
