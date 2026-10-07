@@ -2,6 +2,7 @@ from datetime import datetime
 from functools import wraps
 import json
 import logging
+from typing import Any
 
 from fastapi import Request
 from pydantic import ValidationError
@@ -209,3 +210,14 @@ def map_nested_attrs(nested_dict, split_attr_name, query_data):
         map_nested_attrs(nested_dict[attr_name_pop], split_attr_name, query_data)
 
     return nested_dict
+
+
+def to_list(value: Any) -> list:
+    """Utility function for coercing `value` to be of type list if it is not already.
+
+    :param value: Possibly a list.
+    :type value: Any
+    :return: Definitely a list.
+    :rtype: list
+    """
+    return value if isinstance(value, list) else [value]

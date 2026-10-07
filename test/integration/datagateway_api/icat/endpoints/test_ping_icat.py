@@ -1,10 +1,11 @@
 from unittest.mock import MagicMock, patch
 
 from fastapi.testclient import TestClient
+from icat.exception import ICATError
 import pytest
 
 from datagateway_api.common.constants import Constants
-from datagateway_api.common.exceptions import PythonICATError
+from datagateway_api.datagateway_api.icat.icat_client_pool import ICATClient
 from datagateway_api.main import logger
 
 
@@ -15,7 +16,10 @@ class TestICATPing:
         assert test_response.json() == Constants.PING_OK_RESPONSE
 
     def test_invalid_ping_api_error(self, test_client: TestClient) -> None:
-        with patch("icat.client.Client.getEntityNames", side_effect=PythonICATError("Mocked Exception")):
+        def side_effect() -> None:
+            raise ICATError("Mocked Exception")
+
+        with patch.object(target=ICATClient, attribute="getEntityNames", side_effect=side_effect):
             test_response = test_client.get("/datagateway-api/ping")
 
         assert test_response.status_code == 500
