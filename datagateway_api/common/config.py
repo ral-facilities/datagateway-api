@@ -156,7 +156,7 @@ class Config(BaseSettings):
     @computed_field
     @cached_property
     def multi_api_count(self) -> int:
-        return (self.datagateway_api is not None) + (self.search_api is not None)
+        return (self.datagateway_api is not None) + (self.read_only_api is not None) + (self.search_api is not None)
 
     @staticmethod
     def _validate_api_extension(
