@@ -2,11 +2,10 @@ import decimal
 import logging
 from typing import Annotated, List, Optional, Union
 
-from icat.exception import ICATError
 from pydantic import AwareDatetime, BaseModel, create_model, Field
 
-from datagateway_api.common.exceptions import PythonICATError
 from datagateway_api.datagateway_api.icat.helpers import get_cached_client
+from datagateway_api.datagateway_api.icat.python_icat import PythonICAT
 
 log = logging.getLogger()
 
@@ -116,11 +115,7 @@ def build_datagateway_api_model(**kwargs):
 
     client_pool = kwargs.get("client_pool")
     client = get_cached_client(None, client_pool)
-
-    try:
-        entity_names = client.getEntityNames()
-    except ICATError as e:
-        raise PythonICATError(e) from e
+    entity_names = PythonICAT.get_entity_names(client=client)
 
     for name in entity_names:
         info = client.getEntityInfo(name)

@@ -58,6 +58,28 @@ class ICATQuery:
                 "An issue has occurred while creating a Python ICAT Query object, suggesting an invalid argument",
             ) from e
 
+    @staticmethod
+    def copy_includes(includes: list[str], key: str) -> list[str]:
+        """Utility method for removing `key` from `includes` as part of mapping an ICAT Entity to a dict.
+
+        :param includes: Original list of fields to include.
+        :type includes: list[str]
+        :param key: Value to be removed.
+        :type key: str
+        :return: Shallow copy of `includes` without `key`, if present.
+        :rtype: list[str]
+        """
+        includes_copy = includes.copy()
+        try:
+            includes_copy.remove(key)
+        except ValueError:
+            log.warning(
+                "Key couldn't be found to remove from include list, this could cause an issue further on in the "
+                "request",
+            )
+
+        return includes_copy
+
     def execute_query(self, client, return_json_formattable=False):
         """
         Execute the ICAT Query object and return in the format specified by the
@@ -163,15 +185,7 @@ class ICATQuery:
         for key in entity.InstAttr | entity.MetaAttr | include_set:
             entity_data = getattr(entity, key)
             if key in includes:
-                # Copy and remove don't return values so must be done separately
-                includes_copy = includes.copy()
-                try:
-                    includes_copy.remove(key)
-                except ValueError:
-                    log.warning(
-                        "Key couldn't be found to remove from include list, this could"
-                        " cause an issue further on in the request",
-                    )
+                includes_copy = ICATQuery.copy_includes(includes=includes, key=key)
                 if isinstance(entity_data, Entity):
                     d[key] = self.entity_to_dict(entity_data, includes_copy)
                     continue

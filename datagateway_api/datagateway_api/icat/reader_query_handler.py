@@ -45,11 +45,8 @@ class ReaderQueryHandler:
     # the first instance of this class is created and is refreshed when a login attempt
     # fails (due to an expired session ID)
     reader_client = None
-    maxsize = 128  # cachetools default value
-    ttl = 600  # seconds, cachetools default value
-    if config.icat.reader is not None:
-        maxsize = config.icat.reader.maxsize
-        ttl = config.icat.reader.ttl
+    maxsize = getattr(config.icat.reader, "maxsize", 128)  # cachetools default value
+    ttl = getattr(config.icat.reader, "ttl", 600)  # seconds, cachetools default value
 
     def __init__(self, entity_type: str, filters: List[QueryFilter]) -> None:
         self.entity_type = entity_type
