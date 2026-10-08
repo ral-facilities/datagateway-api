@@ -13,6 +13,7 @@ from pydantic import (
 )
 from pydantic_core import ErrorDetails
 
+from datagateway_api.common.helpers import to_list
 from datagateway_api.search_api.panosc_mappings import mappings
 
 
@@ -69,8 +70,7 @@ def _get_icat_field_value(icat_field_name, icat_data):
             values = []
             for data in icat_data:
                 value = _get_icat_field_value(field_name, data)
-                value = [value] if not isinstance(value, list) else value
-                values.extend(value)
+                values.extend(to_list(value))
             icat_data = values
         elif isinstance(icat_data, dict):
             icat_data = icat_data[field_name]
@@ -105,12 +105,8 @@ class PaNOSCAttribute(ABC, BaseModel):
                 cls.__name__,
                 entity_field_alias,
             )
-
-            if not isinstance(icat_field_name, list):
-                icat_field_name = [icat_field_name]
-
             field_value = None
-            for field_name in icat_field_name:
+            for field_name in to_list(icat_field_name):
                 try:
                     field_value = _get_icat_field_value(field_name, icat_data)
                     if field_value:
@@ -148,7 +144,7 @@ class PaNOSCAttribute(ABC, BaseModel):
                     # entities unless explicitly specified to be included by the user.
                     continue
 
-                data = [field_value] if not isinstance(field_value, list) else field_value
+                data = to_list(value=field_value)
 
                 required_related_fields_for_next_entity = []
                 for required_related_field in required_related_fields:

@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 from functools import wraps
 import logging
-from typing import Literal
+from typing import Any, Literal
 
 from cachetools import cached
 from dateutil.tz import tzlocal
+from icat.client import Client, Entity
 from icat.exception import (
     ICATInternalError,
     ICATNoObjectError,
@@ -23,6 +24,7 @@ from datagateway_api.common.exceptions import (
     PythonICATError,
 )
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
+from datagateway_api.common.helpers import to_list
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATLimitFilter,
     PythonICATWhereFilter,
@@ -194,7 +196,9 @@ def update_attributes(old_entity, new_entity):
                 elif entity_info.relType.lower() == "one":
                     related_object = old_entity.client.get(entity_info.type, value)
             setattr(old_entity, key, related_object)
-        except AttributeError as e:
+        except AttributeError as e:  # pragma: no cover
+            # Don't believe it is possible to trigger this, as we would have thrown on getattr already
+            # Leaving in as defensive measure just in case, but marking as no cover
             raise BadRequestError(
                 f"Bad request made, cannot modify attribute `{key}` within the {old_entity.BeanName} entity",
             ) from e
@@ -257,6 +261,20 @@ def get_entity_by_id(
         raise MissingRecordError("No result found")
     else:
         return entity_by_id_data[0]
+
+
+def delete_entities_by_id(client: Client, entity_type: str, data: list[dict[str, Any]]) -> None:
+    """Utility function for deleting multiple entities as part of error handling cleanup.
+
+    :param client: ICAT Client to perform deletion.
+    :type client: Client
+    :param entity_type: Name of the ICAT Entities being deleted.
+    :type entity_type: str
+    :param data: list of dicts representing existing Entities to be deleted.
+    :type data: list[dict[str, Any]]
+    """
+    for entity_json in data:
+        delete_entity_by_id(client, entity_type, entity_json["id"])
 
 
 def delete_entity_by_id(client, entity_type, id_):
@@ -370,24 +388,14 @@ def get_data_with_filters(client, entity_type, filters, aggregate=None):
         if reader_query.is_query_eligible_for_reader_performance():
             log.info("Query is eligible to be passed as reader acount")
             if reader_query.is_user_authorised_to_see_entity_id(client):
-                reader_client = ReaderQueryHandler.reader_client
                 log.info("Query to be executed as reader account")
-                try:
-                    return execute_entity_query(
-                        reader_client,
-                        entity_type,
-                        filters,
-                        aggregate=aggregate,
-                    )
-                except ICATSessionError:
-                    # re-login as reader and try the query again
-                    reader_client = reader_query.create_reader_client()
-                    return execute_entity_query(
-                        reader_client,
-                        entity_type,
-                        filters,
-                        aggregate=aggregate,
-                    )
+                ReaderQueryHandler.refresh()
+                return execute_entity_query(
+                    ReaderQueryHandler.reader_client,
+                    entity_type,
+                    filters,
+                    aggregate=aggregate,
+                )
 
     # We may still be able to get results, as we may be a root user who does not need direct association with the data
     log.info("Query to be executed as user from request: %s", client.getUserName())
@@ -476,14 +484,10 @@ def update_entities(client, entity_type, data_to_update):
     log.info("Updating certain results in %s", entity_type)
 
     updated_data = []
-
-    if not isinstance(data_to_update, list):
-        data_to_update = [data_to_update]
-
     icat_data_backup = []
     updated_icat_data = []
 
-    for entity_request in data_to_update:
+    for entity_request in to_list(data_to_update):
         try:
             entity_data = get_entity_by_id(
                 client,
@@ -503,26 +507,32 @@ def update_entities(client, entity_type, data_to_update):
 
     # This separates the local data updates from pushing these updates to icatdb
     for updated_icat_entity in updated_icat_data:
-        try:
-            updated_icat_entity.update()
-        except (ICATValidationError, ICATInternalError) as e:
-            # Use `icat_data_backup` to restore data trying to updated to the state
-            # before this request
-            for icat_entity_backup in icat_data_backup:
-                try:
-                    icat_entity_backup.update()
-                except (ICATValidationError, ICATInternalError) as e:
-                    # If an error occurs while trying to restore backup data, just throw
-                    # a 500 immediately
-                    raise PythonICATError(e) from e
-
-            raise PythonICATError(e) from e
-
+        persist_updated_entity(entity=updated_icat_entity, backup_entities=icat_data_backup)
         updated_data.append(
             get_entity_by_id(client, entity_type, updated_icat_entity.id, True),
         )
 
     return updated_data
+
+
+def persist_updated_entity(entity: Entity, backup_entities: list[Entity] | None = None) -> None:
+    """Utility function for persisting the changes to `entity`, and optionally rolling back to `backup_entities`.
+
+    :param entity: ICAT Entity to persist.
+    :type entity: Entity
+    :param backup_entities: Copies of ICAT Entities as they were before attempting the update, defaults to None.
+    :type backup_entities: list[Entity] | None, optional
+    :raises PythonICATError: If ICATValidationError or ICATInternalError occurs.
+    """
+    try:
+        entity.update()
+    except (ICATValidationError, ICATInternalError) as e:
+        if backup_entities is not None:
+            # Restore data to its state before this request
+            for backup_entity in backup_entities:
+                persist_updated_entity(entity=backup_entity)
+
+        raise PythonICATError(e) from e
 
 
 def create_entities(client, entity_type, data):  # noqa: C901
@@ -548,11 +558,7 @@ def create_entities(client, entity_type, data):  # noqa: C901
 
     created_data = []
     created_icat_data = []
-
-    if not isinstance(data, list):
-        data = [data]
-
-    for result in data:
+    for result in to_list(data):
         new_entity = client.new(entity_type.lower())
 
         for attribute_name, value in result.items():
@@ -596,27 +602,15 @@ def create_entities(client, entity_type, data):  # noqa: C901
         try:
             entity.create()
         except ICATInternalError as e:
-            for entity_json in created_data:
-                # Delete any data that has been pushed to ICAT before the exception
-                delete_entity_by_id(client, entity_type, entity_json["id"])
-
+            delete_entities_by_id(client=client, entity_type=entity_type, data=created_data)
             raise PythonICATError(e) from e
         except (ICATObjectExistsError, ICATParameterError, ICATValidationError) as e:
-            for entity_json in created_data:
-                delete_entity_by_id(client, entity_type, entity_json["id"])
-
+            delete_entities_by_id(client=client, entity_type=entity_type, data=created_data)
             raise BadRequestError(e) from e
 
         created_data.append(get_entity_by_id(client, entity_type, entity.id, True))
 
     return created_data
-
-
-def initobj(obj, attrs):
-    """Initialize an entity object from a dict of attributes."""
-    for a in attrs:
-        if a != "id" and a in attrs:
-            setattr(obj, a, attrs[a])
 
 
 def build_related_entities(

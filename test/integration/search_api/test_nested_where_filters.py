@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.common.helpers import to_list
 from datagateway_api.search_api.filters import SearchAPIWhereFilter
 from datagateway_api.search_api.nested_where_filters import NestedWhereFilters
 from datagateway_api.search_api.query import SearchAPIQuery
@@ -193,11 +194,7 @@ class TestNestedWhereFilters:
     )
     def test_apply_filter(self, test_filters, query):
         NestedWhereFilters.set_search_api_query(test_filters, query)
-
-        if not isinstance(test_filters, list):
-            test_filters = [test_filters]
-
-        for filter_ in test_filters:
+        for filter_ in to_list(test_filters):
             if isinstance(filter_, NestedWhereFilters):
                 assert filter_.lhs[0].search_api_query == query
                 assert filter_.rhs[0].search_api_query == query

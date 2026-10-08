@@ -1,6 +1,7 @@
 import logging
 
 from datagateway_api.common.filters import WhereFilter
+from datagateway_api.common.helpers import to_list
 from datagateway_api.search_api.filters import SearchAPIWhereFilter
 
 log = logging.getLogger()
@@ -29,13 +30,8 @@ class NestedWhereFilters:
         """
 
         # Ensure each side is in a list for consistency for string conversion
-        if not isinstance(lhs, list):
-            lhs = [lhs]
-        if not isinstance(rhs, list):
-            rhs = [rhs]
-
-        self.lhs = lhs
-        self.rhs = rhs
+        self.lhs = to_list(lhs)
+        self.rhs = to_list(rhs)
         self.joining_operator = joining_operator
         self.search_api_query = search_api_query
         if self.search_api_query is not None:
