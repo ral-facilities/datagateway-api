@@ -76,9 +76,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     log.info("query JSON object found")
                     query_filters.append(SearchAPIScoringFilter(filter_input))
                 else:
-                    raise FilterError(
-                        "No valid filter name given within filter query param: {filter_name}",
-                    )
+                    raise FilterError(f"No valid filter name given within filter query param: {filter_name}")
         elif query_param_name == "where":
             # For the count endpoints
             log.info("where query param found, likely for count endpoint")

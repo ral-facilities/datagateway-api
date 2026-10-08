@@ -278,6 +278,12 @@ class Document(PaNOSCAttribute):
         return super(Document, cls).from_icat(icat_data, required_related_fields)
 
 
+class ScoredDocument(Document):
+    """Score is only included in response models when the "query" filter is provided."""
+
+    score: float
+
+
 class File(PaNOSCAttribute):
     """Name of file and optionally location"""
 

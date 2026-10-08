@@ -9,6 +9,7 @@ from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
 from datagateway_api.read_only_api.routers.entities import my_data_endpoints
+from datagateway_api.search_api.models import Dataset, Instrument, ScoredDocument, Document
 
 # Check which APIs are enabled
 datagateway_api_enabled = config.datagateway_api is not None
@@ -26,12 +27,7 @@ if datagateway_api_enabled:
     from datagateway_api.datagateway_api.routers.sessions import sessions_endpoints
 
 if search_api_enabled:
-    from datagateway_api.common.search_api_entity_endpoint_dict import (
-        search_api_entity_endpoints,
-    )
-    from datagateway_api.search_api.routers.entity import (
-        create_search_collection_router,
-    )
+    from datagateway_api.search_api.routers.entity import create_search_collection_router
 
 setup_logger()
 logger = logging.getLogger()
@@ -118,13 +114,30 @@ def create_search_api_app() -> FastAPI:
     search_api_app = FastAPI(title="Search API", separate_input_output_schemas=False)
     enable_cors(search_api_app)
     register_common_handlers(search_api_app)
-    for endpoint_name, entity_name in search_api_entity_endpoints.items():
-        router = create_search_collection_router(
-            entity_name,
-            endpoint_name,
-            add_file_endpoints=(entity_name == "Dataset"),
-        )
-        search_api_app.include_router(router)
+    search_api_app.include_router(
+        router=create_search_collection_router(
+            entity_name="Dataset",
+            endpoint_name="Datasets",
+            model=Dataset,
+            add_file_endpoints=True,
+        ),
+    )
+    search_api_app.include_router(
+        router=create_search_collection_router(
+            entity_name="Document",
+            endpoint_name="Documents",
+            model=ScoredDocument | Document,
+            add_file_endpoints=False,
+        ),
+    )
+    search_api_app.include_router(
+        router=create_search_collection_router(
+            entity_name="Instrument",
+            endpoint_name="Instruments",
+            model=Instrument,
+            add_file_endpoints=False,
+        ),
+    )
 
     return search_api_app
 
