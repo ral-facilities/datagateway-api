@@ -4,7 +4,6 @@ from datagateway_api.common.config import config
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATIncludeFilter,
     PythonICATLimitFilter,
-    PythonICATOrderFilter,
     PythonICATSkipFilter,
 )
 
@@ -158,20 +157,6 @@ class FilterOrderHandler(object):
             self.remove_filter(skip_filter)
             log.debug("Filters: %s", self.filters)
 
-    def clear_python_icat_order_filters(self):
-        """
-        Checks if any order filters have been added to the request and resets the
-        variable used to manage which attribute(s) to use for sorting results.
-
-        A reset is required because Python ICAT overwrites (as opposed to appending to
-        it) the query's order list every time one is added to the query.
-        """
-        log.debug("Resetting result order for the order filter")
-
-        if any(isinstance(icat_filter, PythonICATOrderFilter) for icat_filter in self.filters):
-            PythonICATOrderFilter.result_order = []
-            PythonICATOrderFilter.join_specs = {}
-
     def manage_icat_filters(self, filters, query):
         """
         Utility function to call other functions in this class, used to manage filters
@@ -187,5 +172,4 @@ class FilterOrderHandler(object):
 
         self.add_filters(filters)
         self.merge_python_icat_limit_skip_filters()
-        self.clear_python_icat_order_filters()
         self.apply_filters(query)
