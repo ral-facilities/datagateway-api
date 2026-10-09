@@ -5,7 +5,6 @@ from fastapi import APIRouter, Path, Query, Request
 from pydantic import BaseModel
 
 from datagateway_api.common.helpers import get_filters_from_query_string
-from datagateway_api.search_api import models as search_api_models
 from datagateway_api.search_api.filters import SearchAPIScoringFilter
 from datagateway_api.search_api.helpers import (
     get_count,
@@ -15,24 +14,10 @@ from datagateway_api.search_api.helpers import (
     get_with_pid,
     search_api_error_handling,
 )
+from datagateway_api.search_api.models import CountResponse, File, PaNOSCAttribute
 from datagateway_api.search_api.search_scoring import SearchScoring
 
 log = logging.getLogger()
-
-
-def get_model_for_entity(entity_name: str) -> BaseModel:
-    """
-    Dynamically get the Pydantic model for the given entity name.
-
-    :param entity_name: The name of the entity (string)
-    :return: The Pydantic model class for the given entity.
-    :raises ValueError: If no matching model exists
-    """
-    try:
-        return getattr(search_api_models, entity_name)
-    except AttributeError as exc:
-        raise ValueError(f"No model found for entity {entity_name!r}") from exc
-
 
 FilterQuery = Query(
     default=None,
@@ -220,7 +205,7 @@ def get_number_count_endpoint(
         description=(
             f"Return the count of the {entity_name} objects that would be retrieved given the filters provided"
         ),
-        response_model=search_api_models.CountResponse,
+        response_model=CountResponse,
         responses={
             200: {"description": f"The count of the {entity_name} objects"},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -254,7 +239,7 @@ def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
         "/{pid}/files",
         summary=f"Get {entity_name}s for the given Dataset",
         description=(f"Retrieves a list of {entity_name} objects for a given Dataset object"),
-        response_model=List[search_api_models.File],
+        response_model=List[File],
         responses={
             200: {"description": (f"Success - returns {entity_name}s for the given Dataset")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -295,7 +280,7 @@ def get_number_count_files_endpoint(
             f"Return the count of {entity_name} objects for the given Dataset "
             "object that would be retrieved given the filters provided"
         ),
-        response_model=search_api_models.CountResponse,
+        response_model=CountResponse,
         responses={
             200: {"description": (f"The count of {entity_name} objects for the given Dataset")},
             400: {"description": "Bad request - Something was wrong with the request"},
@@ -321,6 +306,7 @@ def get_number_count_files_endpoint(
 def create_search_collection_router(
     entity_name: str,
     endpoint_name: str,
+    model: PaNOSCAttribute,
     add_file_endpoints: bool = False,
 ) -> APIRouter:
     """
@@ -342,8 +328,6 @@ def create_search_collection_router(
     :returns APIRouter: The router with the registered endpoints.
     """
     router = APIRouter(prefix=f"/{endpoint_name}", tags=[entity_name])
-    model = get_model_for_entity(entity_name)
-
     get_search_endpoint(router, entity_name, model)
     get_number_count_endpoint(router, entity_name)
     get_single_endpoint(router, entity_name, model)
