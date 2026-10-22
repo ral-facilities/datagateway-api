@@ -88,11 +88,58 @@ services:
         condition: service_healthy
     volumes:
       - ./util:/datagateway-api-run/util
-    command: uv run python -m util.icat_db_generator
+    environment:
+      ICATDB_RESTORE_FROM_BACKUP: ${ICATDB_RESTORE_FROM_BACKUP:-true}
+    command: >
+      sh -c '
+        if [ "$$ICATDB_RESTORE_FROM_BACKUP" = "true" ]; then
+          echo "Skipping generating mock data (ICATDB_RESTORE_FROM_BACKUP=true)";
+        else
+          uv run python -m util.icat_db_generator
+        fi
+      '
     restart: "no"
     networks:
       - dg_network
-    profiles: [dependencies, tests, full]
+    profiles: [dependencies, full]
+
+  icatdb-backup:
+    image: mariadb:10.10
+    depends_on:
+      icat_mariadb:
+        condition: service_healthy
+    volumes:
+      - ./util:/util
+    command: >
+      sh -c "mariadb-dump -h icat_mariadb -uicatdbuser -picatdbuserpw --single-transaction icatdb > /util/icatdb_dump.sql"
+    restart: "no"
+    networks:
+      - dg_network
+    profiles: [icatdb-backup]
+
+  icatdb-restore:
+    image: mariadb:10.10
+    depends_on:
+      icat_mariadb:
+        condition: service_healthy
+      icat_payara:
+        condition: service_healthy
+    volumes:
+      - ./util:/util:ro
+    environment:
+      ICATDB_RESTORE_FROM_BACKUP: ${ICATDB_RESTORE_FROM_BACKUP:-true}
+    command: >
+      sh -c '
+        if [ "$$ICATDB_RESTORE_FROM_BACKUP" = "true" ]; then
+          mariadb -h icat_mariadb -uicatdbuser -picatdbuserpw icatdb < /util/icatdb_dump.sql;
+        else
+          echo "Skipping restoring mock data (ICATDB_RESTORE_FROM_BACKUP=false)";
+        fi
+      '
+    restart: "no"
+    networks:
+      - dg_network
+    profiles: [dependencies, full]
 
   format:
     container_name: dg_api_format
@@ -143,6 +190,8 @@ services:
         condition: service_started
       auth_anon:
         condition: service_started
+      icatdb-restore:
+        condition: service_completed_successfully
       testdata:
         condition: service_completed_successfully
 

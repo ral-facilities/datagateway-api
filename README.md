@@ -46,7 +46,9 @@ This will build the API image and start:
 - MariaDB for ICAT
 - the ICAT/Payara server
 - simple and anonymous authentication services
-- test data population
+- test data, restored from `util/icatdb_dump.sql` (see
+  [Backing Up and Restoring Test Data](#backing-up-and-restoring-test-data) if
+  that file doesn't exist yet)
 - the API on http://localhost:5000
 
 The Swagger UI is available at:
@@ -86,6 +88,28 @@ Run integration tests:
 
 ```bash
 docker compose run --rm integration-tests
+```
+
+### Backing Up and Restoring Test Data
+
+To back up the current data to `util/icatdb_dump.sql`, run:
+
+```bash
+docker compose --profile dependencies run --rm icatdb-backup
+```
+
+- Don't update unless this CI `icatdb Generator Script Consistency Test` fails.
+
+To restore the data from `util/icatdb_dump.sql`, for example after generating fresh data, run:
+
+```bash
+docker compose --profile dependencies run --rm icatdb-restore
+```
+
+By default, the `full` and `dependencies` profiles restore data from the dump. To generate fresh data instead, run:
+
+```bash
+ICATDB_RESTORE_FROM_BACKUP=false docker compose --profile dependencies up
 ```
 
 ## Local Development with uv
