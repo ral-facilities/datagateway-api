@@ -98,8 +98,8 @@ jobs:
         working-directory: pr
         run: ICATDB_RESTORE_FROM_BACKUP=true docker compose --profile dependencies up -d
 
-      - name: Wait for test data generation
-        run: docker wait dg_api_testdata
+      - name: Wait for ICAT DB restore
+        run: docker wait dg_api_icatdb_restore
 
       - name: Drop modTime and createTime
         run: |
