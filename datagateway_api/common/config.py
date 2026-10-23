@@ -92,9 +92,6 @@ class DataGatewayAPI(BaseModel):
 
     extension: BaseAPIExtension
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
 
 class LimitConfig(BaseModel):
     default: PositiveInt = 100
@@ -131,9 +128,6 @@ class SearchAPI(DataGatewayAPI):
     password: str
     search_scoring: SearchScoring
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
 
 class Config(BaseSettings):
     """
@@ -150,13 +144,10 @@ class Config(BaseSettings):
     read_only_api: ReadOnlyAPI | None = None
     search_api: SearchAPI | None = None
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
     @computed_field
     @cached_property
     def multi_api_count(self) -> int:
-        return (self.datagateway_api is not None) + (self.search_api is not None)
+        return (self.datagateway_api is not None) + (self.read_only_api is not None) + (self.search_api is not None)
 
     @staticmethod
     def _validate_api_extension(

@@ -1,6 +1,7 @@
 import logging
 from typing import Literal
 
+from icat.client import Client
 from icat.exception import ICATError, ICATSessionError
 
 from datagateway_api.common.constants import Constants
@@ -30,6 +31,21 @@ class PythonICAT:
     Class that contains functions to access and modify data in an ICAT database directly
     """
 
+    @staticmethod
+    def get_entity_names(client: Client) -> list:
+        """Utility function for `getEntityNames` with Error handling.
+
+        :param client: Python ICAT Client.
+        :type client: Client
+        :raises PythonICATError: If an ICATError is thrown.
+        :return: list of Entity names.
+        :rtype: list
+        """
+        try:
+            return client.getEntityNames()
+        except ICATError as e:
+            raise PythonICATError(e) from e
+
     def ping(self, **kwargs):
         """
         Endpoint requiring no authentication to check the API is alive and does a basic
@@ -40,12 +56,8 @@ class PythonICAT:
 
         client_pool = kwargs.get("client_pool")
         client = get_cached_client(None, client_pool)
-
-        try:
-            entity_names = client.getEntityNames()
-            log.debug("Entity names on ping: %s", entity_names)
-        except ICATError as e:
-            raise PythonICATError(e) from e
+        entity_names = PythonICAT.get_entity_names(client=client)
+        log.debug("Entity names on ping: %s", entity_names)
 
         return Constants.PING_OK_RESPONSE
 

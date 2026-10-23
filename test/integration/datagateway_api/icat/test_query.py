@@ -347,3 +347,9 @@ class TestICATQuery:
             "studies",
             "userGroups",
         ]
+
+    def test_copy_includes(self) -> None:
+        includes = []
+        includes_copy = ICATQuery.copy_includes(includes=[], key="absent")
+        assert includes_copy == includes
+        assert includes_copy is not includes

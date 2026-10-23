@@ -1,7 +1,20 @@
 import pytest
 from pydantic import ValidationError
 
-from datagateway_api.common.config import config, validate_extension
+from datagateway_api.common.config import (
+    Config,
+    DataGatewayAPI,
+    LimitConfig,
+    ReadOnlyAPI,
+    config,
+    validate_extension,
+)
+
+
+class TestLimitConfig:
+    def test_validate(self) -> None:
+        with pytest.raises(ValidationError, match="default limit cannot exceed maximum limit"):
+            LimitConfig(maximum=99)
 
 
 class TestConfig:
@@ -64,3 +77,24 @@ class TestConfig:
     def test_invalid_extension_validation(self, input_extension):
         with pytest.raises(ValueError):
             validate_extension(input_extension)
+
+    @pytest.mark.parametrize(
+        ["datagateway_api", "read_only_api", "match"],
+        [
+            pytest.param(None, None, "At least 1 API must be enabled.", id="No API enabled"),
+            pytest.param(
+                DataGatewayAPI(extension="/"),
+                ReadOnlyAPI(extension="/read-only-api"),
+                "No API extension can be '/' when multiple APIs enabled.",
+                id="/ used in multi-api mode",
+            ),
+        ],
+    )
+    def test_validate_api_extensions(
+        self,
+        datagateway_api: DataGatewayAPI | None,
+        read_only_api: ReadOnlyAPI | None,
+        match: str,
+    ) -> None:
+        with pytest.raises(ValidationError, match=match):
+            Config(datagateway_api=datagateway_api, read_only_api=read_only_api, search_api=None)
