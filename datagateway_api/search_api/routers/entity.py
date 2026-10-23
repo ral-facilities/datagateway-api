@@ -74,7 +74,7 @@ FilterQuery = Query(
 )
 WhereQuery = Query(
     default=None,
-    name="WHERE_FILTER",
+    title="WHERE_FILTER",
     description=(
         "Apply where filter to the query. The possible operators"
         " are: eq, neq, and, or, gt, gte, lt, lte, between, inq, nin, like, nlike,"
@@ -122,7 +122,11 @@ def get_search_endpoint(
         description=f"Retrieves a list of {entity_name} objects",
         response_model=List[model],
         responses={
-            200: {"description": (f"Success - returns {entity_name}s that satisfy the filter")},
+            200: {
+                "description": (
+                    f"Success - returns {entity_name}s that satisfy the filter"
+                )
+            },
             400: {"description": "Bad request - Something was wrong with the request"},
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
@@ -238,10 +242,16 @@ def get_files_endpoint(router: APIRouter, entity_name: str) -> None:
     @router.get(
         "/{pid}/files",
         summary=f"Get {entity_name}s for the given Dataset",
-        description=(f"Retrieves a list of {entity_name} objects for a given Dataset object"),
+        description=(
+            f"Retrieves a list of {entity_name} objects for a given Dataset object"
+        ),
         response_model=List[File],
         responses={
-            200: {"description": (f"Success - returns {entity_name}s for the given Dataset")},
+            200: {
+                "description": (
+                    f"Success - returns {entity_name}s for the given Dataset"
+                )
+            },
             400: {"description": "Bad request - Something was wrong with the request"},
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },
@@ -282,7 +292,11 @@ def get_number_count_files_endpoint(
         ),
         response_model=CountResponse,
         responses={
-            200: {"description": (f"The count of {entity_name} objects for the given Dataset")},
+            200: {
+                "description": (
+                    f"The count of {entity_name} objects for the given Dataset"
+                )
+            },
             400: {"description": "Bad request - Something was wrong with the request"},
             404: {"description": "No such record - Unable to find a record in ICAT"},
         },

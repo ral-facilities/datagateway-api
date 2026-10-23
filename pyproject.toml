@@ -27,6 +27,9 @@ datagateway_api = { workspace = true }
 [tool.uv]
 exclude-newer = "7 days"
 
+[tool.uv.exclude-newer-package]
+certify = false
+
 [tool.uv.build-backend]
 module-root = "."
 
