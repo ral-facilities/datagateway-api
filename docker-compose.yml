@@ -118,6 +118,7 @@ services:
     profiles: [icatdb-backup]
 
   icatdb-restore:
+    container_name: dg_api_icatdb_restore
     image: mariadb:10.10
     depends_on:
       icat_mariadb:

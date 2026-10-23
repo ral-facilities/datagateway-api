@@ -74,7 +74,7 @@ FilterQuery = Query(
 )
 WhereQuery = Query(
     default=None,
-    name="WHERE_FILTER",
+    title="WHERE_FILTER",
     description=(
         "Apply where filter to the query. The possible operators"
         " are: eq, neq, and, or, gt, gte, lt, lte, between, inq, nin, like, nlike,"
