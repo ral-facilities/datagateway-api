@@ -186,44 +186,44 @@ jobs:
         working-directory: main
         run: docker compose --profile dependencies down
 
-  # pip-install-testing:
-  #   runs-on: ubuntu-24.04
-  #   name: Pip Install Test
-  #   env:
-  #     ICAT__URL: https://localhost:18181
-  #     ICATDB_RESTORE_FROM_BACKUP: true
-  #   steps:
-  #     - name: Checkout DataGateway API
-  #       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  pip-install-testing:
+    runs-on: ubuntu-24.04
+    name: Pip Install Test
+    env:
+      ICAT__URL: https://localhost:18181
+      ICATDB_RESTORE_FROM_BACKUP: true
+    steps:
+      - name: Checkout DataGateway API
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-  #     - name: Setup Python
-  #       uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-  #       with:
-  #         python-version: "3.11"
-  #         architecture: x64
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+          architecture: x64
 
-  #     - name: Start test dependencies
-  #       run: docker compose --profile dependencies up -d
+      - name: Start test dependencies
+        run: docker compose --profile dependencies up -d
 
-  #     - name: Create and activate virtual environment
-  #       run: |
-  #         python3 -m venv dg-api-venv
-  #         source dg-api-venv/bin/activate
-  #     - name: Install DataGateway API via pip
-  #       run: pip install .
+      - name: Create and activate virtual environment
+        run: |
+          python3 -m venv dg-api-venv
+          source dg-api-venv/bin/activate
+      - name: Install DataGateway API via pip
+        run: pip install .
 
-  #       # Prep for using the API for tests
-  #     - name: Create .env
-  #       run: cp .env.example .env
-  #     - name: Create search_api_mapping.json
-  #       run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-  #     - name: Create logging.ini
-  #       run: cp logging.example.ini logging.ini
+        # Prep for using the API for tests
+      - name: Create .env
+        run: cp .env.example .env
+      - name: Create search_api_mapping.json
+        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
+      - name: Create logging.ini
+        run: cp logging.example.ini logging.ini
 
-  #     # Launch API to see if it starts correctly or has a startup issue
-  #     # Code logic used from https://stackoverflow.com/a/63643845
-  #     - name: Start API
-  #       run: timeout 10 python -m datagateway_api.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+      # Launch API to see if it starts correctly or has a startup issue
+      # Code logic used from https://stackoverflow.com/a/63643845
+      - name: Start API
+        run: timeout 10 python -m datagateway_api.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
 
   image-scan:
     runs-on: ubuntu-24.04
