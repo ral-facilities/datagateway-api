@@ -192,7 +192,6 @@ jobs:
   #   env:
   #     ICAT__URL: https://localhost:18181
   #     ICATDB_RESTORE_FROM_BACKUP: true
-
   #   steps:
   #     - name: Checkout DataGateway API
   #       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
