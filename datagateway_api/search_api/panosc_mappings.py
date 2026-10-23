@@ -5,6 +5,7 @@ from pathlib import Path
 
 from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
+from datagateway_api.common.helpers import to_list
 
 log = logging.getLogger()
 
@@ -144,11 +145,7 @@ class PaNOSCMappings:
         field_names = self.get_panosc_non_related_field_names(panosc_entity_name)
         for field_name in field_names:
             _, icat_mapping = self.get_icat_mapping(panosc_entity_name, field_name)
-
-            if not isinstance(icat_mapping, list):
-                icat_mapping = [icat_mapping]
-
-            for mapping in icat_mapping:
+            for mapping in to_list(icat_mapping):
                 split_mapping = mapping.split(".")
                 if len(split_mapping) > 1:
                     # Remove the last split element because it is an ICAT

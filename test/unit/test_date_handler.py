@@ -24,6 +24,10 @@ class TestIsStrADate:
         date_output = DateHandler.is_str_a_date("25/25/2020")
         assert date_output is False
 
+    def test_digits(self):
+        date_output = DateHandler.is_str_a_date("25252020")
+        assert date_output is False
+
 
 class TestStrToDatetime:
     def test_valid_str(self):

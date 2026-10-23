@@ -9,6 +9,16 @@ class TestPaNOSCMappings:
         test_mappings = PaNOSCMappings()
         assert test_mappings.mappings == test_panosc_mappings.mappings
 
+    def test_invalid_load_mappings(self) -> None:
+        with pytest.raises(
+            expected_exception=SystemExit,
+            match=(
+                r"An error occurred while trying to load the PaNOSC mappings: "
+                r"\[Errno 2\] No such file or directory: 'test/path'"
+            ),
+        ):
+            PaNOSCMappings("test/path")
+
     @pytest.mark.parametrize(
         "panosc_entity_name, field_name, expected_panosc_entity_name, expected_icat_field_name",
         [

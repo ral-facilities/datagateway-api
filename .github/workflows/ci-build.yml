@@ -21,6 +21,8 @@ jobs:
     strategy:
       fail-fast: false
     name: Build & Tests
+    env:
+      ICATDB_RESTORE_FROM_BACKUP: true
 
     steps:
       - name: Checkout DataGateway API
@@ -32,6 +34,11 @@ jobs:
       - name: Run unit tests
         run: docker compose run unit-tests
 
+      - name: Upload code coverage from unit tests
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Start test dependencies
         run: docker compose --profile dependencies up -d
 
@@ -39,9 +46,9 @@ jobs:
         run: docker wait dg_api_testdata
 
       - name: Run integration tests
-        run: docker compose run integration-tests
+        run: docker compose --profile dependencies run integration-tests
 
-      - name: Upload code coverage
+      - name: Upload code coverage from integration tests
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -89,10 +96,10 @@ jobs:
 
       - name: Start dependencies
         working-directory: pr
-        run: docker compose --profile dependencies up -d
+        run: ICATDB_RESTORE_FROM_BACKUP=true docker compose --profile dependencies up -d
 
-      - name: Wait for test data generation
-        run: docker wait dg_api_testdata
+      - name: Wait for ICAT DB restore
+        run: docker wait dg_api_icatdb_restore
 
       - name: Drop modTime and createTime
         run: |
@@ -113,7 +120,7 @@ jobs:
         working-directory: pr
         run: |
           docker compose --profile dependencies down
-          docker compose --profile dependencies up -d
+          ICATDB_RESTORE_FROM_BACKUP=false docker compose --profile dependencies up -d
 
       - name: Wait for regenerated test data
         run: docker wait dg_api_testdata
@@ -148,7 +155,7 @@ jobs:
 
       - name: Start default branch dependencies
         working-directory: main
-        run: docker compose --profile dependencies up -d
+        run: ICATDB_RESTORE_FROM_BACKUP=false docker compose --profile dependencies up -d
 
       - name: Wait for test data generation
         run: docker wait dg_api_testdata
@@ -179,57 +186,65 @@ jobs:
         working-directory: main
         run: docker compose --profile dependencies down
 
-  pip-install-testing:
+  image-scan:
     runs-on: ubuntu-24.04
-    name: Pip Install Test
-    env:
-      ICAT__URL: https://localhost:18181
+    name: Docker Image Vulnerability Scan
+    permissions:
+      contents: read
+      # Required to upload the Trivy SARIF report to GitHub code scanning
+      security-events: write
 
     steps:
       - name: Checkout DataGateway API
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Setup Python
-        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Build production image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
-          python-version: "3.11"
-          architecture: x64
+          context: .
+          target: prod
+          push: false
+          load: true
+          tags: datagateway-api:scan
 
-      - name: Start test dependencies
-        run: docker compose --profile dependencies up -d
+      # Reports every severity to GitHub code scanning so that issues are visible in the
+      # Security tab without failing the build.
+      - name: Scan image with Trivy (report)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: datagateway-api:scan
+          scanners: vuln
+          format: sarif
+          output: trivy-results.sarif
 
-      - name: Create and activate virtual environment
-        run: |
-          python3 -m venv dg-api-venv
-          source dg-api-venv/bin/activate
-      - name: Install DataGateway API via pip
-        run: pip install .
+      # Code scanning uploads are not permitted for pull requests raised from forks
+      - name: Upload Trivy report to GitHub code scanning
+        if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2 # v4.38.2
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy-image
 
-        # Prep for using the API for tests
-      - name: Create .env
-        run: cp .env.example .env
-      - name: Create search_api_mapping.json
-        run: cp datagateway_api/search_api_mapping.json.example datagateway_api/search_api_mapping.json
-      - name: Create logging.ini
-        run: cp logging.example.ini logging.ini
-
-      # Launch API to see if it starts correctly or has a startup issue
-      # Code logic used from https://stackoverflow.com/a/63643845
-      - name: Start API
-        run: timeout 10 python -m datagateway_api.main || code=$?; if [[ $code -ne 124 && $code -ne 0 ]]; then exit $code; fi
+      - name: Scan image with Trivy (fixable HIGH/CRITICAL)
+        if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: datagateway-api:scan
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          trivyignores: .trivyignore
+          format: table
+          exit-code: "1"
 
   docker:
     # This job triggers only if all the other jobs succeed and does different things depending on the context.
     # The job builds the Docker image in all cases and also pushes the image to Harbor only if something is
     # pushed to the main branch.
-    needs:
-      [
-        tests,
-        linting,
-        formatting,
-        generator-script-testing,
-        pip-install-testing,
-      ]
+    needs: [tests, linting, formatting, generator-script-testing, image-scan]
     name: Docker
     runs-on: ubuntu-24.04
     env:
@@ -253,7 +268,7 @@ jobs:
           images: ${{ vars.HARBOR_URL }}/datagateway-api
 
       - name: ${{ fromJSON(env.PUSH_DOCKER_IMAGE_TO_HARBOR) && 'Build and push Docker image to Harbor' || 'Build Docker image' }}
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           push: ${{ fromJSON(env.PUSH_DOCKER_IMAGE_TO_HARBOR) }}

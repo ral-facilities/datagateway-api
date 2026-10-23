@@ -1,5 +1,6 @@
 import logging
 
+from datagateway_api.common.helpers import to_list
 import datagateway_api.search_api.models as search_api_models
 from datagateway_api.common.base_query_filter_factory import QueryFilterFactory
 from datagateway_api.common.config import config
@@ -75,9 +76,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
                     log.info("query JSON object found")
                     query_filters.append(SearchAPIScoringFilter(filter_input))
                 else:
-                    raise FilterError(
-                        "No valid filter name given within filter query param: {filter_name}",
-                    )
+                    raise FilterError(f"No valid filter name given within filter query param: {filter_name}")
         elif query_param_name == "where":
             # For the count endpoints
             log.info("where query param found, likely for count endpoint")
@@ -359,10 +358,7 @@ class SearchAPIQueryFilterFactory(QueryFilterFactory):
             field with
         :type entity_name: :class:`str`
         """
-        if not isinstance(where_filters, list):
-            where_filters = [where_filters]
-
-        for where_filter in where_filters:
+        for where_filter in to_list(where_filters):
             if isinstance(where_filter, NestedWhereFilters):
                 nested_where_filters = where_filter.lhs + where_filter.rhs
                 for nested_where_filter in nested_where_filters:

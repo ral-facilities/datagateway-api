@@ -1,9 +1,17 @@
+from concurrent.futures import ThreadPoolExecutor
+
 import pytest
 from typing_extensions import OrderedDict
 
 from datagateway_api.common.exceptions import FilterError
 from datagateway_api.common.filter_order_handler import FilterOrderHandler
 from datagateway_api.datagateway_api.icat.filters import PythonICATOrderFilter
+
+ORDER = [
+    '"id asc"',
+    '"name asc"',
+    '"title asc"',
+]
 
 
 class TestICATOrderFilter:
@@ -16,8 +24,6 @@ class TestICATOrderFilter:
 
         assert test_filter.direction == "ASC"
 
-        filter_handler.clear_python_icat_order_filters()
-
     def test_result_order_appended(self, icat_query):
         id_filter = PythonICATOrderFilter("id", "ASC")
         title_filter = PythonICATOrderFilter("title", "DESC")
@@ -26,9 +32,13 @@ class TestICATOrderFilter:
         filter_handler.add_filters([id_filter, title_filter])
         filter_handler.apply_filters(icat_query)
 
-        assert PythonICATOrderFilter.result_order == [("id", "ASC"), ("title", "DESC")]
+        assert icat_query.order == OrderedDict([("id", "%s ASC"), ("title", "%s DESC")])
 
-        filter_handler.clear_python_icat_order_filters()
+    def test_duplicated_order(self, icat_query):
+        filter_handler = FilterOrderHandler()
+        filter_handler.add_filters([PythonICATOrderFilter("id", "ASC"), PythonICATOrderFilter("id", "DESC")])
+        with pytest.raises(expected_exception=FilterError, match="Cannot add id more than once"):
+            filter_handler.apply_filters(icat_query)
 
     def test_join_specs_added(self, icat_query):
         pid_filter = PythonICATOrderFilter("studyInvestigations.study.pid", "ASC")
@@ -41,14 +51,12 @@ class TestICATOrderFilter:
         filter_handler.add_filters([pid_filter, name_filter])
         filter_handler.apply_filters(icat_query)
 
-        assert PythonICATOrderFilter.join_specs == {
+        assert icat_query.join_specs == {
             "studyInvestigations": "LEFT JOIN",
             "studyInvestigations.study": "LEFT JOIN",
             "investigationInstruments": "LEFT JOIN",
             "investigationInstruments.instrument": "LEFT JOIN",
         }
-
-        filter_handler.clear_python_icat_order_filters()
 
     def test_valid_one_many_related_ordering(self, icat_query):
         pid_filter = PythonICATOrderFilter("studyInvestigations.study.pid", "DESC")
@@ -61,19 +69,15 @@ class TestICATOrderFilter:
             "studyInvestigations.study": "LEFT JOIN",
         }
 
-        filter_handler.clear_python_icat_order_filters()
-
     def test_invalid_one_many_related_ordering(self, icat_query):
         pid_filter = PythonICATOrderFilter("studyInvestigations.study.pid", "DESC")
         filter_handler = FilterOrderHandler()
         filter_handler.add_filter(pid_filter)
 
-        PythonICATOrderFilter.join_specs["testEntities"] = "LEFT JOIN"
+        icat_query.join_specs["testEntities"] = "LEFT JOIN"
 
         with pytest.raises(FilterError):
             filter_handler.apply_filters(icat_query)
-
-        filter_handler.clear_python_icat_order_filters()
 
     def test_filter_applied_to_query(self, icat_query):
         test_filter = PythonICATOrderFilter("id", "DESC")
@@ -84,8 +88,6 @@ class TestICATOrderFilter:
 
         assert icat_query.order == OrderedDict([("id", "%s DESC")])
 
-        filter_handler.clear_python_icat_order_filters()
-
     def test_invalid_field(self, icat_query):
         test_filter = PythonICATOrderFilter("unknown_field", "DESC")
 
@@ -94,8 +96,6 @@ class TestICATOrderFilter:
         with pytest.raises(FilterError):
             filter_handler.apply_filters(icat_query)
 
-        filter_handler.clear_python_icat_order_filters()
-
     def test_invalid_direction(self, icat_query):
         test_filter = PythonICATOrderFilter("id", "up")
 
@@ -103,3 +103,20 @@ class TestICATOrderFilter:
         filter_handler.add_filter(test_filter)
         with pytest.raises(FilterError):
             filter_handler.apply_filters(icat_query)
+
+    def test_concurrent_multi_column_sorts(self, test_client, valid_icat_credentials_header):
+        def make_request(_):
+            return test_client.get(
+                "/datagateway-api/investigations",
+                params={"order": ORDER, "limit": 5},
+                headers=valid_icat_credentials_header,
+            )
+
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            responses = list(executor.map(make_request, range(12)))
+
+        for response in responses:
+            assert response.status_code == 200
+
+            ids = [item["id"] for item in response.json()]
+            assert ids == sorted(ids)

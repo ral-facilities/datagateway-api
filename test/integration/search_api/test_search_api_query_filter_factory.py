@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 
 from datagateway_api.common.exceptions import FilterError, SearchAPIError
+from datagateway_api.common.helpers import to_list
 from datagateway_api.search_api.filters import (
     SearchAPIIncludeFilter,
     SearchAPILimitFilter,
@@ -2290,11 +2291,7 @@ class TestSearchAPIQueryFilterFactory:
             test_filter,
             entity_name,
         )
-
-        if not isinstance(test_filter, list):
-            test_filter = [test_filter]
-
-        for filter_, field_name in zip(test_filter, expected_field_name, strict=False):
+        for filter_, field_name in zip(to_list(test_filter), expected_field_name, strict=False):
             if isinstance(filter_, NestedWhereFilters):
                 assert filter_.lhs[0].field == expected_field_name[0]
                 assert filter_.rhs[0].field == expected_field_name[1]

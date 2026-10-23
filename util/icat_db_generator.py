@@ -71,8 +71,8 @@ def get_end_date(i):
 def apply_common_parameter_attributes(entity, i, client):
     if entity.type.valueType == "NUMERIC":
         entity.numericValue = faker.random_int(
-            entity.type.minimumNumericValue,
-            entity.type.maximumNumericValue - 1,
+            int(entity.type.minimumNumericValue),
+            int(entity.type.maximumNumericValue) - 1,
         )
 
     if entity.type.valueType == "DATE_AND_TIME":

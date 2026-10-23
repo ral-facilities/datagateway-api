@@ -1,6 +1,6 @@
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
 from datagateway_api.common.constants import Constants
 
@@ -33,9 +33,6 @@ def ping_endpoint(python_icat, **kwargs) -> APIRouter:
         },
     )
     def ping():
-        try:
-            return python_icat.ping(**kwargs)
-        except Exception as exc:
-            raise HTTPException(status_code=500, detail=str(exc)) from exc
+        return python_icat.ping(**kwargs)
 
     return router

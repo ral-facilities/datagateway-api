@@ -81,6 +81,3 @@ class LimitFilter(QueryFilter):
 
 class IncludeFilter(QueryFilter):
     precedence = 5
-
-    def __init__(self, included_filters):
-        self.included_filters = included_filters

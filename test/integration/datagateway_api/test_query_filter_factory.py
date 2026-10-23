@@ -1,5 +1,6 @@
 import pytest
 
+from datagateway_api.common.exceptions import FilterError
 from datagateway_api.datagateway_api.icat.filters import (
     PythonICATDistinctFieldFilter,
     PythonICATIncludeFilter,
@@ -77,3 +78,7 @@ class TestDataGatewayAPIQueryFilterFactory:
         test_filter = DataGatewayAPIQueryFilterFactory.get_query_filter(filter_input)
         assert isinstance(test_filter[0], PythonICATWhereFilter)
         assert len(test_filter) == 1
+
+    def test_bad_filter(self) -> None:
+        with pytest.raises(FilterError, match="Bad filter: bad_filter"):
+            DataGatewayAPIQueryFilterFactory.get_query_filter("bad_filter")

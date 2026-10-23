@@ -1,7 +1,9 @@
 import time
 from datetime import datetime
 from typing import Generator
+from unittest.mock import patch
 
+from icat.exception import ICATSessionError
 import pytest
 from icat.client import Client
 
@@ -298,10 +300,10 @@ class TestReaderPerformance:
         assert len(results) == results_length
 
     def test_refresh(self, enable_reader_config: None) -> None:
-        client = Client(url=config.icat.url, checkCert=config.icat.check_cert)
-        client._next_refresh = 0
-        ReaderQueryHandler.reader_client = client
-        ReaderQueryHandler.refresh()
+        ReaderQueryHandler.create_reader_client()
+        ReaderQueryHandler.reader_client._next_refresh = 0
+        with patch.object(ReaderQueryHandler.reader_client, "refresh", side_effect=ICATSessionError("Test")):
+            ReaderQueryHandler.refresh()
         current_time = time.time()
         assert current_time + 89 * 60 < ReaderQueryHandler.reader_client._next_refresh < current_time + 90 * 60
 

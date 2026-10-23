@@ -1,6 +1,9 @@
+from unittest.mock import patch
+
 import pytest
 
 
+from datagateway_api.search_api.search_scoring import SearchScoring
 from test.integration.search_api.endpoints.test_get_dataset_files import (
     prepare_data_for_assertion,
 )
@@ -858,11 +861,40 @@ class TestSearchAPISearchEndpoint:
             ),
             pytest.param(
                 "Documents",
-                '{"filter": {"query": "TODO"}}',
-                [],
-                # Skipped because this test relies the search scoring component
-                # TODO - edit the QUERY filter value and expected_json
-                marks=pytest.mark.skip,
+                '{"query": "Throw hope parent"}',
+                [
+                    {
+                        "pid": "0-417-77631-4",
+                        "isPublic": True,
+                        "type": "INVESTIGATIONTYPE 3",
+                        "title": "INVESTIGATION 1",
+                        "summary": (
+                            "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\n"
+                            "Month shake voice. Do discuss despite least face again study. "
+                            "Two beyond picture rich fast sea time."
+                        ),
+                        "doi": "0-417-77631-4",
+                        "startDate": "2000-04-03T00:00:00.000Z",
+                        "endDate": "2000-07-09T00:00:00.000Z",
+                        "releaseDate": "2000-07-05T00:00:00.000Z",
+                        "license": None,
+                        "keywords": [
+                            "number22",
+                            "shoulder85",
+                            "local117",
+                            "religious242",
+                            "agreement263",
+                            "mention362",
+                            "game469",
+                            "onto480",
+                            "never495",
+                        ],
+                        "datasets": [],
+                        "members": [],
+                        "parameters": [],
+                        "score": 1.0,
+                    },
+                ],
                 id="Search documents with query filter",
             ),
         ],
@@ -874,9 +906,12 @@ class TestSearchAPISearchEndpoint:
         request_filter,
         expected_json,
     ):
-        test_response = test_search_api_client.get(
-            f"/{endpoint_name}?filter={request_filter}",
-        )
+        with patch.object(
+            target=SearchScoring,
+            attribute="get_score",
+            return_value=[{"itemId": "0-417-77631-4", "score": 1.0, "group": ""}],
+        ):
+            test_response = test_search_api_client.get(f"/{endpoint_name}?filter={request_filter}")
 
         response_data = prepare_data_for_assertion(test_response.json())
 
