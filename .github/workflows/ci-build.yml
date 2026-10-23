@@ -21,6 +21,8 @@ jobs:
     strategy:
       fail-fast: false
     name: Build & Tests
+    env:
+      ICATDB_RESTORE_FROM_BACKUP: true
 
     steps:
       - name: Checkout DataGateway API
@@ -44,7 +46,7 @@ jobs:
         run: docker wait dg_api_testdata
 
       - name: Run integration tests
-        run: docker compose run integration-tests
+        run: docker compose --profile dependencies run integration-tests
 
       - name: Upload code coverage from integration tests
         uses: codecov/codecov-action@v7
@@ -94,7 +96,7 @@ jobs:
 
       - name: Start dependencies
         working-directory: pr
-        run: docker compose --profile dependencies up -d
+        run: ICATDB_RESTORE_FROM_BACKUP=true docker compose --profile dependencies up -d
 
       - name: Wait for test data generation
         run: docker wait dg_api_testdata
@@ -118,7 +120,7 @@ jobs:
         working-directory: pr
         run: |
           docker compose --profile dependencies down
-          docker compose --profile dependencies up -d
+          ICATDB_RESTORE_FROM_BACKUP=false docker compose --profile dependencies up -d
 
       - name: Wait for regenerated test data
         run: docker wait dg_api_testdata
@@ -153,7 +155,7 @@ jobs:
 
       - name: Start default branch dependencies
         working-directory: main
-        run: docker compose --profile dependencies up -d
+        run: ICATDB_RESTORE_FROM_BACKUP=false docker compose --profile dependencies up -d
 
       - name: Wait for test data generation
         run: docker wait dg_api_testdata
@@ -189,6 +191,7 @@ jobs:
   #   name: Pip Install Test
   #   env:
   #     ICAT__URL: https://localhost:18181
+  #     ICATDB_RESTORE_FROM_BACKUP: true
 
   #   steps:
   #     - name: Checkout DataGateway API
