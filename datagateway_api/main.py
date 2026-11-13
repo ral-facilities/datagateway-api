@@ -24,7 +24,7 @@ datagateway_api_enabled = config.datagateway_api is not None
 read_only_api_enabled = config.read_only_api is not None
 search_api_enabled = config.search_api is not None
 
-if datagateway_api_enabled:
+if datagateway_api_enabled or read_only_api_enabled:
     from datagateway_api.auth.session_bearer import SessionBearer
     from datagateway_api.common.entity_endpoint_dict import endpoints
     from datagateway_api.datagateway_api.build_models import build_datagateway_api_model
