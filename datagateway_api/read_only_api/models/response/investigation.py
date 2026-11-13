@@ -3,32 +3,18 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from datagateway_api.read_only_api.models.response.common import EntityModel
-
-
-class Instrument(EntityModel):
-    name: str | None = None
-    fullName: str | None = None
-    description: str | None = None
-    type_: str | None = Field(default=None, alias="type")
-    url: str | None = None
-    pid: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
+from datagateway_api.read_only_api.models.response.common import (
+    BaseDataCollection,
+    BaseDataPublication,
+    EntityModel,
+    User,
+)
+from datagateway_api.read_only_api.models.response.facility_cycle import FacilityCycle
+from datagateway_api.read_only_api.models.response.instrument import Instrument
 
 
 class InvestigationInstrument(EntityModel):
     instrument: Instrument | None = None
-
-
-class User(EntityModel):
-    name: str | None = None
-    fullName: str | None = None
-    givenName: str | None = None
-    familyName: str | None = None
-    email: str | None = None
-    affiliation: str | None = None
-    orcidId: str | None = None
 
 
 class InvestigationUser(EntityModel):
@@ -93,7 +79,19 @@ class Publication(EntityModel):
     repositoryId: str | None = None
 
 
-class Investigation(EntityModel):
+class InvestigationFacilityCycle(EntityModel):
+    facilityCycle: FacilityCycle | None = None
+
+
+class DataCollection(BaseDataCollection):
+    dataPublications: list[BaseDataPublication] | None = None
+
+
+class DataCollectionInvestigation(EntityModel):
+    dataCollection: DataCollection | None = None
+
+
+class BaseInvestigation(EntityModel):
     name: str | None = None
     visitId: str | None = None
     title: str | None = None
@@ -107,6 +105,11 @@ class Investigation(EntityModel):
 
     investigationInstruments: list[InvestigationInstrument] | None = None
     investigationUsers: list[InvestigationUser] | None = None
+
+
+class Investigation(BaseInvestigation):
     samples: list[Sample] | None = None
     parameters: list[Parameter] | None = None
     publications: list[Publication] | None = None
+    investigationFacilityCycles: list[InvestigationFacilityCycle] | None = None
+    dataCollectionInvestigations: list[DataCollectionInvestigation] | None = None
