@@ -1,18 +1,29 @@
 from enum import StrEnum
-from typing import Annotated
 
-from pydantic import AfterValidator, Field
+from pydantic import Field
 
 from datagateway_api.read_only_api.models.request.common import (
     INCLUDE_DESCRIPTION,
     ORDER_DESCRIPTION,
     WHERE_DESCRIPTION,
     AnyFilter,
-    CommonAndIncludeFilters,
-    CommonWhereFilter,
-    validate_order,
+    BaseFilters,
+    CommonCountFilters,
+    CommonGetFilters,
+    CommonSearchFilters,
+    CommonWhereFilters,
+    EqualFilter,
 )
 
+DATASET_WHERE_DESCRIPTION = WHERE_DESCRIPTION.format(
+    queryable_fields=(
+        "'name', 'createTime', 'modTime', 'investigation.id', and "
+        "'dataCollectionDatasets.dataCollection.dataPublications.id'"
+    ),
+)
+DATASET_ORDER_DESCRIPTION = ORDER_DESCRIPTION.format(
+    orderable_fields="'name', 'fileCount', 'fileSize', 'createTime', and 'modTime'",
+)
 DATASET_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(includable_paths="'type'")
 
 
@@ -29,7 +40,16 @@ class DatasetOrderEnum(StrEnum):
     MOD_TIME_DESC = "modTime desc"
 
 
-class DatasetWhereFilter(CommonWhereFilter):
+class DatasetIdFilters(CommonWhereFilters):
+    investigation_id: EqualFilter | None = Field(default=None, alias="investigation.id")
+
+
+class DatasetWhereFilter(DatasetIdFilters):
+    data_publication_id: EqualFilter | None = Field(
+        default=None,
+        alias="dataCollectionDatasets.dataCollection.dataPublications.id",
+    )
+    name: AnyFilter = None
     createTime: AnyFilter = None
     modTime: AnyFilter = None
 
@@ -38,15 +58,18 @@ class DatasetIncludeEnum(StrEnum):
     TYPE = "type"
 
 
-class DatasetFilters(CommonAndIncludeFilters):
-    where: list[DatasetWhereFilter] = Field(
-        default=[],
-        description=WHERE_DESCRIPTION.format(queryable_fields="'name', 'createTime', and 'modTime'"),
-    )
-    order: Annotated[list[DatasetOrderEnum], AfterValidator(validate_order)] = Field(
-        default=[],
-        description=ORDER_DESCRIPTION.format(
-            orderable_fields="'name', 'fileCount', 'fileSize', 'createTime', and 'modTime'",
-        ),
-    )
+class DatasetFindOneFilters(BaseFilters):
+    where: list[DatasetIdFilters] = Field(default=[])
+
+
+class DatasetCountFilters(CommonCountFilters):
+    where: list[DatasetWhereFilter] = Field(default=[], description=DATASET_WHERE_DESCRIPTION)
+
+
+class DatasetGetFilters(CommonGetFilters):
+    include: list[DatasetIncludeEnum] = Field(default=[], description=DATASET_INCLUDE_DESCRIPTION)
+
+
+class DatasetSearchFilters(DatasetCountFilters, CommonSearchFilters):
+    order: list[DatasetOrderEnum] = Field(default=[], description=DATASET_ORDER_DESCRIPTION)
     include: list[DatasetIncludeEnum] = Field(default=[], description=DATASET_INCLUDE_DESCRIPTION)

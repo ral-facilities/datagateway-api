@@ -8,7 +8,15 @@ from fastapi.responses import JSONResponse
 from datagateway_api.common.config import config
 from datagateway_api.common.exceptions import ApiError
 from datagateway_api.common.logger_setup import LOGGING_CONFIG_FILE_PATH, setup_logger
-from datagateway_api.read_only_api.routers.entities import my_data_endpoints
+from datagateway_api.read_only_api.routers.entities import (
+    data_publication_endpoints,
+    datafile_endpoints,
+    dataset_endpoints,
+    facility_cycle_endpoints,
+    instrument_endpoints,
+    investigation_endpoints,
+    investigation_user_endpoints,
+)
 from datagateway_api.search_api.models import Dataset, Instrument, ScoredDocument, Document
 
 # Check which APIs are enabled
@@ -103,7 +111,13 @@ def create_read_only_app() -> FastAPI:
     register_common_handlers(read_only_app)
     python_icat = PythonICAT()
     icat_client_pool = create_client_pool()
-    read_only_app.include_router(my_data_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(instrument_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(facility_cycle_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(data_publication_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(investigation_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(dataset_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(datafile_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
+    read_only_app.include_router(investigation_user_endpoints(python_icat=python_icat, client_pool=icat_client_pool))
     read_only_app.include_router(ping_endpoint(python_icat, client_pool=icat_client_pool))
     read_only_app.include_router(sessions_endpoints(python_icat, client_pool=icat_client_pool))
 
