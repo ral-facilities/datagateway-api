@@ -2,19 +2,12 @@ from datagateway_api.read_only_api.models.response.common import (
     BaseDataCollection,
     BaseDataPublication,
     EntityModel,
+    Facility,
     User,
 )
 from datagateway_api.read_only_api.models.response.datafile import Datafile
 from datagateway_api.read_only_api.models.response.dataset import Dataset
 from datagateway_api.read_only_api.models.response.investigation import BaseInvestigation
-
-
-class Facility(EntityModel):
-    name: str | None = None
-    fullName: str | None = None
-    description: str | None = None
-    url: str | None = None
-    daysUntilRelease: int | None = None
 
 
 class DataPublicationDate(EntityModel):

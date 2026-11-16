@@ -36,11 +36,11 @@ INCLUDE_DESCRIPTION = "Include related entities.\n\nPossible includes are: {incl
 
 
 class EqualFilter(BaseModel):
-    eq: str
+    eq: int | str
 
 
 class NotEqualFilter(BaseModel):
-    ne: str = Field(alias="neq")
+    ne: int | str = Field(alias="neq")
 
 
 class IsNullFilter(BaseModel):
@@ -64,19 +64,19 @@ class NotInsensitiveLikeFilter(BaseModel):
 
 
 class LessThanFilter(BaseModel):
-    lt: str
+    lt: int | str
 
 
 class LessThanOrEqualToFilter(BaseModel):
-    lte: str
+    lte: int | str
 
 
 class GreaterThanFilter(BaseModel):
-    gt: str
+    gt: int | str
 
 
 class GreaterThanOrEqualToFilter(BaseModel):
-    gte: str
+    gte: int | str
 
 
 class InFilter(BaseModel):

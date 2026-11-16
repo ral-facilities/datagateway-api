@@ -7,6 +7,19 @@ class EntityModel(BaseModel):
     id_: int | None = Field(default=None, alias="id")
 
 
+class Facility(EntityModel):
+    name: str | None = None
+    fullName: str | None = None
+    description: str | None = None
+    url: str | None = None
+    daysUntilRelease: int | None = None
+
+
+class EntityType(EntityModel):
+    name: str | None = None
+    description: str | None = None
+
+
 class User(EntityModel):
     name: str | None = None
     fullName: str | None = None

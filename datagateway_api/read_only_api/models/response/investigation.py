@@ -7,6 +7,8 @@ from datagateway_api.read_only_api.models.response.common import (
     BaseDataCollection,
     BaseDataPublication,
     EntityModel,
+    EntityType,
+    Facility,
     User,
 )
 from datagateway_api.read_only_api.models.response.facility_cycle import FacilityCycle
@@ -103,6 +105,8 @@ class BaseInvestigation(EntityModel):
     fileCount: int | None = None
     fileSize: int | None = None
 
+    facility: Facility | None = None
+    type_: EntityType | None = Field(default=None, alias="type")
     investigationInstruments: list[InvestigationInstrument] | None = None
     investigationUsers: list[InvestigationUser] | None = None
 

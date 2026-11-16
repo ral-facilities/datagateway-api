@@ -41,6 +41,8 @@ class InvestigationDistinctEnum(StrEnum):
     ID = "id"
     TITLE = "title"
     NAME = "name"
+    TYPE_ID = "type.id"
+    FACILITY_ID = "facility.id"
 
 
 class InvestigationOrderEnum(StrEnum):
@@ -88,6 +90,8 @@ class InvestigationWhereFilter(CommonWhereFilters):
 
 
 class InvestigationIncludeEnum(StrEnum):
+    TYPE = "type"
+    FACILITY = "facility"
     INSTRUMENTS = "investigationInstruments.instrument"
     USERS = "investigationUsers.user"
     SAMPLES = "samples.type"
