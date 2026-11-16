@@ -122,12 +122,6 @@ class CommonWhereFilters(BaseModel):
 class BaseFilters(BaseModel):
     @staticmethod
     def _validate_include(value: Any) -> Generator[str]:
-        if isinstance(value, str):
-            try:
-                value = json.loads(value)
-            except json.JSONDecodeError:
-                pass  # `value` may be JSON encoded ('"string"') or not ('string'), allow either
-
         if isinstance(value, list):
             for inner_value in value:
                 yield from BaseFilters._validate_include(inner_value)
@@ -138,9 +132,19 @@ class BaseFilters(BaseModel):
         else:
             yield value
 
-    @field_validator("distinct", "where", "include", mode="before", check_fields=False)
+    @field_validator("include", mode="before", check_fields=False)
+    @classmethod
+    def validate_include(cls, value: Any) -> Any:
+        """
+        As before validators are resolved in reverse order, value should already have been JSON decoded by
+        `validate_list`.
+        """
+        return list(cls._validate_include(value))
+
+    @field_validator("distinct", "where", "order", "include", mode="before", check_fields=False)
     @classmethod
     def validate_list(cls, value: Any) -> Any:
+        """Ensure that all fields accepting multiple values get JSON decoded."""
         if isinstance(value, list):
             return_value = []
             for inner_value in value:
@@ -166,11 +170,6 @@ class BaseFilters(BaseModel):
             unique_keys.add(key)
 
         return value
-
-    @field_validator("include", mode="before", check_fields=False)
-    @classmethod
-    def validate_include(cls, value: Any) -> Any:
-        return list(cls._validate_include(value))
 
     @model_serializer(mode="plain")
     def serialize(self) -> list:

@@ -4,6 +4,7 @@ from unittest.mock import ANY
 from fastapi.testclient import TestClient
 import pytest
 
+FACILITY_1 = {"daysUntilRelease": 10, "description": "Lorem ipsum light source", "id": 1, "name": "LILS"}
 INSTRUMENT_1 = {
     "id": 1,
     "name": "INSTRUMENT 1",
@@ -43,7 +44,7 @@ DATA_PUBLICATION_1 = {
         "Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. "
         "Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
     ),
-    "facility": {"daysUntilRelease": 10, "description": "Lorem ipsum light source", "id": 1, "name": "LILS"},
+    "facility": FACILITY_1,
     "id": 1,
     "pid": "1-4890-6828-7",
     "publicationDate": "2021-03-23T00:00:00Z",
@@ -471,7 +472,32 @@ class TestDataPublications:
                         },
                     ],
                 ),
-                id="json.dumps",
+                id="json.dumps outer",
+            ),
+            pytest.param(
+                [
+                    json.dumps("facility"),
+                    json.dumps("type"),
+                    json.dumps("dates"),
+                    json.dumps({"relatedItems": "publication"}),
+                    json.dumps({"users": ["user", "affiliations"]}),
+                    json.dumps(
+                        {
+                            "content": {
+                                "dataCollectionInvestigations": {
+                                    "investigation": {
+                                        "datasets": "type",
+                                        "investigationInstruments": "instrument",
+                                        "investigationUsers": "user",
+                                    },
+                                },
+                                "dataCollectionDatasets": "dataset",
+                                "dataCollectionDatafiles": "datafile",
+                            },
+                        },
+                    ),
+                ],
+                id="json.dumps inner",
             ),
         ],
     )
@@ -624,6 +650,31 @@ class TestInvestigations:
                 None,
                 [{"type": {"id": 1}}, {"type": {"id": 2}}, {"type": {"id": 3}}],
                 id="url encoded distinct",
+            ),
+            pytest.param(
+                "/read-only-api/investigations?order=%22id+asc%22&limit=1",
+                None,
+                [INVESTIGATION_1],
+                id="url encoded order",
+            ),
+            pytest.param(
+                "/read-only-api/investigations?include=%22facility%22&include=%22type%22&limit=1",
+                None,
+                [
+                    {
+                        **INVESTIGATION_1,
+                        "facility": FACILITY_1,
+                        "type": {
+                            "description": (
+                                "Learn especially nature whatever accept situation. "
+                                "Speak million no international argue thank now. Wait including spend increase ability."
+                            ),
+                            "id": 3,
+                            "name": "INVESTIGATIONTYPE 3",
+                        },
+                    },
+                ],
+                id="url encoded include",
             ),
         ],
     )
