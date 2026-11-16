@@ -68,6 +68,8 @@ class DataPublicationWhereFilters(CommonWhereFilters):
 
 
 class DataPublicationOrderEnum(StrEnum):
+    ID_ASC = "id asc"
+    ID_DESC = "id desc"
     TITLE_ASC = "title asc"
     TITLE_DESC = "title desc"
     PID_ASC = "pid asc"

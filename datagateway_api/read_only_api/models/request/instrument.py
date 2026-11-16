@@ -20,6 +20,8 @@ INSTRUMENT_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(includable_paths="'i
 
 
 class InstrumentOrderEnum(StrEnum):
+    ID_ASC = "id asc"
+    ID_DESC = "id desc"
     FULL_NAME_ASC = "fullName asc"
     FULL_NAME_DESC = "fullName desc"
     TYPE_ASC = "type asc"

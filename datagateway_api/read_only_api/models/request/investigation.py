@@ -44,6 +44,8 @@ class InvestigationDistinctEnum(StrEnum):
 
 
 class InvestigationOrderEnum(StrEnum):
+    ID_ASC = "id asc"
+    ID_DESC = "id desc"
     TITLE_ASC = "title asc"
     TITLE_DESC = "title desc"
     NAME_ASC = "name asc"

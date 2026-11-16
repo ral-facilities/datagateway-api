@@ -28,6 +28,8 @@ DATASET_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(includable_paths="'type
 
 
 class DatasetOrderEnum(StrEnum):
+    ID_ASC = "id asc"
+    ID_DESC = "id desc"
     NAME_ASC = "name asc"
     NAME_DESC = "name desc"
     FILE_COUNT_ASC = "fileCount asc"
