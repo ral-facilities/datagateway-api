@@ -138,11 +138,20 @@ class BaseFilters(BaseModel):
         else:
             yield value
 
-    @field_validator("where", mode="before", check_fields=False)
+    @field_validator("distinct", "where", "include", mode="before", check_fields=False)
     @classmethod
-    def validate_where(cls, value: Any) -> Any:
+    def validate_list(cls, value: Any) -> Any:
         if isinstance(value, list):
-            value = [json.loads(v) if isinstance(v, str) else v for v in value]
+            return_value = []
+            for inner_value in value:
+                try:
+                    inner_value = json.loads(inner_value)
+                except json.JSONDecodeError:
+                    pass  # `value` may be JSON encoded ('"string"') or not ('string'), allow either
+
+                return_value.append(inner_value)
+
+            value = return_value
 
         return value
 

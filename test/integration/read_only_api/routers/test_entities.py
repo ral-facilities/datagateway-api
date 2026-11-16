@@ -555,9 +555,10 @@ class TestDataPublications:
 
 class TestInvestigations:
     @pytest.mark.parametrize(
-        ["params", "body"],
+        ["url", "params", "body"],
         [
             pytest.param(
+                "/read-only-api/investigations",
                 {
                     "where": json.dumps(
                         {
@@ -590,6 +591,7 @@ class TestInvestigations:
                 ],
             ),
             pytest.param(
+                "/read-only-api/investigations",
                 {"distinct": ["name", "title"], "skip": 10, "limit": 3},
                 [
                     {
@@ -617,17 +619,24 @@ class TestInvestigations:
                     },
                 ],
             ),
+            pytest.param(
+                "/read-only-api/investigations?distinct=%22type.id%22",
+                None,
+                [{"type": {"id": 1}}, {"type": {"id": 2}}, {"type": {"id": 3}}],
+                id="url encoded distinct",
+            ),
         ],
     )
     def test_get_investigations(
         self,
         test_client: TestClient,
         valid_icat_credentials_header: dict[str, str],
+        url: str,
         params: dict,
         body: list[dict],
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/investigations",
+            url=url,
             params=params,
             headers=valid_icat_credentials_header,
         )
