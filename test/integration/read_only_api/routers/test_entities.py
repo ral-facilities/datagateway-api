@@ -652,6 +652,17 @@ class TestInvestigations:
                 id="url encoded distinct",
             ),
             pytest.param(
+                "/read-only-api/investigations?distinct=%5B%22title%22%2C%22name%22%5D&limit=1",
+                None,
+                [
+                    {
+                        "name": "INVESTIGATION 1",
+                        "title": "Analysis reflect work or hour color maybe.\nMuch team discussion message weight.",
+                    },
+                ],
+                id="url encoded list of distincts",
+            ),
+            pytest.param(
                 "/read-only-api/investigations?order=%22id+asc%22&limit=1",
                 None,
                 [INVESTIGATION_1],

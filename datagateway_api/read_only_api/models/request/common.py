@@ -150,10 +150,13 @@ class BaseFilters(BaseModel):
             for inner_value in value:
                 try:
                     inner_value = json.loads(inner_value)
+                    if isinstance(inner_value, list):
+                        return_value.extend(inner_value)
+                    else:
+                        return_value.append(inner_value)
                 except json.JSONDecodeError:
-                    pass  # `value` may be JSON encoded ('"string"') or not ('string'), allow either
-
-                return_value.append(inner_value)
+                    # `value` may be JSON encoded ('"string"') or not ('string'), allow either
+                    return_value.append(inner_value)
 
             value = return_value
 
