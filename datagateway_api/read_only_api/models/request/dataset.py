@@ -36,6 +36,10 @@ class DatasetOrderEnum(StrEnum):
     FILE_COUNT_DESC = "fileCount desc"
     FILE_SIZE_ASC = "fileSize asc"
     FILE_SIZE_DESC = "fileSize desc"
+    START_DATE_ASC = "startDate asc"
+    START_DATE_DESC = "startDate desc"
+    END_DATE_ASC = "endDate asc"
+    END_DATE_DESC = "endDate desc"
     CREATE_TIME_ASC = "createTime asc"
     CREATE_TIME_DESC = "createTime desc"
     MOD_TIME_ASC = "modTime asc"
@@ -52,6 +56,8 @@ class DatasetWhereFilter(DatasetIdFilters):
         alias="dataCollectionDatasets.dataCollection.dataPublications.id",
     )
     name: AnyFilter = None
+    startDate: AnyFilter = None
+    endDate: AnyFilter = None
     createTime: AnyFilter = None
     modTime: AnyFilter = None
 

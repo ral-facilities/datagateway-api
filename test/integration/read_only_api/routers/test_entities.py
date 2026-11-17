@@ -807,6 +807,7 @@ class TestDatasets:
                         "id": {"eq": "1"},
                         "investigation.id": {"eq": "1"},
                         "name": {"ilike": "dataset"},
+                        "startDate": {"gte": "1999-01-01 00:00:00"},
                         "createTime": {"isnull": False},
                         "modTime": {"isnull": False},
                     },
