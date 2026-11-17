@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from datagateway_api.read_only_api.models.response.common import EntityModel
+from datagateway_api.read_only_api.models.response.common import EntityModel, Parameter
 
 
 class Datafile(EntityModel):
@@ -12,3 +12,5 @@ class Datafile(EntityModel):
     datafileCreateTime: datetime | None = None
     datafileModTime: datetime | None = None
     fileSize: int | None = None
+
+    parameters: list[Parameter] | None = None

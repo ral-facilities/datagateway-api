@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
@@ -48,3 +49,38 @@ class BaseDataPublication(EntityModel):
     publicationDate: datetime | None = None
 
     type_: DataPublicationType | None = None
+
+
+class ParameterValueType(StrEnum):
+    STRING = "STRING"
+    DATE_AND_TIME = "DATE_AND_TIME"
+    NUMERIC = "NUMERIC"
+
+
+class ParameterType(EntityModel):
+    name: str | None = None
+    valueType: ParameterValueType | None = None
+    units: str | None = None
+    unitsFullName: str | None = None
+    pid: str | None = None
+    description: str | None = None
+    minimumNumericValue: float | None = None
+    maximumNumericValue: float | None = None
+    enforced: bool | None = None
+    verified: bool | None = None
+    applicableToInvestigation: bool | None = None
+    applicableToDataset: bool | None = None
+    applicableToDatafile: bool | None = None
+    applicableToSample: bool | None = None
+    applicableToDataCollection: bool | None = None
+
+
+class Parameter(EntityModel):
+    stringValue: str | None = None
+    dateTimeValue: datetime | None = None
+    numericValue: float | None = None
+    error: float | None = None
+    rangeBottom: float | None = None
+    rangeTop: float | None = None
+
+    type_: ParameterType | None = Field(default=None, alias="type")

@@ -64,6 +64,8 @@ class InvestigationOrderEnum(StrEnum):
     END_DATE_DESC = "endDate desc"
     INSTRUMENT_NAME_ASC = "investigationInstruments.instrument.name asc"
     INSTRUMENT_NAME_DESC = "investigationInstruments.instrument.name desc"
+    INSTRUMENT_FULL_NAME_ASC = "investigationInstruments.instrument.fullName asc"
+    INSTRUMENT_FULL_NAME_DESC = "investigationInstruments.instrument.fullName desc"
 
 
 class InvestigationNameFilter(BaseModel):

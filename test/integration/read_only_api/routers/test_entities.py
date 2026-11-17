@@ -603,6 +603,14 @@ class TestDataPublications:
         assert response.status_code == 200, response.text
         assert response.json() == DATA_PUBLICATION_1
 
+    def test_delete_data_publication(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(url="/read-only-api/datapublications/999999", headers=valid_icat_credentials_header)
+        assert response.status_code == 404, response.text
+
 
 class TestInvestigations:
     @pytest.mark.parametrize(
@@ -1020,7 +1028,38 @@ class TestDatafiles:
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text
-        assert response.json() == DATAFILE_1190
+        assert response.json() == {
+            **DATAFILE_1190,
+            "parameters": [
+                {
+                    "dateTimeValue": "2297-10-17T00:00:00Z",
+                    "error": 31126.0,
+                    "id": 1190,
+                    "rangeBottom": 46.0,
+                    "rangeTop": 98.0,
+                    "type": {
+                        "applicableToDataCollection": True,
+                        "applicableToDatafile": True,
+                        "applicableToDataset": True,
+                        "applicableToInvestigation": True,
+                        "applicableToSample": True,
+                        "description": (
+                            "Training where budget over impact brother far eat. About couple keep again physical paper "
+                            "structure.\nExpect my event one. Strategy land technology talk collection."
+                        ),
+                        "enforced": True,
+                        "id": 10,
+                        "maximumNumericValue": 77.0,
+                        "minimumNumericValue": 5.0,
+                        "name": "PARAMETERTYPE 10",
+                        "units": "unit 10",
+                        "unitsFullName": "a",
+                        "valueType": "DATE_AND_TIME",
+                        "verified": True,
+                    },
+                },
+            ],
+        }
 
 
 class TestInvestigationUsers:

@@ -279,6 +279,29 @@ def data_publication_endpoints(python_icat: PythonICAT, client_pool: ObjectPool)
             client_pool=client_pool,
         )
 
+    @router.delete(
+        "/datapublications/{data_publication_id}",
+        summary="Delete a single DataPublication",
+        description="Delete a single DataPublication",
+        responses={
+            204: {"description": "No Content - DataPublication was successfully deleted"},
+            400: {"description": "Bad request - Something was wrong with the request"},
+            401: {"description": "Unauthorized - No session ID found in HTTP Auth. header"},
+            403: {"description": "Forbidden - The session ID provided is invalid"},
+            404: {"description": "No such record - Unable to find a record in ICAT"},
+        },
+    )
+    def delete_data_publication(
+        session_id: SessionId,
+        data_publication_id: PositiveInt,
+    ) -> None:
+        python_icat.delete_with_id(
+            session_id=session_id,
+            entity_type="DataPublication",
+            id_=data_publication_id,
+            client_pool=client_pool,
+        )
+
     return router
 
 
