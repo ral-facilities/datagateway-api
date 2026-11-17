@@ -281,6 +281,25 @@ INVESTIGATION_1_SAMPLES = {
         },
     ],
 }
+INVESTIGATION_7 = {
+    "doi": "1-113-65712-X",
+    "endDate": "2001-11-19T00:00:00Z",
+    "fileCount": 0,
+    "fileSize": 0,
+    "id": 7,
+    "name": "INVESTIGATION 7",
+    "releaseDate": "2001-07-09T00:00:00Z",
+    "startDate": "2001-08-05T00:00:00Z",
+    "summary": (
+        "Special age sell raise.\nSpring who party garden study brother realize. Develop do last seek. "
+        "Dog exist natural hope later."
+    ),
+    "title": (
+        "Address certain professor. North effect bag present.\nAlong article subject. Value sit it.\n"
+        "Matter candidate evidence. Production hope piece wide political."
+    ),
+    "visitId": "85",
+}
 DATASET_1 = {
     "complete": True,
     "description": (
@@ -325,9 +344,15 @@ class TestInstruments:
             url="/read-only-api/instruments",
             params={
                 "where": json.dumps(
-                    {"name": {"like": "INSTRUMENT"}, "fullName": {"ilike": "analysis"}, "type": {"eq": "1"}},
+                    {
+                        "name": {"like": "INSTRUMENT"},
+                        "fullName": {"ilike": "analysis"},
+                        "description": {"neq": ""},
+                        "type": {"eq": "1"},
+                        "url": {"eq": "https://hopkins-lynch.com/"},
+                    },
                 ),
-                "order": "type asc",
+                "order": ["fullName asc", "type asc", "description asc", "url asc"],
                 "include": ["instrumentScientists.user"],
             },
             headers=valid_icat_credentials_header,
@@ -663,13 +688,22 @@ class TestInvestigations:
                 id="url encoded list of distincts",
             ),
             pytest.param(
+                "/read-only-api/investigations?where=%7B%22type.id%22%3A%7B%22in%22%3A%5B%221%22%5D%7D%7D&limit=1",
+                None,
+                [INVESTIGATION_7],
+                id="url encoded type in",
+            ),
+            pytest.param(
                 "/read-only-api/investigations?order=%22id+asc%22&limit=1",
                 None,
                 [INVESTIGATION_1],
                 id="url encoded order",
             ),
             pytest.param(
-                "/read-only-api/investigations?include=%22facility%22&include=%22type%22&limit=1",
+                (
+                    "/read-only-api/investigations?include=%22facility%22&include=%22type%22"
+                    "&include=%22dataCollectionInvestigations.dataCollection.dataPublications%22&limit=1"
+                ),
                 None,
                 [
                     {
@@ -683,6 +717,32 @@ class TestInvestigations:
                             "id": 3,
                             "name": "INVESTIGATIONTYPE 3",
                         },
+                        "dataCollectionInvestigations": [
+                            {
+                                "dataCollection": {
+                                    "dataPublications": [
+                                        {
+                                            "description": (
+                                                "Whose Democrat fast television let. "
+                                                "Of meeting receive heavy safe available feeling."
+                                            ),
+                                            "id": 37,
+                                            "pid": "0-18-209388-3",
+                                            "publicationDate": "2020-04-14T00:00:00Z",
+                                            "subject": "feeling",
+                                            "title": (
+                                                "Into artist rich suggest mother. Artist daughter affect down. "
+                                                "Money improve increase size a want mouth.\n"
+                                                "Teacher bed agency name. Guess would case eight win."
+                                            ),
+                                        },
+                                    ],
+                                    "doi": "0-06-202786-7",
+                                    "id": 18,
+                                },
+                                "id": 1,
+                            },
+                        ],
                     },
                 ],
                 id="url encoded include",
@@ -956,7 +1016,7 @@ class TestDatafiles:
         valid_icat_credentials_header: dict[str, str],
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/datafiles/1190",
+            url="/read-only-api/datafiles/1190?include=%22parameters.type%22",
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text

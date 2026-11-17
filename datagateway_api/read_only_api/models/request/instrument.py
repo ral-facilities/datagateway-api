@@ -24,14 +24,20 @@ class InstrumentOrderEnum(StrEnum):
     ID_DESC = "id desc"
     FULL_NAME_ASC = "fullName asc"
     FULL_NAME_DESC = "fullName desc"
+    DESCRIPTION_ASC = "description asc"
+    DESCRIPTION_DESC = "description desc"
     TYPE_ASC = "type asc"
     TYPE_DESC = "type desc"
+    URL_ASC = "url asc"
+    URL_DESC = "url desc"
 
 
 class InstrumentWhereFilters(CommonWhereFilters):
     name: AnyFilter = None
     fullName: AnyFilter = None
+    description: AnyFilter = None
     type_: AnyFilter = Field(default=None, alias="type")
+    url: AnyFilter = None
 
 
 class InstrumentCountFilters(CommonCountFilters):

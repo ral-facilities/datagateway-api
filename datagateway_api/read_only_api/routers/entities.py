@@ -34,7 +34,7 @@ from datagateway_api.read_only_api.models import (
     InvestigationUser,
     InvestigationUserSearchFilters,
 )
-from datagateway_api.read_only_api.models.request.datafile import DatafileFindOneFilters
+from datagateway_api.read_only_api.models.request.datafile import DatafileFindOneFilters, DatafileGetFilters
 from datagateway_api.read_only_api.models.request.dataset import DatasetFindOneFilters
 from datagateway_api.read_only_api.models.request.investigation import InvestigationFindOneFilters
 
@@ -648,11 +648,13 @@ def datafile_endpoints(python_icat: PythonICAT, client_pool: ObjectPool) -> APIR
     def get_datafile(
         datafile_id: PositiveInt,
         session_id: SessionId,
+        datafile_filters: Annotated[DatafileGetFilters, Query()],
     ) -> Datafile:
         return python_icat.get_with_id(
             session_id=session_id,
             entity_type="Datafile",
             id_=datafile_id,
+            includes=datafile_filters.model_dump(),
             client_pool=client_pool,
         )
 

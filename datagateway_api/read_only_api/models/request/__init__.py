@@ -7,6 +7,7 @@ from datagateway_api.read_only_api.models.request.data_publication import (
 from datagateway_api.read_only_api.models.request.datafile import (
     DatafileCountFilters,
     DatafileFindOneFilters,
+    DatafileGetFilters,
     DatafileSearchFilters,
 )
 from datagateway_api.read_only_api.models.request.dataset import (
@@ -39,6 +40,7 @@ __all__ = [
     DatafileFindOneFilters,
     DatafileSearchFilters,
     DatasetCountFilters,
+    DatafileGetFilters,
     DatasetFindOneFilters,
     DatasetGetFilters,
     DatasetSearchFilters,

@@ -77,16 +77,18 @@ class InvestigationWhereFilter(CommonWhereFilters):
     doi: AnyFilter = None
     startDate: AnyFilter = None
     endDate: AnyFilter = None
-    facilityCycleId: EqualFilter | None = Field(default=None, alias="investigationFacilityCycles.facilityCycle.id")
-    instrumentId: EqualFilter | None = Field(default=None, alias="investigationInstruments.instrument.id")
+    facility_id: AnyFilter = Field(default=None, alias="facility.id")
+    type_id: AnyFilter = Field(default=None, alias="type.id")
+    facility_cycle_id: EqualFilter | None = Field(default=None, alias="investigationFacilityCycles.facilityCycle.id")
+    instrument_id: EqualFilter | None = Field(default=None, alias="investigationInstruments.instrument.id")
+    instrument_name: AnyFilter = Field(default=None, alias="investigationInstruments.instrument.name")
     data_publication_id: EqualFilter | None = Field(
         default=None,
         alias="dataCollectionInvestigations.dataCollection.dataPublications.id",
     )
-    instrumentName: AnyFilter = Field(default=None, alias="investigationInstruments.instrument.name")
-    userRole: AnyFilter = Field(default=None, alias="investigationUsers.role")
-    userName: AnyFilter = Field(default=None, alias="investigationUsers.user.name")
-    userFullName: AnyFilter = Field(default=None, alias="investigationUsers.user.fullName")
+    user_role: AnyFilter = Field(default=None, alias="investigationUsers.role")
+    user_name: AnyFilter = Field(default=None, alias="investigationUsers.user.name")
+    user_full_name: AnyFilter = Field(default=None, alias="investigationUsers.user.fullName")
 
 
 class InvestigationIncludeEnum(StrEnum):
@@ -99,7 +101,8 @@ class InvestigationIncludeEnum(StrEnum):
     PUBLICATIONS = "publications"
     DATASETS = "datasets"
     FACILITY_CYCLES = "investigationFacilityCycles.facilityCycle"
-    DATA_PUBLICATION_TYPE = "dataCollectionInvestigations.dataCollection.dataPublications.type"
+    DATA_PUBLICATIONS = "dataCollectionInvestigations.dataCollection.dataPublications"
+    DATA_PUBLICATIONS_TYPE = "dataCollectionInvestigations.dataCollection.dataPublications.type"
 
 
 class InvestigationFindOneFilters(BaseFilters):
