@@ -17,7 +17,7 @@ from datagateway_api.read_only_api.models.request.common import (
 DATA_PUBLICATION_WHERE_DESCRIPTION = WHERE_DESCRIPTION.format(
     queryable_fields=(
         "'title', 'pid', 'publicationDate', 'type.name', 'users.user.name', 'users.orderKey', "
-        "'relatedItems.relationType', 'relatedItems.identifier', "
+        "'relatedItems.relationType', 'relatedItems.identifier', 'investigation.id', "
         "'content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id', and "
         "'content.dataCollectionInvestigations.investigation.dataCollectionInvestigations.dataCollection."
         "dataPublications.id'"
@@ -54,6 +54,10 @@ class DataPublicationWhereFilters(CommonWhereFilters):
     order_key: AnyFilter = Field(default=None, alias="users.orderKey")
     related_items_relation_type: EqualFilter | None = Field(default=None, alias="relatedItems.relationType")
     related_items_identifier: EqualFilter | None = Field(default=None, alias="relatedItems.identifier")
+    investigation_id: EqualFilter | None = Field(
+        default=None,
+        alias="content.dataCollectionInvestigations.investigation.id",
+    )
     investigation_instrument_id: EqualFilter | None = Field(
         default=None,
         alias="content.dataCollectionInvestigations.investigation.investigationInstruments.instrument.id",

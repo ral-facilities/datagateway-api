@@ -48,7 +48,7 @@ class BaseDataPublication(EntityModel):
     internalId: str | None = None
     publicationDate: datetime | None = None
 
-    type_: DataPublicationType | None = None
+    type_: DataPublicationType | None = Field(default=None, alias="type")
 
 
 class ParameterValueType(StrEnum):
