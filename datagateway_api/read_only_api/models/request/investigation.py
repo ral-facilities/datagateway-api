@@ -30,8 +30,8 @@ INVESTIGATION_ORDER_DESCRIPTION = ORDER_DESCRIPTION.format(
 )
 INVESTIGATION_INCLUDE_DESCRIPTION = INCLUDE_DESCRIPTION.format(
     includable_paths=(
-        "'investigationInstruments.instrument', 'investigationUsers.user', 'samples.type', 'parameters.type', "
-        "'publications', 'datasets', 'investigationFacilityCycles.facilityCycle', and "
+        "'investigationInstruments.instrument', 'investigationUsers.user', 'samples', 'samples.type', "
+        "'parameters.type', 'publications', 'datasets', 'investigationFacilityCycles.facilityCycle', and "
         "'dataCollectionInvestigations.dataCollection.dataPublications.type'"
     ),
 )
@@ -98,7 +98,8 @@ class InvestigationIncludeEnum(StrEnum):
     FACILITY = "facility"
     INSTRUMENTS = "investigationInstruments.instrument"
     USERS = "investigationUsers.user"
-    SAMPLES = "samples.type"
+    SAMPLES = "samples"
+    SAMPLES_TYPE = "samples.type"
     PARAMETERS = "parameters.type"
     PUBLICATIONS = "publications"
     DATASETS = "datasets"
