@@ -15,12 +15,8 @@ class DataPublicationDate(EntityModel):
     dateType: str | None = None
 
 
-class Investigation(BaseInvestigation):
-    datasets: list[Dataset] | None = None
-
-
 class DataCollectionInvestigation(EntityModel):
-    investigation: Investigation | None = None
+    investigation: BaseInvestigation | None = None
 
 
 class DataCollectionDataset(EntityModel):

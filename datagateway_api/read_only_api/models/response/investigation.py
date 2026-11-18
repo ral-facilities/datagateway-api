@@ -11,6 +11,7 @@ from datagateway_api.read_only_api.models.response.common import (
     Parameter,
     User,
 )
+from datagateway_api.read_only_api.models.response.dataset import Dataset
 from datagateway_api.read_only_api.models.response.facility_cycle import FacilityCycle
 from datagateway_api.read_only_api.models.response.instrument import Instrument
 
@@ -74,6 +75,7 @@ class BaseInvestigation(EntityModel):
     type_: EntityType | None = Field(default=None, alias="type")
     investigationInstruments: list[InvestigationInstrument] | None = None
     investigationUsers: list[InvestigationUser] | None = None
+    datasets: list[Dataset] | None = None
 
 
 class Investigation(BaseInvestigation):
