@@ -673,7 +673,7 @@ class TestDataPublications:
         test_client: TestClient,
         valid_icat_credentials_header: dict[str, str],
     ) -> None:
-        response = test_client.get(url="/read-only-api/datapublications/999999", headers=valid_icat_credentials_header)
+        response = test_client.delete(url="/read-only-api/datapublications/999999", headers=valid_icat_credentials_header)
         assert response.status_code == 404, response.text
 
 
