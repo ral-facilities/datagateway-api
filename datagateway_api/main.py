@@ -42,6 +42,8 @@ logger = logging.getLogger()
 enabled_apis = []
 if datagateway_api_enabled:
     enabled_apis.append("datagateway-api")
+if read_only_api_enabled:
+    enabled_apis.append("read-only-api")
 if search_api_enabled:
     enabled_apis.append("search-api")
 logger.info("Logging now setup: %s", ", ".join(enabled_apis))
