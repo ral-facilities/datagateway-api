@@ -4,7 +4,14 @@ from unittest.mock import ANY
 from fastapi.testclient import TestClient
 import pytest
 
-FACILITY_1 = {"daysUntilRelease": 10, "description": "Lorem ipsum light source", "id": 1, "name": "LILS"}
+FACILITY_1 = {
+    "daysUntilRelease": 10,
+    "description": "Lorem ipsum light source",
+    "id": 1,
+    "name": "LILS",
+    "createTime": ANY,
+    "modTime": ANY,
+}
 INSTRUMENT_1 = {
     "id": 1,
     "name": "INSTRUMENT 1",
@@ -27,9 +34,15 @@ INSTRUMENT_1 = {
                 "id": 69,
                 "name": "Mark69",
                 "orcidId": "7206",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
+    "createTime": ANY,
+    "modTime": ANY,
 }
 DATA_PUBLICATION_1 = {
     "content": {
@@ -38,8 +51,10 @@ DATA_PUBLICATION_1 = {
         "dataCollectionInvestigations": [],
         "doi": "0-285-87335-0",
         "id": 47,
+        "createTime": ANY,
+        "modTime": ANY,
     },
-    "dates": [{"date": "2017-09-06", "dateType": "Copyrighted", "id": 1}],
+    "dates": [{"date": "2017-09-06", "dateType": "Copyrighted", "id": 1, "createTime": ANY, "modTime": ANY}],
     "description": (
         "Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. "
         "Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
@@ -68,6 +83,8 @@ DATA_PUBLICATION_1 = {
                     "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
                     "Entire soon option bill fish against power.\nRather why rise month shake voice."
                 ),
+                "createTime": ANY,
+                "modTime": ANY,
             },
             "relatedItemType": "DataPaper",
             "relationType": "References",
@@ -75,6 +92,8 @@ DATA_PUBLICATION_1 = {
                 "Toward nature later camera. Yard team indicate speech wear western traditional. "
                 "Paper size maybe experience."
             ),
+            "createTime": ANY,
+            "modTime": ANY,
         },
         {
             "fullReference": (
@@ -96,6 +115,8 @@ DATA_PUBLICATION_1 = {
                     "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
                     "Entire soon option bill fish against power.\nRather why rise month shake voice."
                 ),
+                "createTime": ANY,
+                "modTime": ANY,
             },
             "relatedItemType": "ComputationalNotebook",
             "relationType": "IsReviewedBy",
@@ -103,6 +124,8 @@ DATA_PUBLICATION_1 = {
                 "Media later look better military later. Arm base your human entire pressure man. "
                 "Will heart media both actually major."
             ),
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
     "subject": "argue",
@@ -124,6 +147,8 @@ DATA_PUBLICATION_1 = {
                         "Light final summer."
                     ),
                     "pid": "0-449-78690-0",
+                    "createTime": ANY,
+                    "modTime": ANY,
                 },
             ],
             "contributorType": "DataCollector",
@@ -139,9 +164,15 @@ DATA_PUBLICATION_1 = {
                 "id": 292,
                 "name": "Jenny292",
                 "orcidId": "19931",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
+    "createTime": ANY,
+    "modTime": ANY,
 }
 INVESTIGATION_1 = {
     "doi": "0-417-77631-4",
@@ -158,6 +189,8 @@ INVESTIGATION_1 = {
     ),
     "title": "Analysis reflect work or hour color maybe.\nMuch team discussion message weight.",
     "visitId": "70",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 INVESTIGATION_1_INVESTIGATION_INSTRUMENTS = {
     "investigationInstruments": [
@@ -177,7 +210,11 @@ INVESTIGATION_1_INVESTIGATION_INSTRUMENTS = {
                 "name": "INSTRUMENT 3",
                 "type": "3",
                 "url": "http://www.jackson-allen.com/",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -192,7 +229,11 @@ INVESTIGATION_1_INVESTIGATION_USERS = {
                 "fullName": "Colleen Heath",
                 "name": "Jenny292",
                 "orcidId": "19931",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -224,7 +265,11 @@ INVESTIGATION_1_PARAMETERS = {
                 "unitsFullName": "where",
                 "valueType": "NUMERIC",
                 "verified": True,
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -240,6 +285,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "http://www.dillon.info/app/blog/explore/post.htm",
             "repositoryId": "5145083",
             "url": "https://www.roberts.org/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
         {
             "id": 118,
@@ -251,6 +298,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "https://www.phillips-jones.com/posts/index.php",
             "repositoryId": "4437825",
             "url": "http://www.jackson.com/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
         {
             "id": 177,
@@ -261,6 +310,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "http://ware-peterson.com/category/faq.php",
             "repositoryId": "13298920",
             "url": "http://swanson.com/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -277,7 +328,11 @@ INVESTIGATION_1_SAMPLES = {
                     "Individual five evening see minute across. Chance trial for foreign. Later evidence law hair.\n"
                     "Two soon care model. Table edge early off full wrong someone. I let woman mother cold chance."
                 ),
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -299,6 +354,8 @@ INVESTIGATION_7 = {
         "Matter candidate evidence. Production hope piece wide political."
     ),
     "visitId": "85",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 DATASET_1 = {
     "complete": True,
@@ -314,6 +371,8 @@ DATASET_1 = {
     "location": "/international/subject.tiff",
     "name": "DATASET 1",
     "startDate": "2000-05-07T00:00:00Z",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 DATASET_1_TYPE = {
     "type": {
@@ -323,6 +382,8 @@ DATASET_1_TYPE = {
         ),
         "id": 2,
         "name": "DATASETTYPE 2",
+        "createTime": ANY,
+        "modTime": ANY,
     },
 }
 DATAFILE_1190 = {
@@ -335,6 +396,8 @@ DATAFILE_1190 = {
     "id": 1190,
     "location": "/too/lawyer/camera.jpg",
     "name": "Datafile 1190",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 
 
@@ -451,6 +514,8 @@ class TestFacilityCycles:
             "id": 1,
             "name": "2000 cycle 2",
             "startDate": "2000-04-02T00:00:00Z",
+            "createTime": ANY,
+            "modTime": ANY,
         }
 
 
@@ -724,6 +789,8 @@ class TestInvestigations:
                             ),
                             "id": 3,
                             "name": "INVESTIGATIONTYPE 3",
+                            "createTime": ANY,
+                            "modTime": ANY,
                         },
                         "dataCollectionInvestigations": [
                             {
@@ -743,12 +810,18 @@ class TestInvestigations:
                                                 "Money improve increase size a want mouth.\n"
                                                 "Teacher bed agency name. Guess would case eight win."
                                             ),
+                                            "createTime": ANY,
+                                            "modTime": ANY,
                                         },
                                     ],
                                     "doi": "0-06-202786-7",
                                     "id": 18,
+                                    "createTime": ANY,
+                                    "modTime": ANY,
                                 },
                                 "id": 1,
+                                "createTime": ANY,
+                                "modTime": ANY,
                             },
                         ],
                     },
@@ -1056,7 +1129,11 @@ class TestDatafiles:
                         "unitsFullName": "a",
                         "valueType": "DATE_AND_TIME",
                         "verified": True,
+                        "createTime": ANY,
+                        "modTime": ANY,
                     },
+                    "createTime": ANY,
+                    "modTime": ANY,
                 },
             ],
         }
