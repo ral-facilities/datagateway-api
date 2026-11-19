@@ -1,13 +1,16 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import Annotated
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PlainSerializer
+
+DataGatewayDate = Annotated[datetime, PlainSerializer(lambda x: x.isoformat(" "))]
 
 
 class EntityModel(BaseModel):
     id_: int | None = Field(default=None, alias="id")
-    createTime: datetime | None = None
-    modTime: datetime | None = None
+    createTime: DataGatewayDate | None = None
+    modTime: DataGatewayDate | None = None
 
 
 class Facility(EntityModel):
@@ -48,7 +51,7 @@ class BaseDataPublication(EntityModel):
     description: str | None = None
     subject: str | None = None
     internalId: str | None = None
-    publicationDate: datetime | None = None
+    publicationDate: DataGatewayDate | None = None
 
     type_: DataPublicationType | None = Field(default=None, alias="type")
 
@@ -79,7 +82,7 @@ class ParameterType(EntityModel):
 
 class Parameter(EntityModel):
     stringValue: str | None = None
-    dateTimeValue: datetime | None = None
+    dateTimeValue: DataGatewayDate | None = None
     numericValue: float | None = None
     error: float | None = None
     rangeBottom: float | None = None

@@ -1,8 +1,6 @@
-from datetime import datetime
-
 from pydantic import Field
 
-from datagateway_api.read_only_api.models.response.common import EntityModel, User
+from datagateway_api.read_only_api.models.response.common import DataGatewayDate, EntityModel, User
 
 
 class InstrumentScientist(EntityModel):
@@ -16,7 +14,7 @@ class Instrument(EntityModel):
     type_: str | None = Field(default=None, alias="type")
     url: str | None = None
     pid: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
 
     instrumentScientists: list[InstrumentScientist] | None = None

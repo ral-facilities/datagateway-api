@@ -1,10 +1,9 @@
-from datetime import datetime
-
 from pydantic import Field
 
 from datagateway_api.read_only_api.models.response.common import (
     BaseDataCollection,
     BaseDataPublication,
+    DataGatewayDate,
     EntityModel,
     EntityType,
     Facility,
@@ -65,9 +64,9 @@ class BaseInvestigation(EntityModel):
     title: str | None = None
     summary: str | None = None
     doi: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
-    releaseDate: datetime | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
+    releaseDate: DataGatewayDate | None = None
     fileCount: int | None = None
     fileSize: int | None = None
 

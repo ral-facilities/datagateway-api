@@ -62,7 +62,7 @@ DATA_PUBLICATION_1 = {
     "facility": FACILITY_1,
     "id": 1,
     "pid": "1-4890-6828-7",
-    "publicationDate": "2021-03-23T00:00:00Z",
+    "publicationDate": "2021-03-23 00:00:00+00:00",
     "relatedItems": [
         {
             "fullReference": (
@@ -77,7 +77,7 @@ DATA_PUBLICATION_1 = {
                 ),
                 "id": 1,
                 "pid": "1-4890-6828-7",
-                "publicationDate": "2021-03-23T00:00:00Z",
+                "publicationDate": "2021-03-23 00:00:00+00:00",
                 "subject": "argue",
                 "title": (
                     "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
@@ -109,7 +109,7 @@ DATA_PUBLICATION_1 = {
                 ),
                 "id": 1,
                 "pid": "1-4890-6828-7",
-                "publicationDate": "2021-03-23T00:00:00Z",
+                "publicationDate": "2021-03-23 00:00:00+00:00",
                 "subject": "argue",
                 "title": (
                     "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
@@ -176,13 +176,13 @@ DATA_PUBLICATION_1 = {
 }
 INVESTIGATION_1 = {
     "doi": "0-417-77631-4",
-    "endDate": "2000-07-09T00:00:00Z",
+    "endDate": "2000-07-09 00:00:00+00:00",
     "fileCount": 0,
     "fileSize": 0,
     "id": 1,
     "name": "INVESTIGATION 1",
-    "releaseDate": "2000-07-05T00:00:00Z",
-    "startDate": "2000-04-03T00:00:00Z",
+    "releaseDate": "2000-07-05 00:00:00+00:00",
+    "startDate": "2000-04-03 00:00:00+00:00",
     "summary": (
         "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\n"
         "Month shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time."
@@ -338,13 +338,13 @@ INVESTIGATION_1_SAMPLES = {
 }
 INVESTIGATION_7 = {
     "doi": "1-113-65712-X",
-    "endDate": "2001-11-19T00:00:00Z",
+    "endDate": "2001-11-19 00:00:00+00:00",
     "fileCount": 0,
     "fileSize": 0,
     "id": 7,
     "name": "INVESTIGATION 7",
-    "releaseDate": "2001-07-09T00:00:00Z",
-    "startDate": "2001-08-05T00:00:00Z",
+    "releaseDate": "2001-07-09 00:00:00+00:00",
+    "startDate": "2001-08-05 00:00:00+00:00",
     "summary": (
         "Special age sell raise.\nSpring who party garden study brother realize. Develop do last seek. "
         "Dog exist natural hope later."
@@ -364,13 +364,13 @@ DATASET_1 = {
         "Entire soon option bill fish against power.\nRather why rise month shake voice."
     ),
     "doi": "0-449-78690-0",
-    "endDate": "2000-07-05T00:00:00Z",
+    "endDate": "2000-07-05 00:00:00+00:00",
     "fileCount": 15,
     "fileSize": 0,
     "id": 1,
     "location": "/international/subject.tiff",
     "name": "DATASET 1",
-    "startDate": "2000-05-07T00:00:00Z",
+    "startDate": "2000-05-07 00:00:00+00:00",
     "createTime": ANY,
     "modTime": ANY,
 }
@@ -462,22 +462,22 @@ class TestFacilityCycles:
         assert response.status_code == 200, response.text
         assert response.json() == [
             {
-                "endDate": "2000-07-10T00:00:00Z",
+                "endDate": "2000-07-10 00:00:00+00:00",
                 "id": 1,
                 "name": "2000 cycle 2",
-                "startDate": "2000-04-02T00:00:00Z",
+                "startDate": "2000-04-02 00:00:00+00:00",
             },
             {
-                "endDate": "2000-09-15T00:00:00Z",
+                "endDate": "2000-09-15 00:00:00+00:00",
                 "id": 2,
                 "name": "2000 cycle 3",
-                "startDate": "2000-06-03T00:00:00Z",
+                "startDate": "2000-06-03 00:00:00+00:00",
             },
             {
-                "endDate": "2000-11-20T00:00:00Z",
+                "endDate": "2000-11-20 00:00:00+00:00",
                 "id": 3,
                 "name": "2000 cycle 4",
-                "startDate": "2000-08-04T00:00:00Z",
+                "startDate": "2000-08-04 00:00:00+00:00",
             },
         ]
 
@@ -510,10 +510,10 @@ class TestFacilityCycles:
                 "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
                 "Entire soon option bill fish against power.\nRather why rise month shake voice."
             ),
-            "endDate": "2000-07-10T00:00:00Z",
+            "endDate": "2000-07-10 00:00:00+00:00",
             "id": 1,
             "name": "2000 cycle 2",
-            "startDate": "2000-04-02T00:00:00Z",
+            "startDate": "2000-04-02 00:00:00+00:00",
             "createTime": ANY,
             "modTime": ANY,
         }
@@ -806,7 +806,7 @@ class TestInvestigations:
                                             ),
                                             "id": 37,
                                             "pid": "0-18-209388-3",
-                                            "publicationDate": "2020-04-14T00:00:00Z",
+                                            "publicationDate": "2020-04-14 00:00:00+00:00",
                                             "subject": "feeling",
                                             "title": (
                                                 "Into artist rich suggest mother. Artist daughter affect down. "
@@ -1108,7 +1108,7 @@ class TestDatafiles:
             **DATAFILE_1190,
             "parameters": [
                 {
-                    "dateTimeValue": "2297-10-17T00:00:00Z",
+                    "dateTimeValue": "2297-10-17 00:00:00+00:00",
                     "error": 31126.0,
                     "id": 1190,
                     "rangeBottom": 46.0,
