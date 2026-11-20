@@ -1,4 +1,4 @@
-name: Release Build
+name: Push Docker Image
 on:
   workflow_dispatch:
   workflow_call:
