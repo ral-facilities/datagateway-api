@@ -64,6 +64,7 @@ class DatasetWhereFilter(DatasetIdFilters):
 
 class DatasetIncludeEnum(StrEnum):
     TYPE = "type"
+    USERS = "investigation.investigationUsers.user"
 
 
 class DatasetFindOneFilters(BaseFilters):

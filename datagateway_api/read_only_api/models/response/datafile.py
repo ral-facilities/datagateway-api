@@ -1,4 +1,5 @@
 from datagateway_api.read_only_api.models.response.common import DataGatewayDate, EntityModel, Parameter
+from datagateway_api.read_only_api.models.response.dataset import Dataset
 
 
 class Datafile(EntityModel):
@@ -11,4 +12,5 @@ class Datafile(EntityModel):
     datafileModTime: DataGatewayDate | None = None
     fileSize: int | None = None
 
+    dataset: Dataset | None = None
     parameters: list[Parameter] | None = None
