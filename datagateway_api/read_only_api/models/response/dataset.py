@@ -1,13 +1,6 @@
-from datetime import datetime
-
 from pydantic import Field
 
-from datagateway_api.read_only_api.models.response.common import EntityModel
-
-
-class DatasetType(EntityModel):
-    name: str | None = None
-    description: str | None = None
+from datagateway_api.read_only_api.models.response.common import DataGatewayDate, EntityModel, EntityType
 
 
 class Dataset(EntityModel):
@@ -15,10 +8,10 @@ class Dataset(EntityModel):
     location: str | None = None
     description: str | None = None
     doi: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
     fileCount: int | None = None
     fileSize: int | None = None
     complete: bool | None = None
 
-    type_: DatasetType | None = Field(default=None, alias="type")
+    type_: EntityType | None = Field(default=None, alias="type")

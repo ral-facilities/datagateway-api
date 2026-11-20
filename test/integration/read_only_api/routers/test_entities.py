@@ -4,21 +4,193 @@ from unittest.mock import ANY
 from fastapi.testclient import TestClient
 import pytest
 
+FACILITY_1 = {
+    "daysUntilRelease": 10,
+    "description": "Lorem ipsum light source",
+    "id": 1,
+    "name": "LILS",
+    "createTime": ANY,
+    "modTime": ANY,
+}
+INSTRUMENT_1 = {
+    "id": 1,
+    "name": "INSTRUMENT 1",
+    "fullName": (
+        "Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. "
+        "Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
+    ),
+    "type": "1",
+    "url": "https://hopkins-lynch.com/",
+    "description": (
+        "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+        "Entire soon option bill fish against power.\nRather why rise month shake voice."
+    ),
+    "instrumentScientists": [
+        {
+            "id": 1,
+            "user": {
+                "email": "wevans@yahoo.com",
+                "fullName": "Kathryn Fox",
+                "id": 69,
+                "name": "Mark69",
+                "orcidId": "7206",
+                "createTime": ANY,
+                "modTime": ANY,
+            },
+            "createTime": ANY,
+            "modTime": ANY,
+        },
+    ],
+    "createTime": ANY,
+    "modTime": ANY,
+}
+DATA_PUBLICATION_1 = {
+    "content": {
+        "dataCollectionDatafiles": [],
+        "dataCollectionDatasets": [],
+        "dataCollectionInvestigations": [],
+        "doi": "0-285-87335-0",
+        "id": 47,
+        "createTime": ANY,
+        "modTime": ANY,
+    },
+    "dates": [{"date": "2017-09-06", "dateType": "Copyrighted", "id": 1, "createTime": ANY, "modTime": ANY}],
+    "description": (
+        "Stop prove field onto think suffer measure. Table lose season identify professor happen third simply. "
+        "Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
+    ),
+    "facility": FACILITY_1,
+    "id": 1,
+    "pid": "1-4890-6828-7",
+    "publicationDate": "2021-03-23 00:00:00+00:00",
+    "relatedItems": [
+        {
+            "fullReference": (
+                "Consider heavy audience Mrs that must. Focus increase bed. Plan really under everyone size if."
+            ),
+            "id": 118,
+            "identifier": "0-316-07926-X",
+            "publication": {
+                "description": (
+                    "Stop prove field onto think suffer measure. Table lose season identify professor happen third "
+                    "simply. Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
+                ),
+                "id": 1,
+                "pid": "1-4890-6828-7",
+                "publicationDate": "2021-03-23 00:00:00+00:00",
+                "subject": "argue",
+                "title": (
+                    "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+                    "Entire soon option bill fish against power.\nRather why rise month shake voice."
+                ),
+                "createTime": ANY,
+                "modTime": ANY,
+            },
+            "relatedItemType": "DataPaper",
+            "relationType": "References",
+            "title": (
+                "Toward nature later camera. Yard team indicate speech wear western traditional. "
+                "Paper size maybe experience."
+            ),
+            "createTime": ANY,
+            "modTime": ANY,
+        },
+        {
+            "fullReference": (
+                "Subject card foreign couple. Prevent dark person somebody response page.\n"
+                "Probably couple western through book old. Condition send read stock me."
+            ),
+            "id": 59,
+            "identifier": "0-546-32494-0",
+            "publication": {
+                "description": (
+                    "Stop prove field onto think suffer measure. Table lose season identify professor happen third "
+                    "simply. Beat professional blue clear style have.\nAnalysis reflect work or hour color maybe."
+                ),
+                "id": 1,
+                "pid": "1-4890-6828-7",
+                "publicationDate": "2021-03-23 00:00:00+00:00",
+                "subject": "argue",
+                "title": (
+                    "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+                    "Entire soon option bill fish against power.\nRather why rise month shake voice."
+                ),
+                "createTime": ANY,
+                "modTime": ANY,
+            },
+            "relatedItemType": "ComputationalNotebook",
+            "relationType": "IsReviewedBy",
+            "title": (
+                "Media later look better military later. Arm base your human entire pressure man. "
+                "Will heart media both actually major."
+            ),
+            "createTime": ANY,
+            "modTime": ANY,
+        },
+    ],
+    "subject": "argue",
+    "title": (
+        "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+        "Entire soon option bill fish against power.\nRather why rise month shake voice."
+    ),
+    "users": [
+        {
+            "affiliations": [
+                {
+                    "fullReference": (
+                        "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+                        "Entire soon option bill fish against power.\nRather why rise month shake voice."
+                    ),
+                    "id": 1,
+                    "name": (
+                        "Season identify professor happen third. Beat professional blue clear style have. "
+                        "Light final summer."
+                    ),
+                    "pid": "0-449-78690-0",
+                    "createTime": ANY,
+                    "modTime": ANY,
+                },
+            ],
+            "contributorType": "DataCollector",
+            "email": "jenniferadams@hotmail.com",
+            "familyName": "Heath",
+            "fullName": "Colleen Heath",
+            "givenName": "Colleen",
+            "id": 1,
+            "orderKey": "3",
+            "user": {
+                "email": "jenniferadams@hotmail.com",
+                "fullName": "Colleen Heath",
+                "id": 292,
+                "name": "Jenny292",
+                "orcidId": "19931",
+                "createTime": ANY,
+                "modTime": ANY,
+            },
+            "createTime": ANY,
+            "modTime": ANY,
+        },
+    ],
+    "createTime": ANY,
+    "modTime": ANY,
+}
 INVESTIGATION_1 = {
     "doi": "0-417-77631-4",
-    "endDate": "2000-07-09T00:00:00Z",
+    "endDate": "2000-07-09 00:00:00+00:00",
     "fileCount": 0,
     "fileSize": 0,
     "id": 1,
     "name": "INVESTIGATION 1",
-    "releaseDate": "2000-07-05T00:00:00Z",
-    "startDate": "2000-04-03T00:00:00Z",
+    "releaseDate": "2000-07-05 00:00:00+00:00",
+    "startDate": "2000-04-03 00:00:00+00:00",
     "summary": (
         "Throw hope parent. Receive entire soon. War top air agent must voice high describe.\n"
         "Month shake voice. Do discuss despite least face again study. Two beyond picture rich fast sea time."
     ),
     "title": "Analysis reflect work or hour color maybe.\nMuch team discussion message weight.",
     "visitId": "70",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 INVESTIGATION_1_INVESTIGATION_INSTRUMENTS = {
     "investigationInstruments": [
@@ -38,7 +210,11 @@ INVESTIGATION_1_INVESTIGATION_INSTRUMENTS = {
                 "name": "INSTRUMENT 3",
                 "type": "3",
                 "url": "http://www.jackson-allen.com/",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -53,7 +229,11 @@ INVESTIGATION_1_INVESTIGATION_USERS = {
                 "fullName": "Colleen Heath",
                 "name": "Jenny292",
                 "orcidId": "19931",
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -85,7 +265,11 @@ INVESTIGATION_1_PARAMETERS = {
                 "unitsFullName": "where",
                 "valueType": "NUMERIC",
                 "verified": True,
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -101,6 +285,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "http://www.dillon.info/app/blog/explore/post.htm",
             "repositoryId": "5145083",
             "url": "https://www.roberts.org/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
         {
             "id": 118,
@@ -112,6 +298,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "https://www.phillips-jones.com/posts/index.php",
             "repositoryId": "4437825",
             "url": "http://www.jackson.com/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
         {
             "id": 177,
@@ -122,6 +310,8 @@ INVESTIGATION_1_PUBLICATIONS = {
             "repository": "http://ware-peterson.com/category/faq.php",
             "repositoryId": "13298920",
             "url": "http://swanson.com/",
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
 }
@@ -138,9 +328,34 @@ INVESTIGATION_1_SAMPLES = {
                     "Individual five evening see minute across. Chance trial for foreign. Later evidence law hair.\n"
                     "Two soon care model. Table edge early off full wrong someone. I let woman mother cold chance."
                 ),
+                "createTime": ANY,
+                "modTime": ANY,
             },
+            "createTime": ANY,
+            "modTime": ANY,
         },
     ],
+}
+INVESTIGATION_7 = {
+    "doi": "1-113-65712-X",
+    "endDate": "2001-11-19 00:00:00+00:00",
+    "fileCount": 0,
+    "fileSize": 0,
+    "id": 7,
+    "name": "INVESTIGATION 7",
+    "releaseDate": "2001-07-09 00:00:00+00:00",
+    "startDate": "2001-08-05 00:00:00+00:00",
+    "summary": (
+        "Special age sell raise.\nSpring who party garden study brother realize. Develop do last seek. "
+        "Dog exist natural hope later."
+    ),
+    "title": (
+        "Address certain professor. North effect bag present.\nAlong article subject. Value sit it.\n"
+        "Matter candidate evidence. Production hope piece wide political."
+    ),
+    "visitId": "85",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 DATASET_1 = {
     "complete": True,
@@ -149,13 +364,15 @@ DATASET_1 = {
         "Entire soon option bill fish against power.\nRather why rise month shake voice."
     ),
     "doi": "0-449-78690-0",
-    "endDate": "2000-07-05T00:00:00Z",
+    "endDate": "2000-07-05 00:00:00+00:00",
     "fileCount": 15,
     "fileSize": 0,
     "id": 1,
     "location": "/international/subject.tiff",
     "name": "DATASET 1",
-    "startDate": "2000-05-07T00:00:00Z",
+    "startDate": "2000-05-07 00:00:00+00:00",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 DATASET_1_TYPE = {
     "type": {
@@ -165,6 +382,8 @@ DATASET_1_TYPE = {
         ),
         "id": 2,
         "name": "DATASETTYPE 2",
+        "createTime": ANY,
+        "modTime": ANY,
     },
 }
 DATAFILE_1190 = {
@@ -177,14 +396,296 @@ DATAFILE_1190 = {
     "id": 1190,
     "location": "/too/lawyer/camera.jpg",
     "name": "Datafile 1190",
+    "createTime": ANY,
+    "modTime": ANY,
 }
 
 
-class TestMyData:
+class TestInstruments:
+    def test_get_instruments(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/instruments",
+            params={
+                "where": json.dumps(
+                    {
+                        "name": {"like": "INSTRUMENT"},
+                        "fullName": {"ilike": "analysis"},
+                        "description": {"neq": ""},
+                        "type": {"eq": "1"},
+                        "url": {"eq": "https://hopkins-lynch.com/"},
+                    },
+                ),
+                "order": ["fullName asc", "type asc", "description asc", "url asc"],
+                "include": ["instrumentScientists.user"],
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [INSTRUMENT_1]
+
+    def test_count_instruments(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/instruments/count",
+            params={
+                "where": json.dumps(
+                    {"name": {"like": "INSTRUMENT"}, "fullName": {"ilike": "analysis"}, "type": {"eq": "1"}},
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 1
+
+    def test_get_instrument(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/instruments/1",
+            params={"include": ["instrumentScientists.user"]},
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == INSTRUMENT_1
+
+
+class TestFacilityCycles:
+    def test_get_facility_cycles(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/facilitycycles",
+            params={
+                "distinct": ["id", "name", "startDate", "endDate"],
+                "where": json.dumps(
+                    {"name": {"like": "2000"}, "startDate": {"isnull": False}, "endDate": {"isnull": False}},
+                ),
+                "order": "startDate asc",
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [
+            {
+                "endDate": "2000-07-10 00:00:00+00:00",
+                "id": 1,
+                "name": "2000 cycle 2",
+                "startDate": "2000-04-02 00:00:00+00:00",
+            },
+            {
+                "endDate": "2000-09-15 00:00:00+00:00",
+                "id": 2,
+                "name": "2000 cycle 3",
+                "startDate": "2000-06-03 00:00:00+00:00",
+            },
+            {
+                "endDate": "2000-11-20 00:00:00+00:00",
+                "id": 3,
+                "name": "2000 cycle 4",
+                "startDate": "2000-08-04 00:00:00+00:00",
+            },
+        ]
+
+    def test_count_facility_cycles(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/facilitycycles/count",
+            params={
+                "distinct": ["id", "name", "startDate", "endDate"],
+                "where": json.dumps(
+                    {"name": {"like": "2000"}, "startDate": {"isnull": False}, "endDate": {"isnull": False}},
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 3
+
+    def test_get_facility_cycle(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/facilitycycles/1",
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == {
+            "description": (
+                "Suggest shake effort many last prepare small. Maintain throw hope parent.\n"
+                "Entire soon option bill fish against power.\nRather why rise month shake voice."
+            ),
+            "endDate": "2000-07-10 00:00:00+00:00",
+            "id": 1,
+            "name": "2000 cycle 2",
+            "startDate": "2000-04-02 00:00:00+00:00",
+            "createTime": ANY,
+            "modTime": ANY,
+        }
+
+
+class TestDataPublications:
     @pytest.mark.parametrize(
-        ["params", "body"],
+        ["include"],
         [
             pytest.param(
+                [
+                    "facility",
+                    "type",
+                    "dates",
+                    "relatedItems.publication",
+                    "users.user",
+                    "users.affiliations",
+                    "content.dataCollectionInvestigations.investigation.datasets.type",
+                    "content.dataCollectionInvestigations.investigation.investigationInstruments.instrument",
+                    "content.dataCollectionInvestigations.investigation.investigationUsers.user",
+                    "content.dataCollectionDatasets.dataset",
+                    "content.dataCollectionDatafiles.datafile",
+                ],
+                id="strings",
+            ),
+            pytest.param(
+                json.dumps(
+                    [
+                        "facility",
+                        "type",
+                        "dates",
+                        {"relatedItems": "publication"},
+                        {"users": ["user", "affiliations"]},
+                        {
+                            "content": {
+                                "dataCollectionInvestigations": {
+                                    "investigation": {
+                                        "datasets": "type",
+                                        "investigationInstruments": "instrument",
+                                        "investigationUsers": "user",
+                                    },
+                                },
+                                "dataCollectionDatasets": "dataset",
+                                "dataCollectionDatafiles": "datafile",
+                            },
+                        },
+                    ],
+                ),
+                id="json.dumps outer",
+            ),
+            pytest.param(
+                [
+                    json.dumps("facility"),
+                    json.dumps("type"),
+                    json.dumps("dates"),
+                    json.dumps({"relatedItems": "publication"}),
+                    json.dumps({"users": ["user", "affiliations"]}),
+                    json.dumps(
+                        {
+                            "content": {
+                                "dataCollectionInvestigations": {
+                                    "investigation": {
+                                        "datasets": "type",
+                                        "investigationInstruments": "instrument",
+                                        "investigationUsers": "user",
+                                    },
+                                },
+                                "dataCollectionDatasets": "dataset",
+                                "dataCollectionDatafiles": "datafile",
+                            },
+                        },
+                    ),
+                ],
+                id="json.dumps inner",
+            ),
+        ],
+    )
+    def test_get_data_publications(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+        include: list,
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datapublications",
+            params={
+                "where": json.dumps(
+                    {
+                        "title": {"like": "Suggest"},
+                        "pid": {"like": "6828"},
+                        "publicationDate": {"isnull": False},
+                        "users.user.name": {"eq": "Jenny292"},
+                        "users.orderKey": {"neq": "0"},
+                        "relatedItems.relationType": {"eq": "References"},
+                        "relatedItems.identifier": {"eq": "0-316-07926-X"},
+                    },
+                ),
+                "order": "publicationDate asc",
+                "include": include,
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [DATA_PUBLICATION_1]
+
+    def test_count_data_publications(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datapublications/count",
+            params={
+                "distinct": ["id", "title", "pid"],
+                "where": json.dumps(
+                    {
+                        "title": {"like": "Suggest"},
+                        "pid": {"like": "6828"},
+                        "publicationDate": {"isnull": False},
+                        "users.user.name": {"eq": "Jenny292"},
+                        "users.orderKey": {"neq": "0"},
+                        "relatedItems.relationType": {"eq": "References"},
+                        "relatedItems.identifier": {"eq": "0-316-07926-X"},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 1
+
+    def test_get_data_publication(self, test_client: TestClient, valid_icat_credentials_header: dict[str, str]) -> None:
+        response = test_client.get(
+            url="/read-only-api/datapublications/1",
+            params={
+                "include": [
+                    "facility",
+                    "type",
+                    "dates",
+                    "relatedItems.publication",
+                    "users.user",
+                    "users.affiliations",
+                    "content.dataCollectionInvestigations.investigation.datasets.type",
+                    "content.dataCollectionInvestigations.investigation.investigationInstruments.instrument",
+                    "content.dataCollectionInvestigations.investigation.investigationUsers.user",
+                    "content.dataCollectionDatasets.dataset",
+                    "content.dataCollectionDatafiles.datafile",
+                ],
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == DATA_PUBLICATION_1
+
+    def test_delete_data_publication(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.delete(
+            url="/read-only-api/datapublications/999999",
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 404, response.text
+
+
+class TestInvestigations:
+    @pytest.mark.parametrize(
+        ["url", "params", "body"],
+        [
+            pytest.param(
+                "/read-only-api/investigations",
                 {
                     "where": json.dumps(
                         {
@@ -217,6 +718,7 @@ class TestMyData:
                 ],
             ),
             pytest.param(
+                "/read-only-api/investigations",
                 {"distinct": ["name", "title"], "skip": 10, "limit": 3},
                 [
                     {
@@ -244,22 +746,145 @@ class TestMyData:
                     },
                 ],
             ),
+            pytest.param(
+                "/read-only-api/investigations?distinct=%22type.id%22",
+                None,
+                [{"type": {"id": 1}}, {"type": {"id": 2}}, {"type": {"id": 3}}],
+                id="url encoded distinct",
+            ),
+            pytest.param(
+                "/read-only-api/investigations?distinct=%5B%22title%22%2C%22name%22%5D&limit=1",
+                None,
+                [
+                    {
+                        "name": "INVESTIGATION 1",
+                        "title": "Analysis reflect work or hour color maybe.\nMuch team discussion message weight.",
+                    },
+                ],
+                id="url encoded list of distincts",
+            ),
+            pytest.param(
+                "/read-only-api/investigations?where=%7B%22type.id%22%3A%7B%22in%22%3A%5B%221%22%5D%7D%7D&limit=1",
+                None,
+                [INVESTIGATION_7],
+                id="url encoded type in",
+            ),
+            pytest.param(
+                "/read-only-api/investigations?order=%22id+asc%22&limit=1",
+                None,
+                [INVESTIGATION_1],
+                id="url encoded order",
+            ),
+            pytest.param(
+                (
+                    "/read-only-api/investigations?include=%22facility%22&include=%22type%22"
+                    "&include=%22dataCollectionInvestigations.dataCollection.dataPublications%22&limit=1"
+                ),
+                None,
+                [
+                    {
+                        **INVESTIGATION_1,
+                        "facility": FACILITY_1,
+                        "type": {
+                            "description": (
+                                "Learn especially nature whatever accept situation. "
+                                "Speak million no international argue thank now. Wait including spend increase ability."
+                            ),
+                            "id": 3,
+                            "name": "INVESTIGATIONTYPE 3",
+                            "createTime": ANY,
+                            "modTime": ANY,
+                        },
+                        "dataCollectionInvestigations": [
+                            {
+                                "dataCollection": {
+                                    "dataPublications": [
+                                        {
+                                            "description": (
+                                                "Whose Democrat fast television let. "
+                                                "Of meeting receive heavy safe available feeling."
+                                            ),
+                                            "id": 37,
+                                            "pid": "0-18-209388-3",
+                                            "publicationDate": "2020-04-14 00:00:00+00:00",
+                                            "subject": "feeling",
+                                            "title": (
+                                                "Into artist rich suggest mother. Artist daughter affect down. "
+                                                "Money improve increase size a want mouth.\n"
+                                                "Teacher bed agency name. Guess would case eight win."
+                                            ),
+                                            "createTime": ANY,
+                                            "modTime": ANY,
+                                        },
+                                    ],
+                                    "doi": "0-06-202786-7",
+                                    "id": 18,
+                                    "createTime": ANY,
+                                    "modTime": ANY,
+                                },
+                                "id": 1,
+                                "createTime": ANY,
+                                "modTime": ANY,
+                            },
+                        ],
+                    },
+                ],
+                id="url encoded include",
+            ),
         ],
     )
     def test_get_investigations(
         self,
         test_client: TestClient,
         valid_icat_credentials_header: dict[str, str],
+        url: str,
         params: dict,
         body: list[dict],
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/investigations",
+            url=url,
             params=params,
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text
         assert response.json() == body
+
+    def test_count_investigations(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/investigations/count",
+            params={
+                "where": json.dumps(
+                    {
+                        "name": {"like": "INVESTIGATION"},
+                        "title": {"ilike": "analysis"},
+                        "visitId": {"between": ["69", "71"]},
+                        "startDate": {"gt": "2000-01-01 00:00:00"},
+                        "endDate": {"lt": "2001-01-01 00:00:00"},
+                        "investigationInstruments.instrument.name": {"nilike": "1"},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 1
+
+    def test_find_one_investigation(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/investigations/findone",
+            params={"where": json.dumps({"name": {"eq": "INVESTIGATION 1"}})},
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == INVESTIGATION_1
 
     @pytest.mark.parametrize(
         ["includes", "included_body"],
@@ -311,6 +936,68 @@ class TestMyData:
         assert response.status_code == 200, response.text
         assert response.json() == [{**DATASET_1, **included_body}]
 
+
+class TestDatasets:
+    def test_get_datasets(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datasets",
+            params={
+                "where": json.dumps(
+                    {
+                        "id": {"eq": "1"},
+                        "investigation.id": {"eq": "1"},
+                        "name": {"ilike": "dataset"},
+                        "startDate": {"gte": "1999-01-01 00:00:00"},
+                        "createTime": {"isnull": False},
+                        "modTime": {"isnull": False},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [DATASET_1]
+
+    def test_count_datasets(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datasets/count",
+            params={
+                "where": json.dumps(
+                    {
+                        "id": {"eq": "1"},
+                        "investigation.id": {"eq": "1"},
+                        "name": {"ilike": "dataset"},
+                        "createTime": {"isnull": False},
+                        "modTime": {"isnull": False},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 1
+
+    def test_find_one_dataset(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datasets/findone",
+            params={"where": json.dumps({"id": {"eq": "1"}, "investigation.id": {"eq": "1"}})},
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == DATASET_1
+
     @pytest.mark.parametrize(
         ["includes", "included_body"],
         [pytest.param([], {}), pytest.param(["type"], DATASET_1_TYPE)],
@@ -344,14 +1031,127 @@ class TestMyData:
         assert response.status_code == 200, response.text
         assert response.json() == [DATAFILE_1190]
 
+
+class TestDatafiles:
+    def test_get_datafiles(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datafiles",
+            params={
+                "where": json.dumps(
+                    {
+                        "id": {"eq": "1190"},
+                        "dataset.id": {"eq": "1"},
+                        "name": {"ilike": "datafile"},
+                        "location": {"like": "jpg"},
+                        "datafileCreateTime": {"isnull": False},
+                        "datafileModTime": {"isnull": False},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [DATAFILE_1190]
+
+    def test_count_datafiles(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datafiles/count",
+            params={
+                "where": json.dumps(
+                    {
+                        "id": {"eq": "1190"},
+                        "dataset.id": {"eq": "1"},
+                        "name": {"ilike": "datafile"},
+                        "location": {"like": "jpg"},
+                        "datafileCreateTime": {"isnull": False},
+                        "datafileModTime": {"isnull": False},
+                    },
+                ),
+            },
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == 1
+
+    def test_find_one_datafile(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/datafiles/findone",
+            params={"where": json.dumps({"id": {"eq": "1190"}, "dataset.id": {"eq": "1"}})},
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == DATAFILE_1190
+
     def test_get_datafile(
         self,
         test_client: TestClient,
         valid_icat_credentials_header: dict[str, str],
     ) -> None:
         response = test_client.get(
-            url="/read-only-api/datafiles/1190",
+            url="/read-only-api/datafiles/1190?include=%22parameters.type%22",
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text
-        assert response.json() == DATAFILE_1190
+        assert response.json() == {
+            **DATAFILE_1190,
+            "parameters": [
+                {
+                    "dateTimeValue": "2297-10-17 00:00:00+00:00",
+                    "error": 31126.0,
+                    "id": 1190,
+                    "rangeBottom": 46.0,
+                    "rangeTop": 98.0,
+                    "type": {
+                        "applicableToDataCollection": True,
+                        "applicableToDatafile": True,
+                        "applicableToDataset": True,
+                        "applicableToInvestigation": True,
+                        "applicableToSample": True,
+                        "description": (
+                            "Training where budget over impact brother far eat. About couple keep again physical paper "
+                            "structure.\nExpect my event one. Strategy land technology talk collection."
+                        ),
+                        "enforced": True,
+                        "id": 10,
+                        "maximumNumericValue": 77.0,
+                        "minimumNumericValue": 5.0,
+                        "name": "PARAMETERTYPE 10",
+                        "units": "unit 10",
+                        "unitsFullName": "a",
+                        "valueType": "DATE_AND_TIME",
+                        "verified": True,
+                        "createTime": ANY,
+                        "modTime": ANY,
+                    },
+                    "createTime": ANY,
+                    "modTime": ANY,
+                },
+            ],
+        }
+
+
+class TestInvestigationUsers:
+    def test_get_investigation_users(
+        self,
+        test_client: TestClient,
+        valid_icat_credentials_header: dict[str, str],
+    ) -> None:
+        response = test_client.get(
+            url="/read-only-api/investigationusers",
+            params={"distinct": "role", "where": json.dumps({"user.name": {"eq": "Jenny292"}})},
+            headers=valid_icat_credentials_header,
+        )
+        assert response.status_code == 200, response.text
+        assert response.json() == [{"role": "PI"}]

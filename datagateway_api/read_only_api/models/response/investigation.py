@@ -1,34 +1,22 @@
-from datetime import datetime
-from enum import StrEnum
-
 from pydantic import Field
 
-from datagateway_api.read_only_api.models.response.common import EntityModel
-
-
-class Instrument(EntityModel):
-    name: str | None = None
-    fullName: str | None = None
-    description: str | None = None
-    type_: str | None = Field(default=None, alias="type")
-    url: str | None = None
-    pid: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
+from datagateway_api.read_only_api.models.response.common import (
+    BaseDataCollection,
+    BaseDataPublication,
+    DataGatewayDate,
+    EntityModel,
+    EntityType,
+    Facility,
+    Parameter,
+    User,
+)
+from datagateway_api.read_only_api.models.response.dataset import Dataset
+from datagateway_api.read_only_api.models.response.facility_cycle import FacilityCycle
+from datagateway_api.read_only_api.models.response.instrument import Instrument
 
 
 class InvestigationInstrument(EntityModel):
     instrument: Instrument | None = None
-
-
-class User(EntityModel):
-    name: str | None = None
-    fullName: str | None = None
-    givenName: str | None = None
-    familyName: str | None = None
-    email: str | None = None
-    affiliation: str | None = None
-    orcidId: str | None = None
 
 
 class InvestigationUser(EntityModel):
@@ -50,41 +38,6 @@ class Sample(EntityModel):
     type_: SampleType | None = Field(default=None, alias="type")
 
 
-class ParameterValueType(StrEnum):
-    STRING = "STRING"
-    DATE_AND_TIME = "DATE_AND_TIME"
-    NUMERIC = "NUMERIC"
-
-
-class ParameterType(EntityModel):
-    name: str | None = None
-    valueType: ParameterValueType | None = None
-    units: str | None = None
-    unitsFullName: str | None = None
-    pid: str | None = None
-    description: str | None = None
-    minimumNumericValue: float | None = None
-    maximumNumericValue: float | None = None
-    enforced: bool | None = None
-    verified: bool | None = None
-    applicableToInvestigation: bool | None = None
-    applicableToDataset: bool | None = None
-    applicableToDatafile: bool | None = None
-    applicableToSample: bool | None = None
-    applicableToDataCollection: bool | None = None
-
-
-class Parameter(EntityModel):
-    stringValue: str | None = None
-    dateTimeValue: datetime | None = None
-    numericValue: float | None = None
-    error: float | None = None
-    rangeBottom: float | None = None
-    rangeTop: float | None = None
-
-    type_: ParameterType | None = Field(default=None, alias="type")
-
-
 class Publication(EntityModel):
     fullReference: str | None = None
     doi: str | None = None
@@ -93,20 +46,40 @@ class Publication(EntityModel):
     repositoryId: str | None = None
 
 
-class Investigation(EntityModel):
+class InvestigationFacilityCycle(EntityModel):
+    facilityCycle: FacilityCycle | None = None
+
+
+class DataCollection(BaseDataCollection):
+    dataPublications: list[BaseDataPublication] | None = None
+
+
+class DataCollectionInvestigation(EntityModel):
+    dataCollection: DataCollection | None = None
+
+
+class BaseInvestigation(EntityModel):
     name: str | None = None
     visitId: str | None = None
     title: str | None = None
     summary: str | None = None
     doi: str | None = None
-    startDate: datetime | None = None
-    endDate: datetime | None = None
-    releaseDate: datetime | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
+    releaseDate: DataGatewayDate | None = None
     fileCount: int | None = None
     fileSize: int | None = None
 
+    facility: Facility | None = None
+    type_: EntityType | None = Field(default=None, alias="type")
     investigationInstruments: list[InvestigationInstrument] | None = None
     investigationUsers: list[InvestigationUser] | None = None
+    datasets: list[Dataset] | None = None
+
+
+class Investigation(BaseInvestigation):
     samples: list[Sample] | None = None
     parameters: list[Parameter] | None = None
     publications: list[Publication] | None = None
+    investigationFacilityCycles: list[InvestigationFacilityCycle] | None = None
+    dataCollectionInvestigations: list[DataCollectionInvestigation] | None = None
