@@ -122,6 +122,26 @@ class CommonWhereFilters(BaseModel):
 class BaseFilters(BaseModel):
     @staticmethod
     def _validate_include(value: Any) -> Generator[str]:
+        """
+        Includes can be arbitrarily nested in lists or dictionaries, but ultimately represent paths of ICAT Entity
+        attributes. In order to validate each attribute path is appropriate for the queried entity, these
+        representations must first be cast to `str`s which can then be compared to a `StrEnum` for the given Entity for
+        final validation.
+
+        Entries in `list`s are recursively validated, as they may have any type.
+
+        Values in `dict`s are recursively validated with keys prefixed to the start.
+
+        Other types (`str` expected, but since this is before pydantic validation in principle it could be `Any`) are
+        `yield`ed as is.
+
+        For example: `{"investigation: ["type", "facility"]}` -> `"investigation.type", "investigation.facility"`.
+
+        :param value: Representation of either full or partial path(s) of ICAT Entity attributes to be included.
+        :type value: Any
+        :yield: `str` representation(s) of all attribute paths represented in `value`.
+        :rtype: Generator[str]
+        """
         if isinstance(value, list):
             for inner_value in value:
                 yield from BaseFilters._validate_include(inner_value)
@@ -134,17 +154,36 @@ class BaseFilters(BaseModel):
 
     @field_validator("include", mode="before", check_fields=False)
     @classmethod
-    def validate_include(cls, value: Any) -> Any:
+    def validate_include_field(cls, value: Any) -> Any:
         """
-        As before validators are resolved in reverse order, value should already have been JSON decoded by
-        `validate_list`.
+        As "before" validators are resolved in reverse order, `value` should already have been JSON decoded by
+        `validate_multi_value_field`.
+
+        Performs validation on all include filters requested via query parameters. Mutates `value` into new return
+        value.
+
+        :param value: Representations of all requested ICAT Entity attributes to include.
+        :type value: Any
+        :return:
+            Expected `list[str]` where each entry is an ICAT Entity attribute path joined by ".",
+            `Any` allowed as pydantic validation has not yet been called.
+        :rtype: Any
         """
         return list(cls._validate_include(value))
 
     @field_validator("distinct", "where", "order", "include", mode="before", check_fields=False)
     @classmethod
-    def validate_list(cls, value: Any) -> Any:
-        """Ensure that all fields accepting multiple values get JSON decoded."""
+    def validate_multi_value_field(cls, value: Any) -> Any:
+        """
+        Ensure that all fields accepting multiple filters get JSON decoded. Mutates `value` into new return value.
+
+        :param value: Possibly JSON encoded query parameters for a field which can take multiple filters.
+        :type value: Any
+        :return:
+            Expected `list` where each entry has been JSON decoded,
+            `Any` allowed as pydantic validation has not yet been called.
+        :rtype: Any
+        """
         if isinstance(value, list):
             return_value = []
             for inner_value in value:
@@ -164,7 +203,17 @@ class BaseFilters(BaseModel):
 
     @field_validator("order", mode="after", check_fields=False)
     @classmethod
-    def validate_order(cls, value: list[StrEnum]) -> list[StrEnum]:
+    def validate_order_field(cls, value: list[StrEnum]) -> list[StrEnum]:
+        """
+        Performs validation on all order filters requested via query parameters, ensuring that no field appears more
+        than once. Does not mutate `value`.
+
+        :param value: `list` of pydantic validated `StrEnum`s in the format `"{field} {direction}"`.
+        :type value: list[StrEnum]
+        :raises ValueError: If the same field appears multiple times in the list of order filters.
+        :return: `value` (unmodified).
+        :rtype: list[StrEnum]
+        """
         unique_keys = set()
         for order in value:
             key, _ = order.split()
@@ -176,6 +225,12 @@ class BaseFilters(BaseModel):
 
     @model_serializer(mode="plain")
     def serialize(self) -> list:
+        """
+        :return:
+            All filters requested via query parameters, instantiated as PythonICAT filter objects and in the appropriate
+            order.
+        :rtype: list
+        """
         filters = []
         if getattr(self, "distinct", None):
             filters.append(PythonICATDistinctFieldFilter([str(d) for d in self.distinct]))
@@ -226,4 +281,12 @@ class CommonGetFilters(BaseFilters):
 
     @model_serializer(mode="plain")
     def serialize(self) -> list[str]:
+        """
+        Note that as GET queries for single Entities only support include filters, this just returns the `list[str]`
+        that `get_with_id` expects and not a list of PythonICAT filter objects like other requests require.
+
+        :return:
+            Include filters requested via query parameters, represented as `str`s of ICAT Entity attribute paths.
+        :rtype: list[str]
+        """
         return [str(i) for i in self.include]
