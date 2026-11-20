@@ -3,26 +3,12 @@ from pydantic import Field
 from datagateway_api.read_only_api.models.response.common import (
     BaseDataCollection,
     BaseDataPublication,
-    DataGatewayDate,
+    BaseInvestigation,
     EntityModel,
-    EntityType,
-    Facility,
     Parameter,
-    User,
 )
 from datagateway_api.read_only_api.models.response.dataset import Dataset
 from datagateway_api.read_only_api.models.response.facility_cycle import FacilityCycle
-from datagateway_api.read_only_api.models.response.instrument import Instrument
-
-
-class InvestigationInstrument(EntityModel):
-    instrument: Instrument | None = None
-
-
-class InvestigationUser(EntityModel):
-    role: str | None = None
-
-    user: User | None = None
 
 
 class SampleType(EntityModel):
@@ -58,26 +44,8 @@ class DataCollectionInvestigation(EntityModel):
     dataCollection: DataCollection | None = None
 
 
-class BaseInvestigation(EntityModel):
-    name: str | None = None
-    visitId: str | None = None
-    title: str | None = None
-    summary: str | None = None
-    doi: str | None = None
-    startDate: DataGatewayDate | None = None
-    endDate: DataGatewayDate | None = None
-    releaseDate: DataGatewayDate | None = None
-    fileCount: int | None = None
-    fileSize: int | None = None
-
-    facility: Facility | None = None
-    type_: EntityType | None = Field(default=None, alias="type")
-    investigationInstruments: list[InvestigationInstrument] | None = None
-    investigationUsers: list[InvestigationUser] | None = None
-    datasets: list[Dataset] | None = None
-
-
 class Investigation(BaseInvestigation):
+    datasets: list[Dataset] | None = None
     samples: list[Sample] | None = None
     parameters: list[Parameter] | None = None
     publications: list[Publication] | None = None

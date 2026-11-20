@@ -956,11 +956,14 @@ class TestDatasets:
                         "modTime": {"isnull": False},
                     },
                 ),
+                "include": "investigation.investigationUsers.user",
             },
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text
-        assert response.json() == [DATASET_1]
+        assert response.json() == [
+            {**DATASET_1, "investigation": {**INVESTIGATION_1, **INVESTIGATION_1_INVESTIGATION_USERS}},
+        ]
 
     def test_count_datasets(
         self,
@@ -1051,11 +1054,17 @@ class TestDatafiles:
                         "datafileModTime": {"isnull": False},
                     },
                 ),
+                "include": "dataset.investigation.investigationUsers.user",
             },
             headers=valid_icat_credentials_header,
         )
         assert response.status_code == 200, response.text
-        assert response.json() == [DATAFILE_1190]
+        assert response.json() == [
+            {
+                **DATAFILE_1190,
+                "dataset": {**DATASET_1, "investigation": {**INVESTIGATION_1, **INVESTIGATION_1_INVESTIGATION_USERS}},
+            },
+        ]
 
     def test_count_datafiles(
         self,

@@ -56,6 +56,51 @@ class BaseDataPublication(EntityModel):
     type_: DataPublicationType | None = Field(default=None, alias="type")
 
 
+class InstrumentScientist(EntityModel):
+    user: User | None = None
+
+
+class Instrument(EntityModel):
+    name: str | None = None
+    fullName: str | None = None
+    description: str | None = None
+    type_: str | None = Field(default=None, alias="type")
+    url: str | None = None
+    pid: str | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
+
+    instrumentScientists: list[InstrumentScientist] | None = None
+
+
+class InvestigationInstrument(EntityModel):
+    instrument: Instrument | None = None
+
+
+class InvestigationUser(EntityModel):
+    role: str | None = None
+
+    user: User | None = None
+
+
+class BaseInvestigation(EntityModel):
+    name: str | None = None
+    visitId: str | None = None
+    title: str | None = None
+    summary: str | None = None
+    doi: str | None = None
+    startDate: DataGatewayDate | None = None
+    endDate: DataGatewayDate | None = None
+    releaseDate: DataGatewayDate | None = None
+    fileCount: int | None = None
+    fileSize: int | None = None
+
+    facility: Facility | None = None
+    type_: EntityType | None = Field(default=None, alias="type")
+    investigationInstruments: list[InvestigationInstrument] | None = None
+    investigationUsers: list[InvestigationUser] | None = None
+
+
 class ParameterValueType(StrEnum):
     STRING = "STRING"
     DATE_AND_TIME = "DATE_AND_TIME"
