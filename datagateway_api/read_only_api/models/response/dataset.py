@@ -1,6 +1,11 @@
 from pydantic import Field
 
-from datagateway_api.read_only_api.models.response.common import DataGatewayDate, EntityModel, EntityType
+from datagateway_api.read_only_api.models.response.common import (
+    BaseInvestigation,
+    DataGatewayDate,
+    EntityModel,
+    EntityType,
+)
 
 
 class Dataset(EntityModel):
@@ -15,3 +20,4 @@ class Dataset(EntityModel):
     complete: bool | None = None
 
     type_: EntityType | None = Field(default=None, alias="type")
+    investigation: BaseInvestigation | None = None

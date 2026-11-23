@@ -59,6 +59,7 @@ class DatafileWhereFilters(DatafileIdFilters):
 
 class DatafileIncludeEnum(StrEnum):
     PARAMETERS = "parameters.type"
+    USERS = "dataset.investigation.investigationUsers.user"
 
 
 class DatafileFindOneFilters(BaseFilters):
